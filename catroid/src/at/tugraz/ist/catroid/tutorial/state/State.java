@@ -16,9 +16,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package at.tugraz.ist.catroid.tutorial;
+package at.tugraz.ist.catroid.tutorial.state;
 
 import android.graphics.Bitmap;
+import at.tugraz.ist.catroid.tutorial.Tutor;
+import at.tugraz.ist.catroid.tutorial.Tutor.TutorType;
 
 public interface State {
 

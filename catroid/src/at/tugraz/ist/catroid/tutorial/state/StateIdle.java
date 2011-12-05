@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package at.tugraz.ist.catroid.tutorial;
+package at.tugraz.ist.catroid.tutorial.state;
 
 import java.util.HashMap;
 
@@ -25,67 +25,62 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import at.tugraz.ist.catroid.R;
+import at.tugraz.ist.catroid.tutorial.Tutor;
 
 /**
  * @author User
  * 
  */
-public class StateTalk implements State {
+public class StateIdle implements State {
 	public String stateName = this.getClass().getSimpleName();
+	private static HashMap<Tutor.TutorType, StateIdle> instances;
+	Bitmap bitmap;
+
 	int currentFrame;
 	int frameCount;
-	Bitmap bitmaps_talk[];
-	Resources resources;
-	//private StateController controller;
-	private static HashMap<Tutor.TutorType, StateTalk> instances;
 
 	@Override
 	public String getStateName() {
 		return (this.getClass().getSimpleName());
 	}
 
-	private StateTalk(StateController controller, Resources resources, Tutor.TutorType tutorType) {
-		this.resources = resources;
+	private StateIdle(StateController controller, Resources resources, Tutor.TutorType tutorType) {
 		//this.controller = controller;
-		bitmaps_talk = new Bitmap[3];
-
 		if (tutorType.compareTo(Tutor.TutorType.CAT_TUTOR) == 0) {
-			bitmaps_talk[0] = BitmapFactory.decodeResource(resources, R.drawable.simons_cat_1);
-			bitmaps_talk[1] = BitmapFactory.decodeResource(resources, R.drawable.simons_cat_2);
-			bitmaps_talk[2] = BitmapFactory.decodeResource(resources, R.drawable.simons_cat_3);
+			bitmap = BitmapFactory.decodeResource(resources, R.drawable.simons_cat_3);
 		} else {
-			bitmaps_talk[0] = BitmapFactory.decodeResource(resources, R.drawable.tutor_dog_talk_1);
-			bitmaps_talk[1] = BitmapFactory.decodeResource(resources, R.drawable.tutor_dog_talk_2);
-			bitmaps_talk[2] = BitmapFactory.decodeResource(resources, R.drawable.tutor_dog_talk_3);
+			bitmap = BitmapFactory.decodeResource(resources, R.drawable.tutor_dog_talk_1);
 		}
-		resetState();
-	}
-
-	@Override
-	public void resetState() {
 		currentFrame = 0;
 		frameCount = 3;
 	}
 
+	@Override
+	public void resetState() {
+
+	}
+
 	public static State enter(StateController controller, Resources resources, Tutor.TutorType tutorType) {
-		Log.i("catroid", "State Talk");
+		Log.i("catroid", "State Idle");
 		if (instances == null) {
-			instances = new HashMap<Tutor.TutorType, StateTalk>();
+			instances = new HashMap<Tutor.TutorType, StateIdle>();
 		}
 		if (!instances.containsKey(tutorType)) {
-			instances.put(tutorType, new StateTalk(controller, resources, tutorType));
+			instances.put(tutorType, new StateIdle(controller, resources, tutorType));
 		}
-		controller.setDisappeared(false);
+
 		return (instances.get(tutorType));
 	}
 
 	@Override
 	public Bitmap updateAnimation(Tutor.TutorType tutorType) {
-		if (currentFrame < (frameCount - 1)) {
+		if (currentFrame < frameCount) {
 			currentFrame++;
+			return (this.bitmap);
 		} else {
 			currentFrame = 0;
+			return (this.bitmap);
+			// andre Idles
 		}
-		return (this.bitmaps_talk[currentFrame]);
 	}
 }

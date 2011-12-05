@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package at.tugraz.ist.catroid.tutorial;
+package at.tugraz.ist.catroid.tutorial.state;
 
 import java.util.HashMap;
 
@@ -25,32 +25,33 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import at.tugraz.ist.catroid.R;
+import at.tugraz.ist.catroid.tutorial.Tutor;
+import at.tugraz.ist.catroid.tutorial.Tutorial;
 
 /**
  * @author User
  * 
  */
-public class StateJump implements State {
+public class StateDisappear implements State {
 	public String stateName = this.getClass().getSimpleName();
 	private StateController controller;
-	private static HashMap<Tutor.TutorType, StateJump> instances;
+	private static HashMap<Tutor.TutorType, StateDisappear> instances;
 	private Resources resources;
 	Bitmap bitmaps_portal[];
 
 	int currentFrame;
 	int frameCount;
-	boolean portAway;
-	boolean notificated;
 
 	@Override
 	public String getStateName() {
 		return (this.getClass().getSimpleName());
 	}
 
-	private StateJump(StateController controller, Resources resources, Tutor.TutorType tutorType) {
+	private StateDisappear(StateController controller, Resources resources, Tutor.TutorType tutorType) {
 		this.controller = controller;
 		this.resources = resources;
 		bitmaps_portal = new Bitmap[5];
+
 		if (tutorType.compareTo(Tutor.TutorType.CAT_TUTOR) == 0) {
 			bitmaps_portal[0] = BitmapFactory.decodeResource(resources, R.drawable.simons_cat_portal_1);
 			bitmaps_portal[1] = BitmapFactory.decodeResource(resources, R.drawable.simons_cat_portal_2);
@@ -64,49 +65,39 @@ public class StateJump implements State {
 			bitmaps_portal[3] = BitmapFactory.decodeResource(resources, R.drawable.tutor_dog_portal_2);
 			bitmaps_portal[4] = BitmapFactory.decodeResource(resources, R.drawable.tutor_dog_portal_1);
 		}
+
 		resetState();
 	}
 
 	@Override
 	public void resetState() {
-		portAway = true;
 		currentFrame = 0;
 		frameCount = 5;
-		notificated = false;
 	}
 
 	public static State enter(StateController controller, Resources resources, Tutor.TutorType tutorType) {
 		Log.i("catroid", "State Appear");
 		if (instances == null) {
-			instances = new HashMap<Tutor.TutorType, StateJump>();
+			instances = new HashMap<Tutor.TutorType, StateDisappear>();
 		}
 		if (!instances.containsKey(tutorType)) {
-			instances.put(tutorType, new StateJump(controller, resources, tutorType));
+			instances.put(tutorType, new StateDisappear(controller, resources, tutorType));
 		}
-		controller.setDisappeared(false);
 		return (instances.get(tutorType));
 	}
 
 	@Override
 	public Bitmap updateAnimation(Tutor.TutorType tutorType) {
-		if (portAway) {
-			if (currentFrame < (frameCount - 1)) {
-				currentFrame++;
-			} else {
-				controller.tutor.setNewPositionAfterPort();
-				portAway = false;
-			}
+		if (currentFrame < (frameCount - 1)) {
+			currentFrame++;
 		} else {
-			if (currentFrame > 0) {
-				currentFrame--;
-			} else {
-				controller.changeState(StateIdle.enter(controller, resources, tutorType));
-				Tutorial tut = Tutorial.getInstance(null);
-				tut.setNotification("JumpDone");
-				//resetState();
-			}
+			controller.setDisappeared(true);
+			//resetState(); nit so gut...
+			controller.changeState(StateIdle.enter(controller, resources, tutorType));
+			Tutorial tut = Tutorial.getInstance(null);
+			tut.setNotification("DisappearDone");
+
 		}
 		return (bitmaps_portal[currentFrame]);
-
 	}
 }

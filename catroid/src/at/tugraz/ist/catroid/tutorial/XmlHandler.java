@@ -18,41 +18,37 @@
  */
 package at.tugraz.ist.catroid.tutorial;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import java.io.InputStream;
+
+import android.content.Context;
+import android.content.res.AssetManager;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
- * @author faxxe
+ * @author gnu
  * 
- *         Saving the actual state to a file has not been done jet!
  */
-public class TutorialState implements Serializable {
-	private HashMap<String, Integer> table;
-	int ret;
+public class XmlHandler {
+	private LessonCollection lessonCollection;
 
-	public void clear() {
-		table = new HashMap<String, Integer>();
-	}
-
-	public TutorialState() {
-		table = new HashMap<String, Integer>();
-	}
-
-	public TutorialState(HashMap table) {
-		this.table = table;
-	}
-
-	public void saveActualState(String ativityName, Integer instructionCount) {
-		table.put(ativityName, instructionCount);
-	}
-
-	public int getLastState(String activityName) {
-		if (table.containsKey(activityName)) {
-			ret = table.get(activityName);
-		} else {
-			ret = 0;
+	XmlHandler(Context context) {
+		XStream xstream = new XStream();
+		AssetManager assetManager = context.getAssets();
+		try {
+			InputStream inputStream = assetManager.open("tutorial.xml");
+			lessonCollection = (LessonCollection) xstream.fromXML(inputStream);
+		} catch (Exception e) {
 		}
-		return ret;
+
+		// Do no irgendwen vom Kernteam fragen, wieso XStream in allen Arrays den ersten 
+		// Eintrag dupliziert.
+
+		lessonCollection.cleanAfterXML();
+	}
+
+	LessonCollection getLessonCollection() {
+		return (lessonCollection);
 	}
 
 }
