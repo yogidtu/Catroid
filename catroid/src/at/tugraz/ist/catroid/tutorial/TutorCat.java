@@ -18,6 +18,7 @@
  */
 package at.tugraz.ist.catroid.tutorial;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -32,11 +33,14 @@ import at.tugraz.ist.catroid.tutorial.state.StateIdle;
 import at.tugraz.ist.catroid.tutorial.state.StateJump;
 import at.tugraz.ist.catroid.tutorial.state.StatePoint;
 import at.tugraz.ist.catroid.tutorial.state.StateTalk;
+import at.tugraz.ist.catroid.tutorial.tasks.Task;
+import at.tugraz.ist.catroid.tutorial.tasks.Task.Tutor;
 
-public class Tutor {
-	static public enum TutorType {
-		CAT_TUTOR, DOG_TUTOR
-	}
+/**
+ * @author faxxe
+ * 
+ */
+public class TutorCat extends SurfaceObjectTutor {
 
 	int x;
 	int y;
@@ -58,11 +62,11 @@ public class Tutor {
 	Matrix flipMatrix;
 
 	private StateController controller;
-	public TutorType tutorType;
 
-	public Tutor(Resources resources, Context context, TutorType tutorType) {
-		this.tutorType = tutorType;
-		this.resources = resources;
+	public TutorCat(Context context, TutorialOverlay tutorialOverlay) {
+		super(context, tutorialOverlay);
+		super.tutorType = Task.Tutor.CAT;
+		this.resources = ((Activity) context).getResources();
 		this.context = context;
 		fps = 10;
 		currentFrame = 0;
@@ -70,90 +74,11 @@ public class Tutor {
 		frameTicker = 0l;
 		facingFlipped = false;
 		controller = new StateController(resources, this);
+
 	}
 
-	public void update(long gameTime) {
-		if (controller.isDisappeared()) {
-			return;
-		}
-
-		if (gameTime > frameTicker + framePeriod) {
-			frameTicker = gameTime;
-			bitmap = controller.updateAnimation(tutorType);
-		}
-
-		if (tutorBubble != null) {
-			if (tutorBubble.animationFinished) {
-				tutorBubble = null;
-			} else {
-				tutorBubble.update(gameTime);
-				if (tutorBubble.textFinished) {
-					controller.changeState(StateIdle.enter(controller, resources, tutorType));
-				}
-			}
-		}
-	}
-
-	public void flip() {
-		if (facingFlipped) {
-			facingFlipped = false;
-		} else {
-			facingFlipped = true;
-		}
-	}
-
-	public void jumpTo(int x, int y) {
-		controller.changeState(StateJump.enter(controller, resources, tutorType));
-		xPortTo = x;
-		yPortTo = y;
-	}
-
-	public void idle() {
-		if (tutorBubble != null) {
-			tutorBubble.animationFinished = true;
-			tutorBubble = null;
-		}
-		controller.setDisappeared(true);
-		controller.changeState(StateIdle.enter(controller, resources, tutorType));
-	}
-
-	public void point() {
-		controller.changeState(StatePoint.enter(controller, resources, tutorType));
-	}
-
-	public void setNewPositionAfterPort() {
-		x = xPortTo;
-		y = yPortTo;
-	}
-
-	public void appear(int x, int y) {
-		Log.i("catroid", "Appear wurde wirklich aufgerufen");
-		this.x = x;
-		this.y = y;
-		controller.changeState(StateAppear.enter(controller, resources, tutorType));
-		controller.setDisappeared(false);
-		//isAppeared = true;
-	}
-
-	public void disappear() {
-		controller.changeState(StateDisappear.enter(controller, resources, tutorType));
-		//TODO: Das erst wenn Animation fertig
-		//isAppeared = false;
-	}
-
-	public void say(String text) {
-		controller.changeState(StateTalk.enter(controller, resources, tutorType));
-
-		if (tutorType.equals(TutorType.DOG_TUTOR)) {
-			tutorBubble = new Bubble(text, resources.getDrawable(R.drawable.bubble_up), this.x, this.y, context);
-
-		} else if (tutorType.equals(TutorType.CAT_TUTOR)) {
-			tutorBubble = new Bubble(text, resources.getDrawable(R.drawable.bubble), this.x, this.y, context);
-		}
-	}
-
+	@Override
 	public void draw(Canvas canvas) {
-
 		if (!controller.isDisappeared()) {
 			try {
 				if (facingFlipped) {
@@ -179,8 +104,97 @@ public class Tutor {
 
 	}
 
+	@Override
+	public void update(long gameTime) {
+		// TODO Auto-generated method stub
+		if (controller.isDisappeared()) {
+			return;
+		}
+
+		if (gameTime > frameTicker + framePeriod) {
+			frameTicker = gameTime;
+			bitmap = controller.updateAnimation(tutorType);
+		}
+
+		if (tutorBubble != null) {
+			if (tutorBubble.animationFinished) {
+				tutorBubble = null;
+			} else {
+				tutorBubble.update(gameTime);
+				if (tutorBubble.textFinished) {
+					controller.changeState(StateIdle.enter(controller, resources, tutorType));
+				}
+			}
+		}
+	}
+
+	@Override
+	public void flip() {
+		if (facingFlipped) {
+			facingFlipped = false;
+		} else {
+			facingFlipped = true;
+		}
+	}
+
+	@Override
+	public void idle() {
+		if (tutorBubble != null) {
+			tutorBubble.animationFinished = true;
+			tutorBubble = null;
+		}
+		controller.setDisappeared(true);
+		controller.changeState(StateIdle.enter(controller, resources, tutorType));
+	}
+
+	@Override
+	public void say(String text) {
+		controller.changeState(StateTalk.enter(controller, resources, tutorType));
+
+		if (tutorType.equals(Tutor.DOG)) {
+			tutorBubble = new Bubble(text, resources.getDrawable(R.drawable.bubble_up), this.x, this.y, context);
+
+		} else if (tutorType.equals(Tutor.CAT)) {
+			tutorBubble = new Bubble(text, resources.getDrawable(R.drawable.bubble), this.x, this.y, context);
+		}
+	}
+
+	@Override
+	public void jumpTo(int x, int y) {
+		controller.changeState(StateJump.enter(controller, resources, tutorType));
+		xPortTo = x;
+		yPortTo = y;
+	}
+
+	@Override
+	public void appear(int x, int y) {
+		Log.i("catroid", "Appear wurde wirklich aufgerufen");
+		this.x = x;
+		this.y = y;
+		controller.changeState(StateAppear.enter(controller, resources, tutorType));
+		controller.setDisappeared(false);
+		//isAppeared = true;
+	}
+
+	@Override
+	public void disappear() {
+		controller.changeState(StateDisappear.enter(controller, resources, tutorType));
+		//TODO: Das erst wenn Animation fertig
+		//isAppeared = false;
+	}
+
+	@Override
+	public void point() {
+		controller.changeState(StatePoint.enter(controller, resources, tutorType));
+	}
+
+	@Override
+	public void setNewPositionAfterPort() {
+		x = xPortTo;
+		y = yPortTo;
+	}
+
 	public Bubble getTutorBubble() {
 		return tutorBubble;
 	}
-
 }
