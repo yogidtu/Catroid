@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+/**
  *  Catroid: An on-device graphical programming language for Android devices
  *  Copyright (C) 2010-2011 The Catroid Team
  *  (<http://code.google.com/p/catroid/wiki/Credits>)
@@ -20,23 +19,16 @@
  *   
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- -->
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="horizontal"
-	android:layout_height="wrap_content"
-	android:layout_width="wrap_content"
-	android:background="@drawable/brick_yellow"
->
-	<!-- TODO text should be in strings.xml -->
-	<TextView
-		android:id="@+id/OneElementBrick"
-		android:text="Hide/Show"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		android:textColor="@color/white"
-		android:textSize="18dip"
-		android:textStyle="bold"
-	>
-	</TextView>
-</LinearLayout>
+ */
+package at.tugraz.ist.catroid.test.code;
+
+import junit.framework.TestCase;
+import at.tugraz.ist.catroid.common.Consts;
+
+public class ImportantValuesTest extends TestCase {
+
+	public void testPaintroidDownloadLink() {
+		assertEquals("wrong paintroid download link", "http://code.google.com/p/catroid/downloads",
+				Consts.PAINTROID_DOWNLOAD_LINK);
+	}
+}
