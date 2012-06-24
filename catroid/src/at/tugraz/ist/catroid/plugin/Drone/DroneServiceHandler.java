@@ -22,14 +22,11 @@
  */
 package at.tugraz.ist.catroid.plugin.Drone;
 
-import android.content.Context;
-import android.util.Log;
-
 public class DroneServiceHandler {
 
 	private static DroneServiceHandler droneServiceHandler;
 	private IDrone droneInstance;
-	private boolean wasAlreadyConnected;
+	private DroneService droneServiceInstance;
 
 	public static DroneServiceHandler getInstance() {
 		if (droneServiceHandler == null) {
@@ -41,37 +38,13 @@ public class DroneServiceHandler {
 	private DroneServiceHandler() {
 	}
 
-	public boolean createDroneFrameworkWrapper(Context context) {
-
-		try {
-			droneInstance = new DroneLibraryWrapper(context);
-		} catch (Exception e) {
-			Log.e(DroneConsts.DroneLogTag, "could not create DroneLibraryWrapper. Drone plugin not installed.", e);
-			droneInstance = null;
-			return false;
-		}
-
-		return true;
-	}
-
-	/** only used for testing */
-	public void setIDrone(IDrone idrone) {
-		this.droneInstance = idrone;
+	public void setDroneServiceInstance(DroneService droneService) {
+		droneServiceInstance = null;
+		droneServiceInstance = droneService;
 	}
 
 	public IDrone getDrone() {
 		return droneInstance;
 	}
 
-	public boolean wasAlreadyConnected() {
-		if (DroneServiceHandler.getInstance().getDrone().getFlyingMode() == -1) {
-			return false;
-		}
-
-		return wasAlreadyConnected;
-	}
-
-	public void setWasAlreadyConnected() {
-		wasAlreadyConnected = true;
-	}
 }

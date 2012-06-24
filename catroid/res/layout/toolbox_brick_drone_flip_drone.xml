@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
  *  Catroid: An on-device graphical programming language for Android devices
  *  Copyright (C) 2010-2011 The Catroid Team
@@ -20,29 +21,21 @@
  *   
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_height="wrap_content"
+  android:layout_width="fill_parent"
+  android:background="@drawable/brick_drone"
+>
+
+	<TextView
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:text="@string/drone_brick_flip_drone"
+	    android:textColor="@color/white"
+	    android:textSize="18dip"
+	    android:textStyle="bold" />
 
--->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <PreferenceCategory android:title="@string/pref_category_mindstorm" >
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="setting_mindstorm_bricks"
-            android:summary="@string/pref_descr_ms_bricks"
-            android:title="@string/pref_enable_ms_bricks" />
-    </PreferenceCategory>
-
-	<PreferenceCategory android:title="@string/pref_category_drone">
-		<CheckBoxPreference
-			android:key="setting_drone_bricks"
-			android:title="@string/pref_enable_drone_bricks"
-			android:summary="@string/pref_descr_drone_bricks"
-			android:defaultValue="false" />
-		<EditTextPreference
-			android:key="setting_drone_dsl_timeout"
-			android:title="@string/pref_dsl_timeout_drone"
-			android:summary="@string/pref_descr_dsl_timeout_drone"
-			android:defaultValue="5" />
-	</PreferenceCategory>
-  
-</PreferenceScreen>
+</LinearLayout>
