@@ -20,12 +20,14 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.physics;
+package org.catrobat.catroid.physics.shapebuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
+
+import org.catrobat.catroid.physics.Pixel;
 
 public class GrahamScan {
 	private static Stack<Pixel> hull;

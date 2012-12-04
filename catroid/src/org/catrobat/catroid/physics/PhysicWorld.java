@@ -23,11 +23,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.physics.PhysicObject.Type;
 
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
@@ -46,6 +48,7 @@ public class PhysicWorld {
 	public final static int STABILIZING_STEPS = 6;
 
 	private final World world;
+	private final Shape[] boundaryShapes;
 	private final Map<Sprite, PhysicObject> physicObjects;
 	private Box2DDebugRenderer renderer;
 	private int stabilizingStep = 0;
@@ -54,14 +57,20 @@ public class PhysicWorld {
 		world = new World(PhysicWorld.DEFAULT_GRAVITY, PhysicWorld.IGNORE_SLEEPING_OBJECTS);
 		physicObjects = new HashMap<Sprite, PhysicObject>();
 
-		new PhysicBoundaryBox(world).create();
+		PhysicBoundaryBox physicBoundaryBox = new PhysicBoundaryBox(world);
+		physicBoundaryBox.create();
+		boundaryShapes = physicBoundaryBox.getShapes();
 	}
 
 	public void step(float deltaTime) {
 		if (stabilizingStep < STABILIZING_STEPS) {
 			stabilizingStep++;
 		} else {
-			world.step(deltaTime, PhysicWorld.VELOCITY_ITERATIONS, PhysicWorld.POSITION_ITERATIONS);
+			try {
+				world.step(deltaTime, PhysicWorld.VELOCITY_ITERATIONS, PhysicWorld.POSITION_ITERATIONS);
+			} catch (NullPointerException nullPointerException) {
+				// Ignore all null pointers because they are mainly caused by shape change which is NOT thread-safe.
+			}
 		}
 		updateSprites();
 	}
@@ -71,6 +80,8 @@ public class PhysicWorld {
 		PhysicCostume costume;
 		for (Entry<Sprite, PhysicObject> entry : physicObjects.entrySet()) {
 			physicObject = entry.getValue();
+			if (physicObject.getType() != Type.DYNAMIC) {
+			}
 			physicObject.setIfOnEdgeBounce(false);
 
 			costume = (PhysicCostume) entry.getKey().costume;

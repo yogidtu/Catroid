@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.physics;
+package org.catrobat.catroid.physics.shapebuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 
 public class PhysicShapeBuilder {
 	private final Map<String, Shape[]> shapeMap = new HashMap<String, Shape[]>();
-	private PhysicShapeBuilderStrategy strategy = new PhysicShapeBuilderStrategyB();
+	private PhysicShapeBuilderStrategy strategy = new PhysicShapeBuilderStrategyFastHull();
 
 	public PhysicShapeBuilder() {
 	}

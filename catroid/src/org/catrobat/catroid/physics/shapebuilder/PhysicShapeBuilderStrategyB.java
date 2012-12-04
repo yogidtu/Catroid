@@ -20,21 +20,25 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.physics;
+package org.catrobat.catroid.physics.shapebuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 import org.catrobat.catroid.common.CostumeData;
+import org.catrobat.catroid.physics.PhysicWorldConverter;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 
-public class PhysicShapeBuilderStrategyA implements PhysicShapeBuilderStrategy {
-
+/**
+ * @author robert
+ * 
+ */
+public class PhysicShapeBuilderStrategyB implements PhysicShapeBuilderStrategy {
 	private enum Side {
 		LEFT, RIGHT, NONE;
 	}
@@ -45,60 +49,78 @@ public class PhysicShapeBuilderStrategyA implements PhysicShapeBuilderStrategy {
 		int width = pixmap.getWidth();
 		int height = pixmap.getHeight();
 
-		Stack<Vector2> leftConvexHull = new Stack<Vector2>();
-		Stack<Vector2> rightConvexHull = new Stack<Vector2>();
+		Stack<Vector2> convexHull = new Stack<Vector2>();
+
+		Vector2 point = new Vector2(width - 1, height);
 		for (int y = 0; y < height; y++) {
-			int x;
-			for (x = 0; x < width; x++) {
-				if ((pixmap.getPixel(x, y) & 0xff) > 0) {
-					addPoint(leftConvexHull, new Vector2(x, y), Side.RIGHT);
-					break;
-				}
-			}
-
-			if (x == width) {
-				continue;
-			}
-
-			for (x = width - 1; x >= 0; x--) {
-				if ((pixmap.getPixel(x, y) & 0xff) > 0) {
-					addPoint(rightConvexHull, new Vector2(x, y), Side.LEFT);
-					x = width - 1;
+			for (int x = 0; x <= point.x; x++) {
+				if (isVisible(pixmap.getPixel(x, y))) {
+					point = new Vector2(x, y);
+					addPoint(convexHull, point);
 					break;
 				}
 			}
 		}
 
-		if (leftConvexHull.empty()) {
+		if (convexHull.isEmpty()) {
 			return null;
 		}
-		Vector2 point;
-		while (!rightConvexHull.empty()) {
-			point = rightConvexHull.pop();
-			if (point.equals(leftConvexHull.firstElement()) || point.equals(leftConvexHull.peek())) {
-				continue;
-			}
+		Vector2 firstPoint = convexHull.firstElement();
 
-			leftConvexHull.push(point);
+		for (int x = (int) point.x + 1; x < width; x++) {
+			for (int y = height - 1; y >= point.y; y--) {
+				if (isVisible(pixmap.getPixel(x, y))) {
+					point = new Vector2(x, y);
+					addPoint(convexHull, point);
+					break;
+				}
+			}
 		}
 
-		return devideShape(leftConvexHull.toArray(new Vector2[leftConvexHull.size()]), width, height);
+		point = new Vector2(Math.max(point.x, firstPoint.x), point.y);
+		for (int y = (int) point.y - 1; y >= firstPoint.y; y--) {
+			for (int x = width - 1; x >= point.x; x--) {
+				if (isVisible(pixmap.getPixel(x, y))) {
+					point = new Vector2(x, y);
+					addPoint(convexHull, point);
+					break;
+				}
+			}
+		}
+
+		for (int x = (int) point.x - 1; x > firstPoint.x; x--) {
+			for (int y = (int) firstPoint.y; y < point.y; y++) {
+				if (isVisible(pixmap.getPixel(x, y))) {
+					point = new Vector2(x, y);
+					addPoint(convexHull, point);
+					break;
+				}
+			}
+		}
+
+		addPoint(convexHull, firstPoint);
+		convexHull.pop();
+
+		return devideShape(convexHull.toArray(new Vector2[convexHull.size()]), width, height);
 	}
 
-	private void addPoint(Stack<Vector2> convexHull, Vector2 point, Side side) {
-		removePoints(convexHull, point, side);
+	private boolean isVisible(int color) {
+		return (color & 0xff) > 0;
+	}
+
+	private void addPoint(Stack<Vector2> convexHull, Vector2 point) {
+		removePoints(convexHull, point);
 		convexHull.push(point);
 	}
 
-	private void removePoints(Stack<Vector2> convexHull, Vector2 newConvexPoint, Side side) {
+	private void removePoints(Stack<Vector2> convexHull, Vector2 newConvexPoint) {
 		while (convexHull.size() > 1) {
 			Vector2 pointToCheck = convexHull.peek();
 			Vector2 from = convexHull.get(convexHull.size() - 2);
 
-			if (side == getSide(from, newConvexPoint, pointToCheck)) {
+			if (getSide(from, newConvexPoint, pointToCheck) == Side.RIGHT) {
 				break;
 			}
-
 			convexHull.pop();
 		}
 	}

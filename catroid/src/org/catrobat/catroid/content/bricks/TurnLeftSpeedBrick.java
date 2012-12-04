@@ -78,7 +78,7 @@ public class TurnLeftSpeedBrick implements PhysicObjectBrick, OnClickListener {
 	public View getView(Context context, int brickId, BaseAdapter adapter) {
 		view = View.inflate(context, R.layout.brick_turn_left_speed, null);
 
-		EditText editText = (EditText) view.findViewById(R.id.brick_set_angular_velocity_edit_text);
+		EditText editText = (EditText) view.findViewById(R.id.brick_turn_left_speed_edit_text);
 		editText.setText(String.valueOf(degreesPerSec));
 
 		editText.setOnClickListener(this);
@@ -112,7 +112,7 @@ public class TurnLeftSpeedBrick implements PhysicObjectBrick, OnClickListener {
 			@Override
 			protected boolean handleOkButton() {
 				try {
-					degreesPerSec = Integer.parseInt(input.getText().toString());
+					degreesPerSec = Float.parseFloat(input.getText().toString());
 				} catch (NumberFormatException exception) {
 					Toast.makeText(getActivity(), R.string.error_no_number_entered, Toast.LENGTH_SHORT).show();
 				}

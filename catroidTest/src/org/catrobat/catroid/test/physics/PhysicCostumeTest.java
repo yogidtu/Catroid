@@ -4,8 +4,8 @@ import org.catrobat.catroid.common.CostumeData;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.physics.PhysicCostume;
 import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicShapeBuilder;
 import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.shapebuilder.PhysicShapeBuilder;
 
 import android.test.AndroidTestCase;
 

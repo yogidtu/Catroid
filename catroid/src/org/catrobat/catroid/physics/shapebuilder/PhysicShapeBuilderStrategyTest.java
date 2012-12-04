@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.physics;
+package org.catrobat.catroid.physics.shapebuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,40 +28,48 @@ import java.util.Collections;
 import java.util.List;
 
 import org.catrobat.catroid.common.CostumeData;
+import org.catrobat.catroid.physics.PhysicWorldConverter;
+import org.catrobat.catroid.physics.Pixel;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 
-public class PhysicShapeBuilderStrategyComplex implements PhysicShapeBuilderStrategy {
+public class PhysicShapeBuilderStrategyTest implements PhysicShapeBuilderStrategy {
+
 	@Override
 	public Shape[] build(CostumeData costumeData) {
-		List<Pixel> convexGrahamPoints = ImageProcessor.getShape(costumeData);
+		Pixmap pixmap = costumeData.getPixmap();
+		boolean[][] array = new boolean[pixmap.getWidth()][pixmap.getHeight()];
 
-		int[] size = costumeData.getResolution();
-		float width = size[0];
-		float height = size[1];
+		for (int y = 0; y < pixmap.getHeight(); y++) {
+			for (int x = 0; x < pixmap.getWidth(); x++) {
+				int alpha = pixmap.getPixel(x, y) & 0xff;
 
-		Vector2[] vec = new Vector2[convexGrahamPoints.size()];
-
-		for (int i = 0; i < convexGrahamPoints.size(); i++) {
-			Pixel pixel = convexGrahamPoints.get(i);
-			vec[i] = PhysicWorldConverter.vecCatToBox2d(new Vector2((float) pixel.x() - (width / 2), height
-					- (float) pixel.y() - height / 2));
+				if (alpha > 0) {
+					array[x][y] = false;
+				}
+			}
 		}
 
-		Vector2[] x = new Vector2[ImageProcessor.points.size()];
-		for (int index = 0; index < x.length; index++) {
-			Pixel pixel = ImageProcessor.points.get(index);
-			x[index] = PhysicWorldConverter.vecCatToBox2d(new Vector2((float) pixel.x() - (width / 2), height
-					- (float) pixel.y() - height / 2));
+		List<Pixel> points = new ArrayList<Pixel>();
+
+		List<Pixel> convexPixels = GrahamScan.run(points);
+
+		List<Vector2> xyz = new ArrayList<Vector2>();
+		float halfWidth = pixmap.getWidth() / 2.0f;
+		float halfHeight = pixmap.getHeight() / 2.0f;
+		for (Pixel pixel : convexPixels) {
+			float x = PhysicWorldConverter.lengthCatToBox2d(pixel.x - halfWidth);
+			float y = PhysicWorldConverter.lengthCatToBox2d(pixel.y - halfHeight);
+			xyz.add(new Vector2(x, y));
 		}
 
-		return devideShape(vec);
-	};
+		return devideShape(xyz.toArray(new Vector2[xyz.size()]));
+	}
 
 	private Shape[] devideShape(Vector2[] convexpoints) {
-
 		if (convexpoints.length < 9) {
 			List<Vector2> x = Arrays.asList(convexpoints);
 			Collections.reverse(x);

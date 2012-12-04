@@ -256,7 +256,7 @@ public class AddBrickDialog extends DialogFragment {
 			motionBrickList.add(new SetFrictionBrick(sprite, PhysicObject.DEFAULT_FRICTION * 100));
 		}
 		motionBrickList.add(new SetGravityBrick(sprite, PhysicWorld.DEFAULT_GRAVITY));
-		motionBrickList.add(new SetVelocityBrick(sprite, new Vector2()));
+		motionBrickList.add(new SetVelocityBrick(sprite, 0.0f, 0.0f));
 		motionBrickList.add(new TurnLeftSpeedBrick(sprite, 15.0f));
 		motionBrickList.add(new TurnRightSpeedBrick(sprite, 15.0f));
 		brickMap.put(context.getString(R.string.category_motion), motionBrickList);

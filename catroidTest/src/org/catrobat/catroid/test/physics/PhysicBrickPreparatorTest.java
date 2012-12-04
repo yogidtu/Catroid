@@ -20,6 +20,7 @@ import org.catrobat.catroid.content.bricks.SetGravityBrick;
 import org.catrobat.catroid.content.bricks.SetMassBrick;
 import org.catrobat.catroid.content.bricks.SetPhysicObjectTypeBrick;
 import org.catrobat.catroid.content.bricks.SetXBrick;
+import org.catrobat.catroid.content.bricks.TurnLeftBrick;
 import org.catrobat.catroid.content.bricks.TurnRightSpeedBrick;
 import org.catrobat.catroid.physics.PhysicBrickPreparator;
 import org.catrobat.catroid.physics.PhysicObject;
@@ -60,7 +61,7 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 		broadcastScript.addBrick(new BroadcastBrick(sprite));
 
 		Script whenScript = new WhenScript(sprite);
-		whenScript.addBrick(new IfOnEdgeBounceBrick(sprite));
+		whenScript.addBrick(new TurnLeftBrick(sprite, 2.123));
 
 		sprite.addScript(startScript);
 		sprite.addScript(broadcastScript);
@@ -71,7 +72,7 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 		PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorldMock);
 		physicBrickPreparator.prepare(project);
 
-		assertEquals(0, physicWorldMock.executedGetPhysicObjectCount);
+		assertEquals(0, physicWorldMock.getPhysicObjectExecutedCount);
 	}
 
 	public void testSimplePhysicObjectBrick() {
@@ -89,9 +90,9 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 		PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorldMock);
 		physicBrickPreparator.prepare(project);
 
-		assertEquals(1, physicWorldMock.executedGetPhysicObjectCount);
-		assertEquals(1, physicWorldMock.executedGetPhysicObjectSprites.size());
-		assertTrue(physicWorldMock.executedGetPhysicObjectSprites.contains(sprite));
+		assertEquals(1, physicWorldMock.getPhysicObjectExecutedCount);
+		assertEquals(1, physicWorldMock.physicObjects.size());
+		assertTrue(physicWorldMock.physicObjects.contains(sprite));
 
 		assertNotNull(TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
 		assertEquals(physicWorldMock.getPhysicObject(sprite),
@@ -118,9 +119,9 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 		PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorldMock);
 		physicBrickPreparator.prepare(project);
 
-		assertEquals(1, physicWorldMock.executedGetPhysicObjectCount);
-		assertEquals(1, physicWorldMock.executedGetPhysicObjectSprites.size());
-		assertTrue(physicWorldMock.executedGetPhysicObjectSprites.contains(sprite));
+		assertEquals(1, physicWorldMock.getPhysicObjectExecutedCount);
+		assertEquals(1, physicWorldMock.physicObjects.size());
+		assertTrue(physicWorldMock.physicObjects.contains(sprite));
 
 		PhysicObject physicObject = physicWorldMock.getPhysicObject(sprite);
 		for (PhysicObjectBrick physicObjectBrick : physicObjectBricks) {
@@ -178,8 +179,8 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 		PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorldMock);
 		physicBrickPreparator.prepare(project);
 
-		assertEquals(1, physicWorldMock.executedGetPhysicObjectCount);
-		assertTrue(physicWorldMock.executedGetPhysicObjectSprites.contains(sprite));
+		assertEquals(1, physicWorldMock.getPhysicObjectExecutedCount);
+		assertTrue(physicWorldMock.physicObjects.contains(sprite));
 
 		PhysicObject physicObject = physicWorldMock.getPhysicObject(sprite);
 		for (int index = 0; index < sprite.getNumberOfScripts(); index++) {
@@ -196,15 +197,15 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 	}
 
 	private class PhysicWorldMock extends PhysicWorld {
-		private int executedGetPhysicObjectCount = 0;
-		private Set<Sprite> executedGetPhysicObjectSprites = new HashSet<Sprite>();
+		private int getPhysicObjectExecutedCount = 0;
+		private Set<Sprite> physicObjects = new HashSet<Sprite>();
 
 		@Override
 		public PhysicObject getPhysicObject(Sprite sprite) {
 			PhysicObject physicObject = super.getPhysicObject(sprite);
 
-			executedGetPhysicObjectCount++;
-			executedGetPhysicObjectSprites.add(sprite);
+			getPhysicObjectExecutedCount++;
+			physicObjects.add(sprite);
 
 			return physicObject;
 		}

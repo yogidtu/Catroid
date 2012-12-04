@@ -24,6 +24,7 @@ package org.catrobat.catroid.physics;
 
 import org.catrobat.catroid.content.Costume;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.physics.shapebuilder.PhysicShapeBuilder;
 
 import com.badlogic.gdx.physics.box2d.Shape;
 

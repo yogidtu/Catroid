@@ -113,11 +113,15 @@ public class PhysicObject {
 		switch (type) {
 			case DYNAMIC:
 				body.setType(BodyType.DynamicBody);
+				body.setGravityScale(1.0f);
 				setMass(mass);
 				collisionMask = PhysicObject.COLLISION_MASK;
 				break;
 			case FIXED:
-				body.setType(BodyType.KinematicBody);
+				//				body.setType(BodyType.KinematicBody);
+				body.setType(BodyType.DynamicBody);
+				body.setGravityScale(0.0f);
+				setMass(Integer.MAX_VALUE);
 				collisionMask = PhysicObject.COLLISION_MASK;
 				break;
 			case NONE:
@@ -198,11 +202,18 @@ public class PhysicObject {
 		body.setLinearVelocity(PhysicWorldConverter.vecCatToBox2d(velocity));
 	}
 
+	public float getMass() {
+		return body.getMass();
+	}
+
 	public void setMass(float mass) {
 		if (mass < PhysicObject.MIN_MASS) {
 			mass = PhysicObject.MIN_MASS;
 		}
-		this.mass = mass;
+
+		if (mass != Integer.MAX_VALUE) {
+			this.mass = mass;
+		}
 
 		float bodyMass = body.getMass();
 		if (bodyMass == 0.0f) {

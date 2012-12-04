@@ -41,8 +41,8 @@ public class PhysicWorldTest extends AndroidTestCase {
 
 	public void testDefaultSettings() {
 		assertEquals(40.0f, PhysicWorld.RATIO);
-		assertEquals(20, PhysicWorld.VELOCITY_ITERATIONS);
-		assertEquals(20, PhysicWorld.POSITION_ITERATIONS);
+		assertEquals(8, PhysicWorld.VELOCITY_ITERATIONS);
+		assertEquals(3, PhysicWorld.POSITION_ITERATIONS);
 
 		assertEquals(new Vector2(0, -10), PhysicWorld.DEFAULT_GRAVITY);
 		assertEquals(false, PhysicWorld.IGNORE_SLEEPING_OBJECTS);
