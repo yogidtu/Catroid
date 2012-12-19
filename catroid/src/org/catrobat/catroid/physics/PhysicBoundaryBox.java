@@ -25,7 +25,8 @@ package org.catrobat.catroid.physics;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.catrobat.catroid.common.Values;
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.content.Project;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -50,8 +51,9 @@ public class PhysicBoundaryBox {
 	}
 
 	public void create() {
-		float boxWidth = PhysicWorldConverter.lengthCatToBox2d(Values.SCREEN_WIDTH);
-		float boxHeight = PhysicWorldConverter.lengthCatToBox2d(Values.SCREEN_HEIGHT);
+		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+		float boxWidth = PhysicWorldConverter.lengthCatToBox2d(currentProject.virtualScreenWidth);
+		float boxHeight = PhysicWorldConverter.lengthCatToBox2d(currentProject.virtualScreenHeight);
 		float boxElementSize = PhysicWorldConverter.lengthCatToBox2d(PhysicBoundaryBox.FRAME_SIZE);
 		float halfBoxElementSize = boxElementSize / 2.0f;
 
