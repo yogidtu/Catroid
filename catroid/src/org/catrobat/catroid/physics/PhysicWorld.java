@@ -29,7 +29,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
@@ -48,7 +47,6 @@ public class PhysicWorld {
 	public final static int STABILIZING_STEPS = 6;
 
 	private final World world;
-	private final Shape[] boundaryShapes;
 	private final Map<Sprite, PhysicObject> physicObjects;
 	private Box2DDebugRenderer renderer;
 	private int stabilizingStep = 0;
@@ -59,7 +57,6 @@ public class PhysicWorld {
 
 		PhysicBoundaryBox physicBoundaryBox = new PhysicBoundaryBox(world);
 		physicBoundaryBox.create();
-		boundaryShapes = physicBoundaryBox.getShapes();
 	}
 
 	public void step(float deltaTime) {

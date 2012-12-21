@@ -22,9 +22,6 @@
  */
 package org.catrobat.catroid.physics;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Project;
 
@@ -34,12 +31,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class PhysicBoundaryBox {
-
-	private final List<Shape> shapes = new ArrayList<Shape>();
 
 	public final static int FRAME_SIZE = 5;
 	public final static short COLLISION_MASK = 0x0002;
@@ -75,7 +69,6 @@ public class PhysicBoundaryBox {
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(width / 2.0f, height / 2f, center, 0.0f);
 
-		shapes.add(shape);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.filter.maskBits = PhysicObject.COLLISION_MASK;
@@ -88,9 +81,5 @@ public class PhysicBoundaryBox {
 
 		Body body = world.createBody(bodyDef);
 		body.createFixture(fixtureDef);
-	}
-
-	public Shape[] getShapes() {
-		return shapes.toArray(new Shape[shapes.size()]);
 	}
 }
