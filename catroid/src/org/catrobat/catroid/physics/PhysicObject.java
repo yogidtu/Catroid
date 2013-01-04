@@ -118,10 +118,10 @@ public class PhysicObject {
 				collisionMask = PhysicObject.COLLISION_MASK;
 				break;
 			case FIXED:
-				//				body.setType(BodyType.KinematicBody);
-				body.setType(BodyType.DynamicBody);
-				body.setGravityScale(0.0f);
-				setMass(Integer.MAX_VALUE);
+				body.setType(BodyType.KinematicBody);
+				//				body.setType(BodyType.DynamicBody);
+				//				body.setGravityScale(0.0f);
+				//				setMass(Integer.MAX_VALUE);
 				collisionMask = PhysicObject.COLLISION_MASK;
 				break;
 			case NONE:
@@ -211,9 +211,9 @@ public class PhysicObject {
 			mass = PhysicObject.MIN_MASS;
 		}
 
-		if (mass != Integer.MAX_VALUE) {
-			this.mass = mass;
-		}
+		//		if (mass != Integer.MAX_VALUE) {
+		this.mass = mass;
+		//		}
 
 		float bodyMass = body.getMass();
 		if (bodyMass == 0.0f) {

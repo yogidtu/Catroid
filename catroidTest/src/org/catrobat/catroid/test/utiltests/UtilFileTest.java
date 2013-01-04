@@ -1,6 +1,6 @@
 /**
  *  Catroid: An on-device visual programming system for Android devices
- *  Copyright (C) 2010-2012 The Catrobat Team
+ *  Copyright (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
  *  
  *  This program is free software: you can redistribute it and/or modify
@@ -92,17 +92,19 @@ public class UtilFileTest extends InstrumentationTestCase {
 					org.catrobat.catroid.test.R.raw.longtestsound, getInstrumentation().getContext(),
 					UtilFile.TYPE_SOUND_FILE);
 		}
-		DecimalFormat decimalFormat = new DecimalFormat("#.0");
-		String expected = decimalFormat.format(84.2) + " KB";
-		assertEquals("not the expected string", expected, UtilFile.getSizeAsString(testDirectory));
+
+		double expectedSizeInKilobytes = 84.2;
+		assertEquals("Unexpected file size String", String.format("%.1f KB", expectedSizeInKilobytes),
+				UtilFile.getSizeAsString(testDirectory));
 
 		for (int i = 2; i < 48; i++) {
 			UtilFile.saveFileToProject("testDirectory", i + "testsound.mp3",
 					org.catrobat.catroid.test.R.raw.longtestsound, getInstrumentation().getContext(),
 					UtilFile.TYPE_SOUND_FILE);
 		}
-		expected = decimalFormat.format(2.0) + " MB";
-		assertEquals("not the expected string", expected, UtilFile.getSizeAsString(testDirectory));
+		DecimalFormat decimalFormat = new DecimalFormat("#.0");
+		String expected = decimalFormat.format(2.0) + " MB";
+		assertEquals("Unexpected file size String", expected, UtilFile.getSizeAsString(testDirectory));
 
 		PrintWriter printWriter = null;
 
