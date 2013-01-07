@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/ValueTextViewMass"
-        style="@style/brick_text_style"
+        style="@style/BrickText"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:paddingRight="5dip"
@@ -57,7 +57,7 @@
     
         <TextView
         android:id="@+id/LabelTextView"
-        style="@style/brick_text_style"
+        style="@style/BrickText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"

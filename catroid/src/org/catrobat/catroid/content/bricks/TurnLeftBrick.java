@@ -73,7 +73,7 @@ public class TurnLeftBrick implements Brick, OnClickListener {
 
 		view = View.inflate(context, R.layout.brick_turn_left, null);
 
-		TextView textDegrees = (TextView) view.findViewById(R.id.brick_turn_left_text_view);
+		TextView textDegrees = (TextView) view.findViewById(R.id.brick_turn_left_prototype_text_view);
 		EditText editDegrees = (EditText) view.findViewById(R.id.brick_turn_left_edit_text);
 		editDegrees.setText(String.valueOf(degrees));
 
