@@ -20,95 +20,38 @@
  *   
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/brick_blue"
-    android:orientation="vertical" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/BrickContainer.Motion.Small" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+    <TextView
+        style="@style/BrickText.SingleLine"
+        android:text="@string/brick_set_velocity_x" >
+    </TextView>
 
-        <TextView
-            style="@style/BrickText"
-            android:layout_centerVertical="true"
-            android:paddingRight="10dip"
-            android:text="@string/brick_set_velocity" >
-        </TextView>
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/brick_set_velocity_prototype_text_view_x"
+        style="@style/BrickPrototypeTextView" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/brick_set_velocity_edit_text_x"
+        style="@style/BrickEditText"
+        android:inputType="number|numberDecimal|numberSigned" >
+    </EditText>
 
-        <TextView
-            android:id="@+id/brick_set_velocity_x_text_view"
-            style="@style/BrickText"
-            android:layout_centerVertical="true"
-            android:paddingRight="10dip"
-             android:text="X LABEL" >
-        </TextView>
+    <TextView
+        style="@style/BrickText.SingleLine"
+        android:text="@string/y_label" >
+    </TextView>
 
-        <EditText
-            android:id="@+id/brick_set_velocity_x_edit_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dip"
-            android:layout_toRightOf="@id/brick_set_velocity_x_text_view"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:gravity="right"
-            android:inputType="numberDecimal"
-            android:maxLength="6"
-            android:maxLines="1"
-            android:minWidth="50dip"
-            android:text="@string/default_velocity_x" >
-        </EditText>
-        
-       <TextView
-            android:id="@+id/brick_set_velocity_y_text_view"
-            style="@style/BrickText"
-            android:layout_toRightOf="@id/brick_set_velocity_x_edit_text"
-            android:layout_centerVertical="true"
-            android:paddingLeft="4dip"
-            android:paddingRight="10dip"
-            android:text="@string/y_label" >
-        </TextView>
+    <TextView
+        android:id="@+id/brick_set_velocity_prototype_text_view_y"
+        style="@style/BrickPrototypeTextView" />
 
-        <EditText
-            android:id="@+id/brick_set_velocity_y_edit_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dip"
-            android:layout_toRightOf="@id/brick_set_velocity_y_text_view"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:gravity="right"
-            android:inputType="numberDecimal"
-            android:maxLength="6"
-            android:maxLines="1"
-            android:minWidth="50dip"
-            android:text="@string/default_velocity_y" >
-        </EditText>
-        
-        <TextView
-            android:id="@+id/brick_set_velocity_unit_text_view"
-            style="@style/BrickText"
-            android:layout_toRightOf="@id/brick_set_velocity_y_edit_text"
-            android:layout_centerVertical="true"
-            android:paddingLeft="8dip"
-            android:paddingRight="10dip"
-            android:text="@string/brick_set_velocity_unit" >
-        </TextView>
-        
-    </RelativeLayout>
+    <EditText
+        android:id="@+id/brick_set_velocity_edit_text_y"
+        style="@style/BrickEditText"
+        android:inputType="number|numberDecimal|numberSigned" >
+    </EditText>
 
 </LinearLayout>

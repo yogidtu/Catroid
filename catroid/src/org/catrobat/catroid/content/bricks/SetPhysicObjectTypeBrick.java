@@ -25,6 +25,7 @@ package org.catrobat.catroid.content.bricks;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicObject.Type;
 import org.catrobat.catroid.physics.PhysicObjectBrick;
 
 import android.content.Context;
@@ -40,7 +41,7 @@ public class SetPhysicObjectTypeBrick implements PhysicObjectBrick {
 
 	private PhysicObject physicObject;
 	private Sprite sprite;
-	private int type;
+	private Type type;
 
 	private transient View view;
 
@@ -49,7 +50,7 @@ public class SetPhysicObjectTypeBrick implements PhysicObjectBrick {
 
 	public SetPhysicObjectTypeBrick(Sprite sprite, PhysicObject.Type type) {
 		this.sprite = sprite;
-		this.type = type.ordinal();
+		this.type = type;
 	}
 
 	@Override
@@ -59,8 +60,7 @@ public class SetPhysicObjectTypeBrick implements PhysicObjectBrick {
 
 	@Override
 	public void execute() {
-		PhysicObject.Type physicObjectType = PhysicObject.Type.values()[type];
-		physicObject.setType(physicObjectType);
+		physicObject.setType(type);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class SetPhysicObjectTypeBrick implements PhysicObjectBrick {
 
 	@Override
 	public Brick clone() {
-		return new SetPhysicObjectTypeBrick(sprite, PhysicObject.Type.values()[type]);
+		return new SetPhysicObjectTypeBrick(sprite, type);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class SetPhysicObjectTypeBrick implements PhysicObjectBrick {
 
 		final Spinner spinner = (Spinner) view.findViewById(R.id.brick_set_physic_object_type_spinner);
 		spinner.setAdapter(createAdapter(context));
-		spinner.setSelection(type);
+		spinner.setSelection(type.ordinal());
 
 		spinner.setClickable(true);
 		spinner.setFocusable(true);
@@ -101,7 +101,7 @@ public class SetPhysicObjectTypeBrick implements PhysicObjectBrick {
 				}
 
 				if (position < PhysicObject.Type.values().length) {
-					type = position;
+					type = Type.values()[position];
 				}
 			}
 

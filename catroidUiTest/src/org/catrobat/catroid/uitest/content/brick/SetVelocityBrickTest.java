@@ -66,33 +66,30 @@ public class SetVelocityBrickTest extends ActivityInstrumentationTestCase2<Scrip
 		assertEquals("Wrong Brick instance.", projectBrickList.get(0), adapter.getChild(groupCount - 1, 0));
 		String textSetX = solo.getString(R.string.brick_set_velocity);
 		assertNotNull("TextView does not exist.", solo.getText(textSetX));
-		Vector2 velocity = new Vector2(1.2f, -3.4f);
 
-		UiTestUtils.clickEnterClose(solo, 0, Float.toString(velocity.x));
-		Vector2 actualVelocity = (Vector2) UiTestUtils.getPrivateField("velocity", setVelocityBrick);
-		assertEquals("Text not updated", Float.toString(velocity.x), solo.getEditText(0).getText().toString());
-		assertEquals("Value in Brick is not updated", velocity.x, actualVelocity.x);
+		Vector2 velocity = new Vector2(-1.2f, 3.4f);
 
-		UiTestUtils.clickEnterClose(solo, 1, Float.toString(velocity.y));
-		actualVelocity = (Vector2) UiTestUtils.getPrivateField("velocity", setVelocityBrick);
-		assertEquals("Text not updated", Float.toString(velocity.y), solo.getEditText(1).getText().toString());
-		assertEquals("Value in Brick is not updated", velocity.y, actualVelocity.y);
-	}
+		solo.clickOnEditText(0);
+		solo.clearEditText(0);
+		solo.enterText(0, Float.toString(velocity.x));
+		solo.clickOnButton(solo.getString(R.string.ok));
 
-	public void testResizeInputField() {
-		for (int editTextIndex = 0; editTextIndex < 2; editTextIndex++) {
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, 12345.0, 50, false);
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, 1.0, 50, true);
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, 123.0, 50, true);
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, -1, 50, true);
-		}
+		solo.clickOnEditText(1);
+		solo.clearEditText(0);
+		solo.enterText(0, Float.toString(velocity.y));
+		solo.clickOnButton(solo.getString(R.string.ok));
+
+		Vector2 enteredVelocity = (Vector2) UiTestUtils.getPrivateField("velocity", setVelocityBrick);
+		assertEquals("X text not updated", Float.toString(enteredVelocity.x), solo.getEditText(0).getText().toString());
+		assertEquals("Y text not updated", Float.toString(enteredVelocity.y), solo.getEditText(1).getText().toString());
+		assertEquals("Values in Brick are not updated", velocity, enteredVelocity);
 	}
 
 	private void createProject() {
 		project = new Project(null, "testProject");
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
-		setVelocityBrick = new SetVelocityBrick(sprite, 0.0f, 0.0f);
+		setVelocityBrick = new SetVelocityBrick(sprite, new Vector2());
 		script.addBrick(setVelocityBrick);
 
 		sprite.addScript(script);

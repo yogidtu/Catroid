@@ -53,7 +53,7 @@ public class SetGravityBrick implements PhysicWorldBrick, OnClickListener {
 
 	public SetGravityBrick(Sprite sprite, Vector2 gravity) {
 		this.sprite = sprite;
-		this.gravity = gravity.cpy();
+		this.gravity = new Vector2(gravity);
 	}
 
 	@Override
@@ -80,12 +80,12 @@ public class SetGravityBrick implements PhysicWorldBrick, OnClickListener {
 	public View getView(Context context, int brickId, BaseAdapter adapter) {
 		view = View.inflate(context, R.layout.brick_set_gravity, null);
 
-		EditText editX = (EditText) view.findViewById(R.id.brick_set_gravity_x_edit_text);
+		EditText editX = (EditText) view.findViewById(R.id.brick_set_gravity_edit_text_x);
 		editX.setText(String.valueOf(gravity.x));
 
 		editX.setOnClickListener(this);
 
-		EditText editY = (EditText) view.findViewById(R.id.brick_set_gravity_y_edit_text);
+		EditText editY = (EditText) view.findViewById(R.id.brick_set_gravity_edit_text_y);
 		editY.setText(String.valueOf(gravity.y));
 
 		editY.setOnClickListener(this);
@@ -110,9 +110,9 @@ public class SetGravityBrick implements PhysicWorldBrick, OnClickListener {
 		BrickTextDialog editDialog = new BrickTextDialog() {
 			@Override
 			protected void initialize() {
-				if (view.getId() == R.id.brick_set_gravity_x_edit_text) {
+				if (view.getId() == R.id.brick_set_gravity_edit_text_x) {
 					input.setText(String.valueOf(gravity.x));
-				} else if (view.getId() == R.id.brick_set_gravity_y_edit_text) {
+				} else if (view.getId() == R.id.brick_set_gravity_edit_text_y) {
 					input.setText(String.valueOf(gravity.y));
 				}
 				input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
@@ -122,10 +122,10 @@ public class SetGravityBrick implements PhysicWorldBrick, OnClickListener {
 			@Override
 			protected boolean handleOkButton() {
 				try {
-					if (view.getId() == R.id.brick_set_gravity_x_edit_text) {
-						gravity.x = Integer.parseInt(input.getText().toString());
-					} else if (view.getId() == R.id.brick_set_gravity_y_edit_text) {
-						gravity.y = Integer.parseInt(input.getText().toString());
+					if (view.getId() == R.id.brick_set_gravity_edit_text_x) {
+						gravity.x = Float.parseFloat(input.getText().toString());
+					} else if (view.getId() == R.id.brick_set_gravity_edit_text_y) {
+						gravity.y = Float.parseFloat(input.getText().toString());
 					}
 				} catch (NumberFormatException exception) {
 					Toast.makeText(getActivity(), R.string.error_no_number_entered, Toast.LENGTH_SHORT).show();

@@ -10,7 +10,6 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.TurnLeftSpeedBrick;
-import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ScriptTabActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.ui.fragment.ScriptFragment;
@@ -21,13 +20,13 @@ import android.test.suitebuilder.annotation.Smoke;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class TurnLeftSpeedBrickTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
+public class TurnLeftSpeedBrickTest extends ActivityInstrumentationTestCase2<ScriptTabActivity> {
 	private Solo solo;
 	private Project project;
 	private TurnLeftSpeedBrick turnLeftSpeedBrick;
 
 	public TurnLeftSpeedBrickTest() {
-		super(MainMenuActivity.class);
+		super(ScriptTabActivity.class);
 	}
 
 	@Override
@@ -67,21 +66,16 @@ public class TurnLeftSpeedBrickTest extends ActivityInstrumentationTestCase2<Mai
 		String textSetRotationSpeed = solo.getString(R.string.brick_turn_left_speed);
 		assertNotNull("TextView does not exist.", solo.getText(textSetRotationSpeed));
 
-		float angularVelocity = 10.0f;
+		float speed = 10.0f;
 
-		UiTestUtils.clickEnterClose(solo, 0, Float.toString(angularVelocity));
-		float actualAngularVelocity = (Float) UiTestUtils.getPrivateField("degreesPerSec", turnLeftSpeedBrick);
-		assertEquals("Text not updated", Float.toString(angularVelocity), solo.getEditText(0).getText().toString());
-		assertEquals("Value in Brick is not updated", angularVelocity, actualAngularVelocity);
-	}
+		solo.clickOnEditText(0);
+		solo.clearEditText(0);
+		solo.enterText(0, Float.toString(speed));
+		solo.clickOnButton(solo.getString(R.string.ok));
 
-	public void testResizeInputField() {
-		for (int editTextIndex = 0; editTextIndex < 1; editTextIndex++) {
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, 123456789.0, 50, false);
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, 1.0, 50, true);
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, 123.0, 50, true);
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, -1, 50, true);
-		}
+		float enteredSpeed = (Float) UiTestUtils.getPrivateField("degreesPerSecond", turnLeftSpeedBrick);
+		assertEquals("Wrong text in field.", speed, enteredSpeed);
+		assertEquals("Value in Brick is not updated.", Float.toString(speed), solo.getEditText(0).getText().toString());
 	}
 
 	private void createProject() {

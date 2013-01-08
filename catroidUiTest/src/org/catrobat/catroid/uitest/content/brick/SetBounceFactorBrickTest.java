@@ -17,7 +17,6 @@ import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
-import android.widget.EditText;
 
 import com.jayway.android.robotium.solo.Solo;
 
@@ -64,24 +63,19 @@ public class SetBounceFactorBrickTest extends ActivityInstrumentationTestCase2<S
 		assertEquals("Incorrect number of bricks.", 1, projectBrickList.size());
 
 		assertEquals("Wrong Brick instance.", projectBrickList.get(0), adapter.getChild(groupCount - 1, 0));
-		String textSetBounceFactor = solo.getString(R.string.brick_set_bounce_factor);
-		assertNotNull("TextView does not exist.", solo.getText(textSetBounceFactor));
+		assertNotNull("TextView does not exist.", solo.getText(solo.getString(R.string.brick_set_bounce_factor)));
 
-		float mass = 0.65f;
+		float bounceFactor = 0.65f;
 
-		solo.waitForView(EditText.class);
-		UiTestUtils.clickEnterClose(solo, 0, Float.toString(mass));
-		float actualMass = (Float) UiTestUtils.getPrivateField("bounceFactor", setBounceFactorBrick);
-		assertEquals("Text not updated", Float.toString(mass), solo.getEditText(0).getText().toString());
-		assertEquals("Value in Brick is not updated", mass, actualMass);
-	}
+		solo.clickOnEditText(0);
+		solo.clearEditText(0);
+		solo.enterText(0, Float.toString(bounceFactor));
+		solo.clickOnButton(solo.getString(R.string.ok));
 
-	@Smoke
-	public void testResizeInputField() {
-		UiTestUtils.testDoubleEditText(solo, 0, 12345.0, 50, false);
-		UiTestUtils.testDoubleEditText(solo, 0, 1.0, 50, true);
-		UiTestUtils.testDoubleEditText(solo, 0, 1234.0, 50, true);
-		UiTestUtils.testDoubleEditText(solo, 0, -1, 50, true);
+		float enteredBounceFactor = (Float) UiTestUtils.getPrivateField("bounceFactor", setBounceFactorBrick);
+		assertEquals("Wrong text in field.", bounceFactor, enteredBounceFactor);
+		assertEquals("Value in Brick is not updated.", Float.toString(bounceFactor), solo.getEditText(0).getText()
+				.toString());
 	}
 
 	private void createProject() {

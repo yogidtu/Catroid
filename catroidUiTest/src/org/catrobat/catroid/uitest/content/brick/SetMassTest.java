@@ -18,7 +18,6 @@ import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
-import android.widget.EditText;
 
 import com.jayway.android.robotium.solo.Solo;
 
@@ -73,31 +72,30 @@ public class SetMassTest extends ActivityInstrumentationTestCase2<ScriptTabActiv
 	public void testSetMassByBrick() {
 		float mass = 1.234f;
 
-		solo.waitForView(EditText.class);
-		UiTestUtils.clickEnterClose(solo, 0, Float.toString(mass));
-		float actualMass = (Float) UiTestUtils.getPrivateField("mass", setMassBrick);
+		solo.clickOnEditText(0);
+		solo.clearEditText(0);
+		solo.enterText(0, Float.toString(mass));
+		solo.clickOnButton(solo.getString(R.string.ok));
+
+		float enteredMass = (Float) UiTestUtils.getPrivateField("mass", setMassBrick);
 		assertEquals("Text not updated", Float.toString(mass), solo.getEditText(0).getText().toString());
-		assertEquals("Value in Brick is not updated", mass, actualMass);
+		assertEquals("Value in Brick is not updated", mass, enteredMass);
 	}
 
 	@Smoke
 	public void testSetInvalidMassValues() {
-		float mass[] = { -1.0f, 0.0f, PhysicObject.MIN_MASS / 10.0f };
+		float masses[] = { -1.0f, 0.0f, PhysicObject.MIN_MASS / 10.0f };
 
-		for (float currentMass : mass) {
-			solo.waitForView(EditText.class);
-			UiTestUtils.clickEnterClose(solo, 0, Float.toString(currentMass));
-			float actualMass = (Float) UiTestUtils.getPrivateField("mass", setMassBrick);
+		for (float mass : masses) {
+			solo.clickOnEditText(0);
+			solo.clearEditText(0);
+			solo.enterText(0, Float.toString(mass));
+			solo.clickOnButton(solo.getString(R.string.ok));
+
+			float enteredMass = (Float) UiTestUtils.getPrivateField("mass", setMassBrick);
 			assertEquals("Text not updated", Float.toString(0.0f), solo.getEditText(0).getText().toString());
-			assertEquals("Value in Brick is not updated", 0.0f, actualMass);
+			assertEquals("Value in Brick is not updated", 0.0f, enteredMass);
 		}
-	}
-
-	@Smoke
-	public void testResizeInputField() {
-		UiTestUtils.testDoubleEditText(solo, 0, 12345.0, 50, false);
-		UiTestUtils.testDoubleEditText(solo, 0, 1.0, 50, true);
-		UiTestUtils.testDoubleEditText(solo, 0, 1234.0, 50, true);
 	}
 
 	private void createProject() {

@@ -66,26 +66,23 @@ public class SetGravityTest extends ActivityInstrumentationTestCase2<ScriptTabAc
 		assertEquals("Wrong Brick instance.", projectBrickList.get(0), adapter.getChild(groupCount - 1, 0));
 		String textSetGravity = solo.getString(R.string.brick_set_gravity);
 		assertNotNull("TextView does not exist.", solo.getText(textSetGravity));
+
 		Vector2 gravity = new Vector2(1.2f, -3.4f);
 
-		UiTestUtils.clickEnterClose(solo, 0, Float.toString(gravity.x));
-		Vector2 actualGravity = (Vector2) UiTestUtils.getPrivateField("gravity", setGravityBrick);
-		assertEquals("Text not updated", Float.toString(gravity.x), solo.getEditText(0).getText().toString());
-		assertEquals("Value in Brick is not updated", gravity.x, actualGravity.x);
+		solo.clickOnEditText(0);
+		solo.clearEditText(0);
+		solo.enterText(0, Float.toString(gravity.x));
+		solo.clickOnButton(solo.getString(R.string.ok));
 
-		UiTestUtils.clickEnterClose(solo, 1, Float.toString(gravity.y));
-		actualGravity = (Vector2) UiTestUtils.getPrivateField("gravity", setGravityBrick);
-		assertEquals("Text not updated", Float.toString(gravity.y), solo.getEditText(1).getText().toString());
-		assertEquals("Value in Brick is not updated", gravity.y, actualGravity.y);
-	}
+		solo.clickOnEditText(1);
+		solo.clearEditText(0);
+		solo.enterText(0, Float.toString(gravity.y));
+		solo.clickOnButton(solo.getString(R.string.ok));
 
-	public void testResizeInputField() {
-		for (int editTextIndex = 0; editTextIndex < 2; editTextIndex++) {
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, 123456.0, 50, false);
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, 1.0, 50, true);
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, 123.0, 50, true);
-			UiTestUtils.testDoubleEditText(solo, editTextIndex, -1, 50, true);
-		}
+		Vector2 enteredGravity = (Vector2) UiTestUtils.getPrivateField("gravity", setGravityBrick);
+		assertEquals("X text not updated", Float.toString(enteredGravity.x), solo.getEditText(0).getText().toString());
+		assertEquals("Y text not updated", Float.toString(enteredGravity.y), solo.getEditText(1).getText().toString());
+		assertEquals("Values in Brick are not updated", gravity, enteredGravity);
 	}
 
 	private void createProject() {

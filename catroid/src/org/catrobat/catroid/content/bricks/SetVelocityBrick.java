@@ -44,18 +44,16 @@ public class SetVelocityBrick implements PhysicObjectBrick, OnClickListener {
 
 	private PhysicObject physicObject;
 	private Sprite sprite;
-	private float x;
-	private float y;
+	private Vector2 velocity;
 
 	private transient View view;
 
 	public SetVelocityBrick() {
 	}
 
-	public SetVelocityBrick(Sprite sprite, float x, float y) {
+	public SetVelocityBrick(Sprite sprite, Vector2 velocity) {
 		this.sprite = sprite;
-		this.x = x;
-		this.y = y;
+		this.velocity = new Vector2(velocity);
 	}
 
 	@Override
@@ -65,7 +63,7 @@ public class SetVelocityBrick implements PhysicObjectBrick, OnClickListener {
 
 	@Override
 	public void execute() {
-		physicObject.setVelocity(new Vector2(x, y));
+		physicObject.setVelocity(velocity);
 	}
 
 	@Override
@@ -82,12 +80,12 @@ public class SetVelocityBrick implements PhysicObjectBrick, OnClickListener {
 	public View getView(Context context, int brickId, BaseAdapter adapter) {
 		view = View.inflate(context, R.layout.brick_set_velocity, null);
 
-		EditText editX = (EditText) view.findViewById(R.id.brick_set_velocity_x_edit_text);
-		editX.setText(String.valueOf(x));
+		EditText editX = (EditText) view.findViewById(R.id.brick_set_velocity_edit_text_x);
+		editX.setText(Float.toString(velocity.x));
 		editX.setOnClickListener(this);
 
-		EditText editY = (EditText) view.findViewById(R.id.brick_set_velocity_y_edit_text);
-		editY.setText(String.valueOf(y));
+		EditText editY = (EditText) view.findViewById(R.id.brick_set_velocity_edit_text_y);
+		editY.setText(Float.toString(velocity.y));
 		editY.setOnClickListener(this);
 
 		return view;
@@ -100,7 +98,7 @@ public class SetVelocityBrick implements PhysicObjectBrick, OnClickListener {
 
 	@Override
 	public Brick clone() {
-		return new SetVelocityBrick(sprite, x, y);
+		return new SetVelocityBrick(sprite, velocity);
 	}
 
 	@Override
@@ -110,10 +108,10 @@ public class SetVelocityBrick implements PhysicObjectBrick, OnClickListener {
 		BrickTextDialog editDialog = new BrickTextDialog() {
 			@Override
 			protected void initialize() {
-				if (view.getId() == R.id.brick_set_velocity_x_edit_text) {
-					input.setText(String.valueOf(x));
-				} else if (view.getId() == R.id.brick_set_velocity_y_edit_text) {
-					input.setText(String.valueOf(y));
+				if (view.getId() == R.id.brick_set_velocity_edit_text_x) {
+					input.setText(Float.toString(velocity.x));
+				} else if (view.getId() == R.id.brick_set_velocity_edit_text_y) {
+					input.setText(Float.toString(velocity.y));
 				}
 				input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
 				input.setSelectAllOnFocus(true);
@@ -122,10 +120,10 @@ public class SetVelocityBrick implements PhysicObjectBrick, OnClickListener {
 			@Override
 			protected boolean handleOkButton() {
 				try {
-					if (view.getId() == R.id.brick_set_velocity_x_edit_text) {
-						x = Float.parseFloat(input.getText().toString());
-					} else if (view.getId() == R.id.brick_set_velocity_y_edit_text) {
-						y = Float.parseFloat(input.getText().toString());
+					if (view.getId() == R.id.brick_set_velocity_edit_text_x) {
+						velocity.x = Float.parseFloat(input.getText().toString());
+					} else if (view.getId() == R.id.brick_set_velocity_edit_text_y) {
+						velocity.y = Float.parseFloat(input.getText().toString());
 					}
 				} catch (NumberFormatException exception) {
 					Toast.makeText(getActivity(), R.string.error_no_number_entered, Toast.LENGTH_SHORT).show();

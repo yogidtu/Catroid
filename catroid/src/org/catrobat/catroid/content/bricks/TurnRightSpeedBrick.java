@@ -42,7 +42,7 @@ public class TurnRightSpeedBrick implements PhysicObjectBrick, OnClickListener {
 
 	private PhysicObject physicObject;
 	private Sprite sprite;
-	private float degreesPerSec;
+	private float degreesPerSecond;
 
 	private transient View view;
 
@@ -51,7 +51,7 @@ public class TurnRightSpeedBrick implements PhysicObjectBrick, OnClickListener {
 
 	public TurnRightSpeedBrick(Sprite sprite, float degrees) {
 		this.sprite = sprite;
-		this.degreesPerSec = degrees;
+		this.degreesPerSecond = degrees;
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class TurnRightSpeedBrick implements PhysicObjectBrick, OnClickListener {
 
 	@Override
 	public void execute() {
-		physicObject.setRotationSpeed(-degreesPerSec);
+		physicObject.setRotationSpeed(-degreesPerSecond);
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class TurnRightSpeedBrick implements PhysicObjectBrick, OnClickListener {
 		view = View.inflate(context, R.layout.brick_turn_right_speed, null);
 
 		EditText editText = (EditText) view.findViewById(R.id.brick_turn_right_speed_edit_text);
-		editText.setText(String.valueOf(degreesPerSec));
+		editText.setText(String.valueOf(degreesPerSecond));
 
 		editText.setOnClickListener(this);
 
@@ -93,7 +93,7 @@ public class TurnRightSpeedBrick implements PhysicObjectBrick, OnClickListener {
 
 	@Override
 	public Brick clone() {
-		return new TurnRightSpeedBrick(sprite, degreesPerSec);
+		return new TurnRightSpeedBrick(sprite, degreesPerSecond);
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class TurnRightSpeedBrick implements PhysicObjectBrick, OnClickListener {
 		BrickTextDialog editDialog = new BrickTextDialog() {
 			@Override
 			protected void initialize() {
-				input.setText(String.valueOf(degreesPerSec));
+				input.setText(String.valueOf(degreesPerSecond));
 				input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL
 						| InputType.TYPE_NUMBER_FLAG_SIGNED);
 				input.setSelectAllOnFocus(true);
@@ -112,7 +112,7 @@ public class TurnRightSpeedBrick implements PhysicObjectBrick, OnClickListener {
 			@Override
 			protected boolean handleOkButton() {
 				try {
-					degreesPerSec = Float.parseFloat(input.getText().toString());
+					degreesPerSecond = Float.parseFloat(input.getText().toString());
 				} catch (NumberFormatException exception) {
 					Toast.makeText(getActivity(), R.string.error_no_number_entered, Toast.LENGTH_SHORT).show();
 				}

@@ -10,10 +10,11 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.SetPhysicObjectTypeBrick;
-import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicObject.Type;
 import org.catrobat.catroid.ui.ScriptTabActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.ui.fragment.ScriptFragment;
+import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
@@ -66,27 +67,29 @@ public class SetPhysicObjectTypeBrickTest extends ActivityInstrumentationTestCas
 		String textSetPhysicObjectType = solo.getString(R.string.brick_set_physic_object_type);
 		assertNotNull("TextView does not exist.", solo.getText(textSetPhysicObjectType));
 
-		solo.pressSpinnerItem(0, 0);
-		solo.sleep(200);
-		String[] directionStringArray = getActivity().getResources().getStringArray(R.array.physical_object_type);
-		assertEquals("Wrong selection", directionStringArray[0], solo.getCurrentSpinners().get(0).getSelectedItem());
+		checkSpinnerItemPressed(0);
+		checkSpinnerItemPressed(1);
+		checkSpinnerItemPressed(2);
+	}
 
-		solo.pressSpinnerItem(0, 1);
-		solo.sleep(200);
-		assertEquals("Wrong selection", directionStringArray[1], solo.getCurrentSpinners().get(0).getSelectedItem());
+	private void checkSpinnerItemPressed(int spinnerItemIndex) {
+		String[] physicObjectTypes = getActivity().getResources().getStringArray(R.array.physic_object_type);
 
-		solo.pressSpinnerItem(0, 2);
+		solo.pressSpinnerItem(0, spinnerItemIndex);
 		solo.sleep(200);
-		assertEquals("Wrong selection", directionStringArray[2], solo.getCurrentSpinners().get(0).getSelectedItem());
+		solo.waitForActivity(ScriptTabActivity.class.getSimpleName());
 
+		Type choosenPhysicType = (Type) UiTestUtils.getPrivateField("type", setPhysicObjectTypeBrick);
+		assertEquals("Wrong text in field.", Type.values()[spinnerItemIndex], choosenPhysicType);
+		assertEquals("Value in Brick is not updated.", physicObjectTypes[spinnerItemIndex], solo.getCurrentSpinners()
+				.get(0).getSelectedItem());
 	}
 
 	private void createProject() {
 		project = new Project(null, "testProject");
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
-		PhysicObject.Type type = PhysicObject.Type.DYNAMIC;
-		setPhysicObjectTypeBrick = new SetPhysicObjectTypeBrick(sprite, type);
+		setPhysicObjectTypeBrick = new SetPhysicObjectTypeBrick(sprite, Type.DYNAMIC);
 		script.addBrick(setPhysicObjectTypeBrick);
 
 		sprite.addScript(script);

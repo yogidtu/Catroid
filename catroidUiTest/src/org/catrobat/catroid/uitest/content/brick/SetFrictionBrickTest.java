@@ -17,13 +17,9 @@ import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
-import android.widget.EditText;
 
 import com.jayway.android.robotium.solo.Solo;
 
-/*
- * TODO: Test doesn' work correctly.
- */
 public class SetFrictionBrickTest extends ActivityInstrumentationTestCase2<ScriptTabActivity> {
 	private Solo solo;
 	private Project project;
@@ -72,19 +68,15 @@ public class SetFrictionBrickTest extends ActivityInstrumentationTestCase2<Scrip
 
 		float friction = 1.234f;
 
-		solo.waitForView(EditText.class);
-		UiTestUtils.clickEnterClose(solo, 0, Float.toString(friction));
-		float actualMass = (Float) UiTestUtils.getPrivateField("friction", setFrictionBrick);
-		assertEquals("Text not updated", Float.toString(friction), solo.getEditText(0).getText().toString());
-		assertEquals("Value in Brick is not updated", friction, actualMass);
-	}
+		solo.clickOnEditText(0);
+		solo.clearEditText(0);
+		solo.enterText(0, Float.toString(friction));
+		solo.clickOnButton(solo.getString(R.string.ok));
 
-	@Smoke
-	public void testResizeInputField() {
-		UiTestUtils.testDoubleEditText(solo, 0, 12345.0, 50, false);
-		UiTestUtils.testDoubleEditText(solo, 0, 1.0, 50, true);
-		UiTestUtils.testDoubleEditText(solo, 0, 1234.0, 50, true);
-		UiTestUtils.testDoubleEditText(solo, 0, -1, 50, true);
+		float enteredFriction = (Float) UiTestUtils.getPrivateField("friction", setFrictionBrick);
+		assertEquals("Wrong text in field.", friction, enteredFriction);
+		assertEquals("Value in Brick is not updated.", Float.toString(friction), solo.getEditText(0).getText()
+				.toString());
 	}
 
 	private void createProject() {
