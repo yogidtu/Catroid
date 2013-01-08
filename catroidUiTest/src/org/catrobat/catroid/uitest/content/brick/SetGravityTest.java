@@ -64,7 +64,7 @@ public class SetGravityTest extends ActivityInstrumentationTestCase2<ScriptTabAc
 		assertEquals("Incorrect number of bricks.", 1, projectBrickList.size());
 
 		assertEquals("Wrong Brick instance.", projectBrickList.get(0), adapter.getChild(groupCount - 1, 0));
-		String textSetGravity = solo.getString(R.string.brick_set_gravity);
+		String textSetGravity = solo.getString(R.string.brick_set_gravity_x);
 		assertNotNull("TextView does not exist.", solo.getText(textSetGravity));
 
 		Vector2 gravity = new Vector2(1.2f, -3.4f);
