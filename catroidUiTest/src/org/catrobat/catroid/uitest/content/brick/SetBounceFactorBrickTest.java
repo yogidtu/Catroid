@@ -1,3 +1,25 @@
+/**
+ *  Catroid: An on-device visual programming system for Android devices
+ *  Copyright (C) 2010-2013 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
+ *  
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *  
+ *  An additional term exception under section 7 of the GNU Affero
+ *  General Public License, version 3, is available at
+ *  http://developer.catrobat.org/license_additional_term
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.catrobat.catroid.uitest.content.brick;
 
 import java.util.ArrayList;
@@ -37,14 +59,11 @@ public class SetBounceFactorBrickTest extends ActivityInstrumentationTestCase2<S
 
 	@Override
 	public void tearDown() throws Exception {
-		try {
-			solo.finalize();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-
-		getActivity().finish();
+		UiTestUtils.goBackToHome(getInstrumentation());
+		solo.finishOpenedActivities();
+		UiTestUtils.clearAllUtilTestProjects();
 		super.tearDown();
+		solo = null;
 	}
 
 	@Smoke
@@ -69,17 +88,17 @@ public class SetBounceFactorBrickTest extends ActivityInstrumentationTestCase2<S
 
 		solo.clickOnEditText(0);
 		solo.clearEditText(0);
-		solo.enterText(0, Float.toString(bounceFactor));
+		solo.enterText(0, String.valueOf(bounceFactor));
 		solo.clickOnButton(solo.getString(R.string.ok));
 
 		float enteredBounceFactor = (Float) UiTestUtils.getPrivateField("bounceFactor", setBounceFactorBrick);
 		assertEquals("Wrong text in field.", bounceFactor, enteredBounceFactor);
-		assertEquals("Value in Brick is not updated.", Float.toString(bounceFactor), solo.getEditText(0).getText()
+		assertEquals("Value in Brick is not updated.", String.valueOf(bounceFactor), solo.getEditText(0).getText()
 				.toString());
 	}
 
 	private void createProject() {
-		project = new Project(null, "testProject");
+		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		setBounceFactorBrick = new SetBounceFactorBrick(sprite, 0.0f);

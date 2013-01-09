@@ -1,7 +1,7 @@
 /**
- *  Catroid: An on-device graphical programming language for Android devices
- *  Copyright (C) 2010-2011 The Catroid Team
- *  (<http://code.google.com/p/catroid/wiki/Credits>)
+ *  Catroid: An on-device visual programming system for Android devices
+ *  Copyright (C) 2010-2013 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as
@@ -10,13 +10,13 @@
  *  
  *  An additional term exception under section 7 of the GNU Affero
  *  General Public License, version 3, is available at
- *  http://www.catroid.org/catroid_license_additional_term
+ *  http://developer.catrobat.org/license_additional_term
  *  
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU Affero General Public License for more details.
- *   
+ *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,10 +31,12 @@ import org.catrobat.catroid.ui.dialogs.BrickTextDialog;
 
 import android.content.Context;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class TurnRightSpeedBrick implements PhysicObjectBrick, OnClickListener {
@@ -78,17 +80,22 @@ public class TurnRightSpeedBrick implements PhysicObjectBrick, OnClickListener {
 	public View getView(Context context, int brickId, BaseAdapter adapter) {
 		view = View.inflate(context, R.layout.brick_turn_right_speed, null);
 
-		EditText editText = (EditText) view.findViewById(R.id.brick_turn_right_speed_edit_text);
-		editText.setText(String.valueOf(degreesPerSecond));
+		TextView text = (TextView) view.findViewById(R.id.brick_turn_right_speed_prototype_text_view);
+		EditText edit = (EditText) view.findViewById(R.id.brick_turn_right_speed_edit_text);
 
-		editText.setOnClickListener(this);
+		edit.setText(String.valueOf(degreesPerSecond));
+		text.setVisibility(View.GONE);
+		edit.setVisibility(View.VISIBLE);
+		edit.setOnClickListener(this);
 
 		return view;
 	}
 
 	@Override
 	public View getPrototypeView(Context context) {
-		return View.inflate(context, R.layout.brick_turn_right_speed, null);
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View view = inflater.inflate(R.layout.brick_turn_right_speed, null);
+		return view;
 	}
 
 	@Override

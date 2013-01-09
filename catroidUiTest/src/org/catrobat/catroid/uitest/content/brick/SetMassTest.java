@@ -1,5 +1,26 @@
+/**
+ *  Catroid: An on-device visual programming system for Android devices
+ *  Copyright (C) 2010-2013 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
+ *  
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *  
+ *  An additional term exception under section 7 of the GNU Affero
+ *  General Public License, version 3, is available at
+ *  http://developer.catrobat.org/license_additional_term
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.catrobat.catroid.uitest.content.brick;
-
 import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
@@ -21,6 +42,7 @@ import android.test.suitebuilder.annotation.Smoke;
 
 import com.jayway.android.robotium.solo.Solo;
 
+
 public class SetMassTest extends ActivityInstrumentationTestCase2<ScriptTabActivity> {
 	private Solo solo;
 	private Project project;
@@ -38,18 +60,48 @@ public class SetMassTest extends ActivityInstrumentationTestCase2<ScriptTabActiv
 
 	@Override
 	public void tearDown() throws Exception {
-		try {
-			solo.finalize();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-
-		getActivity().finish();
+		UiTestUtils.goBackToHome(getInstrumentation());
+		solo.finishOpenedActivities();
+		UiTestUtils.clearAllUtilTestProjects();
 		super.tearDown();
+		solo = null;
 	}
 
 	@Smoke
-	public void testSetup() {
+	public void testSetMassByBrick() {
+		this.checkSetup();
+
+		float mass = 1.234f;
+
+		solo.clickOnEditText(0);
+		solo.clearEditText(0);
+		solo.enterText(0, String.valueOf(mass));
+		solo.clickOnButton(solo.getString(R.string.ok));
+
+		float enteredMass = (Float) UiTestUtils.getPrivateField("mass", setMassBrick);
+		assertEquals("Text not updated", String.valueOf(mass), solo.getEditText(0).getText().toString());
+		assertEquals("Value in Brick is not updated", mass, enteredMass);
+	}
+
+	@Smoke
+	public void testSetInvalidMassValues() {
+		this.checkSetup();
+
+		float masses[] = { -1.0f, 0.0f, PhysicObject.MIN_MASS / 10.0f };
+
+		for (float mass : masses) {
+			solo.clickOnEditText(0);
+			solo.clearEditText(0);
+			solo.enterText(0, String.valueOf(mass));
+			solo.clickOnButton(solo.getString(R.string.ok));
+
+			float enteredMass = (Float) UiTestUtils.getPrivateField("mass", setMassBrick);
+			assertEquals("Text not updated", String.valueOf(0.0f), solo.getEditText(0).getText().toString());
+			assertEquals("Value in Brick is not updated", 0.0f, enteredMass);
+		}
+	}
+
+	private void checkSetup() {
 		ScriptTabActivity activity = (ScriptTabActivity) solo.getCurrentActivity();
 		ScriptFragment fragment = (ScriptFragment) activity.getTabFragment(ScriptTabActivity.INDEX_TAB_SCRIPTS);
 		BrickAdapter adapter = fragment.getAdapter();
@@ -68,38 +120,8 @@ public class SetMassTest extends ActivityInstrumentationTestCase2<ScriptTabActiv
 		assertNotNull("TextView does not exist.", solo.getText(textSetMass));
 	}
 
-	@Smoke
-	public void testSetMassByBrick() {
-		float mass = 1.234f;
-
-		solo.clickOnEditText(0);
-		solo.clearEditText(0);
-		solo.enterText(0, Float.toString(mass));
-		solo.clickOnButton(solo.getString(R.string.ok));
-
-		float enteredMass = (Float) UiTestUtils.getPrivateField("mass", setMassBrick);
-		assertEquals("Text not updated", Float.toString(mass), solo.getEditText(0).getText().toString());
-		assertEquals("Value in Brick is not updated", mass, enteredMass);
-	}
-
-	@Smoke
-	public void testSetInvalidMassValues() {
-		float masses[] = { -1.0f, 0.0f, PhysicObject.MIN_MASS / 10.0f };
-
-		for (float mass : masses) {
-			solo.clickOnEditText(0);
-			solo.clearEditText(0);
-			solo.enterText(0, Float.toString(mass));
-			solo.clickOnButton(solo.getString(R.string.ok));
-
-			float enteredMass = (Float) UiTestUtils.getPrivateField("mass", setMassBrick);
-			assertEquals("Text not updated", Float.toString(0.0f), solo.getEditText(0).getText().toString());
-			assertEquals("Value in Brick is not updated", 0.0f, enteredMass);
-		}
-	}
-
 	private void createProject() {
-		project = new Project(null, "testProject");
+		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		setMassBrick = new SetMassBrick(sprite, 0.0f);
