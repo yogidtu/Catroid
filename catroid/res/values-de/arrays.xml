@@ -51,5 +51,12 @@
         <item>Ja</item>
         <item>Nein</item>
     </string-array>
+    
+    <!-- Physicobjecttype -->
+    <string-array name="physic_object_type">
+        <item>Dynamisches</item>
+        <item>Fixes</item>
+        <item>Kein</item>
+    </string-array>
 
 </resources>
