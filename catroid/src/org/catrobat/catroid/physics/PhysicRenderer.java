@@ -53,7 +53,6 @@ public class PhysicRenderer {
 	//				switch (fixture.getType()) {
 	//					case Chain:
 	//					case Edge:
-	//						System.out.println("Unsupported Fixture Type " + fixture.getType() + ".");
 	//						break;
 	//					case Circle:
 	//						draw((CircleShape) fixture.getShape());
@@ -105,7 +104,6 @@ public class PhysicRenderer {
 	}
 
 	//	private void draw(CircleShape circle) {
-	//		System.out.println("Rendering circle");
 	//		Vector2 center = PhysicWorldConverter.vecBox2dToCat(circle.getPosition());
 	//		renderer.circle(center.x, center.y, circle.getRadius());
 	//	}
