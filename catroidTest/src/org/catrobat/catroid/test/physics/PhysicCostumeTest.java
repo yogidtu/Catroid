@@ -113,7 +113,7 @@ public class PhysicCostumeTest extends AndroidTestCase {
 
 		float rotation = 9.0f;
 		physicCostume.setRotation(rotation);
-		assertEquals(rotation, physicObject.getAngle());
+		assertEquals("Wrong physic object angle", rotation, physicObject.getAngle());
 
 		assertEquals("X position has changed", x, physicCostume.getXPosition());
 		assertEquals("Y position has changed", y, physicCostume.getYPosition());

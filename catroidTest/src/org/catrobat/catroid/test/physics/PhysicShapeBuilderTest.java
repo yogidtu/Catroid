@@ -45,5 +45,6 @@ public class PhysicShapeBuilderTest extends AndroidTestCase {
 	}
 
 	public void testMe() {
+		assertTrue(true);
 	}
 }

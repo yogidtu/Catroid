@@ -145,7 +145,7 @@ public class PhysicObjectTest extends AndroidTestCase {
 		assertFalse("No shape has been set", body.getFixtureList().isEmpty());
 
 		physicObject.setShape(null);
-		assertEquals(null, getShapes(physicObject));
+		assertNull("Physic shape isn't null", getShapes(physicObject));
 		assertTrue("Fixture hasn't been removed", body.getFixtureList().isEmpty());
 	}
 
@@ -238,7 +238,7 @@ public class PhysicObjectTest extends AndroidTestCase {
 				Vector2 physicObjectCatroidPosition = PhysicWorldConverter.vecBox2dToCat(getBody(physicObject)
 						.getPosition());
 				assertEquals("Wrong catroid position", position, physicObjectCatroidPosition);
-				assertEquals("Wrong box2d position", position, physicObject.getXPosition());
+				assertEquals("Wrong box2d position", position, physicObject.getPosition());
 			}
 
 			for (Vector2 position : positions) {
@@ -247,7 +247,7 @@ public class PhysicObjectTest extends AndroidTestCase {
 				Vector2 physicObjectCatroidPosition = PhysicWorldConverter.vecBox2dToCat(getBody(physicObject)
 						.getPosition());
 				assertEquals("Wrong catroid position", position, physicObjectCatroidPosition);
-				assertEquals("Wrong box2d position", position, physicObject.getXPosition());
+				assertEquals("Wrong box2d position", position, physicObject.getPosition());
 			}
 		}
 	}
