@@ -75,13 +75,13 @@ public class SetMassBrickTest extends AndroidTestCase {
 	}
 
 	public void testExecution() {
-		assertFalse(physicObjectMock.executed);
-		assertNotSame(mass, physicObjectMock.executedWithMass);
+		assertFalse("Set mass has already been executed", physicObjectMock.executed);
+		assertNotSame("Masses are the same", mass, physicObjectMock.executedWithMass);
 
 		setMassBrick.execute();
 
-		assertTrue(physicObjectMock.executed);
-		assertEquals(mass, physicObjectMock.executedWithMass);
+		assertTrue("Set mas hasn't been executed", physicObjectMock.executed);
+		assertEquals("Set mass has been called with wrong parameters", mass, physicObjectMock.executedWithMass);
 	}
 
 	public void testNullPhysicObject() {

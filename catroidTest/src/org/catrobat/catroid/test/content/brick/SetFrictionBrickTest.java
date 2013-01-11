@@ -75,13 +75,14 @@ public class SetFrictionBrickTest extends TestCase {
 	}
 
 	public void testExecution() {
-		assertFalse(physicObjectMock.executed);
-		assertNotSame(friction / 100.0f, physicObjectMock.executedWithFriction);
+		assertFalse("", physicObjectMock.executed);
+		assertNotSame("", friction / 100.0f, physicObjectMock.executedWithFriction);
 
 		setFrictionBrick.execute();
 
-		assertTrue(physicObjectMock.executed);
-		assertEquals(friction / 100.0f, physicObjectMock.executedWithFriction);
+		assertTrue("Set friction hasn't been executed", physicObjectMock.executed);
+		assertEquals("Set friction has been called with wrong parameters", friction / 100.0f,
+				physicObjectMock.executedWithFriction);
 	}
 
 	public void testNullPhysicObject() {

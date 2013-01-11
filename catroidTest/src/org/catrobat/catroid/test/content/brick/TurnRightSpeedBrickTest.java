@@ -56,32 +56,35 @@ public class TurnRightSpeedBrickTest extends TestCase {
 	}
 
 	public void testRequiredResources() {
-		assertEquals(turnRightSpeedBrick.getRequiredResources(), Brick.NO_RESOURCES);
+		assertEquals("Wrong required resources", turnRightSpeedBrick.getRequiredResources(), Brick.NO_RESOURCES);
 	}
 
 	public void testGetSprite() {
-		assertEquals(turnRightSpeedBrick.getSprite(), sprite);
+		assertEquals("Wrong sprite set", turnRightSpeedBrick.getSprite(), sprite);
 	}
 
 	public void testSetPhysicObject() {
-		assertEquals(physicObjectMock, TestUtils.getPrivateField("physicObject", turnRightSpeedBrick, false));
+		assertEquals("Wrong physic object set", physicObjectMock,
+				TestUtils.getPrivateField("physicObject", turnRightSpeedBrick, false));
 	}
 
 	public void testClone() {
 		Brick clone = turnRightSpeedBrick.clone();
 
-		assertEquals(turnRightSpeedBrick.getSprite(), clone.getSprite());
-		assertEquals(turnRightSpeedBrick.getRequiredResources(), clone.getRequiredResources());
+		assertEquals("Wrong sprite after cloning", turnRightSpeedBrick.getSprite(), clone.getSprite());
+		assertEquals("Wrong required resources after cloning", turnRightSpeedBrick.getRequiredResources(),
+				clone.getRequiredResources());
 	}
 
 	public void testExecution() {
-		assertFalse(physicObjectMock.executed);
-		assertNotSame(-degreesPerSecond, physicObjectMock.executedWithDegrees);
+		assertFalse("Turn right has already been executed", physicObjectMock.executed);
+		assertNotSame("Degrees are the same", -degreesPerSecond, physicObjectMock.executedWithDegrees);
 
 		turnRightSpeedBrick.execute();
 
-		assertTrue(physicObjectMock.executed);
-		assertEquals(-degreesPerSecond, physicObjectMock.executedWithDegrees);
+		assertTrue("Turn right hasn't been executed", physicObjectMock.executed);
+		assertEquals("Set rotation speed has been called with wrong degrees value", -degreesPerSecond,
+				physicObjectMock.executedWithDegrees);
 	}
 
 	public void testNullPhysicObject() {

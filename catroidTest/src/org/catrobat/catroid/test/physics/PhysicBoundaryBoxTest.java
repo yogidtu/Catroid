@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.catrobat.catroid.physics.PhysicBoundaryBox;
-import org.catrobat.catroid.physics.PhysicDebugSettings;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicWorld;
 
@@ -54,32 +53,27 @@ public class PhysicBoundaryBoxTest extends AndroidTestCase {
 	}
 
 	public void testDefaultSettings() {
-		assertEquals(5, PhysicBoundaryBox.FRAME_SIZE);
-		assertEquals(0x0002, PhysicBoundaryBox.COLLISION_MASK);
+		assertEquals("Wrong configuration", 5, PhysicBoundaryBox.FRAME_SIZE);
+		assertEquals("Wrong configuration", 0x0002, PhysicBoundaryBox.COLLISION_MASK);
 	}
 
 	public void testProperties() {
-		assertEquals(0, world.getBodyCount());
+		assertEquals("World isn't emtpy", 0, world.getBodyCount());
 		new PhysicBoundaryBox(world).create();
-		assertEquals(4, world.getBodyCount());
+		assertEquals("World contains wrong number of boundary box sides", 4, world.getBodyCount());
 
 		Iterator<Body> bodyIterator = world.getBodies();
 		while (bodyIterator.hasNext()) {
 			Body body = bodyIterator.next();
-			assertEquals(BodyType.StaticBody, body.getType());
-			assertFalse(body.isSleepingAllowed());
+			assertEquals("BodyType of boundary box side isn't static", BodyType.StaticBody, body.getType());
+			assertTrue("Body isn't allowed to sleep", body.isSleepingAllowed());
 
 			List<Fixture> fixtures = body.getFixtureList();
-			assertEquals(1, fixtures.size());
+			assertEquals("Body should contain only one shape (side)", 1, fixtures.size());
 			for (Fixture fixture : fixtures) {
 				Filter filter = fixture.getFilterData();
-				assertEquals(PhysicObject.COLLISION_MASK, filter.maskBits);
-
-				if (PhysicDebugSettings.DEBUGFLAG) {
-					assertEquals(PhysicObject.COLLISION_MASK, filter.categoryBits);
-				} else {
-					assertEquals(PhysicBoundaryBox.COLLISION_MASK, filter.categoryBits);
-				}
+				assertEquals("Wrong bit mask for collision", PhysicObject.COLLISION_MASK, filter.maskBits);
+				assertEquals("Wrong category bits for collision", PhysicBoundaryBox.COLLISION_MASK, filter.categoryBits);
 			}
 		}
 	}

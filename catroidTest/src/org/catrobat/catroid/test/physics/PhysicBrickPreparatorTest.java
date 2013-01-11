@@ -94,7 +94,7 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 		PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorldMock);
 		physicBrickPreparator.prepare(project);
 
-		assertEquals(0, physicWorldMock.getPhysicObjectExecutedCount);
+		assertEquals("Physic objects have been created", 0, physicWorldMock.getPhysicObjectExecutedCount);
 	}
 
 	public void testSimplePhysicObjectBrick() {
@@ -106,22 +106,23 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		assertNull(TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
+		assertNull("Physic object already has been set",
+				TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
 
 		PhysicWorldMock physicWorldMock = new PhysicWorldMock();
 		PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorldMock);
 		physicBrickPreparator.prepare(project);
 
-		assertEquals(1, physicWorldMock.getPhysicObjectExecutedCount);
-		assertEquals(1, physicWorldMock.physicObjects.size());
-		assertTrue(physicWorldMock.physicObjects.contains(sprite));
+		assertEquals("Wrong number of get physic object calls", 1, physicWorldMock.getPhysicObjectExecutedCount);
+		assertEquals("Wrong number of physic objects stored", 1, physicWorldMock.physicObjects.size());
+		assertTrue("Physic world hasn't stored the right physic object", physicWorldMock.physicObjects.contains(sprite));
 
-		assertNotNull(TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
-		assertEquals(physicWorldMock.getPhysicObject(sprite),
+		assertNotNull("Brick has no physic object", TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
+		assertEquals("Brick has wrong physic object", physicWorldMock.getPhysicObject(sprite),
 				TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
 	}
 
-	public void testMultiplePhysicObjectBrick() {
+	public void testMultiplePhysicBricksInOneSprite() {
 		Project project = new Project();
 		Sprite sprite = new Sprite("TestSprite");
 		Script script = new StartScript(sprite);
@@ -134,21 +135,24 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 		project.addSprite(sprite);
 
 		for (PhysicObjectBrick physicObjectBrick : physicObjectBricks) {
-			assertNull(TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
+			assertNull("Physic object already has been set",
+					TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
 		}
 
 		PhysicWorldMock physicWorldMock = new PhysicWorldMock();
 		PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorldMock);
 		physicBrickPreparator.prepare(project);
 
-		assertEquals(1, physicWorldMock.getPhysicObjectExecutedCount);
-		assertEquals(1, physicWorldMock.physicObjects.size());
-		assertTrue(physicWorldMock.physicObjects.contains(sprite));
+		assertEquals("Wrong number of get physic object calls", 1, physicWorldMock.getPhysicObjectExecutedCount);
+		assertEquals("Wrong number of physic objects stored", 1, physicWorldMock.physicObjects.size());
+		assertTrue("Physic world hasn't stored the right physic object", physicWorldMock.physicObjects.contains(sprite));
 
 		PhysicObject physicObject = physicWorldMock.getPhysicObject(sprite);
 		for (PhysicObjectBrick physicObjectBrick : physicObjectBricks) {
-			assertNotNull(TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
-			assertEquals(physicObject, TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
+			assertNotNull("Brick has no physic object",
+					TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
+			assertEquals("Brick has wrong physic object", physicObject,
+					TestUtils.getPrivateField("physicObject", physicObjectBrick, false));
 		}
 	}
 
@@ -161,17 +165,19 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		assertNull(TestUtils.getPrivateField("physicWorld", physicWorldBrick, false));
+		assertNull("Physic world has already been set",
+				TestUtils.getPrivateField("physicWorld", physicWorldBrick, false));
 
 		PhysicWorldMock physicWorldMock = new PhysicWorldMock();
 		PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorldMock);
 		physicBrickPreparator.prepare(project);
 
-		assertNotNull(TestUtils.getPrivateField("physicWorld", physicWorldBrick, false));
-		assertEquals(physicWorldMock, TestUtils.getPrivateField("physicWorld", physicWorldBrick, false));
+		assertNotNull("Physic world hasn't been set", TestUtils.getPrivateField("physicWorld", physicWorldBrick, false));
+		assertEquals("Wrong physic world", physicWorldMock,
+				TestUtils.getPrivateField("physicWorld", physicWorldBrick, false));
 	}
 
-	public void testComplexPhysicBricks() {
+	public void testMultipleScriptBricksIncludingMultiplePhysicBricksInOneSprite() {
 		Vector2 gravity = new Vector2(1.2f, -3.4f);
 		Project project = new Project();
 		Sprite sprite = new Sprite("TestSprite");
@@ -201,8 +207,9 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 		PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorldMock);
 		physicBrickPreparator.prepare(project);
 
-		assertEquals(1, physicWorldMock.getPhysicObjectExecutedCount);
-		assertTrue(physicWorldMock.physicObjects.contains(sprite));
+		assertEquals("Wrong number of get physic object calls", 1, physicWorldMock.getPhysicObjectExecutedCount);
+		assertEquals("Wrong number of physic objects stored", 1, physicWorldMock.physicObjects.size());
+		assertTrue("Physic world hasn't stored the right physic object", physicWorldMock.physicObjects.contains(sprite));
 
 		PhysicObject physicObject = physicWorldMock.getPhysicObject(sprite);
 		for (int index = 0; index < sprite.getNumberOfScripts(); index++) {
@@ -210,9 +217,11 @@ public class PhysicBrickPreparatorTest extends AndroidTestCase {
 
 			for (Brick brick : script.getBrickList()) {
 				if (brick instanceof PhysicWorldBrick) {
-					assertEquals(physicWorldMock, TestUtils.getPrivateField("physicWorld", brick, false));
+					assertEquals("Wrong physic world", physicWorldMock,
+							TestUtils.getPrivateField("physicWorld", brick, false));
 				} else if (brick instanceof PhysicObjectBrick) {
-					assertEquals(physicObject, TestUtils.getPrivateField("physicObject", brick, false));
+					assertEquals("Wrong physic object", physicObject,
+							TestUtils.getPrivateField("physicObject", brick, false));
 				}
 			}
 		}

@@ -33,7 +33,11 @@ public class PhysicDebugSettingsTest extends AndroidTestCase {
 	 * Therefore there is no problem if it fails during programming or debugging.
 	 */
 	public void testDefaultSettingsForRelease() {
-		assertFalse(PhysicDebugSettings.DEBUGFLAG);
-		assertFalse(PhysicDebugSettings.Render.RENDER_COLLISION_FRAMES);
+		assertFalse(
+				"Tests if all physic debug settings are configured correctly for the release. Therefore there is no problem if it fails during programming or debugging",
+				PhysicDebugSettings.DEBUGFLAG);
+		assertFalse(
+				"Tests if all physic debug settings are configured correctly for the release. Therefore there is no problem if it fails during programming or debugging.",
+				PhysicDebugSettings.Render.RENDER_COLLISION_FRAMES);
 	}
 }

@@ -63,21 +63,20 @@ public class PhysicObjectTest extends AndroidTestCase {
 	}
 
 	public void testDefaultSettings() {
-		assertEquals(1.0f, PhysicObject.DEFAULT_DENSITY);
-		assertEquals(0.2f, PhysicObject.DEFAULT_FRICTION);
-		assertEquals(0.8f, PhysicObject.DEFAULT_BOUNCE_FACTOR);
+		assertEquals("Wrong configuration", 1.0f, PhysicObject.DEFAULT_DENSITY);
+		assertEquals("Wrong configuration", 0.2f, PhysicObject.DEFAULT_FRICTION);
+		assertEquals("Wrong configuration", 0.8f, PhysicObject.DEFAULT_BOUNCE_FACTOR);
 
-		assertEquals(1.0f, PhysicObject.DEFAULT_MASS);
-		assertEquals(0.000001f, PhysicObject.MIN_MASS);
+		assertEquals("Wrong configuration", 1.0f, PhysicObject.DEFAULT_MASS);
+		assertEquals("Wrong configuration", 0.000001f, PhysicObject.MIN_MASS);
 
-		assertEquals(0x0004, PhysicObject.COLLISION_MASK);
+		assertEquals("Wrong configuration", 0x0004, PhysicObject.COLLISION_MASK);
 	}
 
 	public void testNullBody() {
 		try {
-			@SuppressWarnings("unused")
-			PhysicObject objectWithNullBody = new PhysicObject(null);
-			assertTrue(false);
+			new PhysicObject(null);
+			fail("Creating a physic object with no body doesn't cause a NullPointerException");
 		} catch (NullPointerException exception) {
 			// Expected behavior.
 		}
@@ -85,21 +84,21 @@ public class PhysicObjectTest extends AndroidTestCase {
 
 	public void testDefaultProperties() {
 		PhysicObject physicObject = createPhysicObject();
-		assertEquals(Type.NONE, getType(physicObject));
-		assertEquals(PhysicObject.DEFAULT_MASS, getMass(physicObject));
+		assertEquals("Wrong initialization", Type.NONE, getType(physicObject));
+		assertEquals("Wrong initialization", PhysicObject.DEFAULT_MASS, getMass(physicObject));
 
 		Body body = getBody(physicObject);
-		assertTrue(body.getFixtureList().isEmpty());
+		assertTrue("Body already contains fixtures", body.getFixtureList().isEmpty());
 
 		FixtureDef fixtureDef = getFixtureDef(physicObject);
-		assertEquals(PhysicObject.DEFAULT_DENSITY, fixtureDef.density);
-		assertEquals(PhysicObject.DEFAULT_FRICTION, fixtureDef.friction);
-		assertEquals(PhysicObject.DEFAULT_BOUNCE_FACTOR, fixtureDef.restitution);
+		assertEquals("Wrong initialization", PhysicObject.DEFAULT_DENSITY, fixtureDef.density);
+		assertEquals("Wrong initialization", PhysicObject.DEFAULT_FRICTION, fixtureDef.friction);
+		assertEquals("Wrong initialization", PhysicObject.DEFAULT_BOUNCE_FACTOR, fixtureDef.restitution);
 
 		short collisionBits = 0;
 		checkCollisionMask(physicObject, collisionBits, collisionBits);
 
-		assertFalse((Boolean) TestUtils.getPrivateField("ifOnEdgeBounce", physicObject, false));
+		assertFalse("Wrong initialization", (Boolean) TestUtils.getPrivateField("ifOnEdgeBounce", physicObject, false));
 	}
 
 	public void testSetShape() {
@@ -119,7 +118,7 @@ public class PhysicObjectTest extends AndroidTestCase {
 		PolygonShape[] newShape = new PolygonShape[] { createRectanglePolygonShape(1.0f, 2.0f) };
 		physicObject.setShape(newShape);
 
-		assertSame(newShape, getShapes(physicObject));
+		assertSame("The new shape hasn't been set", newShape, getShapes(physicObject));
 		checkIfShapesAreTheSameAsInPhysicObject(newShape, body);
 	}
 
@@ -129,13 +128,13 @@ public class PhysicObjectTest extends AndroidTestCase {
 
 		Shape[] rectangle = new Shape[] { createRectanglePolygonShape(5.0f, 5.0f) };
 		physicObject.setShape(rectangle);
-		assertFalse(body.getFixtureList().isEmpty());
+		assertFalse("No shape has been set", body.getFixtureList().isEmpty());
 
 		List<Fixture> fixturesBeforeReset = new ArrayList<Fixture>(body.getFixtureList());
 		physicObject.setShape(rectangle);
 		List<Fixture> fixturesAfterReset = new ArrayList<Fixture>(body.getFixtureList());
 
-		assertEquals(fixturesBeforeReset, fixturesAfterReset);
+		assertEquals("Fixture has changed after setiting the same shape again", fixturesBeforeReset, fixturesAfterReset);
 	}
 
 	public void testSetNullShapeRemovesAllFixtures() {
@@ -143,11 +142,11 @@ public class PhysicObjectTest extends AndroidTestCase {
 		Body body = getBody(physicObject);
 
 		physicObject.setShape(new Shape[] { createRectanglePolygonShape(5.0f, 5.0f) });
-		assertFalse(body.getFixtureList().isEmpty());
+		assertFalse("No shape has been set", body.getFixtureList().isEmpty());
 
 		physicObject.setShape(null);
 		assertEquals(null, getShapes(physicObject));
-		assertTrue(body.getFixtureList().isEmpty());
+		assertTrue("Fixture hasn't been removed", body.getFixtureList().isEmpty());
 	}
 
 	public void testSetShapeUpdatesDensityButNotMass() {
@@ -160,8 +159,8 @@ public class PhysicObjectTest extends AndroidTestCase {
 
 		physicObject.setShape(new Shape[] { createRectanglePolygonShape(111.0f, 111.0f) });
 
-		assertNotSame(oldDensity, getFixtureDef(physicObject).density);
-		assertEquals(oldMass, body.getMass());
+		assertNotSame("Density hasn't changed", oldDensity, getFixtureDef(physicObject).density);
+		assertEquals("Mass has changed", oldMass, body.getMass());
 	}
 
 	public void testSetType() {
@@ -169,18 +168,16 @@ public class PhysicObjectTest extends AndroidTestCase {
 		Body body = getBody(physicObject);
 
 		physicObject.setType(Type.FIXED);
-		assertEquals(Type.FIXED, getType(physicObject));
-		assertEquals(BodyType.KinematicBody, body.getType());
-		assertTrue(body.isActive());
+		assertEquals("Wrong physic object type", Type.FIXED, getType(physicObject));
+		assertEquals("Wrong body type", BodyType.KinematicBody, body.getType());
 
 		physicObject.setType(Type.DYNAMIC);
-		assertEquals(Type.DYNAMIC, getType(physicObject));
-		assertEquals(BodyType.DynamicBody, body.getType());
-		assertTrue(body.isActive());
+		assertEquals("Wrong physic object type", Type.DYNAMIC, getType(physicObject));
+		assertEquals("Wrong body type", BodyType.DynamicBody, body.getType());
 
 		physicObject.setType(Type.NONE);
-		assertEquals(Type.NONE, getType(physicObject));
-		assertEquals(BodyType.KinematicBody, body.getType());
+		assertEquals("Wrong physic object type", Type.NONE, getType(physicObject));
+		assertEquals("Wrong body type", BodyType.KinematicBody, body.getType());
 	}
 
 	public void testSetCollisionBits() {
@@ -206,24 +203,25 @@ public class PhysicObjectTest extends AndroidTestCase {
 
 		float mass = 128.0f;
 		physicObject.setMass(mass);
-		assertEquals(0.0f, body.getMass());
+		assertEquals("Wrong mass", 0.0f, body.getMass());
 
 		physicObject.setType(Type.DYNAMIC);
-		assertEquals(mass, body.getMass());
+		assertEquals("Mass hasn't been updated", mass, body.getMass());
 	}
 
 	public void testAngle() {
 		for (Type type : Type.values()) {
 			PhysicObject physicObject = createPhysicObject(type);
-			assertEquals(0.0f, getBody(physicObject).getAngle());
+			assertEquals("Wrong initialization", 0.0f, getBody(physicObject).getAngle());
 
 			float[] degrees = { 1.0f, 131.4f, -10.0f };
 
 			for (float angle : degrees) {
 				physicObject.setAngle(angle);
 
-				float physicObjectCatAngle = PhysicWorldConverter.angleBox2dToCat(getBody(physicObject).getAngle());
-				assertEquals(angle, physicObjectCatAngle);
+				float physicObjectCatroidAngle = PhysicWorldConverter.angleBox2dToCat(getBody(physicObject).getAngle());
+				assertEquals("Wrong catroid angle", angle, physicObjectCatroidAngle);
+				assertEquals("Wrong box2d angle", angle, physicObject.getAngle());
 			}
 		}
 	}
@@ -231,23 +229,25 @@ public class PhysicObjectTest extends AndroidTestCase {
 	public void testPosition() {
 		for (Type type : Type.values()) {
 			PhysicObject physicObject = createPhysicObject(type);
-			assertEquals(new Vector2(), getBody(physicObject).getPosition());
+			assertEquals("Wrong initialization", new Vector2(), getBody(physicObject).getPosition());
 
 			Vector2[] positions = { new Vector2(12.34f, 56.78f), new Vector2(-87.65f, -43.21f) };
 			for (Vector2 position : positions) {
 				physicObject.setXYPosition(position.x, position.y);
 
-				Vector2 physicObjectCatPosition = PhysicWorldConverter.vecBox2dToCat(getBody(physicObject)
+				Vector2 physicObjectCatroidPosition = PhysicWorldConverter.vecBox2dToCat(getBody(physicObject)
 						.getPosition());
-				assertEquals(position, physicObjectCatPosition);
+				assertEquals("Wrong catroid position", position, physicObjectCatroidPosition);
+				assertEquals("Wrong box2d position", position, physicObject.getXPosition());
 			}
 
 			for (Vector2 position : positions) {
 				physicObject.setXYPosition(position);
 
-				Vector2 physicObjectCatPosition = PhysicWorldConverter.vecBox2dToCat(getBody(physicObject)
+				Vector2 physicObjectCatroidPosition = PhysicWorldConverter.vecBox2dToCat(getBody(physicObject)
 						.getPosition());
-				assertEquals(position, physicObjectCatPosition);
+				assertEquals("Wrong catroid position", position, physicObjectCatroidPosition);
+				assertEquals("Wrong box2d position", position, physicObject.getXPosition());
 			}
 		}
 	}
@@ -255,19 +255,20 @@ public class PhysicObjectTest extends AndroidTestCase {
 	public void testAngleAndPosition() {
 		for (Type type : Type.values()) {
 			PhysicObject physicObject = createPhysicObject(type);
-			assertEquals(0.0f, getBody(physicObject).getAngle());
-			assertEquals(new Vector2(), getBody(physicObject).getPosition());
+			assertEquals("Wrong initialization", 0.0f, getBody(physicObject).getAngle());
+			assertEquals("initialization", new Vector2(), getBody(physicObject).getPosition());
 
 			float angle = 15.6f;
 			Vector2 position = new Vector2(12.34f, 56.78f);
 			physicObject.setAngle(angle);
 			physicObject.setXYPosition(position.x, position.y);
 
-			float physicObjectCatAngle = PhysicWorldConverter.angleBox2dToCat(getBody(physicObject).getAngle());
-			Vector2 physicObjectCatPosition = PhysicWorldConverter.vecBox2dToCat(getBody(physicObject).getPosition());
+			float physicObjectCatroidAngle = PhysicWorldConverter.angleBox2dToCat(getBody(physicObject).getAngle());
+			Vector2 physicObjectCatroidPosition = PhysicWorldConverter.vecBox2dToCat(getBody(physicObject)
+					.getPosition());
 
-			assertEquals(angle, physicObjectCatAngle);
-			assertEquals(position, physicObjectCatPosition);
+			assertEquals("Wrong catroid angle", angle, physicObjectCatroidAngle);
+			assertEquals("Wrong catroid position", position, physicObjectCatroidPosition);
 		}
 	}
 
@@ -305,13 +306,13 @@ public class PhysicObjectTest extends AndroidTestCase {
 
 		float oldMass = body.getMass();
 		float density = 12.0f;
-		assertNotSame(density, getFixtureDef(physicObject).density);
+		assertNotSame("Densities are the same", density, getFixtureDef(physicObject).density);
 
 		Class<?>[] parameterTypeList = { float.class };
 		Object[] values = { density };
 		TestUtils.invokeMethod(physicObject, "setDensity", parameterTypeList, values);
 
-		assertNotSame(oldMass, body.getMass());
+		assertNotSame("Masses are the same", oldMass, body.getMass());
 	}
 
 	public void testSetDensityAtMassChange() {
@@ -325,7 +326,8 @@ public class PhysicObjectTest extends AndroidTestCase {
 		for (float mass : masses) {
 			physicObject.setMass(mass);
 			float actualDensity = body.getMass() / (rectangleSize * rectangleSize);
-			assertEquals(getFixtureDef(physicObject).density, actualDensity);
+			assertEquals("Wrong density calculation when mass changes", getFixtureDef(physicObject).density,
+					actualDensity);
 		}
 	}
 
@@ -389,20 +391,20 @@ public class PhysicObjectTest extends AndroidTestCase {
 			Body body = getBody(physicObject);
 
 			checkBodyMassDependingOnType(type, body, PhysicObject.DEFAULT_MASS);
-			assertEquals(PhysicObject.DEFAULT_MASS, getMass(physicObject));
+			assertEquals("Wrong initialization", PhysicObject.DEFAULT_MASS, getMass(physicObject));
 
 			float[] masses = { PhysicObject.MIN_MASS, 0.01f, 1.0f, 12345.0f };
 			for (float mass : masses) {
 				physicObject.setMass(mass);
 				checkBodyMassDependingOnType(type, body, mass);
-				assertEquals(mass, getMass(physicObject));
+				assertEquals("Wrong mass in physic object", mass, getMass(physicObject));
 			}
 
 			float[] massesResetedToMinMass = { PhysicObject.MIN_MASS / 10.0f, 0.0f, -1.0f };
 			for (float mass : massesResetedToMinMass) {
 				physicObject.setMass(mass);
 				checkBodyMassDependingOnType(type, body, PhysicObject.MIN_MASS);
-				assertEquals(PhysicObject.MIN_MASS, getMass(physicObject));
+				assertEquals("Body mass isn't set to MIN_MASS", PhysicObject.MIN_MASS, getMass(physicObject));
 			}
 		}
 	}
@@ -411,7 +413,7 @@ public class PhysicObjectTest extends AndroidTestCase {
 		if (type != Type.DYNAMIC) {
 			expectedBodyMass = 0.0f;
 		}
-		assertEquals(expectedBodyMass, body.getMass());
+		assertEquals("Wrong mass for " + type.toString().toLowerCase(), expectedBodyMass, body.getMass());
 	}
 
 	public void testMassWithNoShapeArea() {
@@ -422,11 +424,11 @@ public class PhysicObjectTest extends AndroidTestCase {
 
 			float oldMass = body.getMass();
 			float mass = 1.2f;
-			assertNotSame(oldMass, mass);
+			assertNotSame("Masses are the same", oldMass, mass);
 
 			physicObject.setMass(mass);
-			assertEquals(oldMass, body.getMass());
-			assertEquals(mass, getMass(physicObject));
+			assertEquals("Mass changed", oldMass, body.getMass());
+			assertEquals("Wrong mass stored", mass, getMass(physicObject));
 		}
 	}
 
@@ -434,36 +436,38 @@ public class PhysicObjectTest extends AndroidTestCase {
 		PhysicObject physicObject = createPhysicObject(Type.DYNAMIC);
 		Body body = getBody(physicObject);
 
-		assertEquals(0.0f, body.getAngularVelocity());
+		assertEquals("Wrong initialization", 0.0f, body.getAngularVelocity());
 		float rotationSpeed = 20.0f;
 		physicObject.setRotationSpeed(rotationSpeed);
 
-		float physicObjectCatRotationSpeed = PhysicWorldConverter.angleBox2dToCat(body.getAngularVelocity());
-		assertEquals(rotationSpeed, physicObjectCatRotationSpeed);
+		float physicObjectCatroidRotationSpeed = PhysicWorldConverter.angleBox2dToCat(body.getAngularVelocity());
+		assertEquals("Set wrong rotation speed", rotationSpeed, physicObjectCatroidRotationSpeed);
 	}
 
 	public void testSetVelocity() {
 		PhysicObject physicObject = createPhysicObject(Type.DYNAMIC);
 		Body body = getBody(physicObject);
 
-		assertEquals(new Vector2(), body.getLinearVelocity());
+		assertEquals("Wrong initialization", new Vector2(), body.getLinearVelocity());
 		Vector2 velocity = new Vector2(12.3f, 45.6f);
 		physicObject.setVelocity(velocity);
 
 		Vector2 physicObjectCatVelocity = PhysicWorldConverter.vecBox2dToCat(body.getLinearVelocity());
-		assertEquals(velocity, physicObjectCatVelocity);
+		assertEquals("Set wrong velocity", velocity, physicObjectCatVelocity);
 	}
 
 	public void testIfOnEndgeBounce() {
 		PhysicObject physicObject = createPhysicObject(Type.DYNAMIC, 1.0f, 1.0f);
 		physicObject.setIfOnEdgeBounce(true);
 
-		assertTrue((Boolean) TestUtils.getPrivateField("ifOnEdgeBounce", physicObject, false));
+		assertTrue("If on edge bounce hasn't been set correctly",
+				(Boolean) TestUtils.getPrivateField("ifOnEdgeBounce", physicObject, false));
 		checkCollisionMask(physicObject, PhysicObject.COLLISION_MASK,
 				(short) (PhysicObject.COLLISION_MASK | PhysicBoundaryBox.COLLISION_MASK));
 
 		physicObject.setIfOnEdgeBounce(false);
-		assertFalse((Boolean) TestUtils.getPrivateField("ifOnEdgeBounce", physicObject, false));
+		assertFalse("If on edge bounce hasn't been set correctly",
+				(Boolean) TestUtils.getPrivateField("ifOnEdgeBounce", physicObject, false));
 		checkCollisionMask(physicObject, PhysicObject.COLLISION_MASK, PhysicObject.COLLISION_MASK);
 	}
 
@@ -541,9 +545,9 @@ public class PhysicObjectTest extends AndroidTestCase {
 
 			for (float value : values) {
 				setValue(value);
-				assertEquals(value, getFixtureDefValue());
+				assertEquals("Wrong fixture def value in physic object", value, getFixtureDefValue());
 				for (Fixture fixture : getBody(physicObject).getFixtureList()) {
-					assertEquals(value, getFixtureValue(fixture));
+					assertEquals("Wrong fixture def value in bodies fixtures.", value, getFixtureValue(fixture));
 				}
 			}
 		}
@@ -558,20 +562,20 @@ public class PhysicObjectTest extends AndroidTestCase {
 	// ... and other helpers
 	private void checkCollisionMask(PhysicObject physicObject, short categoryBits, short maskBits) {
 		FixtureDef fixtureDef = getFixtureDef(physicObject);
-		assertEquals(categoryBits, fixtureDef.filter.categoryBits);
-		assertEquals(maskBits, fixtureDef.filter.maskBits);
+		assertEquals("Different category bits", categoryBits, fixtureDef.filter.categoryBits);
+		assertEquals("Different bit mask", maskBits, fixtureDef.filter.maskBits);
 
 		Body body = getBody(physicObject);
 		for (Fixture fixture : body.getFixtureList()) {
 			Filter filter = fixture.getFilterData();
-			assertEquals(categoryBits, filter.categoryBits);
-			assertEquals(maskBits, filter.maskBits);
+			assertEquals("Different category bits", categoryBits, filter.categoryBits);
+			assertEquals("Different bit mask", maskBits, filter.maskBits);
 		}
 	}
 
 	private void checkIfShapesAreTheSameAsInPhysicObject(PolygonShape[] shapes, Body body) {
 		List<Fixture> fixtures = body.getFixtureList();
-		assertEquals(shapes.length, fixtures.size());
+		assertEquals("Number of shapes and fixtures are not the same", shapes.length, fixtures.size());
 
 		if (body.getFixtureList().isEmpty()) {
 			return;
@@ -582,14 +586,15 @@ public class PhysicObjectTest extends AndroidTestCase {
 		for (int shapeIndex = 0; shapeIndex < shapes.length; shapeIndex++) {
 			currentShape = shapes[shapeIndex];
 			currentPhysicObjectShape = (PolygonShape) fixtures.get(shapeIndex).getShape();
-			assertEquals(currentShape.getVertexCount(), currentPhysicObjectShape.getVertexCount());
+			assertEquals("Different vertex count", currentShape.getVertexCount(),
+					currentPhysicObjectShape.getVertexCount());
 
 			Vector2 expectedVertex = new Vector2();
 			Vector2 actualVertex = new Vector2();
 			for (int vertexIndex = 0; vertexIndex < currentShape.getVertexCount(); vertexIndex++) {
 				currentShape.getVertex(vertexIndex, expectedVertex);
 				currentPhysicObjectShape.getVertex(vertexIndex, actualVertex);
-				assertEquals(expectedVertex, actualVertex);
+				assertEquals("Vertex are different", expectedVertex, actualVertex);
 			}
 		}
 	}

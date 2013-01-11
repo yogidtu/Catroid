@@ -79,13 +79,14 @@ public class SetVelocityBrickTest extends AndroidTestCase {
 	}
 
 	public void testExecution() {
-		assertFalse(physicObjectMock.executed);
-		assertNotSame(velocity, physicObjectMock.executedWithVelocity);
+		assertFalse("Set velocity has already been called", physicObjectMock.executed);
+		assertNotSame("Velocities are the same", velocity, physicObjectMock.executedWithVelocity);
 
 		setVelocityBrick.execute();
 
-		assertTrue(physicObjectMock.executed);
-		assertEquals(velocity, physicObjectMock.executedWithVelocity);
+		assertTrue("Set velocity hasn't been called", physicObjectMock.executed);
+		assertEquals("Set velocity has been called with wrong parameters", velocity,
+				physicObjectMock.executedWithVelocity);
 	}
 
 	public void testNullPhysicObject() {

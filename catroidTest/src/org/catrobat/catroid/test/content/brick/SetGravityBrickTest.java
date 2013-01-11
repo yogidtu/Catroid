@@ -76,13 +76,13 @@ public class SetGravityBrickTest extends AndroidTestCase {
 	}
 
 	public void testExecution() {
-		assertFalse(physicWorldMock.executed);
-		assertNotSame(gravity, physicWorldMock.executedWithGravity);
+		assertFalse("Set gravity has already been executed", physicWorldMock.executed);
+		assertNotSame("Gravities are the same", gravity, physicWorldMock.executedWithGravity);
 
 		setGravityBrick.execute();
 
-		assertTrue(physicWorldMock.executed);
-		assertEquals(gravity, physicWorldMock.executedWithGravity);
+		assertTrue("Set gravity hasn't been executed", physicWorldMock.executed);
+		assertEquals("Set gravity has been called with wrong parameters", gravity, physicWorldMock.executedWithGravity);
 	}
 
 	public void testNullPhysicWorld() {

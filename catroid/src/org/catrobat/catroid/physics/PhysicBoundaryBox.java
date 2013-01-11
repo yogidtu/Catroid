@@ -44,6 +44,9 @@ public class PhysicBoundaryBox {
 		this.world = world;
 	}
 
+	/**
+	 * TODO: Create only one body with four shapes (sides). Refactor test after that.
+	 */
 	public void create() {
 		Project currentProject = ProjectManager.getInstance().getCurrentProject();
 		float boxWidth = PhysicWorldConverter.lengthCatToBox2d(currentProject.virtualScreenWidth);
@@ -64,7 +67,7 @@ public class PhysicBoundaryBox {
 	private void createSide(Vector2 center, float width, float height) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.allowSleep = false;
+		bodyDef.allowSleep = true;
 
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(width / 2.0f, height / 2f, center, 0.0f);

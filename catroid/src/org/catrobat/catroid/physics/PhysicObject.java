@@ -123,9 +123,6 @@ public class PhysicObject {
 				break;
 			case FIXED:
 				body.setType(BodyType.KinematicBody);
-				//				body.setType(BodyType.DynamicBody);
-				//				body.setGravityScale(0.0f);
-				//				setMass(Integer.MAX_VALUE);
 				collisionMask = PhysicObject.COLLISION_MASK;
 				break;
 			case NONE:
@@ -187,7 +184,7 @@ public class PhysicObject {
 	}
 
 	public void setXYPosition(Vector2 position) {
-		body.setTransform(PhysicWorldConverter.vecCatToBox2d(position), body.getAngle());
+		setXYPosition(position.x, position.y);
 	}
 
 	public float getRotationSpeed() {

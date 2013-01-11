@@ -77,21 +77,21 @@ public class SetBounceFactorBrickTest extends TestCase {
 	}
 
 	public void testExecution() {
-		assertFalse(physicObjectMock.executed);
-		assertNotSame(bounceFactor / 100.0f, physicObjectMock.executedWithBounceFactor);
+		assertFalse("Set bounce factor has already been executed", physicObjectMock.executed);
+		assertNotSame("Factors are the same", bounceFactor / 100.0f, physicObjectMock.executedWithBounceFactor);
 
 		setBounceFactorBrick.execute();
 
-		assertTrue(physicObjectMock.executed);
-		assertEquals(bounceFactor / 100.0f, physicObjectMock.executedWithBounceFactor);
+		assertTrue("Set bounce factor hasn't been executed", physicObjectMock.executed);
+		assertEquals("Set bounce factor has been called with wrong parameters", bounceFactor / 100.0f,
+				physicObjectMock.executedWithBounceFactor);
 	}
 
 	public void testNullPhysicObject() {
 		setBounceFactorBrick = new SetBounceFactorBrick(sprite, bounceFactor);
 		try {
 			setBounceFactorBrick.execute();
-			fail("Execution of SetBounceFactorBrick with null Sprite did not cause a "
-					+ "NullPointerException to be thrown");
+			fail("Execution of SetBounceFactorBrick with null Sprite did not cause a NullPointerException");
 		} catch (NullPointerException expected) {
 			// expected behavior
 		}

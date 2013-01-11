@@ -59,17 +59,17 @@ public class PhysicCostumeTest extends AndroidTestCase {
 
 		Shape[] shapes = physicShapeBuilder.getShape(physicCostume.getCostumeData(), physicCostume.getSize());
 
-		assertNotNull(shapes);
+		assertNotNull("No shapes created", shapes);
 
 		physicCostume.setImageChanged(false);
-		assertFalse(physicCostume.checkImageChanged());
-		assertFalse(physicObjectMock.setShapeExecuted);
-		assertNull(physicObjectMock.setShapeExecutedWithSpahes);
+		assertFalse("Costume image has changed", physicCostume.checkImageChanged());
+		assertFalse("Set shape has been executed", physicObjectMock.setShapeExecuted);
+		assertNull("Shapes already have been set", physicObjectMock.setShapeExecutedWithShapes);
 
 		physicCostume.setImageChanged(true);
-		assertTrue(physicCostume.checkImageChanged());
-		assertTrue(physicObjectMock.setShapeExecuted);
-		assertEquals(shapes, physicObjectMock.setShapeExecutedWithSpahes);
+		assertTrue("Costume image hasn't changed", physicCostume.checkImageChanged());
+		assertTrue("Set shape hasn't been executed", physicObjectMock.setShapeExecuted);
+		assertEquals("Set wrong shapes", shapes, physicObjectMock.setShapeExecutedWithShapes);
 	}
 
 	public void testUpdatePositionAndRotation() {
@@ -84,13 +84,13 @@ public class PhysicCostumeTest extends AndroidTestCase {
 		physicCostume.setXYPosition(position.x, position.y);
 		physicCostume.setRotation(rotation);
 
-		assertNotSame(position, physicCostume.getCostumePosition());
-		assertNotSame(rotation, physicCostume.getCostumeRotation());
+		assertNotSame("Wrong position", position, physicCostume.getCostumePosition());
+		assertNotSame("Wrong rotation", rotation, physicCostume.getCostumeRotation());
 
 		physicCostume.updatePositionAndRotation();
 
-		assertEquals(position, physicCostume.getCostumePosition());
-		assertEquals(rotation, physicCostume.getCostumeRotation());
+		assertEquals("Position not updated", position, physicCostume.getCostumePosition());
+		assertEquals("Rotation not updated", rotation, physicCostume.getCostumeRotation());
 	}
 
 	public void testPositionAndAngle() {
@@ -100,26 +100,27 @@ public class PhysicCostumeTest extends AndroidTestCase {
 
 		float x = 1.2f;
 		physicCostume.setXPosition(x);
-		assertEquals(x, physicObject.getXPosition());
+		assertEquals("Wrong x position", x, physicObject.getXPosition());
 
 		float y = -3.4f;
 		physicCostume.setYPosition(y);
-		assertEquals(y, physicObject.getYPosition());
+		assertEquals("Wrong y position", y, physicObject.getYPosition());
 
 		x = 5.6f;
 		y = 7.8f;
 		physicCostume.setXYPosition(x, y);
-		assertEquals(new Vector2(x, y), physicObject.getPosition());
+		assertEquals("Wrong position", new Vector2(x, y), physicObject.getPosition());
 
 		float rotation = 9.0f;
 		physicCostume.setRotation(rotation);
 		assertEquals(rotation, physicObject.getAngle());
 
-		assertEquals(x, physicCostume.getXPosition());
-		assertEquals(y, physicCostume.getYPosition());
-		assertEquals(rotation, physicCostume.getRotation());
+		assertEquals("X position has changed", x, physicCostume.getXPosition());
+		assertEquals("Y position has changed", y, physicCostume.getYPosition());
+		assertEquals("Wrong rotation", rotation, physicCostume.getRotation());
 	}
 
+	// TODO: Check if this test is correct.
 	public void testSize() {
 		Sprite sprite = new Sprite("TestSprite");
 		PhysicShapeBuilder physicShapeBuilder = new PhysicShapeBuilderMock();
@@ -127,15 +128,15 @@ public class PhysicCostumeTest extends AndroidTestCase {
 		PhysicCostume physicCostume = new PhysicCostume(sprite, physicShapeBuilder, physicObjectMock);
 		float size = 3.14f;
 
-		assertFalse(physicObjectMock.setShapeExecuted);
-		assertNull(physicObjectMock.setShapeExecutedWithSpahes);
+		assertFalse("Set shape has been executed", physicObjectMock.setShapeExecuted);
+		assertNull("Shapes already has been set", physicObjectMock.setShapeExecutedWithShapes);
 
 		physicCostume.setSize(size);
-		assertEquals(size, physicCostume.getSize());
+		assertEquals("Wrong size", size, physicCostume.getSize());
 
 		Shape[] shapes = physicShapeBuilder.getShape(physicCostume.getCostumeData(), size);
-		assertTrue(physicObjectMock.setShapeExecuted);
-		assertEquals(shapes, physicObjectMock.setShapeExecutedWithSpahes);
+		assertTrue("Set shape hasn't been executed", physicObjectMock.setShapeExecuted);
+		assertEquals("Wrong shapes", shapes, physicObjectMock.setShapeExecutedWithShapes);
 	}
 
 	private class PhysicCostumeUpdateMock extends PhysicCostume {
@@ -174,7 +175,7 @@ public class PhysicCostumeTest extends AndroidTestCase {
 
 	private class PhysicObjectMock extends PhysicObject {
 		public boolean setShapeExecuted = false;
-		public Shape[] setShapeExecutedWithSpahes = null;
+		public Shape[] setShapeExecutedWithShapes = null;
 
 		public PhysicObjectMock() {
 			super(null);
@@ -183,7 +184,7 @@ public class PhysicCostumeTest extends AndroidTestCase {
 		@Override
 		public void setShape(Shape[] shapes) {
 			setShapeExecuted = true;
-			setShapeExecutedWithSpahes = shapes;
+			setShapeExecutedWithShapes = shapes;
 		}
 
 		@Override

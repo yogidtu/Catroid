@@ -78,13 +78,14 @@ public class SetPhysicObjectTypeBrickTest extends AndroidTestCase {
 	}
 
 	public void testExecution() {
-		assertFalse(physicObjectMock.executed);
-		assertNotSame(type, physicObjectMock.executedWithType);
+		assertFalse("Set physic object type has already been executed", physicObjectMock.executed);
+		assertNotSame("Physic object types are the same", type, physicObjectMock.executedWithType);
 
 		setPhysicObjectTypeBrick.execute();
 
-		assertTrue(physicObjectMock.executed);
-		assertEquals(type, physicObjectMock.executedWithType);
+		assertTrue("Set physic object type hasn't been executed", physicObjectMock.executed);
+		assertEquals("Set physic object type has been called with wrong parameters", type,
+				physicObjectMock.executedWithType);
 	}
 
 	public void testNullPhysicObject() {

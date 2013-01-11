@@ -56,40 +56,42 @@ public class TurnLeftSpeedBrickTest extends TestCase {
 	}
 
 	public void testRequiredResources() {
-		assertEquals(turnLeftSpeedBrick.getRequiredResources(), Brick.NO_RESOURCES);
+		assertEquals("Wrong required resources", turnLeftSpeedBrick.getRequiredResources(), Brick.NO_RESOURCES);
 	}
 
 	public void testGetSprite() {
-		assertEquals(turnLeftSpeedBrick.getSprite(), sprite);
+		assertEquals("Wrong sprite set", turnLeftSpeedBrick.getSprite(), sprite);
 	}
 
 	public void testSetPhysicObject() {
-		assertEquals(physicObjectMock, TestUtils.getPrivateField("physicObject", turnLeftSpeedBrick, false));
+		assertEquals("Wrong physic object set", physicObjectMock,
+				TestUtils.getPrivateField("physicObject", turnLeftSpeedBrick, false));
 	}
 
 	public void testClone() {
 		Brick clone = turnLeftSpeedBrick.clone();
 
-		assertEquals(turnLeftSpeedBrick.getSprite(), clone.getSprite());
-		assertEquals(turnLeftSpeedBrick.getRequiredResources(), clone.getRequiredResources());
+		assertEquals("Wrong sprite after cloning", turnLeftSpeedBrick.getSprite(), clone.getSprite());
+		assertEquals("Wrong required resources after cloning", turnLeftSpeedBrick.getRequiredResources(),
+				clone.getRequiredResources());
 	}
 
 	public void testExecution() {
-		assertFalse(physicObjectMock.executed);
-		assertNotSame(degreesPerSecond, physicObjectMock.executedWithDegrees);
+		assertFalse("Turn left has already been executed", physicObjectMock.executed);
+		assertNotSame("Degrees are the same", degreesPerSecond, physicObjectMock.executedWithDegrees);
 
 		turnLeftSpeedBrick.execute();
 
-		assertTrue(physicObjectMock.executed);
-		assertEquals(degreesPerSecond, physicObjectMock.executedWithDegrees);
+		assertTrue("Turn left hasn't been executed", physicObjectMock.executed);
+		assertEquals("Set rotation speed has been called with wrong degrees value", degreesPerSecond,
+				physicObjectMock.executedWithDegrees);
 	}
 
 	public void testNullPhysicObject() {
 		turnLeftSpeedBrick = new TurnLeftSpeedBrick(sprite, degreesPerSecond);
 		try {
 			turnLeftSpeedBrick.execute();
-			fail("Execution of SetAngularVelocityBrick with null Sprite did not cause a "
-					+ "NullPointerException to be thrown");
+			fail("Execution of SetAngularVelocityBrick with null Sprite did not cause a NullPointerException");
 		} catch (NullPointerException expected) {
 			// expected behavior
 		}
