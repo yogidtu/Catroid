@@ -23,12 +23,13 @@
 package org.catrobat.catroid.ui.dialogs;
 
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.fragment.CostumeFragment;
 import org.catrobat.catroid.utils.Utils;
 
 import android.content.Intent;
-import org.catrobat.catroid.R;
 
 public class NewSpriteDialog extends TextDialog {
 
@@ -46,22 +47,24 @@ public class NewSpriteDialog extends TextDialog {
 		if (projectManager.spriteExists(newSpriteName)) {
 			Utils.displayErrorMessageFragment(getFragmentManager(), getString(R.string.spritename_already_exists));
 			return false;
-		}
-
-		if (newSpriteName == null || newSpriteName.equalsIgnoreCase("")) {
+		} else if (newSpriteName == null || newSpriteName.equalsIgnoreCase("")) {
 			Utils.displayErrorMessageFragment(getFragmentManager(), getString(R.string.spritename_invalid));
 			return false;
-		}
-
-		if (projectManager.spriteExists(newSpriteName)) {
+		} else if (projectManager.spriteExists(newSpriteName)) {
 			Utils.displayErrorMessageFragment(getFragmentManager(), getString(R.string.spritename_already_exists));
 			return false;
 		}
 
 		Sprite sprite = new Sprite(newSpriteName);
 		projectManager.addSprite(sprite);
+		projectManager.setCurrentSprite(sprite);
 
 		getActivity().sendBroadcast(new Intent(ScriptActivity.ACTION_SPRITES_LIST_CHANGED));
+
+		Intent intent = new Intent(getActivity(), ScriptActivity.class);
+		intent.putExtra(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_COSTUMES);
+		intent.putExtra(CostumeFragment.EXTRA_IS_NEW_SPRITE, true);
+		startActivity(intent);
 
 		return true;
 	}

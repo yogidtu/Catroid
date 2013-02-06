@@ -63,21 +63,31 @@ import android.provider.MediaStore;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.badlogic.gdx.graphics.Pixmap;
 
 public class CostumeFragment extends ScriptActivityFragment implements OnCostumeEditListener,
 		LoaderManager.LoaderCallbacks<Cursor> {
 
+	public static final int REQUEST_SELECT_IMAGE = 0;
+	public static final int REQUEST_PAINTROID_EDIT_IMAGE = 1;
+	public static final int REQUEST_TAKE_PICTURE = 2;
+
+	public static final String EXTRA_IS_NEW_SPRITE = "org.catrobat.catroid.ui.fragment.isNewFragment";
+
+	private static final int ID_LOADER_MEDIA_IMAGE = 1;
+
 	private static final String BUNDLE_ARGUMENTS_SELECTED_COSTUME = "selected_costume";
 	private static final String BUNDLE_ARGUMENTS_URI_IS_SET = "uri_is_set";
 	private static final String LOADER_ARGUMENTS_IMAGE_URI = "image_uri";
 	private static final String SHARED_PREFERENCE_NAME = "showDetailsCostumes";
-	private static final int ID_LOADER_MEDIA_IMAGE = 1;
 
 	private CostumeAdapter adapter;
 	private ArrayList<CostumeData> costumeDataList;
@@ -88,13 +98,20 @@ public class CostumeFragment extends ScriptActivityFragment implements OnCostume
 	private CostumeDeletedReceiver costumeDeletedReceiver;
 	private CostumeRenamedReceiver costumeRenamedReceiver;
 
-	public static final int REQUEST_SELECT_IMAGE = 0;
-	public static final int REQUEST_PAINTROID_EDIT_IMAGE = 1;
-	public static final int REQUEST_TAKE_PICTURE = 2;
+	private boolean isNewSprite;
+	private TextView textViewAddFirstCostumeHint = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		if (savedInstanceState == null) {
+			Bundle bundle = getActivity().getIntent().getExtras();
+
+			if (bundle != null) {
+				isNewSprite = bundle.getBoolean(EXTRA_IS_NEW_SPRITE, false);
+			}
+		}
 	}
 
 	@Override
@@ -116,7 +133,6 @@ public class CostumeFragment extends ScriptActivityFragment implements OnCostume
 				costumeFromCameraUri = UtilCamera.getDefaultCostumeFromCameraUri(defCostumeName);
 			}
 		}
-
 		costumeDataList = ProjectManager.getInstance().getCurrentSprite().getCostumeDataList();
 		adapter = new CostumeAdapter(getActivity(), R.layout.fragment_costume_costumelist_item, costumeDataList, false);
 		adapter.setOnCostumeEditListener(this);
@@ -157,6 +173,25 @@ public class CostumeFragment extends ScriptActivityFragment implements OnCostume
 				.getApplicationContext());
 
 		setShowDetails(settings.getBoolean(SHARED_PREFERENCE_NAME, false));
+
+		if (isNewSprite) {
+			textViewAddFirstCostumeHint = (TextView) getView().findViewById(R.id.add_first_costume_hint);
+			textViewAddFirstCostumeHint.setVisibility(View.VISIBLE);
+			textViewAddFirstCostumeHint.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					ScriptActivity activity = (ScriptActivity) getActivity();
+
+					CostumeFragment costumeFragment = (CostumeFragment) activity
+							.getFragment(ScriptActivity.FRAGMENT_COSTUMES);
+
+					NewCostumeDialog dialog = new NewCostumeDialog();
+					dialog.showDialog(activity.getSupportFragmentManager(), costumeFragment);
+				}
+			});
+			isNewSprite = false;
+		}
 	}
 
 	@Override
@@ -201,6 +236,7 @@ public class CostumeFragment extends ScriptActivityFragment implements OnCostume
 					break;
 				}
 				loadImageIntoCatroid(data);
+				hideAddFirstCostumeHint();
 				break;
 			case REQUEST_PAINTROID_EDIT_IMAGE:
 				loadPaintroidImageIntoCatroid(data);
@@ -209,6 +245,7 @@ public class CostumeFragment extends ScriptActivityFragment implements OnCostume
 				String defCostumeName = getString(R.string.default_costume_name);
 				costumeFromCameraUri = UtilCamera.rotatePictureIfNecessary(costumeFromCameraUri, defCostumeName);
 				loadPictureFromCameraIntoCatroid();
+				hideAddFirstCostumeHint();
 				break;
 		}
 	}
@@ -266,7 +303,6 @@ public class CostumeFragment extends ScriptActivityFragment implements OnCostume
 			Utils.displayErrorMessageFragment(getFragmentManager(), getString(R.string.error_load_image));
 			return;
 		}
-
 		copyImageToCatroid(originalImagePath);
 	}
 
@@ -340,24 +376,32 @@ public class CostumeFragment extends ScriptActivityFragment implements OnCostume
 			}
 
 			String projectName = ProjectManager.getInstance().getCurrentProject().getName();
+
+			Log.d("TEST", "Project name: " + projectName);
+
 			File imageFile = StorageHandler.getInstance().copyImage(projectName, originalImagePath, null);
 
 			String imageName;
-			int extensionDotIndex = oldFile.getName().lastIndexOf('.');
+			String oldFileName = oldFile.getName();
+
+			int extensionDotIndex = oldFileName.lastIndexOf('.');
 			if (extensionDotIndex > 0) {
-				imageName = oldFile.getName().substring(0, extensionDotIndex);
+				imageName = oldFileName.substring(0, extensionDotIndex);
 			} else {
-				imageName = oldFile.getName();
+				imageName = oldFileName;
 			}
 
 			String imageFileName = imageFile.getName();
+
+			Log.d("TEST", "Image filename: " + imageFileName);
+
 			// if pixmap cannot be created, image would throw an Exception in stage
 			// so has to be loaded again with other Config
-			Pixmap pixmap = null;
-			pixmap = Utils.getPixmapFromFile(imageFile);
+			Pixmap pixmap = Utils.getPixmapFromFile(imageFile);
 			if (pixmap == null) {
 				ImageEditing.overwriteImageFileWithNewBitmap(imageFile);
 				pixmap = Utils.getPixmapFromFile(imageFile);
+
 				if (pixmap == null) {
 					Utils.displayErrorMessageFragment(getActivity().getSupportFragmentManager(),
 							getString(R.string.error_load_image));
@@ -370,7 +414,6 @@ public class CostumeFragment extends ScriptActivityFragment implements OnCostume
 		} catch (IOException e) {
 			Utils.displayErrorMessageFragment(getFragmentManager(), getString(R.string.error_load_image));
 		}
-
 		getLoaderManager().destroyLoader(ID_LOADER_MEDIA_IMAGE);
 		getActivity().sendBroadcast(new Intent(ScriptActivity.ACTION_BRICK_LIST_CHANGED));
 	}
@@ -456,6 +499,10 @@ public class CostumeFragment extends ScriptActivityFragment implements OnCostume
 
 		RenameCostumeDialog renameCostumeDialog = RenameCostumeDialog.newInstance(selectedCostumeData.getCostumeName());
 		renameCostumeDialog.show(getFragmentManager(), RenameCostumeDialog.DIALOG_FRAGMENT_TAG);
+	}
+
+	private void hideAddFirstCostumeHint() {
+		textViewAddFirstCostumeHint.setVisibility(View.GONE);
 	}
 
 	private void handleCopyCostumeButton(View v) {
