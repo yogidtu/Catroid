@@ -26,13 +26,13 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-public class UploadProjectErrorDialogFragment extends DialogFragment {
+public class WrongProjectVersionErrorDialogFragment extends DialogFragment {
 	public static final String DIALOG_FRAGMENT_TAG = "dialog_upload_project_error";
 
 	@Override
 	public Dialog onCreateDialog(Bundle bundle) {
 
-		Dialog uploadProjectErrorDialog = new UploadProjectErrorDialog(getActivity());
+		Dialog uploadProjectErrorDialog = new WrongProjectVersionErrorDialog(getActivity());
 
 		return uploadProjectErrorDialog;
 	}

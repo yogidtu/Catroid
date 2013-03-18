@@ -36,7 +36,7 @@ import org.catrobat.catroid.ui.dialogs.AboutDialogFragment;
 import org.catrobat.catroid.ui.dialogs.LoginRegisterDialog;
 import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
 import org.catrobat.catroid.ui.dialogs.UploadProjectDialog;
-import org.catrobat.catroid.ui.dialogs.UploadProjectErrorDialogFragment;
+import org.catrobat.catroid.ui.dialogs.WrongProjectVersionErrorDialogFragment;
 import org.catrobat.catroid.utils.StatusBarNotificationManager;
 import org.catrobat.catroid.utils.UtilZip;
 import org.catrobat.catroid.utils.Utils;
@@ -211,8 +211,8 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		boolean show_upload_error_dialog = sharedPreferences.getBoolean("show_upload_error_dialog", false);
 		if (show_upload_error_dialog) {
-			UploadProjectErrorDialogFragment aboutDialog = new UploadProjectErrorDialogFragment();
-			aboutDialog.show(getSupportFragmentManager(), UploadProjectErrorDialogFragment.DIALOG_FRAGMENT_TAG);
+			WrongProjectVersionErrorDialogFragment aboutDialog = new WrongProjectVersionErrorDialogFragment();
+			aboutDialog.show(getSupportFragmentManager(), WrongProjectVersionErrorDialogFragment.DIALOG_FRAGMENT_TAG);
 			int notificationId = sharedPreferences.getInt("notificationId", 0);
 			//			String notificationMessage = getString(R.string.error_project_upload_version);
 			//			StatusBarNotificationManager.INSTANCE.updateNotification(notificationId, notificationMessage,

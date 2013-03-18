@@ -67,8 +67,8 @@
     <string name="pref_descr_ms_bricks">Allow to control Lego Mindstorms robots</string>
     <!--  -->
     
-    <!-- Upload Project Error Dialog -->
-    <string name="dialog_upload_project_apk_link_text">Latest Version</string>
+    <!-- Wrong Project Version Error Dialog -->
+    <string name="dialog_wrong_project_version_apk_link_text">Latest Version</string>
 
     <!-- About Dialog -->
     <string name="dialog_about_title">About Catroid</string>
@@ -362,7 +362,7 @@
     <string name="error_no_name_entered">Please enter a name.</string>
     <string name="error_project_exists">A project with the same name already exists.\nPlease choose a different name.</string>
     <string name="error_project_upload">An error occurred while uploading the project.</string>
-    <string name="error_project_upload_version">The uploaded program was created with an old version of Catroid. Download the latest version here:</string>
+    <string name="error_project_version">You are using an old version of Catroid. Please download the latest version here:</string>
     <string name="error_project_download">An error occurred while downloading the project.</string>
     <string name="error_new_project">An error occurred while creating a new project.</string>
     <string name="error_rename_project">An error occurred while renaming the project before upload.</string>

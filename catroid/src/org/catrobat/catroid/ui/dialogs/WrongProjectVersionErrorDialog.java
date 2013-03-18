@@ -34,11 +34,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class UploadProjectErrorDialog extends Dialog {
+public class WrongProjectVersionErrorDialog extends Dialog {
 
 	private Context context;
 
-	public UploadProjectErrorDialog(Context context) {
+	public WrongProjectVersionErrorDialog(Context context) {
 		super(context);
 		this.context = context;
 	}
@@ -46,19 +46,19 @@ public class UploadProjectErrorDialog extends Dialog {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dialog_upload_project_error);
+		setContentView(R.layout.dialog_wrong_project_version_error);
 
 		setTitle(R.string.error);
 		setCanceledOnTouchOutside(true);
 
 		TextView errorMessageTextView = (TextView) findViewById(R.id.dialog_upload_project_error_text_view_message);
-		errorMessageTextView.setText(R.string.error_project_upload_version);
+		errorMessageTextView.setText(R.string.error_project_version);
 
 		TextView apkUrlTextView = (TextView) findViewById(R.id.dialog_upload_project_error_text_view_apk_link);
 		apkUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
 
 		String apkUrl = context.getString(R.string.link_template, Constants.LATEST_CATROID_VERSION_LINK,
-				context.getString(R.string.dialog_upload_project_apk_link_text));
+				context.getString(R.string.dialog_wrong_project_version_apk_link_text));
 
 		apkUrlTextView.setText(Html.fromHtml(apkUrl));
 

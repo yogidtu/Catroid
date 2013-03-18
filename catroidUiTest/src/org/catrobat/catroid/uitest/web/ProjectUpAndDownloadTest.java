@@ -149,8 +149,8 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.clickOnButton(solo.getString(R.string.upload_button));
 		solo.sleep(500);
 
-		String errorMessage = solo.getString(R.string.error_project_upload_version);
-		String linkText = solo.getString(R.string.dialog_upload_project_apk_link_text);
+		String errorMessage = solo.getString(R.string.error_project_version);
+		String linkText = solo.getString(R.string.dialog_wrong_project_version_apk_link_text);
 		boolean uploadErrorOccurred = solo.waitForText(errorMessage) && solo.waitForText(linkText);
 
 		int statusCode = 0;
@@ -204,8 +204,8 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.sleep(500);
 		solo.goBack();
 
-		String errorMessage = solo.getString(R.string.error_project_upload_version);
-		String linkText = solo.getString(R.string.dialog_upload_project_apk_link_text);
+		String errorMessage = solo.getString(R.string.error_project_version);
+		String linkText = solo.getString(R.string.dialog_wrong_project_version_apk_link_text);
 		boolean uploadErrorOccurred = solo.waitForText(errorMessage) && solo.waitForText(linkText);
 
 		int statusCode = 0;
