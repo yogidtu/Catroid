@@ -33,6 +33,7 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
+import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.UtilFile;
@@ -148,15 +149,76 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.clickOnButton(solo.getString(R.string.upload_button));
 		solo.sleep(500);
 
-		boolean uploadErrorOccurred = solo.waitForText(solo.getString(R.string.error_project_upload));
+		String errorMessage = solo.getString(R.string.error_project_upload_version);
+		String linkText = solo.getString(R.string.dialog_upload_project_apk_link_text);
+		boolean uploadErrorOccurred = solo.waitForText(errorMessage) && solo.waitForText(linkText);
 
 		int statusCode = 0;
-		int statusCodeWrongLanguageVersion = 518;
+		int statusCodeWrongLanguageVersion = Constants.STATUS_CODE_UPLOAD_OLD_CATROBAT_LANGUAGE;
 		statusCode = (Integer) Reflection.getPrivateField(ServerCalls.getInstance(), "uploadStatusCode");
 		Log.v("statusCode=", "" + statusCode);
 
-		assertTrue("Upload did work, but error toastmessage should have been displayed", uploadErrorOccurred);
+		assertTrue("Upload did work, error dialog is not showing!", uploadErrorOccurred);
 		assertEquals("Wrong status code from Web", statusCodeWrongLanguageVersion, statusCode);
+
+		String ok = solo.getString(R.string.ok);
+		assertTrue("Ok button not showing!", solo.searchText(ok));
+
+		UiTestUtils.clearAllUtilTestProjects();
+	}
+
+	public void testUploadProjectOldCatrobatLanguageVersionWithPause() throws Throwable {
+		setServerURLToTestUrl();
+
+		createTestProject(testProject);
+		solo.waitForFragmentById(R.id.fragment_sprites_list);
+		solo.sleep(1000);
+		UiTestUtils.clickOnHomeActionBarButton(solo);
+		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+
+		UiTestUtils.createValidUser(getActivity());
+
+		// change catrobatLanguage to a version that is not supported by web
+		// should lead to an errormessage after upload
+		Project testProject = ProjectManager.INSTANCE.getCurrentProject();
+		testProject.setCatrobatLanguageVersion(0.3f);
+		StorageHandler.getInstance().saveProject(testProject);
+
+		solo.clickOnText(solo.getString(R.string.main_menu_upload));
+		solo.sleep(500);
+
+		// enter a new title
+		solo.clearEditText(0);
+		solo.clickOnEditText(0);
+		solo.enterText(0, newTestProject);
+
+		// enter a description
+		solo.clearEditText(1);
+		solo.clickOnEditText(1);
+		solo.enterText(1, newTestDescription);
+
+		solo.clickOnButton(solo.getString(R.string.upload_button));
+		solo.sleep(200);
+		solo.clickOnText(solo.getString(R.string.main_menu_continue));
+		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		solo.sleep(500);
+		solo.goBack();
+
+		String errorMessage = solo.getString(R.string.error_project_upload_version);
+		String linkText = solo.getString(R.string.dialog_upload_project_apk_link_text);
+		boolean uploadErrorOccurred = solo.waitForText(errorMessage) && solo.waitForText(linkText);
+
+		int statusCode = 0;
+		int statusCodeWrongLanguageVersion = Constants.STATUS_CODE_UPLOAD_OLD_CATROBAT_LANGUAGE;
+		statusCode = (Integer) Reflection.getPrivateField(ServerCalls.getInstance(), "uploadStatusCode");
+		Log.v("statusCode=", "" + statusCode);
+
+		assertTrue("Upload did work, error dialog is not showing!", uploadErrorOccurred);
+		assertEquals("Wrong status code from Web", statusCodeWrongLanguageVersion, statusCode);
+
+		String ok = solo.getString(R.string.ok);
+		assertTrue("Ok button not showing!", solo.searchText(ok));
+
 		UiTestUtils.clearAllUtilTestProjects();
 	}
 

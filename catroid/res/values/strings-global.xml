@@ -36,7 +36,7 @@
     <!-- Website URLs -->
     <string name="catroid_website" translatable="false">http://www.catroid.org</string>
     <string name="about_catroid_license_url" translatable="false">http://developer.catrobat.org/licenses</string>
-    <string name="about_link_template" translatable="false">&lt;a href="%1$s">%2$s&lt;/a></string>
+    <string name="link_template" translatable="false">&lt;a href="%1$s">%2$s&lt;/a></string>
     <string name="catrobat_forum" translatable="false">https://groups.google.com/group/catrobat</string>
 
     <!-- Settings, some overridden in values-v14 -->

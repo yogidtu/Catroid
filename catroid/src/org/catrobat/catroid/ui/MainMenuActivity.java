@@ -36,11 +36,15 @@ import org.catrobat.catroid.ui.dialogs.AboutDialogFragment;
 import org.catrobat.catroid.ui.dialogs.LoginRegisterDialog;
 import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
 import org.catrobat.catroid.ui.dialogs.UploadProjectDialog;
+import org.catrobat.catroid.ui.dialogs.UploadProjectErrorDialogFragment;
 import org.catrobat.catroid.utils.StatusBarNotificationManager;
 import org.catrobat.catroid.utils.UtilZip;
 import org.catrobat.catroid.utils.Utils;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -89,6 +93,13 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		}
 	}
 
+	private class UploadReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			showUploadErrorDialog();
+		}
+	}
+
 	private static final String TAG = "MainMenuActivity";
 	private static final String PROJECTNAME_TAG = "fname=";
 
@@ -117,6 +128,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		if (loadExternalProjectUri != null) {
 			loadProgramFromExternalSource(loadExternalProjectUri);
 		}
+
 	}
 
 	@Override
@@ -131,6 +143,9 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		setMainMenuButtonContinueText();
 		findViewById(R.id.main_menu_button_continue).setEnabled(true);
 		StatusBarNotificationManager.INSTANCE.displayDialogs(this);
+		registerForErrorBroadcast();
+
+		showUploadErrorDialog();
 	}
 
 	@Override
@@ -184,6 +199,27 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			}
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void registerForErrorBroadcast() {
+		BroadcastReceiver receiver = new UploadReceiver();
+		registerReceiver(receiver, new IntentFilter(Constants.UPLOAD_PROJECT_ERROR_INTENT));
+	}
+
+	private void showUploadErrorDialog() {
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		boolean show_upload_error_dialog = sharedPreferences.getBoolean("show_upload_error_dialog", false);
+		if (show_upload_error_dialog) {
+			UploadProjectErrorDialogFragment aboutDialog = new UploadProjectErrorDialogFragment();
+			aboutDialog.show(getSupportFragmentManager(), UploadProjectErrorDialogFragment.DIALOG_FRAGMENT_TAG);
+			int notificationId = sharedPreferences.getInt("notificationId", 0);
+			//			String notificationMessage = getString(R.string.error_project_upload_version);
+			//			StatusBarNotificationManager.INSTANCE.updateNotification(notificationId, notificationMessage,
+			//					Constants.UPLOAD_NOTIFICATION, true);
+			editor.putBoolean("show_upload_error_dialog", false);
+			editor.commit();
+		}
 	}
 
 	public void handleContinueButton(View v) {

@@ -67,6 +67,8 @@
     <string name="pref_descr_ms_bricks">Erlaube Steuerung eines Lego Mindstorm Roboters</string>
     <!--  -->
 
+	<!-- Upload Project Error Dialog -->
+    <string name="dialog_upload_project_apk_link_text">Aktuelle Version</string>
 
     <!-- About Dialog -->
     <string name="dialog_about_title">Über Catroid</string>
@@ -359,6 +361,7 @@
     <string name="error_no_name_entered">Bitte einen Namen eingeben.</string>
     <string name="error_project_exists">Es gibt bereits ein Projekt mit dem eingegebenen Namen.\nBitte einen anderen Namen eingeben.</string>
     <string name="error_project_upload">Beim Upload des Projektes ist ein Fehler aufgetreten.</string>
+    <string name="error_project_upload_version">Das hochgeladene Program wurde mit einer alten Version von Catroid erstellt. Die neueste Version finden Sie hier:</string>
     <string name="error_project_download">Beim Download des Projektes ist ein Fehler aufgetreten.</string>
     <string name="error_new_project">Beim Erstellen des neuen Projektes ist ein Fehler aufgetreten.</string>
     <string name="error_rename_project">Beim Umbenennen des Projektes vor dem Upload ist ein Fehler aufgetreten.</string>

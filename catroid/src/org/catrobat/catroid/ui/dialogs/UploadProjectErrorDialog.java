@@ -23,7 +23,7 @@
 package org.catrobat.catroid.ui.dialogs;
 
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.common.Constants;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -34,11 +34,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class AboutDialog extends Dialog {
+public class UploadProjectErrorDialog extends Dialog {
 
 	private Context context;
 
-	public AboutDialog(Context context) {
+	public UploadProjectErrorDialog(Context context) {
 		super(context);
 		this.context = context;
 	}
@@ -46,25 +46,23 @@ public class AboutDialog extends Dialog {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dialog_about);
+		setContentView(R.layout.dialog_upload_project_error);
 
-		setTitle(R.string.dialog_about_title);
+		setTitle(R.string.error);
 		setCanceledOnTouchOutside(true);
 
-		TextView aboutUrlTextView = (TextView) findViewById(R.id.dialog_about_text_view_url);
-		aboutUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
+		TextView errorMessageTextView = (TextView) findViewById(R.id.dialog_upload_project_error_text_view_message);
+		errorMessageTextView.setText(R.string.error_project_upload_version);
 
-		String aboutUrl = context.getString(R.string.link_template,
-				context.getString(R.string.about_catroid_license_url),
-				context.getString(R.string.dialog_about_catroid_license_link_text));
+		TextView apkUrlTextView = (TextView) findViewById(R.id.dialog_upload_project_error_text_view_apk_link);
+		apkUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
 
-		aboutUrlTextView.setText(Html.fromHtml(aboutUrl));
+		String apkUrl = context.getString(R.string.link_template, Constants.LATEST_CATROID_VERSION_LINK,
+				context.getString(R.string.dialog_upload_project_apk_link_text));
 
-		TextView aboutVersionNameTextView = (TextView) findViewById(R.id.dialog_about_text_view_version_name);
-		String versionName = Utils.getVersionName(context);
-		aboutVersionNameTextView.setText(versionName);
+		apkUrlTextView.setText(Html.fromHtml(apkUrl));
 
-		Button okButton = (Button) findViewById(R.id.dialog_about_ok_button);
+		Button okButton = (Button) findViewById(R.id.dialog_upload_project_error_ok_button);
 		okButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -73,4 +71,5 @@ public class AboutDialog extends Dialog {
 			}
 		});
 	}
+
 }

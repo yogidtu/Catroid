@@ -49,6 +49,8 @@ public final class Constants {
 
 	//Web:
 	public static final String TOKEN = "token";
+	public static final int STATUS_CODE_OK = 200;
+	public static final int STATUS_CODE_UPLOAD_OLD_CATROBAT_LANGUAGE = 518;
 
 	// Paintroid
 	public static final String EXTRA_PICTURE_PATH_PAINTROID = "org.catrobat.extra.PAINTROID_PICTURE_PATH";
@@ -58,6 +60,8 @@ public final class Constants {
 
 	//Various:
 	public static final int BUFFER_8K = 8 * 1024;
+	//Note: This should be changed to a link to the latest stable version (catrobat.org)
+	public static final String LATEST_CATROID_VERSION_LINK = "http://catrobatgw.ist.tugraz.at:8080/job/Catroid/lastSuccessfulBuild/artifact/catroid/bin/";
 	public static final String PAINTROID_DOWNLOAD_LINK = "https://github.com/Catrobat/Paintroid/downloads";
 	public static final String PREF_PROJECTNAME_KEY = "projectName";
 
@@ -67,4 +71,5 @@ public final class Constants {
 	public static final int UPLOAD_NOTIFICATION = 102;
 	public static final int DOWNLOAD_NOTIFICATION = 103;
 	public static final int COPY_NOTIFICATION = 104;
+	public static final String UPLOAD_PROJECT_ERROR_INTENT = "upload_project_error_intent";
 }
