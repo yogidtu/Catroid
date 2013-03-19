@@ -217,8 +217,9 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		boolean show_upload_error_dialog = sharedPreferences.getBoolean("show_upload_error_dialog", false);
 		if (show_upload_error_dialog) {
-			WrongProjectVersionErrorDialogFragment aboutDialog = new WrongProjectVersionErrorDialogFragment();
-			aboutDialog.show(getSupportFragmentManager(), WrongProjectVersionErrorDialogFragment.DIALOG_FRAGMENT_TAG);
+			WrongProjectVersionErrorDialogFragment uploadErrorDialog = new WrongProjectVersionErrorDialogFragment();
+			uploadErrorDialog.show(getSupportFragmentManager(),
+					WrongProjectVersionErrorDialogFragment.DIALOG_FRAGMENT_TAG);
 			editor.putBoolean("show_upload_error_dialog", false);
 			editor.commit();
 		}
