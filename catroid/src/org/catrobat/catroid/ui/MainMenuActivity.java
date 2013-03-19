@@ -96,6 +96,12 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	private class UploadReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+			int notificationId = sharedPreferences.getInt("notificationId", 0);
+			String notificationMessage = getString(R.string.error_project_version);
+			StatusBarNotificationManager.INSTANCE.updateNotification(notificationId, notificationMessage,
+					Constants.UPLOAD_NOTIFICATION, true);
+
 			showUploadErrorDialog();
 		}
 	}
@@ -213,10 +219,6 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		if (show_upload_error_dialog) {
 			WrongProjectVersionErrorDialogFragment aboutDialog = new WrongProjectVersionErrorDialogFragment();
 			aboutDialog.show(getSupportFragmentManager(), WrongProjectVersionErrorDialogFragment.DIALOG_FRAGMENT_TAG);
-			int notificationId = sharedPreferences.getInt("notificationId", 0);
-			//			String notificationMessage = getString(R.string.error_project_upload_version);
-			//			StatusBarNotificationManager.INSTANCE.updateNotification(notificationId, notificationMessage,
-			//					Constants.UPLOAD_NOTIFICATION, true);
 			editor.putBoolean("show_upload_error_dialog", false);
 			editor.commit();
 		}

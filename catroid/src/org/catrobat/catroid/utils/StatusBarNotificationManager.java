@@ -197,6 +197,11 @@ public class StatusBarNotificationManager {
 
 	@SuppressWarnings("deprecation")
 	private void updateUploadNotification(Integer id, String message, int notificationCode, boolean finished) {
+		if (uploadNotificationDataMap == null) {
+			System.out.println("THE MAP IS NULL");
+		} else {
+			System.out.println("MAP SIZE: " + uploadNotificationDataMap.size());
+		}
 		Context context = uploadNotificationDataMap.get(id).getContext();
 		String notificationTitle = uploadNotificationDataMap.get(id).getNotificationTitle();
 		PendingIntent pendingIntent = uploadNotificationDataMap.get(id).getPendingIntent();
