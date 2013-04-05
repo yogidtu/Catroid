@@ -25,6 +25,7 @@ package org.catrobat.catroid.ui;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
 
 import android.content.Intent;
@@ -50,6 +51,10 @@ public class MyProjectsActivity extends SherlockFragmentActivity {
 
 		findViewById(R.id.bottom_bar_separator).setVisibility(View.GONE);
 		findViewById(R.id.button_play).setVisibility(View.GONE);
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this);
+		hint.overlayHint();
 	}
 
 	// Code from Stackoverflow to reduce memory problems

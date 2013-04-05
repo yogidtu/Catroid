@@ -25,6 +25,7 @@ package org.catrobat.catroid.ui;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
+import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.adapter.SpriteAdapter;
@@ -51,6 +52,10 @@ public class ProjectActivity extends SherlockFragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_project);
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this);
+		hint.overlayHint();
 	}
 
 	@Override

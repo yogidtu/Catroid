@@ -78,5 +78,18 @@
         <item>@string/add_look_from_camera</item>
         <item>@string/add_look_from_gallery</item>
     </string-array>
-
+    
+    <!-- Hint Strings -->
+	<string-array name="hints_mainmenu">
+	    <item>@string/hint_mainmenu_welcome</item>
+	    <item>@string/hint_mainmenu_continue</item>
+	    <item>@string/hint_mainmenu_new</item>
+	    <item>@string/hint_mainmenu_programs</item>
+	    <item>@string/hint_mainmenu_community</item>
+	    <item>@string/hint_mainmenu_web</item>
+	    <item>@string/hint_mainmenu_upload</item>
+	    
+	</string-array>
+	    
+	
 </resources>

@@ -498,4 +498,14 @@
     <string name="formula_editor_variable_context_action_item_selected">items selected!</string>
     <!--  -->
 
+	<!-- Hint Strings -->
+	<string name="hint_mainmenu_welcome">Welcome to Catroid! This Hints only appears on first execution.</string>
+	<string name="hint_mainmenu_continue">Click here to continue the current project.</string>
+	<string name="hint_mainmenu_new">Click here to create a new project.</string>
+	<string name="hint_mainmenu_programs">Click here to get a list of all your projects.</string>
+	<string name="hint_mainmenu_community">Click here to get to the Catrobat Community.</string>
+	<string name="hint_mainmenu_web">Click here to visit the Catrobat webside.</string>
+	<string name="hint_mainmenu_upload">Click here to upload one of your projects.</string>
+	<!--  -->
+	
 </resources>

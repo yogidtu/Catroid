@@ -25,6 +25,7 @@ package org.catrobat.catroid.ui;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
+import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
 
@@ -55,6 +56,10 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 		String title = ProjectManager.getInstance().getCurrentSprite().getName();
 		actionBar.setTitle(title);
 		actionBar.setHomeButtonEnabled(true);
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this);
+		hint.overlayHint();
 	}
 
 	@Override

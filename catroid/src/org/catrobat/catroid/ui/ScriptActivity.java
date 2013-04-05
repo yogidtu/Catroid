@@ -25,6 +25,7 @@ package org.catrobat.catroid.ui;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
+import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
@@ -139,6 +140,10 @@ public class ScriptActivity extends SherlockFragmentActivity {
 			}
 		});
 		actionBar.setSelectedNavigationItem(currentFragmentPosition);
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this);
+		hint.overlayHint();
 	}
 
 	private void updateCurrentFragment(int fragmentPosition, FragmentTransaction fragmentTransaction) {
