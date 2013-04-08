@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- *  Catroid: An on-device graphical programming language for Android devices
- *  Copyright (C) 2010-2011 The Catroid Team
- *  (<http://code.google.com/p/catroid/wiki/Credits>)
+ *  Catroid: An on-device visual programming system for Android devices
+ *  Copyright (C) 2010-2013 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as
@@ -11,36 +11,54 @@
  *  
  *  An additional term exception under section 7 of the GNU Affero
  *  General Public License, version 3, is available at
- *  http://www.catroid.org/catroid_license_additional_term
+ *  http://developer.catrobat.org/license_additional_term
  *  
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU Affero General Public License for more details.
- *   
+ *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/brick_yellow"
-    android:orientation="vertical" >
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
 
-    <TextView
-        style="@style/brick_text_style"
-        android:text="@string/brick_note" >
-    </TextView>
-
-    <EditText
-        android:id="@+id/brick_note_edit_text"
-        android:layout_width="match_parent"
+    <CheckBox
+        android:id="@+id/brick_note_checkbox"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:minLines="1"
-        android:scrollbars="vertical" >
-    </EditText>
+        android:gravity="center_vertical"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/brick_note_layout"
+        style="@style/BrickContainer.Control.Medium" >
+
+        <TextView
+            style="@style/BrickText.SingleLine"
+            android:text="@string/brick_note" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/brick_note_prototype_text_view"
+            style="@style/BrickPrototypeTextView"
+            android:layout_width="match_parent" >
+        </TextView>
+
+        <EditText
+            android:id="@+id/brick_note_edit_text"
+            style="@style/BrickEditText"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="left"
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:minLines="1" />
+    </LinearLayout>
 
 </LinearLayout>

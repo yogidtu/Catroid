@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- *  Catroid: An on-device graphical programming language for Android devices
- *  Copyright (C) 2010-2011 The Catroid Team
- *  (<http://code.google.com/p/catroid/wiki/Credits>)
+ *  Catroid: An on-device visual programming system for Android devices
+ *  Copyright (C) 2010-2013 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as
@@ -11,34 +11,37 @@
  *  
  *  An additional term exception under section 7 of the GNU Affero
  *  General Public License, version 3, is available at
- *  http://www.catroid.org/catroid_license_additional_term
+ *  http://developer.catrobat.org/license_additional_term
  *  
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU Affero General Public License for more details.
- *   
+ *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <!-- Strings that need no translation -->
 <resources>
 
     <!-- Language independent -->
-    <string name="percent">%</string>
-    <string name="catroid_extension_pathPattern">.*\\.catroid</string>
+    <string name="catroid_extension_pathPattern" translatable="false">.*\\.catrobat</string>
 
-    <!-- Lego Mindstorms -->
-    <string name="minus_symbol">-</string>
-    <string name="plus_symbol">+</string>
-    <string name="just_a_v">v</string>
-    <string name="degree">°</string>
+    <!-- Symbols -->
+    <string name="degree_symbol" translatable="false">°</string>
+    <string name="minus_symbol" translatable="false">-</string>
+    <string name="percent_symbol" translatable="false">%</string>
+    <string name="plus_symbol" translatable="false">+</string>
 
     <!-- Website URLs -->
-    <string name="catroid_website">http://www.catroid.org</string>
-    <string name="about_catroid_url">http://code.google.com/p/catroid/</string>
-    <string name="about_link_template">&lt;a href="%1$s">%2$s&lt;/a></string>
-    <string name="catroid_forum">https://groups.google.com/group/catroid</string>
+    <string name="catroid_website" translatable="false">http://www.catroid.org</string>
+    <string name="about_catroid_license_url" translatable="false">http://developer.catrobat.org/licenses</string>
+    <string name="about_link_template" translatable="false">&lt;a href="%1$s">%2$s&lt;/a></string>
+    <string name="catrobat_forum" translatable="false">https://groups.google.com/group/catrobat</string>
+    <string name="catrobat_terms_of_use" translatable="false">http://www.catroid.org/catroid/termsofuse</string>
+
+    <!-- Settings, some overridden in values-v14 -->
+    <string name="scrolling_cache_enabled">false</string>
+    <string name="animation_cache_enabled">false</string>
 
 </resources>

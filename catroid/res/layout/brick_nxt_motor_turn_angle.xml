@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- *  Catroid: An on-device graphical programming language for Android devices
- *  Copyright (C) 2010-2011 The Catroid Team
- *  (<http://code.google.com/p/catroid/wiki/Credits>)
+ *  Catroid: An on-device visual programming system for Android devices
+ *  Copyright (C) 2010-2013 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as
@@ -11,103 +11,91 @@
  *  
  *  An additional term exception under section 7 of the GNU Affero
  *  General Public License, version 3, is available at
- *  http://www.catroid.org/catroid_license_additional_term
+ *  http://developer.catrobat.org/license_additional_term
  *  
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU Affero General Public License for more details.
- *   
+ *  
  *  You should have received a copy of the GNU Affero General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:orientation="horizontal" >
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+    <CheckBox
+        android:id="@+id/brick_nxt_motor_turn_checkbox"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/brick_red"
+        android:gravity="center_vertical"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/brick_nxt_motor_turn_layout"
+        style="@style/BrickContainer.Lego.Medium"
+        android:gravity="center_vertical"
         android:orientation="vertical" >
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true" >
+            android:layout_height="wrap_content" >
 
             <TextView
-                style="@style/brick_text_style"
-                android:layout_centerVertical="true"
-                android:paddingRight="10dip"
+                style="@style/BrickText.SingleLine"
                 android:text="@string/brick_motor_turn_angle" >
             </TextView>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <Spinner
+                android:id="@+id/motor_spinner"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" >
+                android:clickable="false"
+                android:focusable="false" >
+            </Spinner>
+        </LinearLayout>
 
-                <Spinner
-                    android:id="@+id/motor_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="false"
-                    android:focusable="false" >
-                </Spinner>
-            </LinearLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true" >
+            android:layout_height="wrap_content" >
 
             <TextView
-                style="@style/brick_text_style"
-                android:layout_centerVertical="true"
-                android:paddingRight="10dip"
+                style="@style/BrickText.SingleLine"
                 android:text="@string/motor_angle" >
             </TextView>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true" >
+            <TextView
+                android:id="@+id/motor_turn_angle_text_view"
+                style="@style/BrickText.SingleLine"
+                />
 
-                <EditText
-                    android:id="@+id/motor_turn_angle_edit_text"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:gravity="right"
-                    android:inputType="number|numberDecimal|numberSigned"
-                    android:maxLength="4"
-                    android:maxLines="1"
-                    android:text="0" >
-                </EditText>
+            <EditText
+                android:id="@+id/motor_turn_angle_edit_text"
+                style="@style/BrickEditText"
+                android:clickable="false"
+                android:inputType="number|numberDecimal|numberSigned"
+                android:visibility="gone" >
+            </EditText>
 
-                <TextView
-                    style="@style/brick_text_style"
-                    android:text="@string/degree" >
-                </TextView>
+            <TextView
+                style="@style/BrickText"
+                android:text="@string/degree_symbol" >
+            </TextView>
 
-                <Button
+            <!--
+                     <Button
                     android:id="@+id/directions_btn"
-                    android:layout_width="40dip"
-                    android:layout_height="45dip"
+                    android:layout_width="50dip"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/btn_dropdown"
                     android:clickable="false"
-                    android:focusable="false"
-                    android:text="@string/just_a_v" />
-            </LinearLayout>
-        </RelativeLayout>
+                    android:focusable="false" />
+            -->
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

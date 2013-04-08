@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- *  Catroid: An on-device graphical programming language for Android devices
- *  Copyright (C) 2010-2011 The Catroid Team
- *  (<http://code.google.com/p/catroid/wiki/Credits>)
+ *  Catroid: An on-device visual programming system for Android devices
+ *  Copyright (C) 2010-2013 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Affero General Public License as
@@ -11,125 +11,99 @@
  *  
  *  An additional term exception under section 7 of the GNU Affero
  *  General Public License, version 3, is available at
- *  http://www.catroid.org/catroid_license_additional_term
+ *  http://developer.catrobat.org/license_additional_term
  *  
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU Affero General Public License for more details.
- *   
+ *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/brick_blue"
-    android:orientation="vertical" >
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <CheckBox
+        android:id="@+id/brick_glide_to_checkbox"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true" >
+        android:gravity="center_vertical"
+        android:visibility="gone" />
 
-        <TextView
-            style="@style/brick_text_style"
-            android:layout_centerVertical="true"
-            android:paddingRight="10dip"
-            android:text="@string/brick_glide" >
-        </TextView>
+    <LinearLayout
+        android:id="@+id/brick_glide_to_layout"
+        style="@style/BrickContainer.Motion.Medium"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true" >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                style="@style/BrickText.SingleLine"
+                android:text="@string/brick_glide" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/brick_glide_to_prototype_text_view_duration"
+                style="@style/BrickPrototypeTextView" >
+            </TextView>
 
             <EditText
-                android:id="@+id/brick_glide_to_duration_edit_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:gravity="right"
-                android:inputType="number"
-                android:maxLength="8"
-                android:maxLines="1"
-                android:minWidth="60dip"
-                android:text="3" >
+                android:id="@+id/brick_glide_to_edit_text_duration"
+                style="@style/BrickEditText"
+                android:inputType="number|numberDecimal" >
             </EditText>
 
             <TextView
-                style="@style/brick_text_style"
-                android:paddingLeft="10dip"
-                android:paddingRight="10dip"
-                android:text="@string/seconds" >
+                android:id="@+id/brick_glide_to_seconds_text_view"
+                style="@style/BrickText.SingleLine" >
             </TextView>
         </LinearLayout>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true" >
-
-        <TextView
-            style="@style/brick_text_style"
-            android:layout_centerVertical="true"
-            android:paddingRight="10dip"
-            android:text="@string/brick_glide_to" >
-        </TextView>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true" >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
             <TextView
-                style="@style/brick_text_style"
-                android:paddingRight="10dip"
-                android:text="@string/x_label" >
+                style="@style/BrickText.SingleLine"
+                android:text="@string/brick_glide_to_x" >
+            </TextView>
+
+            <TextView
+                android:id="@+id/brick_glide_to_prototype_text_view_x"
+                style="@style/BrickPrototypeTextView" >
             </TextView>
 
             <EditText
-                android:id="@+id/brick_glide_to_x_edit_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:gravity="right"
-                android:inputType="number|numberDecimal|numberSigned"
-                android:maxLength="6"
-                android:maxLines="1"
-                android:minWidth="60dip"
-                android:text="0" >
+                android:id="@+id/brick_glide_to_edit_text_x"
+                style="@style/BrickEditText"
+                android:inputType="number|numberDecimal|numberSigned" >
             </EditText>
 
             <TextView
-                style="@style/brick_text_style"
-                android:paddingLeft="10dip"
-                android:paddingRight="10dip"
+                style="@style/BrickText.SingleLine"
                 android:text="@string/y_label" >
             </TextView>
 
+            <TextView
+                android:id="@+id/brick_glide_to_prototype_text_view_y"
+                style="@style/BrickPrototypeTextView" >
+            </TextView>
+
             <EditText
-                android:id="@+id/brick_glide_to_y_edit_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:gravity="right"
-                android:inputType="number|numberDecimal|numberSigned"
-                android:maxLength="6"
-                android:maxLines="1"
-                android:minWidth="60dip"
-                android:text="0" >
+                android:id="@+id/brick_glide_to_edit_text_y"
+                style="@style/BrickEditText"
+                android:inputType="number|numberDecimal|numberSigned" >
             </EditText>
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>
