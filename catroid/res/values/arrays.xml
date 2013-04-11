@@ -88,8 +88,46 @@
 	    <item>@string/hint_mainmenu_community</item>
 	    <item>@string/hint_mainmenu_web</item>
 	    <item>@string/hint_mainmenu_upload</item>
-	    
 	</string-array>
-	    
 	
+	<string-array name="hints_project">
+	    <item>@string/hint_project_background</item>
+	    <item>@string/hint_project_objects</item>
+	    <item>@string/hint_project_add</item>
+	    <item>@string/hint_project_play</item>
+	</string-array>
+	
+	<string-array name="hints_myprojects">
+	    <item>@string/hint_myprojects_programs</item>
+	    <item>@string/hint_myprojects_add</item>
+	</string-array>
+	
+	<string-array name="hints_programmenu">
+	    <item>@string/hint_programmenu_scripts</item>
+	    <item>@string/hint_programmenu_looks</item>
+	    <item>@string/hint_programmenu_sounds</item>
+	    <item>@string/hint_programmenu_play</item>
+	</string-array>
+	
+	<string-array name="hints_scripts">
+	    <item>@string/hint_scripts_bricks</item>
+	    <item>@string/hint_scripts_add</item>
+	    <item>@string/hint_scripts_play</item>
+	</string-array>
+	
+	<string-array name="hints_looks">
+	    <item>@string/hint_looks_costumes</item>
+	    <item>@string/hint_looks_add</item>
+	    <item>@string/hint_looks_play</item>
+	</string-array>
+	
+	<string-array name="hints_sounds">
+	    <item>@string/hint_sounds_items</item>
+	    <item>@string/hint_sounds_add</item>
+	    <item>@string/hint_sounds_play</item>
+	</string-array>
+	
+	<string-array name="hints_settings">
+	    <item>@string/hint_settings</item>
+	</string-array>
 </resources>

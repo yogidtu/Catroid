@@ -506,6 +506,35 @@
 	<string name="hint_mainmenu_community">Click here to get to the Catrobat Community.</string>
 	<string name="hint_mainmenu_web">Click here to visit the Catrobat webside.</string>
 	<string name="hint_mainmenu_upload">Click here to upload one of your projects.</string>
+	
+	<string name="hint_project_background">Click here to change the background of the project.</string>
+	<string name="hint_project_objects">Click one of the objects to change it.</string>
+	<string name="hint_project_add">Click here to add an object to the project.</string>
+	<string name="hint_project_play">Click here to execute the project.</string>
+	
+	<string name="hint_myprojects_programs">Here you can find all your projects you worked on.</string>
+	<string name="hint_myprojects_add">Click here to create a new project.</string>	
+	
+	<string name="hint_programmenu_scripts">Click here to create a script for the object.</string>
+	<string name="hint_programmenu_looks">Click here to change the looks of the object in the project.</string>
+	<string name="hint_programmenu_sounds">Click here to add and change sounds for the object.</string>
+	<string name="hint_programmenu_play">Click here to start the project.</string>
+
+	<string name="hint_scripts_bricks">Here you can find the used bricks for this script.</string>
+	<string name="hint_scripts_add">Click here to add a brick to your script.</string>
+	<string name="hint_scripts_play">Click here to start the project.</string>
+	
+	<string name="hint_looks_costumes">Here you can find all looks of the current project.</string>
+	<string name="hint_looks_add">Click here to add a look to the list.</string>
+	<string name="hint_looks_play">Click here to start the project.</string>	
+	
+	<string name="hint_sounds_items">Here you can find all sounds of the current project.</string>
+	<string name="hint_sounds_add">Click here to add a sound to the list.</string>
+	<string name="hint_sounds_play">Click here to start the project.</string>
+	
+	<string name="hint_settings">Here are the settings.</string>
+	
 	<!--  -->
 	
+
 </resources>

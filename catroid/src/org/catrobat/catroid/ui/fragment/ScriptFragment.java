@@ -291,6 +291,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		fragmentTransaction.commit();
 
 		adapter.notifyDataSetChanged();
+
 	}
 
 	@Override

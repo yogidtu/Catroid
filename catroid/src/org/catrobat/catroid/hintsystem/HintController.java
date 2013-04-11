@@ -25,10 +25,12 @@ package org.catrobat.catroid.hintsystem;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.ui.ScriptActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.view.View;
 
 /**
@@ -54,103 +56,34 @@ public class HintController {
 			} else {
 				getMainMenuHints(currentActivity);
 			}
+		} else if (currentActivity.getLocalClassName().compareTo("ui.ProjectActivity") == 0) {
+			getProjectHints(currentActivity);
+		} else if (currentActivity.getLocalClassName().compareTo("ui.MyProjectsActivity") == 0) {
+			getMyProjectsHints(currentActivity);
+		} else if (currentActivity.getLocalClassName().compareTo("ui.ProgramMenuActivity") == 0) {
+			getProgramMenuHints(currentActivity);
+		} else if (currentActivity.getLocalClassName().compareTo("ui.SettingsActivity") == 0) {
+			getSettingsHints(currentActivity);
+		} else if (currentActivity.getLocalClassName().compareTo("ui.ScriptActivity") == 0) {
+			Bundle bundle = currentActivity.getIntent().getExtras();
+			if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 0) {
+				getScriptingHints(currentActivity);
+			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_LOOKS) == 1) {
+				getLooksHints(currentActivity);
+			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SOUNDS) == 2) {
+				getSoundsHints(currentActivity);
+			}
+
+		} else if (currentActivity.getLocalClassName().compareTo("ui.SettingsActivity") == 0) {
+			getSettingsHints(currentActivity);
 		}
 
 		return allHints;
 	}
 
-	//	public ArrayList<HintObject> getHints(Context context) {
-	//		Activity currentActivity = (Activity) context;
-	//		ArrayList<HintObject> allHints = new ArrayList<HintObject>();
-	//		int[] coord = { 0, 0, 0 };
-	//
-	//		if (currentActivity.getLocalClassName().compareTo("ui.MainMenuActivity") == 0) {
-	//			MainMenuActivity mainMenuActivity = (MainMenuActivity) currentActivity;
-	//			coord = examineCoordinates(mainMenuActivity, R.id.main_menu_button_continue);
-	//			allHints.add(createHint(coord, mainMenuActivity.getString(R.string.hint_mainmenu_welcome)));
-	//
-	//		} else if (currentActivity.getLocalClassName().compareTo("ui.MyProjectsActivity") == 0) {
-	//			MyProjectsActivity myProjectsActivity = (MyProjectsActivity) currentActivity;
-	//			coord = examineCoordinates(myProjectsActivity, R.id.my_projects_activity_project_title);
-	//			allHints.add(createHint(coord, "Hier findest du alle Projekte aufgelistet."));
-	//
-	//		} else if (currentActivity.getLocalClassName().compareTo("ui.ProjectActivity") == 0) {
-	//			ProjectActivity projectActivity = (ProjectActivity) currentActivity;
-	//			coord = examineCoordinates(projectActivity, R.id.button_add);
-	//			allHints.add(createHint(coord, "Füge einen Sprite hinzu "));
-	//			coord = examineCoordinates(projectActivity, R.id.button_play);
-	//			allHints.add(createHint(coord, "Das Projekt ausführen "));
-	//			coord = examineCoordinates(projectActivity, R.id.sprite_title);
-	//			allHints.add(createHint(coord, "Alle Sprites aufgelistet "));
-	//
-	//		} else if (currentActivity.getLocalClassName().compareTo("ui.ProgramMenuActivity") == 0) {
-	//			ProgramMenuActivity programMenuActivity = (ProgramMenuActivity) currentActivity;
-	//			coord = examineCoordinates(programMenuActivity, R.id.program_menu_button_scripts);
-	//			allHints.add(createHint(coord, "Weiter zu den Scripts "));
-	//			coord = examineCoordinates(programMenuActivity, R.id.program_menu_button_looks);
-	//			allHints.add(createHint(coord, "Weiter zu den Looks "));
-	//			coord = examineCoordinates(programMenuActivity, R.id.program_menu_button_sounds);
-	//			allHints.add(createHint(coord, "Weiter zu den Sounds "));
-	//			coord = examineCoordinates(programMenuActivity, R.id.button_play);
-	//			allHints.add(createHint(coord, "Das Projekt ausführen "));
-	//
-	//		} else if (currentActivity.getLocalClassName().compareTo("ui.ScriptActivity") == 0) {
-	//			ScriptActivity scriptActivity = (ScriptActivity) currentActivity;
-	//			Bundle bundle = scriptActivity.getIntent().getExtras();
-	//			if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 0) {
-	//				coord = examineCoordinates(scriptActivity, R.id.script_fragment_container);
-	//				allHints.add(createHint(coord, "Das sind Bricks "));
-	//				coord = examineCoordinates(scriptActivity, R.id.button_add);
-	//				allHints.add(createHint(coord, "Füge ein Script hinzu "));
-	//
-	//			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 1) {
-	//				coord = examineCoordinates(scriptActivity, R.id.script_fragment_container);
-	//				allHints.add(createHint(coord, "Hier sind alle Kostüme "));
-	//				coord = examineCoordinates(scriptActivity, R.id.button_add);
-	//				allHints.add(createHint(coord, "Füge ein Kostüm hinzu "));
-	//
-	//			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 2) {
-	//				coord = examineCoordinates(scriptActivity, R.id.script_fragment_container);
-	//				allHints.add(createHint(coord, "Hier sind alle Sounds "));
-	//				coord = examineCoordinates(scriptActivity, R.id.button_add);
-	//				allHints.add(createHint(coord, "Füge einen Sound hinzu "));
-	//			}
-	//
-	//			coord = examineCoordinates(scriptActivity, R.id.button_play);
-	//			allHints.add(createHint(coord, "Das Projekt ausführen "));
-	//
-	//		}
-	//
-	//		return allHints;
-	//
-	//	}
-
 	private HintObject createHint(int[] coordinates, String text) {
 		HintObject hint = new HintObject(coordinates, text);
 		return hint;
-	}
-
-	public int[] examineCoordinates(Activity activity, int id) {
-		int[] coordinates = { 0, 0, 0 };
-		View currentView = activity.findViewById(id);
-		currentView.getLocationInWindow(coordinates);
-		int viewWidth = currentView.getWidth();
-		int viewHeight = currentView.getHeight();
-		coordinates[0] = (coordinates[0] + viewWidth / 2) - 25;
-		coordinates[1] = (coordinates[1] + viewHeight / 2) - 25;
-		coordinates[2] = viewWidth;
-		coordinates = normalizeCoordinates(coordinates);
-
-		return coordinates;
-	}
-
-	public int[] normalizeCoordinates(int[] coordinates) {
-		float x = (float) coordinates[0] / Hint.getInstance().getScreenWidth() * 100;
-		float y = (float) coordinates[1] / Hint.getInstance().getScreenHeight() * 100;
-
-		coordinates[0] = (int) x;
-		coordinates[1] = (int) y;
-		return coordinates;
 	}
 
 	private void getWelcomeHint(Activity activity) {
@@ -179,6 +112,116 @@ public class HintController {
 		coord = examineCoordinates(activity, R.id.main_menu_button_upload);
 		allHints.add(createHint(coord, hintStrings[5]));
 
+	}
+
+	private void getProjectHints(Activity activity) {
+		int[] coord = { 0, 0, 0 };
+		Resources resources = activity.getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_project);
+
+		coord = examineCoordinates(activity, R.id.spritelist_item_background);
+		allHints.add(createHint(coord, hintStrings[0]));
+		coord = examineCoordinates(activity, R.id.fragment_sprites_list);
+		allHints.add(createHint(coord, hintStrings[1]));
+		coord = examineCoordinates(activity, R.id.button_add);
+		allHints.add(createHint(coord, hintStrings[2]));
+		coord = examineCoordinates(activity, R.id.button_play);
+		allHints.add(createHint(coord, hintStrings[3]));
+	}
+
+	private void getMyProjectsHints(Activity activity) {
+		int[] coord = { 0, 0, 0 };
+		Resources resources = activity.getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_myprojects);
+
+		coord = examineCoordinates(activity, R.id.my_projects_activity_project_title);
+		allHints.add(createHint(coord, hintStrings[0]));
+		coord = examineCoordinates(activity, R.id.button_add);
+		allHints.add(createHint(coord, hintStrings[1]));
+
+	}
+
+	private void getProgramMenuHints(Activity activity) {
+		int[] coord = { 0, 0, 0 };
+		Resources resources = activity.getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_programmenu);
+
+		coord = examineCoordinates(activity, R.id.program_menu_button_scripts);
+		allHints.add(createHint(coord, hintStrings[0]));
+		coord = examineCoordinates(activity, R.id.program_menu_button_looks);
+		allHints.add(createHint(coord, hintStrings[1]));
+		coord = examineCoordinates(activity, R.id.program_menu_button_sounds);
+		allHints.add(createHint(coord, hintStrings[2]));
+		coord = examineCoordinates(activity, R.id.button_play);
+		allHints.add(createHint(coord, hintStrings[3]));
+	}
+
+	private void getScriptingHints(Activity activity) {
+		int[] coord = { 0, 0, 0 };
+		Resources resources = activity.getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_scripts);
+
+		coord = examineCoordinates(activity, R.id.brick_list_view);
+		allHints.add(createHint(coord, hintStrings[0]));
+		coord = examineCoordinates(activity, R.id.button_add);
+		allHints.add(createHint(coord, hintStrings[1]));
+		coord = examineCoordinates(activity, R.id.button_play);
+		allHints.add(createHint(coord, hintStrings[2]));
+	}
+
+	private void getLooksHints(Activity activity) {
+		int[] coord = { 0, 0, 0 };
+		Resources resources = activity.getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_looks);
+
+		coord = examineCoordinates(activity, R.id.fragment_look_item_relative_layout);
+		allHints.add(createHint(coord, hintStrings[0]));
+		coord = examineCoordinates(activity, R.id.button_add);
+		allHints.add(createHint(coord, hintStrings[1]));
+		coord = examineCoordinates(activity, R.id.button_play);
+		allHints.add(createHint(coord, hintStrings[2]));
+
+	}
+
+	private void getSoundsHints(Activity activity) {
+		int[] coord = { 0, 0, 0 };
+		Resources resources = activity.getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_sounds);
+
+		coord = examineCoordinates(activity, R.id.fragment_sound_relative_layout);
+		allHints.add(createHint(coord, hintStrings[0]));
+		coord = examineCoordinates(activity, R.id.button_add);
+		allHints.add(createHint(coord, hintStrings[1]));
+		coord = examineCoordinates(activity, R.id.button_play);
+		allHints.add(createHint(coord, hintStrings[2]));
+
+	}
+
+	private void getSettingsHints(Activity activity) {
+
+	}
+
+	public int[] examineCoordinates(Activity activity, int id) {
+		int[] coordinates = { 0, 0, 0 };
+		View currentView = activity.findViewById(id);
+		currentView.getLocationInWindow(coordinates);
+		int viewWidth = currentView.getWidth();
+		int viewHeight = currentView.getHeight();
+		coordinates[0] = (coordinates[0] + viewWidth / 2) - 25;
+		coordinates[1] = (coordinates[1] + viewHeight / 2) - 25;
+		coordinates[2] = viewWidth;
+		coordinates = normalizeCoordinates(coordinates);
+
+		return coordinates;
+	}
+
+	public int[] normalizeCoordinates(int[] coordinates) {
+		float x = (float) coordinates[0] / Hint.getInstance().getScreenWidth() * 100;
+		float y = (float) coordinates[1] / Hint.getInstance().getScreenHeight() * 100;
+
+		coordinates[0] = (int) x;
+		coordinates[1] = (int) y;
+		return coordinates;
 	}
 
 }
