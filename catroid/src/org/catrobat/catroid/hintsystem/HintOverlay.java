@@ -59,7 +59,6 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 		this.setZOrderOnTop(true); //necessary 
 		getHolder().setFormat(PixelFormat.TRANSPARENT);
 		getHolder().addCallback(this);
-		//wenn Hint aktiviert funktioniert alles nur im Portrait mode
 		Activity currentActivity = (Activity) context;
 		currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		paint.setTextSize(25);
@@ -69,11 +68,16 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		Hint.getInstance().removeHint();
+		showWelcomeHint();
+		return true;
+
+	}
+
+	private void showWelcomeHint() {
 		if (!Hint.welcome) {
 			Hint.getInstance().overlayHint();
 			Hint.welcome = true;
 		}
-		return true;
 
 	}
 

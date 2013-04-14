@@ -545,9 +545,12 @@
 	<string name="hint_sounds_add">Click here to add a sound to the list.</string>
 	<string name="hint_sounds_play">Click here to start the project.</string>
 	
-	<string name="hint_settings">Here are the settings.</string>
-	
-	<!--  -->
+	<string name="hint_brick_category_control">Here you can find Control Bricks.</string>
+	<string name="hint_brick_category_motion">Here you can find Motion Bricks.</string>
+	<string name="hint_brick_category_sounds">Here you can find Sound Bricks.</string>
+	<string name="hint_brick_category_looks">Here you can find Look Bricks.</string>
+	<string name="hint_brick_category_variables">Here you can find Variable Bricks.</string>	
+	<string name="hint_brick_category_lego">Here you can find Lego Mindstorm Bricks.</string><!--  -->
 	
 
 </resources>

@@ -81,9 +81,12 @@ public class BrickCategoryFragment extends SherlockListFragment {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				if (onCategorySelectedListener != null) {
 					onCategorySelectedListener.onCategorySelected(adapter.getItem(position));
+
 				}
+
 			}
 		});
+
 	}
 
 	@Override

@@ -85,6 +85,7 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.formulaeditor.Operators;
+import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.adapter.PrototypeBrickAdapter;
 import org.catrobat.catroid.ui.fragment.BrickCategoryFragment;
 import org.catrobat.catroid.ui.fragment.ScriptFragment;
@@ -135,6 +136,7 @@ public class AddBrickDialog extends DialogFragment {
 		setRetainInstance(true);
 
 		selectedCategory = getArguments().getString(BUNDLE_ARGUMENTS_SELECTED_CATEGORY);
+
 	}
 
 	@Override
@@ -197,6 +199,11 @@ public class AddBrickDialog extends DialogFragment {
 			}
 
 		});
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this.getActivity());
+		hint.overlayHint();
+
 	}
 
 	@Override
@@ -368,5 +375,9 @@ public class AddBrickDialog extends DialogFragment {
 		brickMap.put(context.getString(R.string.category_lego_nxt), legoNXTBrickList);
 
 		return brickMap;
+	}
+
+	public ListView getListView() {
+		return listView;
 	}
 }

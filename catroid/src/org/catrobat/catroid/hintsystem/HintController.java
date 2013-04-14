@@ -26,12 +26,18 @@ import java.util.ArrayList;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.dialogs.AddBrickDialog;
+import org.catrobat.catroid.ui.fragment.BrickCategoryFragment;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.ListView;
+
+import com.actionbarsherlock.app.SherlockListFragment;
 
 /**
  * @author amore
@@ -40,8 +46,10 @@ import android.view.View;
 public class HintController {
 
 	private ArrayList<HintObject> allHints;
+	private Context context;
 
-	public HintController() {
+	public HintController(Context context) {
+		this.context = context;
 		allHints = new ArrayList<HintObject>();
 	}
 
@@ -49,35 +57,31 @@ public class HintController {
 		Activity currentActivity = (Activity) context;
 		allHints.clear();
 
-		if (currentActivity.getLocalClassName().compareTo("ui.MainMenuActivity") == 0) {
-			if (!Hint.welcome) {
-				getWelcomeHint(currentActivity);
+		switch (checkActivity(currentActivity)) {
+			case 0:
+				if (!Hint.welcome) {
+					getWelcomeHint(currentActivity);
 
-			} else {
-				getMainMenuHints(currentActivity);
-			}
-		} else if (currentActivity.getLocalClassName().compareTo("ui.ProjectActivity") == 0) {
-			getProjectHints(currentActivity);
-		} else if (currentActivity.getLocalClassName().compareTo("ui.MyProjectsActivity") == 0) {
-			getMyProjectsHints(currentActivity);
-		} else if (currentActivity.getLocalClassName().compareTo("ui.ProgramMenuActivity") == 0) {
-			getProgramMenuHints(currentActivity);
-		} else if (currentActivity.getLocalClassName().compareTo("ui.SettingsActivity") == 0) {
-			getSettingsHints(currentActivity);
-		} else if (currentActivity.getLocalClassName().compareTo("ui.ScriptActivity") == 0) {
-			Bundle bundle = currentActivity.getIntent().getExtras();
-			if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 0) {
-				getScriptingHints(currentActivity);
-			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_LOOKS) == 1) {
-				getLooksHints(currentActivity);
-			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SOUNDS) == 2) {
-				getSoundsHints(currentActivity);
-			}
-
-		} else if (currentActivity.getLocalClassName().compareTo("ui.SettingsActivity") == 0) {
-			getSettingsHints(currentActivity);
+				} else {
+					getMainMenuHints(currentActivity);
+				}
+				break;
+			case 1:
+				getProjectHints(currentActivity);
+				break;
+			case 2:
+				getMyProjectsHints(currentActivity);
+				break;
+			case 3:
+				getProgramMenuHints(currentActivity);
+				break;
+			case 4:
+				getScriptHints(currentActivity);
+				break;
+			case 5:
+				getSettingsHints(currentActivity);
+				break;
 		}
-
 		return allHints;
 	}
 
@@ -156,6 +160,27 @@ public class HintController {
 		allHints.add(createHint(coord, hintStrings[3]));
 	}
 
+	private void getScriptHints(Activity currentActivity) {
+		Bundle bundle = currentActivity.getIntent().getExtras();
+		Fragment isBrickCategory = ((ScriptActivity) currentActivity).getSupportFragmentManager().findFragmentByTag(
+				BrickCategoryFragment.BRICK_CATEGORY_FRAGMENT_TAG);
+		Fragment isAddBrickDialog = ((ScriptActivity) currentActivity).getSupportFragmentManager().findFragmentByTag(
+				AddBrickDialog.DIALOG_FRAGMENT_TAG);
+		if (isBrickCategory != null && isAddBrickDialog == null) {
+			getBrickCategoryHints(currentActivity);
+		} else if (isAddBrickDialog != null) {
+			getAddBrickHints(currentActivity);
+		} else {
+			if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 0) {
+				getScriptingHints(currentActivity);
+			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_LOOKS) == 1) {
+				getLooksHints(currentActivity);
+			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SOUNDS) == 2) {
+				getSoundsHints(currentActivity);
+			}
+		}
+	}
+
 	private void getScriptingHints(Activity activity) {
 		int[] coord = { 0, 0, 0 };
 		Resources resources = activity.getResources();
@@ -197,7 +222,127 @@ public class HintController {
 
 	}
 
+	private void getBrickCategoryHints(Activity activity) {
+		int[] coord = { 0, 0, 0 };
+		Resources resources = activity.getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_brick_categories);
+
+		ScriptActivity currentActivity = (ScriptActivity) activity;
+		SherlockListFragment currentFragment = (SherlockListFragment) currentActivity.getSupportFragmentManager()
+				.findFragmentByTag(BrickCategoryFragment.BRICK_CATEGORY_FRAGMENT_TAG);
+		ListView listView = currentFragment.getListView();
+
+		for (int i = 0; i < listView.getChildCount(); i++) {
+			coord = examineListCoordinates(listView.getChildAt(i));
+			allHints.add(createHint(coord, hintStrings[i]));
+		}
+
+	}
+
+	private void getAddBrickHints(Activity activity) {
+		ScriptActivity currentActivity = (ScriptActivity) activity;
+		AddBrickDialog fragment = (AddBrickDialog) currentActivity.getSupportFragmentManager().findFragmentByTag(
+				AddBrickDialog.DIALOG_FRAGMENT_TAG);
+
+		switch (checkCategory(fragment)) {
+			case 0:
+				getBrickHints(fragment, R.array.hints_brick_control);
+				break;
+
+			case 1:
+				getBrickHints(fragment, R.array.hints_brick_motion);
+				break;
+
+			case 2:
+				getBrickHints(fragment, R.array.hints_brick_sounds);
+				break;
+
+			case 3:
+				getBrickHints(fragment, R.array.hints_brick_looks);
+				break;
+
+			case 4:
+				getBrickHints(fragment, R.array.hints_brick_variables);
+				break;
+
+			case 5:
+				getBrickHints(fragment, R.array.hints_brick_lego);
+				break;
+
+		}
+
+	}
+
 	private void getSettingsHints(Activity activity) {
+
+	}
+
+	private void getBrickHints(AddBrickDialog fragment, int id) {
+		int[] coord = { 0, 0, 0 };
+		Resources resources = fragment.getActivity().getResources();
+		String[] hintStrings = {};
+
+		ListView listView = fragment.getListView();
+
+		hintStrings = resources.getStringArray(id);
+		for (int i = 0; i < listView.getChildCount() - 1; i++) {
+			coord = examineListCoordinates(listView.getChildAt(i));
+			allHints.add(createHint(coord, hintStrings[i]));
+		}
+
+	}
+
+	private int checkCategory(AddBrickDialog fragment) {
+		Resources resources = fragment.getActivity().getResources();
+		Bundle arg = fragment.getArguments();
+		String selectedCategory = arg.getString("selected_category");
+
+		if (selectedCategory.equals(resources.getString(R.string.category_control))) {
+			return 0;
+		} else if (selectedCategory.equals(resources.getString(R.string.category_motion))) {
+			return 1;
+		} else if (selectedCategory.equals(resources.getString(R.string.category_sound))) {
+			return 2;
+		} else if (selectedCategory.equals(resources.getString(R.string.category_looks))) {
+			return 3;
+		} else if (selectedCategory.equals(resources.getString(R.string.category_variables))) {
+			return 4;
+		} else if (selectedCategory.equals(resources.getString(R.string.category_lego_nxt))) {
+			return 5;
+		}
+		return -1;
+	}
+
+	private int checkActivity(Activity activity) {
+
+		if (activity.getLocalClassName().compareTo("ui.MainMenuActivity") == 0) {
+			return 0;
+		} else if (activity.getLocalClassName().compareTo("ui.ProjectActivity") == 0) {
+			return 1;
+		} else if (activity.getLocalClassName().compareTo("ui.MyProjectActivity") == 0) {
+			return 2;
+		} else if (activity.getLocalClassName().compareTo("ui.ProgramMenuActivity") == 0) {
+			return 3;
+		} else if (activity.getLocalClassName().compareTo("ui.ScriptActivity") == 0) {
+			return 4;
+		} else if (activity.getLocalClassName().compareTo("ui.SettingsActivity") == 0) {
+			return 5;
+		}
+		return -1;
+	}
+
+	public int[] examineListCoordinates(View view) {
+		int[] coordinates = { 0, 0, 0 };
+		view.getLocationInWindow(coordinates);
+
+		int viewWidth = view.getWidth();
+		int viewHeight = view.getHeight();
+		coordinates[0] = (coordinates[0] + viewWidth / 2) - 25;
+		coordinates[1] = (coordinates[1] + viewHeight / 2) - 25;
+		coordinates[2] = viewWidth;
+		coordinates = normalizeCoordinates(coordinates);
+
+		return coordinates;
 
 	}
 

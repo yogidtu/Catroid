@@ -45,9 +45,10 @@ public class Hint {
 	private WindowManager windowManager;
 	private HintOverlay hintOverlay;
 
-	static HintController controller = new HintController();
+	static HintController controller;
 
 	private Hint() {
+		controller = new HintController(context);
 
 	}
 
@@ -77,9 +78,9 @@ public class Hint {
 	public void removeHint() {
 		windowManager = ((Activity) context).getWindowManager();
 		windowManager.removeView(hintOverlay);
-		//		hintOverlay = null;
-		//		System.gc();
-		//		System.runFinalization();
+		hintOverlay = null;
+		System.gc();
+		System.runFinalization();
 	}
 
 	public WindowManager.LayoutParams createLayoutParameters() {

@@ -31,6 +31,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
+import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
@@ -243,6 +244,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 		AddBrickDialog addBrickDialog = AddBrickDialog.newInstance(selectedCategory, this);
 		addBrickDialog.show(fragmentTransaction, AddBrickDialog.DIALOG_FRAGMENT_TAG);
+
 	}
 
 	public void updateAdapterAfterAddNewBrick(Brick brickToBeAdded) {
@@ -291,6 +293,10 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		fragmentTransaction.commit();
 
 		adapter.notifyDataSetChanged();
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this.getActivity());
+		hint.overlayHint();
 
 	}
 

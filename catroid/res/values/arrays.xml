@@ -127,7 +127,69 @@
 	    <item>@string/hint_sounds_play</item>
 	</string-array>
 	
-	<string-array name="hints_settings">
-	    <item>@string/hint_settings</item>
+	<string-array name="hints_brick_categories">
+	    <item>@string/hint_brick_category_control</item>
+	    <item>@string/hint_brick_category_motion</item>
+	    <item>@string/hint_brick_category_sounds</item>
+	    <item>@string/hint_brick_category_looks</item>
+	    <item>@string/hint_brick_category_variables</item>
+	    <item>@string/hint_brick_category_lego</item>
 	</string-array>
+	
+	<string-array name="hints_brick_control">
+	    <item>eins</item>
+	    <item>zwei</item>
+	    <item>drei</item>
+	    <item>vier</item>
+	    <item>fünf</item>
+	    <item>sechs</item>
+	    <item>sieben</item>
+	    <item>acht</item>
+	    <item>neun</item>
+	    <item>zehn</item>
+	</string-array>
+	
+	<string-array name="hints_brick_motion">
+	    <item>eins</item>
+	    <item>zwei</item>
+	    <item>drei</item>
+	    <item>vier</item>
+	    <item>fünf</item>
+	    <item>sechs</item>
+	</string-array>
+	
+	<string-array name="hints_brick_sounds">
+	    <item>eins</item>
+	    <item>zwei</item>
+	    <item>drei</item>
+	    <item>vier</item>
+	    <item>fünf</item>
+	    <item>sechs</item>
+	</string-array>
+	
+	<string-array name="hints_brick_looks">
+	    <item>eins</item>
+	    <item>zwei</item>
+	    <item>drei</item>
+	    <item>vier</item>
+	    <item>fünf</item>
+	    <item>sechs</item>
+	</string-array>
+	
+	<string-array name="hints_brick_variables">
+	    <item>eins</item>
+	    <item>zwei</item>
+	</string-array>
+	
+	<string-array name="hints_brick_lego">
+	    <item>eins</item>
+	    <item>zwei</item>
+	    <item>drei</item>
+	    <item>vier</item>
+	    <item>fünf</item>
+	    <item>sechs</item>
+	</string-array>
+	
+	
+	
 </resources>
