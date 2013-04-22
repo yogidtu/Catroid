@@ -370,16 +370,16 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.waitForText(solo.getString(R.string.main_menu_continue));
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 
-		solo.waitForText(solo.getString(R.string.default_project_sprites_catroid_name));
 		UiTestUtils.clickOnHintOverlay(solo);
-		solo.clickOnText(solo.getString(R.string.default_project_sprites_catroid_name));
+		solo.waitForText(solo.getString(R.string.default_project_sprites_pocketcode_name));
+		solo.clickOnText(solo.getString(R.string.default_project_sprites_pocketcode_name));
 
 		solo.waitForText(solo.getString(R.string.looks));
 		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.looks));
 
 		String deleteLookText = solo.getString(R.string.delete);
-		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_catroid_normalcat));
+		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_pocketcode_normalcat));
 		solo.waitForText(deleteLookText);
 		solo.clickOnText(deleteLookText);
 		solo.clickOnButton(solo.getString(R.string.ok));
@@ -467,7 +467,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.sleep(500);
 
 		try {
-			boolean success = solo.waitForText(solo.getString(R.string.success_project_upload));
+			boolean success = solo.waitForText(solo.getString(R.string.success_project_upload), 1, 40000);
 			assertTrue("Upload failed. Internet connection?", success);
 			String resultString = (String) Reflection.getPrivateField(ServerCalls.getInstance(), "resultString");
 			JSONObject jsonObject;

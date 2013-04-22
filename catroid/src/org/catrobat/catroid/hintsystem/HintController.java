@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.dialogs.AddBrickDialog;
+import org.catrobat.catroid.ui.fragment.AddBrickFragment;
 import org.catrobat.catroid.ui.fragment.BrickCategoryFragment;
 
 import android.app.Activity;
@@ -168,11 +168,11 @@ public class HintController {
 		Bundle bundle = activity.getIntent().getExtras();
 		Fragment isBrickCategory = activity.getSupportFragmentManager().findFragmentByTag(
 				BrickCategoryFragment.BRICK_CATEGORY_FRAGMENT_TAG);
-		Fragment isAddBrickDialog = activity.getSupportFragmentManager().findFragmentByTag(
-				AddBrickDialog.DIALOG_FRAGMENT_TAG);
-		if (isBrickCategory != null && isAddBrickDialog == null) {
+		Fragment isAddBrickFragment = activity.getSupportFragmentManager().findFragmentByTag(
+				AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
+		if (isBrickCategory != null && isAddBrickFragment == null) {
 			getBrickCategoryHints();
-		} else if (isAddBrickDialog != null) {
+		} else if (isAddBrickFragment != null) {
 			getAddBrickHints();
 		} else {
 			if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 0) {
@@ -285,8 +285,8 @@ public class HintController {
 	private void getBrickHints(int id) {
 		int[] coord = { 0, 0, 0 };
 		ScriptActivity activity = (ScriptActivity) context;
-		AddBrickDialog fragment = (AddBrickDialog) activity.getSupportFragmentManager().findFragmentByTag(
-				AddBrickDialog.DIALOG_FRAGMENT_TAG);
+		AddBrickFragment fragment = (AddBrickFragment) activity.getSupportFragmentManager().findFragmentByTag(
+				AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
 		Resources resources = fragment.getActivity().getResources();
 		ListView listView = fragment.getListView();
 
@@ -300,8 +300,8 @@ public class HintController {
 
 	private int checkCategory() {
 		ScriptActivity activity = (ScriptActivity) context;
-		AddBrickDialog fragment = (AddBrickDialog) activity.getSupportFragmentManager().findFragmentByTag(
-				AddBrickDialog.DIALOG_FRAGMENT_TAG);
+		AddBrickFragment fragment = (AddBrickFragment) activity.getSupportFragmentManager().findFragmentByTag(
+				AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
 		Resources resources = fragment.getActivity().getResources();
 		Bundle arg = fragment.getArguments();
 		String selectedCategory = arg.getString("selected_category");
