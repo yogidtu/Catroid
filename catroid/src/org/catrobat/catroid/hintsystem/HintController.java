@@ -48,38 +48,36 @@ public class HintController {
 	private ArrayList<HintObject> allHints;
 	private Context context;
 
-	public HintController(Context context) {
-		this.context = context;
+	public HintController() {
 		allHints = new ArrayList<HintObject>();
 	}
 
-	public ArrayList<HintObject> getHints(Context context) {
-		Activity currentActivity = (Activity) context;
+	public ArrayList<HintObject> getHints() {
 		allHints.clear();
 
-		switch (checkActivity(currentActivity)) {
+		switch (checkActivity()) {
 			case 0:
 				if (!Hint.welcome) {
-					getWelcomeHint(currentActivity);
+					getWelcomeHint();
 
 				} else {
-					getMainMenuHints(currentActivity);
+					getMainMenuHints();
 				}
 				break;
 			case 1:
-				getProjectHints(currentActivity);
+				getProjectHints();
 				break;
 			case 2:
-				getMyProjectsHints(currentActivity);
+				getMyProjectsHints();
 				break;
 			case 3:
-				getProgramMenuHints(currentActivity);
+				getProgramMenuHints();
 				break;
 			case 4:
-				getScriptHints(currentActivity);
+				getScriptHints();
 				break;
 			case 5:
-				getSettingsHints(currentActivity);
+				getSettingsHints();
 				break;
 		}
 		return allHints;
@@ -90,145 +88,156 @@ public class HintController {
 		return hint;
 	}
 
-	private void getWelcomeHint(Activity activity) {
+	private void getWelcomeHint() {
+		Activity activity = (Activity) context;
 		int[] coord = { 0, 0, 0 };
 		Resources resources = activity.getResources();
 		String[] hintStrings = resources.getStringArray(R.array.hints_mainmenu);
 
-		coord = examineCoordinates(activity, R.id.main_menu);
+		coord = examineCoordinates(activity.findViewById(R.id.main_menu));
 		allHints.add(createHint(coord, hintStrings[0]));
 
 	}
 
-	private void getMainMenuHints(Activity activity) {
+	private void getMainMenuHints() {
+		Activity activity = (Activity) context;
 		int[] coord = { 0, 0, 0 };
 		Resources resources = activity.getResources();
 		String[] hintStrings = resources.getStringArray(R.array.hints_mainmenu);
 
-		coord = examineCoordinates(activity, R.id.main_menu_button_continue);
+		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_continue));
 		allHints.add(createHint(coord, hintStrings[1]));
-		coord = examineCoordinates(activity, R.id.main_menu_button_new);
+		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_new));
 		allHints.add(createHint(coord, hintStrings[2]));
-		coord = examineCoordinates(activity, R.id.main_menu_button_programs);
+		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_programs));
 		allHints.add(createHint(coord, hintStrings[3]));
-		coord = examineCoordinates(activity, R.id.main_menu_button_forum);
+		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_forum));
 		allHints.add(createHint(coord, hintStrings[4]));
-		coord = examineCoordinates(activity, R.id.main_menu_button_upload);
+		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_upload));
 		allHints.add(createHint(coord, hintStrings[5]));
 
 	}
 
-	private void getProjectHints(Activity activity) {
+	private void getProjectHints() {
+		Activity activity = (Activity) context;
 		int[] coord = { 0, 0, 0 };
 		Resources resources = activity.getResources();
 		String[] hintStrings = resources.getStringArray(R.array.hints_project);
 
-		coord = examineCoordinates(activity, R.id.spritelist_item_background);
+		coord = examineCoordinates(activity.findViewById(R.id.spritelist_item_background));
 		allHints.add(createHint(coord, hintStrings[0]));
-		coord = examineCoordinates(activity, R.id.fragment_sprites_list);
+		coord = examineCoordinates(activity.findViewById(R.id.fragment_sprites_list));
 		allHints.add(createHint(coord, hintStrings[1]));
-		coord = examineCoordinates(activity, R.id.button_add);
+		coord = examineCoordinates(activity.findViewById(R.id.button_add));
 		allHints.add(createHint(coord, hintStrings[2]));
-		coord = examineCoordinates(activity, R.id.button_play);
+		coord = examineCoordinates(activity.findViewById(R.id.button_play));
 		allHints.add(createHint(coord, hintStrings[3]));
 	}
 
-	private void getMyProjectsHints(Activity activity) {
+	private void getMyProjectsHints() {
+		Activity activity = (Activity) context;
 		int[] coord = { 0, 0, 0 };
 		Resources resources = activity.getResources();
 		String[] hintStrings = resources.getStringArray(R.array.hints_myprojects);
 
-		coord = examineCoordinates(activity, R.id.my_projects_activity_project_title);
+		coord = examineCoordinates(activity.findViewById(R.id.my_projects_activity_project_title));
 		allHints.add(createHint(coord, hintStrings[0]));
-		coord = examineCoordinates(activity, R.id.button_add);
+		coord = examineCoordinates(activity.findViewById(R.id.button_add));
 		allHints.add(createHint(coord, hintStrings[1]));
 
 	}
 
-	private void getProgramMenuHints(Activity activity) {
+	private void getProgramMenuHints() {
+		Activity activity = (Activity) context;
 		int[] coord = { 0, 0, 0 };
 		Resources resources = activity.getResources();
 		String[] hintStrings = resources.getStringArray(R.array.hints_programmenu);
 
-		coord = examineCoordinates(activity, R.id.program_menu_button_scripts);
+		coord = examineCoordinates(activity.findViewById(R.id.program_menu_button_scripts));
 		allHints.add(createHint(coord, hintStrings[0]));
-		coord = examineCoordinates(activity, R.id.program_menu_button_looks);
+		coord = examineCoordinates(activity.findViewById(R.id.program_menu_button_looks));
 		allHints.add(createHint(coord, hintStrings[1]));
-		coord = examineCoordinates(activity, R.id.program_menu_button_sounds);
+		coord = examineCoordinates(activity.findViewById(R.id.program_menu_button_sounds));
 		allHints.add(createHint(coord, hintStrings[2]));
-		coord = examineCoordinates(activity, R.id.button_play);
+		coord = examineCoordinates(activity.findViewById(R.id.button_play));
 		allHints.add(createHint(coord, hintStrings[3]));
 	}
 
-	private void getScriptHints(Activity currentActivity) {
-		Bundle bundle = currentActivity.getIntent().getExtras();
-		Fragment isBrickCategory = ((ScriptActivity) currentActivity).getSupportFragmentManager().findFragmentByTag(
+	private void getScriptHints() {
+		ScriptActivity activity = (ScriptActivity) context;
+		Bundle bundle = activity.getIntent().getExtras();
+		Fragment isBrickCategory = activity.getSupportFragmentManager().findFragmentByTag(
 				BrickCategoryFragment.BRICK_CATEGORY_FRAGMENT_TAG);
-		Fragment isAddBrickDialog = ((ScriptActivity) currentActivity).getSupportFragmentManager().findFragmentByTag(
+		Fragment isAddBrickDialog = activity.getSupportFragmentManager().findFragmentByTag(
 				AddBrickDialog.DIALOG_FRAGMENT_TAG);
 		if (isBrickCategory != null && isAddBrickDialog == null) {
-			getBrickCategoryHints(currentActivity);
+			getBrickCategoryHints();
 		} else if (isAddBrickDialog != null) {
-			getAddBrickHints(currentActivity);
+			getAddBrickHints();
 		} else {
 			if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 0) {
-				getScriptingHints(currentActivity);
+				getScriptingHints();
 			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_LOOKS) == 1) {
-				getLooksHints(currentActivity);
+				getLooksHints();
 			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SOUNDS) == 2) {
-				getSoundsHints(currentActivity);
+				getSoundsHints();
 			}
 		}
 	}
 
-	private void getScriptingHints(Activity activity) {
+	private void getScriptingHints() {
+		Activity activity = (Activity) context;
 		int[] coord = { 0, 0, 0 };
 		Resources resources = activity.getResources();
 		String[] hintStrings = resources.getStringArray(R.array.hints_scripts);
 
-		coord = examineCoordinates(activity, R.id.brick_list_view);
+		coord = examineCoordinates(activity.findViewById(R.id.brick_list_view));
 		allHints.add(createHint(coord, hintStrings[0]));
-		coord = examineCoordinates(activity, R.id.button_add);
+		coord = examineCoordinates(activity.findViewById(R.id.button_add));
 		allHints.add(createHint(coord, hintStrings[1]));
-		coord = examineCoordinates(activity, R.id.button_play);
+		coord = examineCoordinates(activity.findViewById(R.id.button_play));
 		allHints.add(createHint(coord, hintStrings[2]));
 	}
 
-	private void getLooksHints(Activity activity) {
+	private void getLooksHints() {
+		Activity activity = (Activity) context;
 		int[] coord = { 0, 0, 0 };
 		Resources resources = activity.getResources();
 		String[] hintStrings = resources.getStringArray(R.array.hints_looks);
 
-		coord = examineCoordinates(activity, R.id.fragment_look_item_relative_layout);
+		View v = activity.findViewById(R.id.fragment_look_item_relative_layout);
+
+		coord = examineCoordinates(activity.findViewById(R.id.script_fragment_container));
 		allHints.add(createHint(coord, hintStrings[0]));
-		coord = examineCoordinates(activity, R.id.button_add);
+		coord = examineCoordinates(activity.findViewById(R.id.button_add));
 		allHints.add(createHint(coord, hintStrings[1]));
-		coord = examineCoordinates(activity, R.id.button_play);
+		coord = examineCoordinates(activity.findViewById(R.id.button_play));
 		allHints.add(createHint(coord, hintStrings[2]));
 
 	}
 
-	private void getSoundsHints(Activity activity) {
+	private void getSoundsHints() {
+		Activity activity = (Activity) context;
 		int[] coord = { 0, 0, 0 };
 		Resources resources = activity.getResources();
 		String[] hintStrings = resources.getStringArray(R.array.hints_sounds);
 
-		coord = examineCoordinates(activity, R.id.fragment_sound_relative_layout);
+		coord = examineCoordinates(activity.findViewById(R.id.fragment_sound_relative_layout));
 		allHints.add(createHint(coord, hintStrings[0]));
-		coord = examineCoordinates(activity, R.id.button_add);
+		coord = examineCoordinates(activity.findViewById(R.id.button_add));
 		allHints.add(createHint(coord, hintStrings[1]));
-		coord = examineCoordinates(activity, R.id.button_play);
+		coord = examineCoordinates(activity.findViewById(R.id.button_play));
 		allHints.add(createHint(coord, hintStrings[2]));
 
 	}
 
-	private void getBrickCategoryHints(Activity activity) {
+	private void getBrickCategoryHints() {
+		ScriptActivity activity = (ScriptActivity) context;
 		int[] coord = { 0, 0, 0 };
 		Resources resources = activity.getResources();
 		String[] hintStrings = resources.getStringArray(R.array.hints_brick_categories);
 
-		ScriptActivity currentActivity = (ScriptActivity) activity;
-		SherlockListFragment currentFragment = (SherlockListFragment) currentActivity.getSupportFragmentManager()
+		SherlockListFragment currentFragment = (SherlockListFragment) activity.getSupportFragmentManager()
 				.findFragmentByTag(BrickCategoryFragment.BRICK_CATEGORY_FRAGMENT_TAG);
 		ListView listView = currentFragment.getListView();
 
@@ -239,52 +248,49 @@ public class HintController {
 
 	}
 
-	private void getAddBrickHints(Activity activity) {
-		ScriptActivity currentActivity = (ScriptActivity) activity;
-		AddBrickDialog fragment = (AddBrickDialog) currentActivity.getSupportFragmentManager().findFragmentByTag(
-				AddBrickDialog.DIALOG_FRAGMENT_TAG);
-
-		switch (checkCategory(fragment)) {
+	private void getAddBrickHints() {
+		switch (checkCategory()) {
 			case 0:
-				getBrickHints(fragment, R.array.hints_brick_control);
+				getBrickHints(R.array.hints_brick_control);
 				break;
 
 			case 1:
-				getBrickHints(fragment, R.array.hints_brick_motion);
+				getBrickHints(R.array.hints_brick_motion);
 				break;
 
 			case 2:
-				getBrickHints(fragment, R.array.hints_brick_sounds);
+				getBrickHints(R.array.hints_brick_sounds);
 				break;
 
 			case 3:
-				getBrickHints(fragment, R.array.hints_brick_looks);
+				getBrickHints(R.array.hints_brick_looks);
 				break;
 
 			case 4:
-				getBrickHints(fragment, R.array.hints_brick_variables);
+				getBrickHints(R.array.hints_brick_variables);
 				break;
 
 			case 5:
-				getBrickHints(fragment, R.array.hints_brick_lego);
+				getBrickHints(R.array.hints_brick_lego);
 				break;
 
 		}
 
 	}
 
-	private void getSettingsHints(Activity activity) {
+	private void getSettingsHints() {
 
 	}
 
-	private void getBrickHints(AddBrickDialog fragment, int id) {
+	private void getBrickHints(int id) {
 		int[] coord = { 0, 0, 0 };
+		ScriptActivity activity = (ScriptActivity) context;
+		AddBrickDialog fragment = (AddBrickDialog) activity.getSupportFragmentManager().findFragmentByTag(
+				AddBrickDialog.DIALOG_FRAGMENT_TAG);
 		Resources resources = fragment.getActivity().getResources();
-		String[] hintStrings = {};
-
 		ListView listView = fragment.getListView();
 
-		hintStrings = resources.getStringArray(id);
+		String[] hintStrings = resources.getStringArray(id);
 		for (int i = 0; i < listView.getChildCount() - 1; i++) {
 			coord = examineListCoordinates(listView.getChildAt(i));
 			allHints.add(createHint(coord, hintStrings[i]));
@@ -292,7 +298,10 @@ public class HintController {
 
 	}
 
-	private int checkCategory(AddBrickDialog fragment) {
+	private int checkCategory() {
+		ScriptActivity activity = (ScriptActivity) context;
+		AddBrickDialog fragment = (AddBrickDialog) activity.getSupportFragmentManager().findFragmentByTag(
+				AddBrickDialog.DIALOG_FRAGMENT_TAG);
 		Resources resources = fragment.getActivity().getResources();
 		Bundle arg = fragment.getArguments();
 		String selectedCategory = arg.getString("selected_category");
@@ -313,13 +322,14 @@ public class HintController {
 		return -1;
 	}
 
-	private int checkActivity(Activity activity) {
+	private int checkActivity() {
+		Activity activity = (Activity) context;
 
 		if (activity.getLocalClassName().compareTo("ui.MainMenuActivity") == 0) {
 			return 0;
 		} else if (activity.getLocalClassName().compareTo("ui.ProjectActivity") == 0) {
 			return 1;
-		} else if (activity.getLocalClassName().compareTo("ui.MyProjectActivity") == 0) {
+		} else if (activity.getLocalClassName().compareTo("ui.MyProjectsActivity") == 0) {
 			return 2;
 		} else if (activity.getLocalClassName().compareTo("ui.ProgramMenuActivity") == 0) {
 			return 3;
@@ -331,7 +341,7 @@ public class HintController {
 		return -1;
 	}
 
-	public int[] examineListCoordinates(View view) {
+	private int[] examineListCoordinates(View view) {
 		int[] coordinates = { 0, 0, 0 };
 		view.getLocationInWindow(coordinates);
 
@@ -346,12 +356,11 @@ public class HintController {
 
 	}
 
-	public int[] examineCoordinates(Activity activity, int id) {
+	private int[] examineCoordinates(View view) {
 		int[] coordinates = { 0, 0, 0 };
-		View currentView = activity.findViewById(id);
-		currentView.getLocationInWindow(coordinates);
-		int viewWidth = currentView.getWidth();
-		int viewHeight = currentView.getHeight();
+		view.getLocationInWindow(coordinates);
+		int viewWidth = view.getWidth();
+		int viewHeight = view.getHeight();
 		coordinates[0] = (coordinates[0] + viewWidth / 2) - 25;
 		coordinates[1] = (coordinates[1] + viewHeight / 2) - 25;
 		coordinates[2] = viewWidth;
@@ -360,13 +369,17 @@ public class HintController {
 		return coordinates;
 	}
 
-	public int[] normalizeCoordinates(int[] coordinates) {
+	private int[] normalizeCoordinates(int[] coordinates) {
 		float x = (float) coordinates[0] / Hint.getInstance().getScreenWidth() * 100;
 		float y = (float) coordinates[1] / Hint.getInstance().getScreenHeight() * 100;
 
 		coordinates[0] = (int) x;
 		coordinates[1] = (int) y;
 		return coordinates;
+	}
+
+	public void setContext(Context con) {
+		this.context = con;
 	}
 
 }

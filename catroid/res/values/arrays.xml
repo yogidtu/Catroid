@@ -190,6 +190,9 @@
 	    <item>sechs</item>
 	</string-array>
 	
+	<string-array name="hints_settings">
+	    <item>@string/hint_settings_lego</item>
+	</string-array>
 	
 	
 </resources>

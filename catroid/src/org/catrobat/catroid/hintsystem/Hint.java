@@ -39,16 +39,16 @@ import android.view.WindowManager;
  */
 public class Hint {
 
+	public static boolean HINT_ACTIVE = true;
 	private static Hint hint = new Hint();
-	public static boolean welcome = false;
+	public static boolean welcome = true;
 	private static Context context;
 	private WindowManager windowManager;
 	private HintOverlay hintOverlay;
 
-	static HintController controller;
+	static HintController controller = new HintController();
 
 	private Hint() {
-		controller = new HintController(context);
 
 	}
 
@@ -61,6 +61,7 @@ public class Hint {
 
 	public static void setContext(Context con) {
 		context = con;
+		controller.setContext(context);
 	}
 
 	public void overlayHint() {
@@ -77,7 +78,8 @@ public class Hint {
 
 	public void removeHint() {
 		windowManager = ((Activity) context).getWindowManager();
-		windowManager.removeView(hintOverlay);
+		windowManager.removeViewImmediate(hintOverlay);
+		//windowManager.removeView(hintOverlay);
 		hintOverlay = null;
 		System.gc();
 		System.runFinalization();
@@ -95,7 +97,7 @@ public class Hint {
 	}
 
 	public static ArrayList<HintObject> getHints() {
-		ArrayList<HintObject> hints = controller.getHints(context);
+		ArrayList<HintObject> hints = controller.getHints();
 		return hints;
 	}
 
@@ -110,4 +112,5 @@ public class Hint {
 		int screenWidth = display.getWidth();
 		return screenWidth;
 	}
+
 }

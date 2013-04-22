@@ -548,7 +548,9 @@
 	<string name="hint_brick_category_sounds">Here you can find Sound Bricks.</string>
 	<string name="hint_brick_category_looks">Here you can find Look Bricks.</string>
 	<string name="hint_brick_category_variables">Here you can find Variable Bricks.</string>	
-	<string name="hint_brick_category_lego">Here you can find Lego Mindstorm Bricks.</string><!--  -->
+	<string name="hint_brick_category_lego">Here you can find Lego Mindstorm Bricks.</string>
 	
-
+	<string name="hint_settings_lego">Here you can activate/deactivate the Lego Mindstorm Bricks.</string>
+	<!--  -->
+	
 </resources>

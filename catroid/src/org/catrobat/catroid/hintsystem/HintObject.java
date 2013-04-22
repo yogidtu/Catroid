@@ -96,40 +96,20 @@ public class HintObject {
 		return pointerXCoordinate;
 	}
 
-	public void setXCoordinate(int x) {
-		this.pointerXCoordinate = x;
-	}
-
 	public int getYCoordinate() {
 		return pointerYCoordinate;
-	}
-
-	public void setYCoordinate(int y) {
-		this.pointerYCoordinate = y;
 	}
 
 	public String getText() {
 		return text;
 	}
 
-	public void setText(String text) {
-		this.text = text;
-	}
-
 	public int getTextXCoordinate() {
 		return textXCoordinate;
 	}
 
-	public void setTextXCoordinate(int textXCoordinate) {
-		this.textXCoordinate = textXCoordinate;
-	}
-
 	public int getTextYCoordinate() {
 		return textYCoordinate;
-	}
-
-	public void setTextYCoordinate(int textYCoordinate) {
-		this.textYCoordinate = textYCoordinate;
 	}
 
 }
