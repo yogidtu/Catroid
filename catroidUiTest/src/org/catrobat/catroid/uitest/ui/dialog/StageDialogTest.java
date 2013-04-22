@@ -84,8 +84,10 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		Project project = createTestProject(testProject);
 		ProjectManager.getInstance().setProject(project);
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 		solo.sleep(1000);
@@ -98,11 +100,14 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 
 	public void testBackToPreviousActivity() {
 		createAndSaveTestProject(testProject);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForFragmentById(R.id.fragment_projects_list);
 		assertTrue("Cannot click project.", UiTestUtils.clickOnTextInList(solo, testProject));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		Activity previousActivity = getActivity();
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
@@ -146,11 +151,14 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 
 	public void testRestartButtonActivityChain() {
 		createAndSaveTestProject(testProject);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForFragmentById(R.id.fragment_projects_list);
 		assertTrue("Cannot click project.", UiTestUtils.clickOnTextInList(solo, testProject));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		Activity currentActivity = solo.getCurrentActivity();
 
@@ -176,8 +184,10 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		scriptStart.clear();
 		scriptRestart.clear();
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 		solo.sleep(1000);
@@ -257,8 +267,10 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 
 		MediaPlayer mediaPlayer = SoundManager.getInstance().getMediaPlayer();
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 		solo.sleep(4000);
@@ -279,11 +291,14 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 
 	public void testAxesOnOff() {
 		createAndSaveTestProject(testProject);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Cannot click project.", UiTestUtils.clickOnTextInList(solo, testProject));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 		solo.goBack();
@@ -325,11 +340,14 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		project.getXmlHeader().virtualScreenHeight = 700;
 		project.setDeviceData(getActivity());
 		storageHandler.saveProject(project);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Cannot click project.", UiTestUtils.clickOnTextInList(solo, testProject));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		Utils.updateScreenWidthAndHeight(getActivity());
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);

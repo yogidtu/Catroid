@@ -178,6 +178,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		solo.waitForView(solo.getView(R.id.program_menu_button_scripts));
 		solo.clickOnView(solo.getView(R.id.program_menu_button_scripts));
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnEditText(0);
 		solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
@@ -221,6 +222,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		createProjectSetVariableToBrick("testProject");
 		solo.waitForView(solo.getView(R.id.program_menu_button_scripts));
 		solo.clickOnView(solo.getView(R.id.program_menu_button_scripts));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 		solo.clickOnView(solo.getView(R.id.button_play));
 		solo.waitForActivity(StageActivity.class.getSimpleName());
@@ -233,6 +235,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		solo.goBack();
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
 		solo.clickOnView(solo.getView(R.id.program_menu_button_scripts));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 		solo.clickOnEditText(0);
 		solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
@@ -262,6 +265,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		solo.clickOnView(solo.getView(R.id.stage_dialog_button_back));
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
 		solo.clickOnView(solo.getView(R.id.program_menu_button_scripts));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 		solo.clickOnEditText(0);
 		solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
@@ -634,6 +638,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 	}
 
 	private ListView getVariableListView() {
+		solo.sleep(500);
 		return solo.getCurrentListViews().get(2);
 	}
 

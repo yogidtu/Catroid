@@ -85,7 +85,12 @@ public class BrickClickOnEditTextTest extends ActivityInstrumentationTestCase2<M
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		categoryStringId = UiTestUtils.getBrickCategory(solo, R.string.brick_set_x);
 
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(categoryMotionText);
 		ArrayList<Integer> listOfYPosition = UiTestUtils.getListItemYPositions(solo);
 		screenWidth = solo.getCurrentActivity().getResources().getDisplayMetrics().widthPixels;
@@ -100,7 +105,13 @@ public class BrickClickOnEditTextTest extends ActivityInstrumentationTestCase2<M
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		categoryStringId = UiTestUtils.getBrickCategory(solo, R.string.brick_set_y);
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(categoryMotionText);
 		listOfYPosition = UiTestUtils.getListItemYPositions(solo);
 		screenWidth = solo.getCurrentActivity().getResources().getDisplayMetrics().widthPixels;
@@ -116,7 +127,13 @@ public class BrickClickOnEditTextTest extends ActivityInstrumentationTestCase2<M
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		categoryStringId = UiTestUtils.getBrickCategory(solo, R.string.brick_set_x);
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(categoryMotionText);
 
 		ArrayList<EditText> editTextList = solo.getCurrentEditTexts();
@@ -137,7 +154,11 @@ public class BrickClickOnEditTextTest extends ActivityInstrumentationTestCase2<M
 		solo.scrollUp();
 		solo.goBack();
 		categoryStringId = UiTestUtils.getBrickCategory(solo, R.string.brick_set_size_to);
+
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getString(R.string.category_looks));
 
 		editTextList = solo.getCurrentEditTexts();
@@ -159,6 +180,9 @@ public class BrickClickOnEditTextTest extends ActivityInstrumentationTestCase2<M
 		solo.goBack();
 		categoryStringId = UiTestUtils.getBrickCategory(solo, R.string.brick_stop_all_sounds);
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getString(R.string.category_sound));
 
 		editTextList = solo.getCurrentEditTexts();
@@ -181,6 +205,9 @@ public class BrickClickOnEditTextTest extends ActivityInstrumentationTestCase2<M
 		solo.goBack();
 		categoryStringId = UiTestUtils.getBrickCategory(solo, R.string.brick_when_started);
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getString(R.string.category_control));
 
 		editTextList = solo.getCurrentEditTexts();
@@ -205,6 +232,9 @@ public class BrickClickOnEditTextTest extends ActivityInstrumentationTestCase2<M
 		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getString(R.string.category_lego_nxt));
 
 		editTextList = solo.getCurrentEditTexts();

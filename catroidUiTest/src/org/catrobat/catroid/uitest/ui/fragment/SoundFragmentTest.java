@@ -212,6 +212,7 @@ public class SoundFragmentTest extends ActivityInstrumentationTestCase2<MainMenu
 		solo.goBack();
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
 		solo.clickOnText(solo.getString(R.string.sounds));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 		solo.sleep(timeToWait);
 		checkVisibilityOfViews(VISIBLE, GONE, VISIBLE, GONE, VISIBLE, VISIBLE, GONE);

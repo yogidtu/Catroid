@@ -61,6 +61,7 @@ public class SettingsActivityTest extends ActivityInstrumentationTestCase2<MainM
 	}
 
 	public void testToggleMindstormBricks() {
+		UiTestUtils.clickOnHintOverlay(solo);
 		String settings = solo.getString(R.string.main_menu_settings);
 		String mindstormsPreferenceString = solo.getString(R.string.preference_title_enable_mindstorm_bricks);
 		String categoryLegoNXTLabel = solo.getString(R.string.category_lego_nxt);
@@ -69,6 +70,7 @@ public class SettingsActivityTest extends ActivityInstrumentationTestCase2<MainM
 		//disable mindstorm bricks, if enabled at start
 		if (preferences.getBoolean("setting_mindstorm_bricks", false)) {
 			solo.clickOnMenuItem(settings);
+			UiTestUtils.clickOnHintOverlay(solo);
 			solo.assertCurrentActivity("Wrong Activity", SettingsActivity.class);
 			solo.clickOnText(mindstormsPreferenceString);
 			solo.goBack();
@@ -76,14 +78,17 @@ public class SettingsActivityTest extends ActivityInstrumentationTestCase2<MainM
 
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertFalse("Lego brick category is showing!", solo.searchText(categoryLegoNXTLabel));
 		solo.goBack();
 		// 0 is the Home Button in the ActionBar
 		solo.clickOnImage(0);
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnMenuItem(settings);
 		solo.waitForActivity(SettingsActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		assertTrue("Wrong title", solo.searchText(solo.getString(R.string.preference_title)));
 
@@ -92,12 +97,15 @@ public class SettingsActivityTest extends ActivityInstrumentationTestCase2<MainM
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
 		solo.scrollListToBottom(fragmentListView);
 		assertTrue("Lego brick category is not showing!", solo.searchText(categoryLegoNXTLabel));
 	}
 
 	public void testOrientation() throws NameNotFoundException {
+		UiTestUtils.clickOnHintOverlay(solo);
 		/// Method 1: Assert it is currently in portrait mode.
 		assertEquals("SettingsActivity not in Portrait mode!", Configuration.ORIENTATION_PORTRAIT, getActivity()
 				.getResources().getConfiguration().orientation);

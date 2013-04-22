@@ -250,6 +250,7 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 		solo.goBack();
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
 		solo.clickOnText(solo.getString(R.string.backgrounds));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 		solo.sleep(timeToWait);
 		checkVisibilityOfViews(VISIBLE, VISIBLE, VISIBLE, GONE);

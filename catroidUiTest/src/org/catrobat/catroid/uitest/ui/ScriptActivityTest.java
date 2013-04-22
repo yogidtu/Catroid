@@ -65,8 +65,8 @@ public class ScriptActivityTest extends ActivityInstrumentationTestCase2<MainMen
 	}
 
 	public void testOrientation() throws NameNotFoundException {
+		UiTestUtils.clickOnHintOverlay(solo);
 		Activity currentActivity = solo.getCurrentActivity();
-
 		/// Method 1: Assert it is currently in portrait mode.
 		assertEquals("ScriptActivity not in Portrait mode!", Configuration.ORIENTATION_PORTRAIT, currentActivity
 				.getResources().getConfiguration().orientation);
@@ -209,6 +209,7 @@ public class ScriptActivityTest extends ActivityInstrumentationTestCase2<MainMen
 	private void checkMainMenuButton() {
 		UiTestUtils.clickOnHomeActionBarButton(solo);
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.assertCurrentActivity("Main menu is not displayed", MainMenuActivity.class);
 	}
 

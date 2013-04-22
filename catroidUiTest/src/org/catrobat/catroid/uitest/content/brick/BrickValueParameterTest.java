@@ -87,8 +87,14 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 	public void testMotionBricksDefaultValues() {
 		String categoryMotionText = solo.getString(R.string.category_motion);
 
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(categoryMotionText);
+
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		TextView placeAtXTextView = (TextView) solo.getView(R.id.brick_place_at_prototype_text_view_x);
 		int xPositionPrototypeValue = Integer.parseInt(placeAtXTextView.getText().toString());
@@ -178,8 +184,15 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 	public void testLookBricksDefaultValues() {
 		String categoryLooksText = solo.getString(R.string.category_looks);
 
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(categoryLooksText);
+
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.searchText(solo.getString(R.string.brick_set_look));
 		Spinner setLookSpinner = (Spinner) solo.getView(R.id.brick_set_look_spinner);
@@ -234,9 +247,13 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 	public void testSoundBricksDefaultValues() {
 		String categorySoundText = solo.getString(R.string.category_sound);
 
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(categorySoundText);
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.searchText(solo.getString(R.string.brick_play_sound));
 		Spinner playSoundSpinner = (Spinner) solo.getView(R.id.playsound_spinner);
 		assertEquals("Value in PlaySoundBrick is not correct", solo.getString(R.string.broadcast_nothing_selected),
@@ -267,7 +284,9 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 
 		solo.sleep(500);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(categorySoundText);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.brick_change_volume_by));
 		solo.clickOnScreen(200, 200);
 
@@ -284,9 +303,15 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 	@Smoke
 	public void testControlBricksDefaultValues() {
 		String categoryControlText = solo.getString(R.string.category_control);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(categoryControlText);
+
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		TextView waitSecondsTextView = (TextView) solo.getView(R.id.brick_wait_prototype_text_view);
 		float waitPrototypeValue = Float.parseFloat(waitSecondsTextView.getText().toString());
@@ -336,10 +361,17 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 	public void testLegoBricksDefaultValues() {
 		String categoryLegoNXTText = solo.getString(R.string.category_lego_nxt);
 
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnText(categoryLegoNXTText);
+
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		TextView nxtTurnMotorTextView = (TextView) solo.getView(R.id.motor_turn_angle_text_view);
 		int nXTturnMotorPrototypeValue = Integer.parseInt(nxtTurnMotorTextView.getText().toString());
@@ -376,8 +408,14 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 	public void testUserVariablesBricksDefaultValues() {
 		String categoryUserVariablesText = solo.getString(R.string.category_variables);
 
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(categoryUserVariablesText);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.searchText(solo.getString(R.string.brick_set_variable));
 		Spinner setVariableSpinner = (Spinner) solo.getView(R.id.set_variable_spinner);

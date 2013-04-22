@@ -94,6 +94,8 @@ public class SetSizeToBrickTest extends ActivityInstrumentationTestCase2<MainMen
 	public void testSetSizeToBrick() {
 		double newSize = 200;
 
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		UiTestUtils.testBrickWithFormulaEditor(solo, 0, 1, newSize, "size", setSizeToBrick);
 
 		DisplayMetrics displayMetrics = new DisplayMetrics();

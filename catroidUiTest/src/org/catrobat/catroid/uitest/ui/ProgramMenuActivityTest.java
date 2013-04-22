@@ -81,10 +81,14 @@ public class ProgramMenuActivityTest extends ActivityInstrumentationTestCase2<Ma
 	}
 
 	public void testOrientation() throws NameNotFoundException {
+		UiTestUtils.clickOnHintOverlay(solo);
 		/// Method 1: Assert it is currently in portrait mode.
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText("Background");
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
+		solo.sleep(500);
 		assertEquals("ProgramMenuActivity not in Portrait mode!", Configuration.ORIENTATION_PORTRAIT, solo
 				.getCurrentActivity().getResources().getConfiguration().orientation);
 
@@ -105,9 +109,12 @@ public class ProgramMenuActivityTest extends ActivityInstrumentationTestCase2<Ma
 	}
 
 	public void testTitle() {
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		String spriteName = "sprite1";
 		String backgroundString = "Background";
@@ -115,6 +122,7 @@ public class ProgramMenuActivityTest extends ActivityInstrumentationTestCase2<Ma
 		addNewSprite(spriteName);
 		solo.clickOnText(backgroundString);
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		String currentSpriteName = ProjectManager.INSTANCE.getCurrentSprite().getName();
 
@@ -126,6 +134,7 @@ public class ProgramMenuActivityTest extends ActivityInstrumentationTestCase2<Ma
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 		solo.clickOnText(spriteName);
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		currentSpriteName = ProjectManager.INSTANCE.getCurrentSprite().getName();
 
@@ -134,40 +143,71 @@ public class ProgramMenuActivityTest extends ActivityInstrumentationTestCase2<Ma
 	}
 
 	public void testLookButtonTextChange() {
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		addNewSprite("sprite1");
 		solo.clickOnText("sprite1");
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		assertTrue("Text on look button is not 'Looks'", solo.searchText(solo.getString(R.string.looks)));
 		UiTestUtils.clickOnHomeActionBarButton(solo);
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText("Background");
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		assertTrue("Text on look button is not 'Backgrounds'", solo.searchText(solo.getString(R.string.backgrounds)));
 	}
 
 	public void testPlayButton() {
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 		UiTestUtils.getIntoProgramMenuFromMainMenu(solo, 0);
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 		solo.assertCurrentActivity("Not in StageActivity", StageActivity.class);
 	}
 
 	public void testMenuItemSettings() {
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText("Background");
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnMenuItem(solo.getString(R.string.main_menu_settings));
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.assertCurrentActivity("Not in SettingsActivity", SettingsActivity.class);
 	}
 
 	public void testMainMenuButton() {
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText("Background");
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		UiTestUtils.clickOnHomeActionBarButton(solo);
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		assertTrue("Clicking on main menu button did not cause main menu to be displayed",
 				solo.getCurrentActivity() instanceof MainMenuActivity);

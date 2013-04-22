@@ -87,13 +87,16 @@ public class SpeakStageTest extends ActivityInstrumentationTestCase2<MainMenuAct
 		ProjectManager.getInstance()
 				.loadProject(UiTestUtils.PROJECTNAME2, getActivity().getApplicationContext(), false);
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		String programString = solo.getString(R.string.main_menu_programs);
 		solo.waitForText(programString);
 		solo.clickOnButton(programString);
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForView(ListView.class);
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnTextInList(solo, UiTestUtils.PROJECTNAME2);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForView(ListView.class);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.sleep(1000);
@@ -112,14 +115,17 @@ public class SpeakStageTest extends ActivityInstrumentationTestCase2<MainMenuAct
 		ProjectManager.getInstance()
 				.loadProject(UiTestUtils.PROJECTNAME1, getActivity().getApplicationContext(), false);
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		String programString = solo.getString(R.string.main_menu_programs);
 		solo.waitForText(programString);
 		solo.clickOnButton(programString);
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForView(ListView.class);
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnTextInList(solo, UiTestUtils.PROJECTNAME1);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		solo.waitForView(ListView.class);
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.sleep(1000);
 		TextToSpeech textToSpeech = (TextToSpeech) Reflection.getPrivateField(PreStageActivity.class, "textToSpeech");
@@ -142,14 +148,17 @@ public class SpeakStageTest extends ActivityInstrumentationTestCase2<MainMenuAct
 		ProjectManager.getInstance()
 				.loadProject(UiTestUtils.PROJECTNAME3, getActivity().getApplicationContext(), false);
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		String programString = solo.getString(R.string.main_menu_programs);
 		solo.waitForText(programString);
 		solo.clickOnButton(programString);
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForView(ListView.class);
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnTextInList(solo, UiTestUtils.PROJECTNAME3);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		solo.waitForView(ListView.class);
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.sleep(1000);
 		TextToSpeech textToSpeech = (TextToSpeech) Reflection.getPrivateField(PreStageActivity.class, "textToSpeech");

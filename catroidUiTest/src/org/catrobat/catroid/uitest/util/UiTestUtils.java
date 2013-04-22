@@ -94,6 +94,7 @@ import org.catrobat.catroid.content.bricks.TurnRightBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
+import org.catrobat.catroid.hintsystem.HintOverlay;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.ui.MainMenuActivity;
@@ -382,7 +383,11 @@ public class UiTestUtils {
 		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 5000)) {
 			fail("Text not shown in 5 secs!");
 		}
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		if (!solo.waitForText(solo.getCurrentActivity().getString(brickStringId), nThElement, 5000)) {
 			fail("Text not shown in 5 secs!");
 		}
@@ -1111,6 +1116,7 @@ public class UiTestUtils {
 	}
 
 	public static void getIntoSpritesFromMainMenu(Solo solo) {
+		clickOnHintOverlay(solo);
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 		solo.sleep(300);
 
@@ -1124,6 +1130,7 @@ public class UiTestUtils {
 
 	public static void getIntoProgramMenuFromMainMenu(Solo solo, int spriteIndex) {
 		getIntoSpritesFromMainMenu(solo);
+		clickOnHintOverlay(solo);
 		solo.sleep(200);
 
 		solo.clickInList(spriteIndex);
@@ -1132,10 +1139,12 @@ public class UiTestUtils {
 
 	public static void getIntoSoundsFromMainMenu(Solo solo) {
 		getIntoSoundsFromMainMenu(solo, 0);
+		clickOnHintOverlay(solo);
 	}
 
 	public static void getIntoSoundsFromMainMenu(Solo solo, int spriteIndex) {
 		getIntoProgramMenuFromMainMenu(solo, spriteIndex);
+		clickOnHintOverlay(solo);
 
 		solo.clickOnText(solo.getString(R.string.sounds));
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
@@ -1145,14 +1154,17 @@ public class UiTestUtils {
 
 	public static void getIntoLooksFromMainMenu(Solo solo) {
 		getIntoLooksFromMainMenu(solo, 0, false);
+		clickOnHintOverlay(solo);
 	}
 
 	public static void getIntoLooksFromMainMenu(Solo solo, boolean isBackground) {
 		getIntoLooksFromMainMenu(solo, 0, isBackground);
+		clickOnHintOverlay(solo);
 	}
 
 	public static void getIntoLooksFromMainMenu(Solo solo, int spriteIndex, boolean isBackground) {
 		getIntoProgramMenuFromMainMenu(solo, spriteIndex);
+		clickOnHintOverlay(solo);
 
 		String textToClickOn = "";
 
@@ -1169,10 +1181,12 @@ public class UiTestUtils {
 
 	public static void getIntoScriptActivityFromMainMenu(Solo solo) {
 		getIntoScriptActivityFromMainMenu(solo, 0);
+		clickOnHintOverlay(solo);
 	}
 
 	public static void getIntoScriptActivityFromMainMenu(Solo solo, int spriteIndex) {
 		getIntoProgramMenuFromMainMenu(solo, spriteIndex);
+		clickOnHintOverlay(solo);
 
 		solo.clickOnText(solo.getString(R.string.scripts));
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
@@ -1329,5 +1343,19 @@ public class UiTestUtils {
 
 	public static void prepareStageForTest() {
 		Reflection.setPrivateField(StageListener.class, "DYNAMIC_SAMPLING_RATE_FOR_ACTIONS", false);
+	}
+
+	public static void clickOnHintOverlay(Solo solo) {
+		solo.sleep(1000);
+		ArrayList<View> viewList = solo.getViews();
+		for (int i = 0; i < viewList.size(); i++) {
+			View v = viewList.get(i);
+			if (v instanceof HintOverlay) {
+				solo.waitForView(v);
+				solo.clickOnView(v);
+				//solo.sleep(500);
+				break;
+			}
+		}
 	}
 }

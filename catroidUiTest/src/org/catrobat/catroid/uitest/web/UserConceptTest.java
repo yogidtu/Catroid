@@ -78,6 +78,7 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		setTestUrl();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, null).commit();
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 
@@ -90,6 +91,7 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		setTestUrl();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, null).commit();
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.sleep(1000);
@@ -103,6 +105,7 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		setTestUrl();
 		UiTestUtils.createValidUser(getActivity());
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.sleep(5000);
 
@@ -115,6 +118,7 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, "").commit();
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.sleep(1000);
 		fillLoginDialog(true);
@@ -132,6 +136,7 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, "wrong_token").commit();
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.sleep(4000);
@@ -146,6 +151,7 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, null).commit();
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.sleep(1000);
 		fillLoginDialog(false);
@@ -197,6 +203,7 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		clearSharedPreferences();
 
 		solo.sleep(500);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
 		solo.sleep(4000);
 

@@ -108,7 +108,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
 		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
 		getActivity().startActivity(intent);
-
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.createValidUser(getActivity());
 
 		uploadProject(newTestProject, newTestDescription);
@@ -127,6 +127,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.sleep(1000);
 		UiTestUtils.clickOnHomeActionBarButton(solo);
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.createValidUser(getActivity());
 
@@ -176,6 +177,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
 		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
 		getActivity().startActivity(intent);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.createValidUser(getActivity());
 
@@ -220,6 +222,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
 		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
 		getActivity().startActivity(intent);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.createValidUser(getActivity());
 
@@ -259,6 +262,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
 		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
 		getActivity().startActivity(intent);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.createValidUser(getActivity());
 
@@ -325,7 +329,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		UiTestUtils.createValidUser(getActivity());
 
 		String uploadButtonText = solo.getString(R.string.upload_button);
-
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(uploadButtonText);
 		solo.goBack();
@@ -362,14 +366,16 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 
 		setServerURLToTestUrl();
 		UiTestUtils.createValidUser(getActivity());
-
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForText(solo.getString(R.string.main_menu_continue));
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 
 		solo.waitForText(solo.getString(R.string.default_project_sprites_catroid_name));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.default_project_sprites_catroid_name));
 
 		solo.waitForText(solo.getString(R.string.looks));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.looks));
 
 		String deleteLookText = solo.getString(R.string.delete);
@@ -416,11 +422,13 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		}
 		assertFalse("testProject was not deleted!", directory.exists());
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.enterText(0, projectToCreate);
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.sleep(2000);
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		solo.enterText(0, "new sprite");
 		solo.clickOnButton(solo.getString(R.string.ok));
@@ -433,12 +441,15 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 	private void addABrickToProject() {
 		solo.clickInList(0);
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.scripts));
 		UiTestUtils.addNewBrick(solo, R.string.brick_wait);
 		UiTestUtils.goToHomeActivity(getActivity());
+		UiTestUtils.clickOnHintOverlay(solo);
 	}
 
 	private void uploadProject(String uploadProjectName, String uploadProjectDescription) {
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.sleep(500);
 
@@ -479,6 +490,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.goBack();
 		launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity.class, intent);
 		solo.sleep(500);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("OverwriteRenameDialog not shown.", solo.searchText(solo.getString(R.string.overwrite_text)));
 		solo.clickOnText(solo.getString(R.string.overwrite_replace));
 		solo.clickOnButton(solo.getString(R.string.ok));
@@ -504,6 +516,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		intent.setAction(Intent.ACTION_VIEW);
 		intent.setData(Uri.parse(downloadUrl));
 		launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity.class, intent);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.sleep(5000);
 		assertTrue("OverwriteRenameDialog not shown.", solo.searchText(solo.getString(R.string.overwrite_text)));

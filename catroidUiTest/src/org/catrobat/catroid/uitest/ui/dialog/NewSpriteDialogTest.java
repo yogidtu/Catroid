@@ -72,10 +72,13 @@ public class NewSpriteDialogTest extends ActivityInstrumentationTestCase2<MainMe
 	public void testNewSpriteDialog() throws NameNotFoundException, IOException {
 		createTestProject(testingproject);
 		solo.sleep(300);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForFragmentById(R.id.fragment_projects_list);
 		assertTrue("Cannot click on project.", UiTestUtils.clickOnTextInList(solo, testingproject));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 
@@ -124,6 +127,7 @@ public class NewSpriteDialogTest extends ActivityInstrumentationTestCase2<MainMe
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.sleep(300);
 		solo.clickOnText(testingsprite);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
 		solo.clickOnText(solo.getString(R.string.scripts));
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());

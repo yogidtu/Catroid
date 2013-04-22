@@ -25,6 +25,7 @@ package org.catrobat.catroid.uitest.ui.dialog;
 import java.io.IOException;
 
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.StorageHandler;
@@ -35,7 +36,6 @@ import org.catrobat.catroid.uitest.util.UiTestUtils;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
-import org.catrobat.catroid.R;
 
 import com.jayway.android.robotium.solo.Solo;
 
@@ -70,13 +70,17 @@ public class RenameSpriteDialogTest extends ActivityInstrumentationTestCase2<Mai
 
 	public void testRenameSpriteDialog() throws NameNotFoundException, IOException {
 		createTestProject(testProject);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(200);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.sleep(1000);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Cannot click on project.", UiTestUtils.clickOnTextInList(solo, testProject));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickLongOnText(cat);
 
 		solo.clickOnText(solo.getString(R.string.rename));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(100);
 		solo.clearEditText(0);
 		UiTestUtils.enterText(solo, 0, kat);
@@ -91,10 +95,13 @@ public class RenameSpriteDialogTest extends ActivityInstrumentationTestCase2<Mai
 
 	public void testRenameSpriteDialogMixedCase() throws NameNotFoundException, IOException {
 		createTestProject(testProject);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.sleep(500);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Cannot click on project.", UiTestUtils.clickOnTextInList(solo, testProject));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickLongOnText(cat);
 
 		solo.sleep(1000);

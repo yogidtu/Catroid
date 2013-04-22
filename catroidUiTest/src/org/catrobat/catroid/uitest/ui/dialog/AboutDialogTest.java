@@ -60,6 +60,7 @@ public class AboutDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 	}
 
 	public void testAboutDialog() {
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnMenuItem(solo.getString(R.string.main_menu_about_catroid));
 		assertTrue("AboutDialog title not found", solo.searchText(solo.getString(R.string.dialog_about_title)));
 		assertTrue("AboutDialog text not found", solo.searchText(solo.getString(R.string.dialog_about_license_info)));

@@ -107,6 +107,7 @@ public class ScriptFragmentTest extends ActivityInstrumentationTestCase2<MainMen
 			sharedPreferences.edit().putBoolean(KEY_SETTINGS_MINDSTORM_BRICKS, true).commit();
 		}
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		UiTestUtils.clickOnHintOverlay(solo);
 		String categorySoundLabel = solo.getString(R.string.category_sound);
 		String categoryLegoNXTLabel = solo.getString(R.string.category_lego_nxt);
 		String categoryControlLabel = solo.getString(R.string.category_control);
@@ -137,20 +138,24 @@ public class ScriptFragmentTest extends ActivityInstrumentationTestCase2<MainMen
 
 		solo.scrollListToTop(fragmentListView);
 		solo.clickOnText(categoryMotionLabel);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("AddBrickDialog was not opened after selecting a category",
 				solo.waitForText(brickPlaceAtText, 0, 2000));
 		solo.goBack();
 
 		solo.clickOnText(categoryLooksLabel);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("AddBrickDialog was not opened after selecting a category", solo.waitForText(brickSetLook, 0, 2000));
 		solo.goBack();
 
 		solo.clickOnText(categorySoundLabel);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("AddBrickDialog was not opened after selecting a category",
 				solo.waitForText(brickPlaySound, 0, 2000));
 		solo.goBack();
 
 		solo.clickOnText(categoryControlLabel);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("AddBrickDialog was not opened after selecting a category",
 				solo.waitForText(brickWhenStarted, 0, 2000));
 		solo.goBack();
@@ -158,11 +163,13 @@ public class ScriptFragmentTest extends ActivityInstrumentationTestCase2<MainMen
 		fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnText(categoryUserVariablesLabel);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("AddBrickDialog was not opened after selecting a category",
 				solo.waitForText(brickSetVariable, 0, 2000));
 		solo.goBack();
 
 		solo.clickOnText(categoryLegoNXTLabel);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("AddBrickDialog was not opened after selecting a category",
 				solo.waitForText(brickLegoStopMotor, 0, 2000));
 	}
@@ -437,20 +444,26 @@ public class ScriptFragmentTest extends ActivityInstrumentationTestCase2<MainMen
 		String ifOnEdgeBounce = solo.getString(R.string.brick_if_on_edge_bounce);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(categoryLooks);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("SetLookBrick was not renamed for background sprite", solo.searchText(setBackground));
 		solo.clickOnText(setBackground);
 		solo.clickOnText(solo.getString(R.string.brick_when_started));
 		assertTrue("SetLookBrick was not renamed for background sprite", solo.searchText(setBackground));
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(categoryLooks);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("NextLookBrick was not renamed for background sprite", solo.searchText(nextBackground));
 		solo.clickOnText(nextBackground);
 		solo.clickOnText(solo.getString(R.string.brick_when_started));
 		assertTrue("NextLookBrick was not renamed for background sprite", solo.searchText(nextBackground));
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(categoryMotion);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertFalse("ComeToFrontBrick is in the brick list!", solo.searchText(comeToFront));
 		assertFalse("IfOnEdgeBounceBrick is in the brick list!", solo.searchText(ifOnEdgeBounce));
 	}
@@ -486,7 +499,7 @@ public class ScriptFragmentTest extends ActivityInstrumentationTestCase2<MainMen
 		}
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertFalse("Lego brick category is showing!", solo.searchText(categoryLegoNXTLabel));
 
 		solo.sleep(300);
@@ -496,10 +509,11 @@ public class ScriptFragmentTest extends ActivityInstrumentationTestCase2<MainMen
 						.toString());
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.openOptionsMenu(solo);
 
 		solo.clickOnText(settings);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.assertCurrentActivity("Wrong Activity", SettingsActivity.class);
 		solo.clickOnText(mindstormsPreferenceString);
 		solo.goBack();
@@ -511,6 +525,7 @@ public class ScriptFragmentTest extends ActivityInstrumentationTestCase2<MainMen
 
 		UiTestUtils.openOptionsMenu(solo);
 		solo.clickOnText(settings);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.assertCurrentActivity("Wrong Activity", SettingsActivity.class);
 		solo.clickOnText(mindstormsPreferenceString);
 		solo.goBack();

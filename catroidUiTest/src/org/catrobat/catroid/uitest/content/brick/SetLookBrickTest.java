@@ -118,6 +118,8 @@ public class SetLookBrickTest extends ActivityInstrumentationTestCase2<MainMenuA
 		solo.goBack();
 		solo.clickOnText(solo.getString(R.string.backgrounds));
 
+		UiTestUtils.clickOnHintOverlay(solo);
+
 		clickOnContextMenuItem(lookName, solo.getString(R.string.delete));
 		solo.clickOnButton(solo.getString(R.string.ok));
 
@@ -143,6 +145,7 @@ public class SetLookBrickTest extends ActivityInstrumentationTestCase2<MainMenuA
 
 		solo.clickOnText(solo.getString(R.string.backgrounds));
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		clickOnContextMenuItem(lookName, solo.getString(R.string.rename));
 
 		solo.clearEditText(0);
