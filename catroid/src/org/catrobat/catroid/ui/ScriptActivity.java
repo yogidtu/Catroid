@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.ui;
 
+import java.util.concurrent.locks.Lock;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
@@ -86,6 +88,8 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	private static int currentFragmentPosition;
 	private String currentFragmentTag;
 
+	private Lock viewSwitchLock = new ViewSwitchLock();
+
 	private boolean isSoundFragmentFromPlaySoundBrickNew = false;
 	private boolean isSoundFragmentHandleAddButtonHandled = false;
 	private boolean isLookFragmentFromSetLookBrickNew = false;
@@ -118,7 +122,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(
+				R.layout.activity_script_spinner_item, getResources().getStringArray(
 						R.array.script_activity_spinner_items));
 
 		actionBar.setListNavigationCallbacks(spinnerAdapter, new OnNavigationListener() {
@@ -369,6 +373,17 @@ public class ScriptActivity extends SherlockFragmentActivity {
 			}
 		}
 
+		int backStackEntryCount = fragmentManager.getBackStackEntryCount();
+		for (int i = backStackEntryCount; i > 0; --i) {
+			String backStackEntryName = fragmentManager.getBackStackEntryAt(i - 1).getName();
+			if (backStackEntryName != null
+					&& (backStackEntryName.equals(LookFragment.TAG) || backStackEntryName.equals(SoundFragment.TAG))) {
+				fragmentManager.popBackStack();
+			} else {
+				break;
+			}
+		}
+
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (currentFragmentPosition == FRAGMENT_SCRIPTS) {
 				DragAndDropListView listView = scriptFragment.getListView();
@@ -385,6 +400,9 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	}
 
 	public void handleAddButton(View view) {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
 		currentFragment.handleAddButton();
 	}
 
@@ -392,6 +410,9 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		if (isHoveringActive()) {
 			scriptFragment.getListView().animateHoveringBrick();
 		} else {
+			if (!viewSwitchLock.tryLock()) {
+				return;
+			}
 			Intent intent = new Intent(this, PreStageActivity.class);
 			startActivityForResult(intent, PreStageActivity.REQUEST_RESOURCES_INIT);
 		}
@@ -520,7 +541,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		ScriptActivityFragment scriptFragment = getFragment(ScriptActivity.FRAGMENT_SCRIPTS);
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		fragmentTransaction.addToBackStack(null);
 		if (scriptFragment.isVisible()) {
 			fragmentTransaction.hide(scriptFragment);
 		}
@@ -530,6 +550,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 				actionBar.setSelectedNavigationItem(ScriptActivity.FRAGMENT_LOOKS);
 				isLookFragmentFromSetLookBrickNew = true;
 
+				fragmentTransaction.addToBackStack(LookFragment.TAG);
 				if (lookFragment == null) {
 					lookFragment = new LookFragment();
 					fragmentTransaction.add(R.id.script_fragment_container, lookFragment, LookFragment.TAG);
@@ -543,6 +564,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 				actionBar.setSelectedNavigationItem(ScriptActivity.FRAGMENT_SOUNDS);
 				isSoundFragmentFromPlaySoundBrickNew = true;
 
+				fragmentTransaction.addToBackStack(SoundFragment.TAG);
 				if (soundFragment == null) {
 					soundFragment = new SoundFragment();
 					fragmentTransaction.add(R.id.script_fragment_container, soundFragment, SoundFragment.TAG);
