@@ -1,11 +1,7 @@
 package org.catrobat.catroid.tutorial;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import org.catrobat.catroid.tutorial.tasks.Task;
-
-import android.content.Context;
 import android.util.Log;
 
 public class LessonCollection {
@@ -14,43 +10,36 @@ public class LessonCollection {
 	private int currentPossibleLesson;
 	private TutorialOverlay tutorialOverlay;
 
-	private HashMap<Task.Tutor, SurfaceObjectTutor> tutors;
-
 	public void setTutorialOverlay(TutorialOverlay tutorialOverlay) {
 		this.tutorialOverlay = tutorialOverlay;
 	}
 
-	int getLastPossibleLessonNumber() {
+	public int getLastPossibleLessonNumber() {
 		return currentPossibleLesson;
 	}
 
-	void setLastPossibleLessonNumber(int value) {
+	public void setLastPossibleLessonNumber(int value) {
 		currentPossibleLesson = value;
 	}
 
-	public void resetCurrentLesson() {
-		Log.i("tutorial", "LESSON OVER and will be set to 0");
-		(lessonArray.get(currentLesson)).setCurrentStep(0);
-	}
-
-	public void cleanAfterXML() {
-		//		for (int i = 0; i < lessonArray.size(); i++) {
-		//			lessonArray.get(i).cleanAfterXML();
-		//		}
-	}
-
-	LessonCollection() {
+	public LessonCollection() {
 		lessonArray = new ArrayList<Lesson>();
 	}
 
-	void addLesson(String lessonName) {
+	public void addLesson(String lessonName) {
 		Lesson lesson = new Lesson();
 		lesson.lessonID = lessonArray.size();
 		lesson.lessonName = lessonName;
+		ArrayList<SurfaceObjectText> contentList = new ArrayList<SurfaceObjectText>();
+		int[] pos = { 100, 100 };
+		SurfaceObjectText text = new SurfaceObjectText(tutorialOverlay, "BLA BLA", pos);
+		contentList.add(text);
+		lesson.lessonContent = contentList;
+		lessonArray.add(lesson);
 		lessonArray.add(lesson);
 	}
 
-	boolean switchToLesson(int lessonID) {
+	public boolean switchToLesson(int lessonID) {
 		if (lessonID >= lessonArray.size()) {
 			return false;
 		} else {
@@ -60,12 +49,8 @@ public class LessonCollection {
 		}
 	}
 
-	void initializeIntroForLesson(Context context) {
-		new Intro(tutorialOverlay, context);
-	}
-
 	boolean executeTask() {
-		return (lessonArray.get(currentLesson)).executeTask(tutors);
+		return (lessonArray.get(currentLesson)).execute();
 	}
 
 	boolean nextLesson() {
@@ -97,29 +82,11 @@ public class LessonCollection {
 		return lessonNames;
 	}
 
-	int rewindStep() {
-		return (lessonArray.get(currentLesson).rewindStep());
-	}
-
-	boolean forwardStep() {
-		return (lessonArray.get(currentLesson).forwardStep());
-	}
-
-	public void setTutors(HashMap<Task.Tutor, SurfaceObjectTutor> tutors) {
-		this.tutors = tutors;
-	}
-
 	public void clean() {
 		Log.i("tutorial", Thread.currentThread().getName() + ": LessonCollection: clean called!");
 		for (Lesson lesson : lessonArray) {
 			lesson.clean();
 		}
-		tutors.clear();
-		tutors = null;
-	}
-
-	public int currentStepOfLesson() {
-		return (lessonArray.get(currentLesson)).getCurrentStep();
 	}
 
 	public int getSizeOfCurrentLesson() {
@@ -134,18 +101,6 @@ public class LessonCollection {
 	protected void finalize() throws Throwable {
 		Log.i("tutorial", Thread.currentThread().getName() + ": LessonCollection: finalize called!");
 		super.finalize();
-	}
-
-	public Task.Tutor getTutorNameFromCurrentTaskInLesson() {
-		return (lessonArray.get(currentLesson)).getCurrentTutorNameFromTask();
-	}
-
-	public Task.Type getTypeFromCurrentTaskInLesson() {
-		return (lessonArray.get(currentLesson)).getCurrentTypeFromTask();
-	}
-
-	public Task getCurrentTaskObject() {
-		return (lessonArray.get(currentLesson)).getCurrentTaskObject();
 	}
 
 }

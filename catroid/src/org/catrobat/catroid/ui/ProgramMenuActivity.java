@@ -29,7 +29,6 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.tutorial.Tutorial;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -64,7 +63,7 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Tutorial.getInstance(this).resumeTutorial();
+		//Tutorial.getInstance(this).resumeTutorial();
 		if (ProjectManager.INSTANCE.getCurrentSpritePosition() == 0) {
 			((Button) findViewById(R.id.program_menu_button_looks)).setText(R.string.backgrounds);
 		} else {
@@ -74,7 +73,7 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 
 	@Override
 	public void onPause() {
-		Tutorial.getInstance(this).pauseTutorial();
+		//Tutorial.getInstance(this).pauseTutorial();
 		super.onPause();
 	}
 

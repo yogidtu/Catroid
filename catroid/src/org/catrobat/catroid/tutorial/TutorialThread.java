@@ -19,15 +19,9 @@
 package org.catrobat.catroid.tutorial;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.catrobat.catroid.tutorial.Tutor.ACTIONS;
-import org.catrobat.catroid.tutorial.tasks.Task;
-import org.catrobat.catroid.tutorial.tasks.Task.Type;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.SparseArray;
 
 /**
  * @author faxxe
@@ -38,21 +32,11 @@ public class TutorialThread extends Thread implements Runnable {
 	public boolean tutorialThreadRunning = true;
 	private volatile ArrayList<String> notifies = new ArrayList<String>();
 	private boolean interrupted = false;
-	private ACTIONS interruptRoutine;
 	private boolean iAck = false;
 
-	private ArrayList<Task.Tutor> lastModifiedTutorList = new ArrayList<Task.Tutor>();
-	private int lastModifiedTutorIndex = 0;
-
-	private SparseArray<Task.Type> notificationTasksList = new SparseArray<Task.Type>();
-	private int lastNotifyTasksIndex = 0;
-
-	private HashMap<Task.Tutor, SurfaceObjectTutor> tutors = new HashMap<Task.Tutor, SurfaceObjectTutor>();
-
-	public TutorialThread(HashMap<Task.Tutor, SurfaceObjectTutor> tutors, Context context) {
+	public TutorialThread(Context context) {
 		Thread thisThread = new Thread(this);
 		thisThread.setName("TutorialThread");
-		this.tutors = tutors;
 		Log.i("tutorial", Thread.currentThread().getName() + ": New TutorialThread started... ");
 	}
 
@@ -97,22 +81,9 @@ public class TutorialThread extends Thread implements Runnable {
 
 	private void runTutorial() {
 		while (tutorialThreadRunning) {
-			Task.Type currentTaskType = lessonCollection.getTypeFromCurrentTaskInLesson();
 
 			if (!interrupted) {
 				boolean notification = lessonCollection.executeTask();
-
-				synchronized (lastModifiedTutorList) {
-					lastModifiedTutorList.add(lastModifiedTutorIndex,
-							lessonCollection.getTutorNameFromCurrentTaskInLesson());
-					lastModifiedTutorIndex++;
-				}
-
-				if (currentTaskType == Task.Type.NOTIFICATION) {
-					Type notificationType = lessonCollection.getCurrentTaskObject().getType();
-					notificationTasksList.put(lastNotifyTasksIndex, notificationType);
-					lastNotifyTasksIndex++;
-				}
 
 				if (notification == true) {
 					synchronized (this) {
@@ -127,60 +98,6 @@ public class TutorialThread extends Thread implements Runnable {
 			}
 
 			if (interrupted) {
-				if (interruptRoutine == ACTIONS.REWIND) {
-					//TODO: needs to be implemented for every Notification 
-					//Like: TaskNotification.handleRewindNotification()
-					//For every NotificationType
-					if (currentTaskType == Task.Type.NOTIFICATION) {
-						lastNotifyTasksIndex--;
-						CloudController co = new CloudController();
-						co.disapear();
-						lastNotifyTasksIndex--;
-					}
-
-					int stepsBack = lessonCollection.rewindStep();
-
-					if (stepsBack == 0) {
-						resetAndGoToPreviousLesson();
-					} else {
-						setLastTutorModified(stepsBack);
-					}
-					Log.i("tutorial", "STEPS Back: " + stepsBack);
-
-				} else if (interruptRoutine == ACTIONS.FORWARD) {
-
-					Task currentTask = lessonCollection.getCurrentTaskObject();
-					if (lessonCollection.getTypeFromCurrentTaskInLesson() == Task.Type.FLIP
-							|| lessonCollection.getTypeFromCurrentTaskInLesson() == Task.Type.WALK) {
-
-						currentTask.setEndPositionOfTaskForTutor(tutors);
-
-					}
-
-					boolean nextStepOfLesson = lessonCollection.forwardStep();
-
-					if (!nextStepOfLesson && resetAndCheckIfEndTutorial()) {
-						break;
-					}
-				}
-
-				while (interrupted) {
-					synchronized (this) {
-						try {
-							iAck = true;
-							wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				iAck = false;
-			} else {
-				boolean nextStepOfLesson = lessonCollection.forwardStep();
-
-				if (!nextStepOfLesson && resetAndCheckIfEndTutorial()) {
-					break;
-				}
 			}
 		}
 		return;
@@ -191,52 +108,6 @@ public class TutorialThread extends Thread implements Runnable {
 			stepsBack++;
 		}
 
-		synchronized (lastModifiedTutorList) {
-			boolean notifyTutorForExtraStep = false;
-			SurfaceObjectTutor lastTutor = null;
-			Task.Tutor tutor1 = null;
-			Task.Tutor tutor2 = null;
-
-			decrementLastTutorModifiedIndex();
-
-			for (int i = 0; i < stepsBack; i++) {
-				tutor1 = lastModifiedTutorList.get(lastModifiedTutorIndex);
-				decrementLastTutorModifiedIndex();
-				tutor2 = lastModifiedTutorList.get(lastModifiedTutorIndex);
-
-				if (tutor1 == tutor2) {
-					if (tutor1 != null) {
-						this.tutors.get(tutor1).setBackStepForTutor();
-						lastTutor = this.tutors.get(tutor1);
-					}
-				} else {
-					if (tutor1 != null) {
-						this.tutors.get(tutor1).setBackStepForTutor();
-					}
-					if (tutor2 != null) {
-						notifyTutorForExtraStep = true;
-						this.tutors.get(tutor2).setBackStepForTutor();
-						lastTutor = this.tutors.get(tutor2);
-					}
-				}
-			}
-
-			if (notifyTutorForExtraStep) {
-				lastTutor.setExtraStepInStateHistory();
-			}
-		}
-	}
-
-	public boolean decrementLastTutorModifiedIndex() {
-		synchronized (lastModifiedTutorList) {
-			if (lastModifiedTutorIndex > 0) {
-				lastModifiedTutorIndex--;
-				Log.i("tutorial", "lastModiefiedIndex is decremented to: " + lastModifiedTutorIndex);
-				return true;
-			}
-			Log.i("tutorial", "lastModiefiedIndex not decremented: " + lastModifiedTutorIndex);
-			return false;
-		}
 	}
 
 	public boolean getAck() {
@@ -245,11 +116,6 @@ public class TutorialThread extends Thread implements Runnable {
 
 	public boolean resetAndCheckIfEndTutorial() {
 		Log.i("tutorial", "Tutorial stopped in TUT-Thread");
-		lessonCollection.resetCurrentLesson();
-		tutors.get(Task.Tutor.CATRO).resetTutor();
-		tutors.get(Task.Tutor.MIAUS).resetTutor();
-		lastModifiedTutorIndex = 0;
-		lastModifiedTutorList.clear();
 
 		boolean nextLesson = lessonCollection.nextLesson();
 
@@ -264,11 +130,6 @@ public class TutorialThread extends Thread implements Runnable {
 
 	public boolean resetAndGoToPreviousLesson() {
 		Log.i("tutorial", "Tutorial stopped in TUT-Thread");
-		lessonCollection.resetCurrentLesson();
-		tutors.get(Task.Tutor.CATRO).resetTutor();
-		tutors.get(Task.Tutor.MIAUS).resetTutor();
-		lastModifiedTutorIndex = 0;
-		lastModifiedTutorList.clear();
 
 		boolean previousLesson = lessonCollection.previousLesson();
 
@@ -291,7 +152,4 @@ public class TutorialThread extends Thread implements Runnable {
 		interrupted = flag;
 	}
 
-	public void setInterruptRoutine(ACTIONS action) {
-		interruptRoutine = action;
-	}
 }

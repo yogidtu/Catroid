@@ -29,28 +29,8 @@ public class CloudController {
 		this.cloud = Cloud.getInstance(null);
 	}
 
-	public void fadeTo(ClickableArea ca) {
-		cloud.fadeTo(ca);
-	}
-
-	public void jumpTo(ClickableArea ca) {
-		cloud.jumpTo(ca);
-	}
-
-	public void disapear() {
-		cloud.disappear();
-	}
-
-	public void show() {
-		cloud.show();
-	}
-
 	public void fadeIn() {
 		cloud.fadeIn();
-	}
-
-	public void fadeOut() {
-		cloud.fadeOut();
 	}
 
 	public void clear() {

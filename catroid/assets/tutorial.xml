@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <org.catrobat.catroid.tutorial.LessonCollection>
     <lessonArray>
+        
+        <org.catrobat.catroid.tutorial.Lesson>
+            <lessonName>Intro</lessonName>
+            <lessonContent>
+                <org.catrobat.catroid.tutorial.tasks.TaskAppear>
+                    <tutorType>CATRO</tutorType>
+                    <x>60</x>
+                    <y>55</y>
+                </org.catrobat.catroid.tutorial.tasks.TaskAppear>
+                
+                <org.catrobat.catroid.tutorial.tasks.TaskSay>
+                	<tutorType>CATRO</tutorType>
+                	<message>Bla bla bla bla das ist der Pflichtteil. Probieren wir mal ins Paintroid zu kommen.</message>    
+                </org.catrobat.catroid.tutorial.tasks.TaskSay>
+            </lessonContent>
+        </org.catrobat.catroid.tutorial.Lesson>
          
         <org.catrobat.catroid.tutorial.Lesson>
             <lessonName>Erste Schritte</lessonName>

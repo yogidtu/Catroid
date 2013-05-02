@@ -18,20 +18,12 @@
  */
 package org.catrobat.catroid.tutorial;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.LookData;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -45,67 +37,11 @@ public class Tutorial {
 	private static Tutorial tutorial = new Tutorial();
 	private boolean tutorialActive;
 	private static Context context;
-	private ArrayList<LookData> lookDataList;
-	private LookData selectedLookData;
-
-	private String paintroidIntentApplicationName = "org.catrobat.paintroid";
-	private String paintroidIntentActivityName = "org.catrobat.paintroid.MainActivity";
 
 	TutorialController tutorialController = new TutorialController();
 
 	private Tutorial() {
 
-	}
-
-	private void loadPaintroidImageIntoCatroid(Intent intent) {
-		Bundle bundle = intent.getExtras();
-		String pathOfPaintroidImage = bundle.getString(Constants.EXTRA_PICTURE_PATH_PAINTROID);
-
-		//int[] imageDimensions = ImageEditing.getImageDimensions(pathOfPaintroidImage);
-		//if (imageDimensions[0] < 0 || imageDimensions[1] < 0) {
-		//Utils.showErrorDialog(getActivity(), this.getString(R.string.error_load_image));
-		//return;
-		//}
-
-		//String actualChecksum = Utils.md5Checksum(new File(pathOfPaintroidImage));
-
-		// If look changed --> saving new image with new checksum and changing lookData
-		//if (!selectedLookData.getChecksum().equalsIgnoreCase(actualChecksum)) {
-		//			String oldFileName = selectedLookData.getLookFileName();
-		String newFileName = "newpaintroidpic";
-
-		//HACK for https://github.com/Catrobat/Catroid/issues/81
-		if (!newFileName.endsWith(".png")) {
-			newFileName = newFileName + ".png";
-		}
-
-		//String projectName = ProjectManager.getInstance().getCurrentProject().getName();
-
-		//			try {
-		//				File newLookFile = StorageHandler.getInstance().copyImage(projectName, pathOfPaintroidImage,
-		//						newFileName);
-		File PicFileInPaintroid = new File(pathOfPaintroidImage);
-		//				tempPicFileInPaintroid.delete(); //delete temp file in paintroid
-
-		//				StorageHandler.getInstance().deleteFile(selectedLookData.getAbsolutePath()); //reduce usage in container or delete it
-
-		//				selectedLookData.setLookFilename(newLookFile.getName());
-		//				selectedLookData.resetThumbnailBitmap();
-		//			} catch (IOException e) {
-		//				e.printStackTrace();
-	}
-
-	//		}
-	//	}
-
-	public void sendPaintroidIntent(int selected_position) {
-		Intent intent = new Intent("android.intent.action.MAIN");
-		intent.setComponent(new ComponentName(paintroidIntentApplicationName, paintroidIntentActivityName));
-
-		intent.addCategory("android.intent.category.LAUNCHER");
-		//context.startActivity(intent);//
-		((Activity) context).startActivityForResult(intent, 1);
-		loadPaintroidImageIntoCatroid(intent);
 	}
 
 	public void clear() {
@@ -144,13 +80,14 @@ public class Tutorial {
 	public void startTutorial() {
 		ProjectManager.getInstance().initializeDefaultProject(context);
 		Activity currentActivity = (Activity) context;
+
 		currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		ScreenParameters.getInstance().setScreenParameters();
 
 		setTutorialActive();
 		tutorialController.initalizeLessonCollection();
-		tutorialController.initalizeLessons();
-		tutorialController.showLessonDialog();
+		//		tutorialController.initalizeLessons();
+		tutorialController.resumeTutorial();
 		return;
 	}
 
@@ -161,22 +98,10 @@ public class Tutorial {
 	public void stopButtonTutorial() {
 		stopTutorial();
 		tutorialController.stopButtonTutorial();
-		//sendPaintroidIntent(Constants.NO_POSITION);
 		clear();
 		System.gc();
 		Log.i("tutorial", "Tutorial.java: stopButtonTutorial: calling finalisation");
 		System.runFinalization();
-
-	}
-
-	public void playButtonTutorial() {
-		tutorialController.playTutorial();
-	}
-
-	public void pauseButtonTutorial() {
-		//tutorialController.pauseTutorial();
-		sendPaintroidIntent(Constants.NO_POSITION); //start Paintroid
-		Log.i("tutorial", "Tutorial.java: started paintdroid");
 	}
 
 	public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -199,7 +124,6 @@ public class Tutorial {
 		}
 		tutorialController.setTutorialPaused(true);
 		tutorialActive = true;
-		tutorialController.holdTutorsAndRemoveOverlay();
 		tutorialController.removeOverlayFromWindow();
 	}
 

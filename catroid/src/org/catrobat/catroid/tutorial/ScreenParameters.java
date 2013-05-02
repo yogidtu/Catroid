@@ -27,21 +27,6 @@ import android.util.Log;
 public class ScreenParameters {
 	private static ScreenParameters screenParameters = new ScreenParameters();
 
-	private int bubbleTextSize = 0;
-	private boolean bubbleTextBold = false;
-	private boolean bubbleTextAliasing = false;
-	private int bubbleBottomMarginToText = 0;
-	private int upperBubbleTopMarginToText = 0;
-	private int lowerBubbleTopMarginToText = 0;
-	private int bubbleFlipDownMargin = 0;
-	private int xMarginBubbleDownToTutor = 0;
-	private int yMarginBubbleDownToTutor = 0;
-	private int xMarginBubbleUpToTutor = 0;
-	private int yMarginBubbleUpToTutor = 0;
-	private int bubbleResizeWidthMargin = 0;
-	private int bubbleMinWidth = 0;
-	private int bubbleMaxWidth = 0;
-
 	private enum DENSITY {
 		LDPI, MDPI, HDPI, XDPI
 	}
@@ -61,7 +46,6 @@ public class ScreenParameters {
 
 	public void setScreenParameters() {
 		setDensityParameter(Tutorial.getInstance(null).getDensity());
-		setBubbleParameters();
 	}
 
 	private void setDensityParameter(float density) {
@@ -73,89 +57,6 @@ public class ScreenParameters {
 			this.density = DENSITY.HDPI;
 		} else if (density > 1.5f) {
 			this.density = DENSITY.XDPI;
-		}
-	}
-
-	private void setBubbleParameters() {
-		switch (this.density) {
-			case LDPI:
-				bubbleTextSize = 10;
-				bubbleTextBold = false;
-				bubbleTextAliasing = true;
-				bubbleBottomMarginToText = 50;
-				upperBubbleTopMarginToText = 25;
-				lowerBubbleTopMarginToText = 25;
-				bubbleFlipDownMargin = 200;
-				xMarginBubbleUpToTutor = 20;
-				yMarginBubbleUpToTutor = 90;
-				xMarginBubbleDownToTutor = 20;
-				yMarginBubbleDownToTutor = 110;
-				bubbleResizeWidthMargin = 40;
-				bubbleMaxWidth = 160;
-				bubbleMinWidth = 80;
-
-				break;
-
-			case MDPI:
-				bubbleTextSize = 13;
-				bubbleTextBold = true;
-				bubbleTextAliasing = true;
-				bubbleBottomMarginToText = 60;
-				upperBubbleTopMarginToText = 20;
-				lowerBubbleTopMarginToText = 45;
-				bubbleFlipDownMargin = 200;
-				xMarginBubbleUpToTutor = 20;
-				yMarginBubbleUpToTutor = 90;
-				xMarginBubbleDownToTutor = 20;
-				yMarginBubbleDownToTutor = 110;
-				bubbleResizeWidthMargin = 40;
-				bubbleMaxWidth = 160;
-				bubbleMinWidth = 80;
-
-				break;
-
-			case HDPI:
-				bubbleTextSize = 16;
-				bubbleTextBold = true;
-				bubbleTextAliasing = false;
-				bubbleBottomMarginToText = 70;
-				upperBubbleTopMarginToText = 20;
-				lowerBubbleTopMarginToText = 45;
-
-				bubbleFlipDownMargin = 150;
-
-				xMarginBubbleUpToTutor = 20;
-				yMarginBubbleUpToTutor = 90;
-				xMarginBubbleDownToTutor = 20;
-				yMarginBubbleDownToTutor = 110;
-
-				bubbleResizeWidthMargin = 25;
-
-				bubbleMaxWidth = 200;
-				bubbleMinWidth = 150;
-
-				break;
-
-			case XDPI:
-				bubbleTextSize = 24;
-				bubbleTextBold = true;
-				bubbleTextAliasing = true;
-				bubbleBottomMarginToText = 90;
-				upperBubbleTopMarginToText = 30;
-				lowerBubbleTopMarginToText = 45;
-				bubbleFlipDownMargin = 200;
-				xMarginBubbleUpToTutor = 20;
-				yMarginBubbleUpToTutor = 130;
-				xMarginBubbleDownToTutor = 20;
-				yMarginBubbleDownToTutor = 110;
-				bubbleResizeWidthMargin = 40;
-				bubbleMaxWidth = 200;
-				bubbleMinWidth = 120;
-
-				break;
-
-			default:
-				break;
 		}
 	}
 
@@ -177,64 +78,8 @@ public class ScreenParameters {
 		return value;
 	}
 
-	public int getBubbleMinWidth() {
-		return bubbleMinWidth;
-	}
-
-	public int getBubbleMaxWidth() {
-		return bubbleMaxWidth;
-	}
-
 	public static ScreenParameters getScreenParameters() {
 		return screenParameters;
-	}
-
-	public int getBubbleTextSize() {
-		return bubbleTextSize;
-	}
-
-	public boolean isBubbleTextBold() {
-		return bubbleTextBold;
-	}
-
-	public boolean isBubbleTextAliasing() {
-		return bubbleTextAliasing;
-	}
-
-	public int getBubbleBottomMarginToText() {
-		return bubbleBottomMarginToText;
-	}
-
-	public int getUpperBubbleTopMarginToText() {
-		return upperBubbleTopMarginToText;
-	}
-
-	public int getLowerBubbleTopMarginToText() {
-		return lowerBubbleTopMarginToText;
-	}
-
-	public int getBubbleFlipDownMargin() {
-		return bubbleFlipDownMargin;
-	}
-
-	public int getxMarginBubbleDownToTutor() {
-		return xMarginBubbleDownToTutor;
-	}
-
-	public int getyMarginBubbleDownToTutor() {
-		return yMarginBubbleDownToTutor;
-	}
-
-	public int getxMarginBubbleUpToTutor() {
-		return xMarginBubbleUpToTutor;
-	}
-
-	public int getyMarginBubbleUpToTutor() {
-		return yMarginBubbleUpToTutor;
-	}
-
-	public int getBubbleResizeWidthMargin() {
-		return bubbleResizeWidthMargin;
 	}
 
 	public DENSITY getDensity() {

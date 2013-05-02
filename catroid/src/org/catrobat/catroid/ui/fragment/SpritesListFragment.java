@@ -36,7 +36,6 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.tutorial.Tutorial;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
@@ -143,7 +142,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 	@Override
 	public void onResume() {
 		super.onResume();
-		Tutorial.getInstance(this.getActivity()).resumeTutorial();
+		//Tutorial.getInstance(this.getActivity()).resumeTutorial();
 
 		if (actionMode != null) {
 			actionMode.finish();
@@ -185,7 +184,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 	@Override
 	public void onPause() {
 		super.onPause();
-		Tutorial.getInstance(this.getActivity()).pauseTutorial();
+		//Tutorial.getInstance(this.getActivity()).pauseTutorial();
 
 		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.getCurrentProject() != null) {
@@ -338,8 +337,8 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 
 		userVariablesContainer = projectManager.getCurrentProject().getUserVariables();
 		for (int variable = 0; variable < userVariablesList.size(); variable++) {
-			userVariablesContainer.addSpriteUserVariable(userVariablesList.get(variable).getName(), userVariablesList.get(variable)
-					.getValue());
+			userVariablesContainer.addSpriteUserVariable(userVariablesList.get(variable).getName(), userVariablesList
+					.get(variable).getValue());
 		}
 
 		getActivity().sendBroadcast(new Intent(ScriptActivity.ACTION_SPRITES_LIST_CHANGED));

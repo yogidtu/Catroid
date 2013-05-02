@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,7 +29,6 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -41,12 +39,9 @@ import android.view.SurfaceView;
  */
 public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callback {
 	private Context context;
-	//	private ArrayList<SurfaceObject> surfaceObjects;
-	List<SurfaceObject> surfaceObjects = Collections.synchronizedList(new ArrayList<SurfaceObject>());
-	//	private AnimationThread animationThread;
+	private List<SurfaceObject> surfaceObjects = Collections.synchronizedList(new ArrayList<SurfaceObject>());
 	private Cloud cloud;
 	private CloudController co;
-	private ControlPanel panel;
 	private boolean interrupt = false;
 	private long timeToWaitAfterRewind = 0;
 	private Paint paint = new Paint();
@@ -72,7 +67,6 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 		surfaceObjects = null;
 		cloud = null;
 		co = null;
-		panel = null;
 		context = null;
 	}
 
@@ -84,7 +78,6 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 		getHolder().setFormat(PixelFormat.TRANSPARENT);
 		getHolder().addCallback(this);
 		surfaceObjects = new ArrayList<SurfaceObject>();
-		panel = new ControlPanel(context, this);
 		co = new CloudController();
 		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 	}
@@ -156,125 +149,7 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-		Activity activity = (Activity) context;
-		boolean retval = false;
-
-		float displayHeight = activity.getWindowManager().getDefaultDisplay().getHeight();
-
-		ClickableArea clickableArea = Cloud.getInstance(null).getClickableArea();
-
-		if (ev.getY() > displayHeight - panel.getMenuButton().getIntrinsicHeight() && panel != null) {
-			try {
-				dispatchPanel(ev, displayHeight);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-		if (clickableArea == null || clickableArea.x == 0 && clickableArea.y == 0) {
-			return false;
-		}
-
-		if (isEVinArea(clickableArea, ev)) {
-			retval = Tutorial.getInstance(null).dispatchTouchEvent(ev);
-			co.disapear();
-
-		}
-		return retval;
+		return true;
 	}
 
-	public void dispatchPanel(MotionEvent ev, float displayHeight) throws InterruptedException {
-		if (panel.isOpen() && panel.isReadyToDispatch()) {
-			if (isOnStopButton(ev)) {
-				Tutorial.getInstance(null).stopButtonTutorial();
-				Log.i("tutorial", Thread.currentThread().getName() + ": DISPATCH Stop");
-			} else if (isOnPauseButton(ev)) {
-				if (panel.isPaused()) {
-					interrupt = true;
-					Tutorial.getInstance(null).playButtonTutorial();
-					panel.pressPlay();
-					interrupt = false;
-				} else {
-					interrupt = true;
-					Tutorial.getInstance(null).pauseButtonTutorial();
-					panel.pressPause();
-					interrupt = false;
-				}
-				Log.i("tutorial", Thread.currentThread().getName() + ": DISPATCH Pause");
-			} else if (isOnBackwardButton(ev) && !panel.isPaused()) {
-				Log.i("tutorial", Thread.currentThread().getName() + ": DISPATCH Button rewind");
-				interrupt = true;
-				Tutorial.getInstance(null).stepBackward();
-				panel.pressBackward();
-				interrupt = false;
-			} else if (isOnForwardButton(ev) && !panel.isPaused()) {
-				Log.i("tutorial", Thread.currentThread().getName() + ": DISPATCH Button forward");
-				interrupt = true;
-				Tutorial.getInstance(null).stepForward();
-				panel.pressForward();
-				interrupt = false;
-			} else if (isOnButton(ev)) {
-				panel.close();
-				Log.i("tutorial", Thread.currentThread().getName() + ": DISPATCH Button open/close");
-			}
-		} else if (!panel.isOpen() && panel.isReadyToDispatch()) {
-			if (isOnButton(ev)) {
-				panel.open();
-				Log.i("tutorial", Thread.currentThread().getName() + ": DISPATCH Button open/close");
-			}
-		}
-	}
-
-	private boolean isOnPauseButton(MotionEvent ev) {
-		double[] pausePosition = panel.getPausePosition();
-		if (ev.getX() > pausePosition[0] && ev.getX() < pausePosition[1]) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean isOnStopButton(MotionEvent ev) {
-		double[] stopPosition = panel.getStopPosition();
-		if (ev.getX() > stopPosition[0] && ev.getX() < stopPosition[1]) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean isOnButton(MotionEvent ev) {
-		if (ev.getX() < panel.getMenuButton().getIntrinsicWidth()) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean isOnBackwardButton(MotionEvent ev) {
-		double[] backwardPosition = panel.getBackwardPosition();
-		if (ev.getX() > backwardPosition[0] && ev.getX() < backwardPosition[1]) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean isOnForwardButton(MotionEvent ev) {
-		double[] forwardPosition = panel.getForwardPosition();
-		if (ev.getX() > forwardPosition[0] && ev.getX() < forwardPosition[1]) {
-			return true;
-		}
-		return false;
-	}
-
-	public boolean isEVinArea(ClickableArea area, MotionEvent ev) {
-		float x = ev.getX();
-		float y = ev.getY();
-
-		if (x > area.x && x < area.x + area.width && y > area.y && y < area.y + area.height) {
-			return true;
-		}
-		return false;
-	}
-
-	public float abs(float fl) {
-		return (fl > 0) ? fl : fl * -1;
-	}
 }

@@ -127,6 +127,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	protected void onResume() {
 		super.onResume();
 		Tutorial.getInstance(this).resumeTutorial();
+
 		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
 			return;
 		}
@@ -136,6 +137,11 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		setMainMenuButtonContinueText();
 		findViewById(R.id.main_menu_button_continue).setEnabled(true);
 		StatusBarNotificationManager.INSTANCE.displayDialogs(this);
+
+		if (!Tutorial.getInstance(null).isActive()) {
+			Tutorial.getInstance(null).startTutorial();
+		}
+
 	}
 
 	@Override
@@ -146,9 +152,6 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			return;
 		}
 
-		// onPause is sufficient --> gets called before "process_killed",
-		// onStop(), onDestroy(), onRestart()
-		// also when you switch activities
 		if (ProjectManager.INSTANCE.getCurrentProject() != null) {
 			ProjectManager.INSTANCE.saveProject();
 			Utils.saveToPreferences(this, Constants.PREF_PROJECTNAME_KEY, ProjectManager.INSTANCE.getCurrentProject()
@@ -179,7 +182,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_tutorial: {
-				Tutorial.getInstance(this).startTutorial();
+				Tutorial.getInstance(null).startTutorial();
 				return true;
 			}
 			case R.id.menu_settings: {
