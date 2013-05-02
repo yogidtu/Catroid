@@ -73,8 +73,8 @@ public class SetDescriptionDialogTest extends ActivityInstrumentationTestCase2<M
 		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForFragmentById(R.id.fragment_projects_list);
 		solo.clickLongOnText(testProject);
-		solo.clickInList(2);
 		UiTestUtils.clickOnHintOverlay(solo);
+		solo.clickOnText(solo.getString(R.string.set_description));
 		EditText description = (EditText) solo.getView(R.id.dialog_text_EditMultiLineText);
 		solo.sleep(2000);
 		int descriptionInputType = description.getInputType();

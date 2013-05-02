@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.ui;
 
+import java.util.concurrent.locks.Lock;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
@@ -47,6 +49,7 @@ import com.actionbarsherlock.view.MenuItem;
 public class ProjectActivity extends SherlockFragmentActivity {
 
 	private SpritesListFragment spritesListFragment;
+	private Lock viewSwitchLock = new ViewSwitchLock();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -191,11 +194,17 @@ public class ProjectActivity extends SherlockFragmentActivity {
 	}
 
 	public void handleAddButton(View view) {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
 		NewSpriteDialog dialog = new NewSpriteDialog();
 		dialog.show(getSupportFragmentManager(), NewSpriteDialog.DIALOG_FRAGMENT_TAG);
 	}
 
 	public void handlePlayButton(View view) {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
 		Intent intent = new Intent(this, PreStageActivity.class);
 		startActivityForResult(intent, PreStageActivity.REQUEST_RESOURCES_INIT);
 	}
