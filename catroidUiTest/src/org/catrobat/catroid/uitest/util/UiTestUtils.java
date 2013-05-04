@@ -430,6 +430,7 @@ public class UiTestUtils {
 		projectManager.setProject(project);
 		projectManager.setCurrentSprite(firstSprite);
 		projectManager.setCurrentScript(testScript);
+		StorageHandler.getInstance().saveProject(project);
 
 		return brickList;
 	}
@@ -1096,7 +1097,7 @@ public class UiTestUtils {
 		ProjectManager.INSTANCE.setProject(project);
 		ProjectManager.INSTANCE.setCurrentSprite(firstSprite);
 		ProjectManager.INSTANCE.setCurrentScript(testScript);
-		return ProjectManager.INSTANCE.saveProject();
+		return StorageHandler.getInstance().saveProject(project);
 	}
 
 	public static void goToHomeActivity(Activity activity) {

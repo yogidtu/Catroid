@@ -28,7 +28,6 @@ import java.util.Set;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
@@ -56,6 +55,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 public class BrickAdapter extends BaseAdapter implements DragAndDropListener, OnClickListener,
 		ScriptActivityAdapterInterface {
@@ -104,7 +104,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		firstDrag = true;
 		retryScriptDragging = false;
 		animatedBricks = new ArrayList<Brick>();
-		this.selectMode = Constants.SELECT_NONE;
+		this.selectMode = ListView.CHOICE_MODE_NONE;
 		initBrickList();
 	}
 
@@ -707,7 +707,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 		wrapper.addView(currentBrickView);
 		if (draggedBrick == null) {
-			if ((selectMode == Constants.SELECT_NONE)) {
+			if ((selectMode == ListView.CHOICE_MODE_NONE)) {
 				wrapper.setOnClickListener(this);
 				if (!(item instanceof DeadEndBrick)) {
 					wrapper.setOnLongClickListener(dragAndDropListView);
@@ -715,7 +715,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			}
 		}
 
-		if (position == positionOfInsertedBrick && initInsertedBrick && (selectMode == Constants.SELECT_NONE)) {
+		if (position == positionOfInsertedBrick && initInsertedBrick && (selectMode == ListView.CHOICE_MODE_NONE)) {
 			initInsertedBrick = false;
 			addingNewBrick = true;
 			dragAndDropListView.setInsertedBrick(position);
@@ -825,7 +825,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		});
 		AlertDialog alertDialog = builder.create();
 
-		if ((selectMode == Constants.SELECT_NONE)) {
+		if ((selectMode == ListView.CHOICE_MODE_NONE)) {
 			alertDialog.show();
 		}
 	}
@@ -907,7 +907,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			return;
 		}
 		if (isChecked) {
-			if (selectMode == Constants.SINGLE_SELECT) {
+			if (selectMode == ListView.CHOICE_MODE_SINGLE) {
 				clearCheckedItems();
 			}
 			if (brick.getCheckBox() != null && smartBrickSelection(brick, isChecked)) {

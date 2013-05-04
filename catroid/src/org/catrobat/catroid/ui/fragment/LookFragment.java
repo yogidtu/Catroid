@@ -746,7 +746,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			setSelectMode(Constants.MULTI_SELECT);
+			setSelectMode(ListView.CHOICE_MODE_MULTIPLE);
 			setActionModeActive(true);
 
 			actionModeTitle = getString(R.string.copy);
@@ -772,7 +772,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				int position = iterator.next();
 				copyLook(position);
 			}
-			setSelectMode(Constants.SELECT_NONE);
+			setSelectMode(ListView.CHOICE_MODE_NONE);
 			adapter.clearCheckedItems();
 
 			actionMode = null;
@@ -792,7 +792,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			setSelectMode(Constants.SINGLE_SELECT);
+			setSelectMode(ListView.CHOICE_MODE_SINGLE);
 			mode.setTitle(getString(R.string.rename));
 
 			setActionModeActive(true);
@@ -815,7 +815,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				selectedLookData = (LookData) listView.getItemAtPosition(position);
 				showRenameDialog();
 			}
-			setSelectMode(Constants.SELECT_NONE);
+			setSelectMode(ListView.CHOICE_MODE_NONE);
 			adapter.clearCheckedItems();
 
 			actionMode = null;
@@ -835,7 +835,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			setSelectMode(Constants.MULTI_SELECT);
+			setSelectMode(ListView.CHOICE_MODE_MULTIPLE);
 			setActionModeActive(true);
 
 			actionModeTitle = getString(R.string.delete);
@@ -864,7 +864,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				deleteLook(position - numberDeleted);
 				++numberDeleted;
 			}
-			setSelectMode(Constants.SELECT_NONE);
+			setSelectMode(ListView.CHOICE_MODE_NONE);
 			adapter.clearCheckedItems();
 
 			actionMode = null;
@@ -884,7 +884,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			setSelectMode(Constants.SINGLE_SELECT);
+			setSelectMode(ListView.CHOICE_MODE_SINGLE);
 			mode.setTitle(getString(R.string.edit_in_paintroid));
 
 			setActionModeActive(true);
@@ -906,7 +906,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				int position = iterator.next();
 				sendPaintroidIntent(position);
 			}
-			setSelectMode(Constants.SELECT_NONE);
+			setSelectMode(ListView.CHOICE_MODE_NONE);
 			adapter.clearCheckedItems();
 
 			actionMode = null;
