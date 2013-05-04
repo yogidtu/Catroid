@@ -22,8 +22,6 @@
  */
 package org.catrobat.catroid.ui;
 
-import java.util.concurrent.locks.Lock;
-
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
@@ -43,7 +41,6 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class ProgramMenuActivity extends SherlockFragmentActivity {
 	private ActionBar actionBar;
-	private Lock viewSwitchLock = new ViewSwitchLock();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +59,9 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 
 		Hint hint = Hint.getInstance();
 		Hint.setContext(this);
-		hint.overlayHint();
+		if (Hint.isActive(this)) {
+			hint.overlayHint();
+		}
 	}
 
 	@Override
@@ -106,6 +105,12 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+			case R.id.menu_showHints: {
+				Hint hint = Hint.getInstance();
+				Hint.setContext(this);
+				hint.overlayHint();
+				return true;
+			}
 			case android.R.id.home: {
 				Intent intent = new Intent(this, MainMenuActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -121,30 +126,18 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 	}
 
 	public void handleScriptsButton(View v) {
-		if (!viewSwitchLock.tryLock()) {
-			return;
-		}
 		startScriptActivity(ScriptActivity.FRAGMENT_SCRIPTS);
 	}
 
 	public void handleLooksButton(View v) {
-		if (!viewSwitchLock.tryLock()) {
-			return;
-		}
 		startScriptActivity(ScriptActivity.FRAGMENT_LOOKS);
 	}
 
 	public void handleSoundsButton(View v) {
-		if (!viewSwitchLock.tryLock()) {
-			return;
-		}
 		startScriptActivity(ScriptActivity.FRAGMENT_SOUNDS);
 	}
 
 	public void handlePlayButton(View view) {
-		if (!viewSwitchLock.tryLock()) {
-			return;
-		}
 		Intent intent = new Intent(this, PreStageActivity.class);
 		startActivityForResult(intent, PreStageActivity.REQUEST_RESOURCES_INIT);
 	}

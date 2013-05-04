@@ -194,5 +194,20 @@
 	    <item>@string/hint_settings_lego</item>
 	</string-array>
 	
+	<string-array name="hints_stage">
+	    <item>@string/hint_stage</item>
+	    <item>@string/hint_stage_back</item>
+	    <item>@string/hint_stage_resume</item>
+	    <item>@string/hint_stage_restart</item>
+	    <item>@string/hint_stage_axes</item>
+	    <item>@string/hint_stage_screenshot</item>
+	</string-array>
 	
+	<string-array name="hints_sound_recorder">
+	    <item>@string/hint_sound_recorder</item>
+	</string-array>
+	
+	<string-array name="hints_formula_editor">
+	    <item>@string/hint_formula_editor</item>
+	</string-array>
 </resources>

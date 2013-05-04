@@ -22,7 +22,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
+	<item
+        android:id="@+id/menu_showHints"
+        android:showAsAction="withText"
+        android:title="@string/hint_menu_show_hints" />
+	
     <item
         android:id="@+id/copy"
         android:icon="@drawable/ic_copy"

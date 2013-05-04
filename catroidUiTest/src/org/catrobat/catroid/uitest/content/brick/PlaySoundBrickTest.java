@@ -97,10 +97,12 @@ public class PlaySoundBrickTest extends ActivityInstrumentationTestCase2<MainMen
 		MediaPlayer mediaPlayer = SoundManager.getInstance().getMediaPlayer();
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(2000);
 		assertTrue("mediaPlayer is not playing", mediaPlayer.isPlaying());
 		assertEquals("wrong file playing", 7592, mediaPlayer.getDuration());
 		solo.goBack();
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForView(solo.getView(R.id.stage_dialog_button_back));
 		solo.clickOnView(solo.getView(R.id.stage_dialog_button_back));
 
@@ -111,6 +113,7 @@ public class PlaySoundBrickTest extends ActivityInstrumentationTestCase2<MainMen
 		mediaPlayer = SoundManager.getInstance().getMediaPlayer();
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(2000);
 		assertTrue("mediaPlayer is not playing", mediaPlayer.isPlaying());
 		assertEquals("wrong file playing", 4875, mediaPlayer.getDuration());
@@ -173,7 +176,7 @@ public class PlaySoundBrickTest extends ActivityInstrumentationTestCase2<MainMen
 		solo.clickOnText(newText);
 
 		// quickfix for Jenkins to get rid of Resources$NotFoundException: String resource
-//		String soundRecorderText = solo.getString(R.string.soundrecorder_name);
+		//		String soundRecorderText = solo.getString(R.string.soundrecorder_name);
 		String soundRecorderText = "Pocket Code Recorder";
 		solo.waitForText(soundRecorderText);
 		assertTrue("Catroid Sound Recorder is not present", solo.searchText(soundRecorderText));

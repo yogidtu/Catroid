@@ -129,6 +129,7 @@ public class ChangeVariableTest extends ActivityInstrumentationTestCase2<MainMen
 
 		solo.clickOnEditText(0);
 		solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
 		assertTrue("Variable Fragment not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
@@ -161,6 +162,7 @@ public class ChangeVariableTest extends ActivityInstrumentationTestCase2<MainMen
 
 		solo.clickOnEditText(0);
 		solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
 		assertTrue("Variable Fragment not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));

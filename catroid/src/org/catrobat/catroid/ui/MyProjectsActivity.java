@@ -22,8 +22,6 @@
  */
 package org.catrobat.catroid.ui;
 
-import java.util.concurrent.locks.Lock;
-
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.adapter.ProjectAdapter;
@@ -45,7 +43,6 @@ import com.actionbarsherlock.view.MenuItem;
 public class MyProjectsActivity extends SherlockFragmentActivity {
 
 	private ActionBar actionBar;
-	private Lock viewSwitchLock = new ViewSwitchLock();
 	private ProjectsListFragment projectsListFragment;
 
 	@Override
@@ -59,8 +56,9 @@ public class MyProjectsActivity extends SherlockFragmentActivity {
 
 		Hint hint = Hint.getInstance();
 		Hint.setContext(this);
-		hint.overlayHint();
-
+		if (Hint.isActive(this)) {
+			hint.overlayHint();
+		}
 		projectsListFragment = (ProjectsListFragment) getSupportFragmentManager().findFragmentById(
 				R.id.fragment_projects_list);
 	}
@@ -103,6 +101,12 @@ public class MyProjectsActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+			case R.id.menu_showHints: {
+				Hint hint = Hint.getInstance();
+				Hint.setContext(this);
+				hint.overlayHint();
+				return true;
+			}
 			case android.R.id.home: {
 				Intent intent = new Intent(this, MainMenuActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -154,9 +158,6 @@ public class MyProjectsActivity extends SherlockFragmentActivity {
 	}
 
 	public void handleAddButton(View view) {
-		if (!viewSwitchLock.tryLock()) {
-			return;
-		}
 		NewProjectDialog dialog = new NewProjectDialog();
 		dialog.show(getSupportFragmentManager(), NewProjectDialog.DIALOG_FRAGMENT_TAG);
 	}

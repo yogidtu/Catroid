@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.concurrent.locks.Lock;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -38,7 +37,6 @@ import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.ViewSwitchLock;
 import org.catrobat.catroid.ui.adapter.LookAdapter;
 import org.catrobat.catroid.ui.adapter.LookAdapter.OnLookEditListener;
 import org.catrobat.catroid.ui.dialogs.DeleteLookDialog;
@@ -134,8 +132,6 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	public void setOnLookDataListChangedAfterNewListener(OnLookDataListChangedAfterNewListener listener) {
 		lookDataListChangedAfterNewListener = listener;
 	}
-
-	private Lock viewSwitchLock = new ViewSwitchLock();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -458,10 +454,6 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 	@Override
 	public void handleAddButton() {
-		if (!viewSwitchLock.tryLock()) {
-			return;
-		}
-
 		NewLookDialog dialog = new NewLookDialog();
 		dialog.showDialog(getActivity().getSupportFragmentManager(), this);
 	}
@@ -479,10 +471,6 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 	@Override
 	public void onLookEdit(View view) {
-		if (!viewSwitchLock.tryLock()) {
-			return;
-		}
-
 		handleEditLook(view);
 	}
 
@@ -633,12 +621,6 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (!selectedLookData.getChecksum().equalsIgnoreCase(actualChecksum)) {
 			String oldFileName = selectedLookData.getLookFileName();
 			String newFileName = oldFileName.substring(oldFileName.indexOf('_') + 1);
-
-			//HACK for https://github.com/Catrobat/Catroid/issues/81
-			if (!newFileName.endsWith(".png")) {
-				newFileName = newFileName + ".png";
-			}
-
 			String projectName = ProjectManager.getInstance().getCurrentProject().getName();
 
 			try {

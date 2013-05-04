@@ -22,8 +22,6 @@
  */
 package org.catrobat.catroid.ui;
 
-import java.util.concurrent.locks.Lock;
-
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
@@ -89,8 +87,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	private static int currentFragmentPosition;
 	private String currentFragmentTag;
 
-	private Lock viewSwitchLock = new ViewSwitchLock();
-
 	private boolean isSoundFragmentFromPlaySoundBrickNew = false;
 	private boolean isSoundFragmentHandleAddButtonHandled = false;
 	private boolean isLookFragmentFromSetLookBrickNew = false;
@@ -123,7 +119,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-				R.layout.activity_script_spinner_item, getResources().getStringArray(
+				android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(
 						R.array.script_activity_spinner_items));
 
 		actionBar.setListNavigationCallbacks(spinnerAdapter, new OnNavigationListener() {
@@ -163,7 +159,9 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		Hint hint = Hint.getInstance();
 		Hint.setContext(this);
-		hint.overlayHint();
+		if (Hint.isActive(this)) {
+			hint.overlayHint();
+		}
 	}
 
 	private void updateCurrentFragment(int fragmentPosition, FragmentTransaction fragmentTransaction) {
@@ -258,6 +256,12 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		}
 
 		switch (item.getItemId()) {
+			case R.id.menu_showHints: {
+				Hint hint = Hint.getInstance();
+				Hint.setContext(this);
+				hint.overlayHint();
+				return true;
+			}
 			case android.R.id.home:
 				Intent mainMenuIntent = new Intent(this, MainMenuActivity.class);
 				mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -405,9 +409,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	}
 
 	public void handleAddButton(View view) {
-		if (!viewSwitchLock.tryLock()) {
-			return;
-		}
 		currentFragment.handleAddButton();
 	}
 
@@ -415,9 +416,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		if (isHoveringActive()) {
 			scriptFragment.getListView().animateHoveringBrick();
 		} else {
-			if (!viewSwitchLock.tryLock()) {
-				return;
-			}
 			Intent intent = new Intent(this, PreStageActivity.class);
 			startActivityForResult(intent, PreStageActivity.REQUEST_RESOURCES_INIT);
 		}

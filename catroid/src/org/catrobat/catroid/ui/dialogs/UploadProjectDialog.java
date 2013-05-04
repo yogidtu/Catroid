@@ -258,7 +258,6 @@ public class UploadProjectDialog extends DialogFragment {
 		uploadIntent.putExtra("notificationId", notificationId);
 		activity = getActivity();
 		activity.startService(uploadIntent);
-
 	}
 
 	public int createNotification(String uploadName) {

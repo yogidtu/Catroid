@@ -112,14 +112,18 @@ public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptAct
 				.getSelectedItem().toString());
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_motion));
 		solo.searchText(solo.getString(R.string.category_motion));
+		UiTestUtils.clickOnHintOverlay(solo);
 		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
 		solo.scrollDownList(fragmentListView);
 		assertTrue("Wrong selection in prototype spinner", solo.isSpinnerTextSelected(spriteName2));
 
 		UiTestUtils.goToHomeActivity(getActivity());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickLongOnText(spriteName1);
 		solo.waitForText(solo.getString(R.string.delete));
 		solo.clickOnText(solo.getString(R.string.delete));

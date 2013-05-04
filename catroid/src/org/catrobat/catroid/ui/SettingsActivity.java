@@ -48,7 +48,9 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 		Hint hint = Hint.getInstance();
 		Hint.setContext(this);
-		hint.overlayHint();
+		if (Hint.isActive(this)) {
+			hint.overlayHint();
+		}
 
 	}
 

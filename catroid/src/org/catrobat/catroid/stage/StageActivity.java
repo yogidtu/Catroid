@@ -26,6 +26,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Values;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
+import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
 
 import android.content.pm.ActivityInfo;
@@ -35,6 +36,7 @@ import android.view.WindowManager;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class StageActivity extends AndroidApplication {
+
 	public static final String TAG = StageActivity.class.getSimpleName();
 
 	public static StageListener stageListener;
@@ -56,12 +58,23 @@ public class StageActivity extends AndroidApplication {
 		if (ProjectManager.getInstance().getCurrentProject().isManualScreenshot()) {
 			stageListener.setMakeAutomaticScreenshot(false);
 		}
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this);
+		if (Hint.isActive(this)) {
+			hint.overlayHint();
+		}
 	}
 
 	@Override
 	public void onBackPressed() {
 		pause();
 		stageDialog.show();
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this);
+		if (Hint.isActive(this)) {
+			hint.overlayHint();
+		}
 	}
 
 	public void manageLoadAndFinish() {
@@ -110,6 +123,10 @@ public class StageActivity extends AndroidApplication {
 			Values.SCREEN_HEIGHT = Values.SCREEN_WIDTH;
 			Values.SCREEN_WIDTH = tmp;
 		}
+	}
+
+	public StageDialog getStageDialog() {
+		return this.stageDialog;
 	}
 
 }

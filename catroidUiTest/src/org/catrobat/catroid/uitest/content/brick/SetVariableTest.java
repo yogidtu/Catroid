@@ -128,6 +128,7 @@ public class SetVariableTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		assertTrue("UserVariable Name not as expected", userVariable.getName().equals(secondUserVariableName));
 
 		solo.clickOnEditText(0);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
 		assertTrue("Variable Fragment not shown",
@@ -160,6 +161,7 @@ public class SetVariableTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		String userVariableName = "testVariable1";
 
 		solo.clickOnEditText(0);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
 		assertTrue("Variable Fragment not shown",

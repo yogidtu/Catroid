@@ -511,6 +511,8 @@
     <!--  -->
 
 	<!-- Hint Strings -->
+	<string name="hint_menu_show_hints">Show Hints</string>
+	
 	<string name="hint_mainmenu_welcome">Welcome to Catroid! This Hints only appears on first execution.</string>
 	<string name="hint_mainmenu_continue">Click here to continue the current project.</string>
 	<string name="hint_mainmenu_new">Click here to create a new project.</string>
@@ -552,6 +554,17 @@
 	<string name="hint_brick_category_lego">Here you can find Lego Mindstorm Bricks.</string>
 	
 	<string name="hint_settings_lego">Here you can activate/deactivate the Lego Mindstorm Bricks.</string>
+	
+	<string name="hint_stage">Your code is executed here and you can see what you have programed before.</string>
+	<string name="hint_stage_back">Here you can go back to editing the program.</string>
+	<string name="hint_stage_resume">Here you can resume the execution of the program.</string>
+	<string name="hint_stage_restart">Here you can restart the program.</string>
+	<string name="hint_stage_axes">Here you can turn axes on.</string>
+	<string name="hint_stage_screenshot">Here you can create a screenshot of your program.</string>
+	
+	<string name="hint_sound_recorder">Click here to record a sound.</string>
+	
+	<string name="hint_formula_editor">Here you can find everything to compute something for your brick.</string>
 	<!--  -->
 	
 </resources>

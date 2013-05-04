@@ -249,6 +249,7 @@ public class UiTestUtils {
 			double newValue, String fieldName, Brick theBrick) {
 
 		solo.clickOnEditText(editTextNumber);
+		UiTestUtils.clickOnHintOverlay(solo);
 		insertDoubleIntoEditText(solo, newValue);
 
 		assertEquals(
@@ -270,6 +271,7 @@ public class UiTestUtils {
 	public static void insertValueViaFormulaEditor(Solo solo, int editTextNumber, double value) {
 
 		solo.clickOnEditText(editTextNumber);
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.insertDoubleIntoEditText(solo, value);
 
 		assertEquals("Text not updated within FormulaEditor", value,

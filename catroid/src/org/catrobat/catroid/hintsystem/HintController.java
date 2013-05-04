@@ -24,15 +24,23 @@ package org.catrobat.catroid.hintsystem;
 
 import java.util.ArrayList;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.soundrecorder.SoundRecorderActivity;
+import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.SettingsActivity;
+import org.catrobat.catroid.ui.dialogs.StageDialog;
 import org.catrobat.catroid.ui.fragment.AddBrickFragment;
 import org.catrobat.catroid.ui.fragment.BrickCategoryFragment;
+import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.ListView;
@@ -53,6 +61,7 @@ public class HintController {
 	}
 
 	public ArrayList<HintObject> getHints() {
+
 		allHints.clear();
 
 		switch (checkActivity()) {
@@ -78,6 +87,12 @@ public class HintController {
 				break;
 			case 5:
 				getSettingsHints();
+				break;
+			case 6:
+				getStageHints();
+				break;
+			case 7:
+				getSoundRecorderHints();
 				break;
 		}
 		return allHints;
@@ -116,6 +131,7 @@ public class HintController {
 		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_upload));
 		allHints.add(createHint(coord, hintStrings[5]));
 
+		setSharedPreferences("PREF_HINT_MAINMENU_ACTIVE", false);
 	}
 
 	private void getProjectHints() {
@@ -132,6 +148,8 @@ public class HintController {
 		allHints.add(createHint(coord, hintStrings[2]));
 		coord = examineCoordinates(activity.findViewById(R.id.button_play));
 		allHints.add(createHint(coord, hintStrings[3]));
+
+		setSharedPreferences("PREF_HINT_PROJECT_ACTIVE", false);
 	}
 
 	private void getMyProjectsHints() {
@@ -145,6 +163,7 @@ public class HintController {
 		coord = examineCoordinates(activity.findViewById(R.id.button_add));
 		allHints.add(createHint(coord, hintStrings[1]));
 
+		setSharedPreferences("PREF_HINT_MYPROJECTS_ACTIVE", false);
 	}
 
 	private void getProgramMenuHints() {
@@ -161,28 +180,32 @@ public class HintController {
 		allHints.add(createHint(coord, hintStrings[2]));
 		coord = examineCoordinates(activity.findViewById(R.id.button_play));
 		allHints.add(createHint(coord, hintStrings[3]));
+
+		setSharedPreferences("PREF_HINT_PROGRAMMENU_ACTIVE", false);
 	}
 
 	private void getScriptHints() {
-		ScriptActivity activity = (ScriptActivity) context;
-		Bundle bundle = activity.getIntent().getExtras();
-		Fragment isBrickCategory = activity.getSupportFragmentManager().findFragmentByTag(
-				BrickCategoryFragment.BRICK_CATEGORY_FRAGMENT_TAG);
-		Fragment isAddBrickFragment = activity.getSupportFragmentManager().findFragmentByTag(
-				AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
-		if (isBrickCategory != null && isAddBrickFragment == null) {
-			getBrickCategoryHints();
-		} else if (isAddBrickFragment != null) {
-			getAddBrickHints();
-		} else {
-			if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 0) {
+		switch (checkFragment()) {
+			case 0:
+				getBrickCategoryHints();
+				break;
+			case 1:
+				getAddBrickHints();
+				break;
+			case 2:
+				getFormulaEditorHints();
+				break;
+			case 3:
 				getScriptingHints();
-			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_LOOKS) == 1) {
+				break;
+			case 4:
 				getLooksHints();
-			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SOUNDS) == 2) {
+				break;
+			case 5:
 				getSoundsHints();
-			}
+				break;
 		}
+
 	}
 
 	private void getScriptingHints() {
@@ -197,6 +220,8 @@ public class HintController {
 		allHints.add(createHint(coord, hintStrings[1]));
 		coord = examineCoordinates(activity.findViewById(R.id.button_play));
 		allHints.add(createHint(coord, hintStrings[2]));
+
+		setSharedPreferences("PREF_HINT_SCRIPTS_ACTIVE", false);
 	}
 
 	private void getLooksHints() {
@@ -205,14 +230,14 @@ public class HintController {
 		Resources resources = activity.getResources();
 		String[] hintStrings = resources.getStringArray(R.array.hints_looks);
 
-		View v = activity.findViewById(R.id.fragment_look_item_relative_layout);
-
 		coord = examineCoordinates(activity.findViewById(R.id.script_fragment_container));
 		allHints.add(createHint(coord, hintStrings[0]));
 		coord = examineCoordinates(activity.findViewById(R.id.button_add));
 		allHints.add(createHint(coord, hintStrings[1]));
 		coord = examineCoordinates(activity.findViewById(R.id.button_play));
 		allHints.add(createHint(coord, hintStrings[2]));
+
+		setSharedPreferences("PREF_HINT_LOOKS_ACTIVE", false);
 
 	}
 
@@ -229,6 +254,7 @@ public class HintController {
 		coord = examineCoordinates(activity.findViewById(R.id.button_play));
 		allHints.add(createHint(coord, hintStrings[2]));
 
+		setSharedPreferences("PREF_HINT_SOUNDS_ACTIVE", false);
 	}
 
 	private void getBrickCategoryHints() {
@@ -246,6 +272,7 @@ public class HintController {
 			allHints.add(createHint(coord, hintStrings[i]));
 		}
 
+		setSharedPreferences("PREF_HINT_BRICKCATEGORY_ACTIVE", false);
 	}
 
 	private void getAddBrickHints() {
@@ -279,7 +306,15 @@ public class HintController {
 	}
 
 	private void getSettingsHints() {
+		int[] coord = { 0, 0, 0 };
+		SettingsActivity activity = (SettingsActivity) context;
+		ListView listView = activity.getListView();
+		Resources resources = activity.getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_settings);
+		coord = examineListCoordinates(listView.getChildAt(0));
+		allHints.add(createHint(coord, hintStrings[0]));
 
+		setSharedPreferences("PREF_HINT_SETTINGS_ACTIVE", false);
 	}
 
 	private void getBrickHints(int id) {
@@ -295,6 +330,66 @@ public class HintController {
 			coord = examineListCoordinates(listView.getChildAt(i));
 			allHints.add(createHint(coord, hintStrings[i]));
 		}
+
+		setSharedPreferences("PREF_HINT_ADDBRICK_ACTIVE", false);
+
+	}
+
+	private void getStageHints() {
+
+		int[] coord = { 0, 0, 0 };
+		StageActivity activity = (StageActivity) context;
+		StageDialog dialog = activity.getStageDialog();
+		Resources resources = activity.getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_stage);
+
+		if (!dialog.isShowing()) {
+			coord = examineStageCoordinates();
+			allHints.add(createHint(coord, hintStrings[0]));
+
+			setSharedPreferences("PREF_HINT_STAGE_ACTIVE", false);
+		} else {
+			coord = examineCoordinates(dialog.findViewById(R.id.stage_dialog_button_back));
+			allHints.add(createHint(coord, hintStrings[1]));
+			coord = examineCoordinates(dialog.findViewById(R.id.stage_dialog_button_continue));
+			allHints.add(createHint(coord, hintStrings[2]));
+			coord = examineCoordinates(dialog.findViewById(R.id.stage_dialog_button_restart));
+			allHints.add(createHint(coord, hintStrings[3]));
+			coord = examineCoordinates(dialog.findViewById(R.id.stage_dialog_button_toggle_axes));
+			allHints.add(createHint(coord, hintStrings[4]));
+			coord = examineCoordinates(dialog.findViewById(R.id.stage_dialog_button_screenshot));
+			allHints.add(createHint(coord, hintStrings[5]));
+
+			setSharedPreferences("PREF_HINT_STAGEDIALOG_ACTIVE", false);
+
+		}
+
+	}
+
+	private void getFormulaEditorHints() {
+		int[] coord = { 0, 0, 0 };
+		ScriptActivity activity = (ScriptActivity) context;
+		FormulaEditorFragment fragment = (FormulaEditorFragment) activity.getSupportFragmentManager()
+				.findFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
+		Resources resources = fragment.getActivity().getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_formula_editor);
+
+		coord = examineCoordinates(activity.findViewById(R.id.formula_editor_keyboard_compute));
+		allHints.add(createHint(coord, hintStrings[0]));
+
+		setSharedPreferences("PREF_HINT_FORMULAEDITOR_ACTIVE", false);
+	}
+
+	private void getSoundRecorderHints() {
+		int[] coord = { 0, 0, 0 };
+		SoundRecorderActivity activity = (SoundRecorderActivity) context;
+		Resources resources = activity.getResources();
+		String[] hintStrings = resources.getStringArray(R.array.hints_sound_recorder);
+
+		coord = examineCoordinates(activity.findViewById(R.id.soundrecorder_record_button));
+		allHints.add(createHint(coord, hintStrings[0]));
+
+		setSharedPreferences("PREF_HINT_SOUNDRECORDER_ACTIVE", false);
 
 	}
 
@@ -322,7 +417,7 @@ public class HintController {
 		return -1;
 	}
 
-	private int checkActivity() {
+	public int checkActivity() {
 		Activity activity = (Activity) context;
 
 		if (activity.getLocalClassName().compareTo("ui.MainMenuActivity") == 0) {
@@ -337,8 +432,52 @@ public class HintController {
 			return 4;
 		} else if (activity.getLocalClassName().compareTo("ui.SettingsActivity") == 0) {
 			return 5;
+		} else if (activity.getLocalClassName().compareTo("stage.StageActivity") == 0) {
+			return 6;
+		} else if (activity.getLocalClassName().compareTo("soundrecorder.SoundRecorderActivity") == 0) {
+			return 7;
 		}
 		return -1;
+	}
+
+	public int checkFragment() {
+		int fragmentNumber = -1;
+		ScriptActivity activity = (ScriptActivity) context;
+		Bundle bundle = activity.getIntent().getExtras();
+		Fragment isBrickCategory = activity.getSupportFragmentManager().findFragmentByTag(
+				BrickCategoryFragment.BRICK_CATEGORY_FRAGMENT_TAG);
+		Fragment isAddBrickFragment = activity.getSupportFragmentManager().findFragmentByTag(
+				AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
+		Fragment isFormulaEditor = activity.getSupportFragmentManager().findFragmentByTag(
+				FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
+
+		if (isBrickCategory != null && isAddBrickFragment == null) {
+			fragmentNumber = 0;
+		} else if (isAddBrickFragment != null) {
+			fragmentNumber = 1;
+		} else if (isFormulaEditor != null) {
+			fragmentNumber = 2;
+		} else if (bundle != null) {
+			if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 0) {
+				fragmentNumber = 3;
+			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_LOOKS) == 1) {
+				fragmentNumber = 4;
+			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SOUNDS) == 2) {
+				fragmentNumber = 5;
+			}
+		}
+		return fragmentNumber;
+
+	}
+
+	private int[] examineStageCoordinates() {
+		int[] coordinates = { 0, 0, 0 };
+		coordinates[0] = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenWidth / 2;
+		coordinates[1] = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenHeight / 2;
+		coordinates[2] = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenWidth;
+		coordinates = normalizeCoordinates(coordinates);
+
+		return coordinates;
 	}
 
 	private int[] examineListCoordinates(View view) {
@@ -380,6 +519,19 @@ public class HintController {
 
 	public void setContext(Context con) {
 		this.context = con;
+	}
+
+	public boolean getSharedPreferencesIsHintActive(String preferenceName) {
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+		boolean isHintActive = pref.getBoolean(preferenceName, true);
+		return isHintActive;
+	}
+
+	public void setSharedPreferences(String preferenceName, boolean tag) {
+		//		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		//		SharedPreferences.Editor sharedPreferencesEditor = preferences.edit();
+		//		sharedPreferencesEditor.putBoolean(preferenceName, tag);
+		//		sharedPreferencesEditor.commit();
 	}
 
 }

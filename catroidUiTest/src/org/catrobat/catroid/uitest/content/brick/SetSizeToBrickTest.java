@@ -106,10 +106,12 @@ public class SetSizeToBrickTest extends ActivityInstrumentationTestCase2<MainMen
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.assertCurrentActivity("Not in stage", StageActivity.class);
 
 		solo.goBack();
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.stage_dialog_screenshot));
 
 		assertTrue("Successful screenshot Toast not found!",
