@@ -147,8 +147,9 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 		startScript1.addBrick(setVariableBrick1);
 		startScript1.addBrick(setVariableBrick2);
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(0);
-
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(200);
 		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_pocketcode_name));
 		solo.sleep(200);
@@ -184,11 +185,14 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 		ProjectManager.getInstance().getCurrentProject().addSprite(sprite);
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnTextInList(solo, solo.getString(R.string.default_project_name));
 		solo.sleep(200);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_pocketcode_name));
 		solo.sleep(200);
 		solo.clickOnText(solo.getString(R.string.copy));
@@ -203,11 +207,14 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 	public void testCopySprite() {
 		UiTestUtils.createProjectForCopySprite(UiTestUtils.PROJECTNAME1, getActivity());
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnTextInList(solo, UiTestUtils.PROJECTNAME1);
 		solo.sleep(200);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_pocketcode_name));
 		solo.sleep(200);
 		assertEquals("Copy is not in context menu!", true, solo.searchText(getActivity().getString(R.string.copy)));
@@ -232,6 +239,7 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 		solo.clickOnText(solo.getString(R.string.default_project_sprites_pocketcode_name)
 				+ solo.getString(R.string.copy_sprite_name_suffix));
 		solo.sleep(500);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		assertEquals("The number of Bricks differs!", ProjectManager.getInstance().getCurrentSprite().getScript(0)
 				.getBrickList().size(), brickCounter);

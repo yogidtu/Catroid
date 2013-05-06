@@ -164,7 +164,9 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.goBack();
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(100);
 		solo.clickOnButton(solo.getString(R.string.stage_dialog_restart));
 		solo.waitForActivity(StageActivity.class.getSimpleName());
@@ -173,6 +175,7 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		solo.sleep(500);
 		solo.goBack();
 		solo.sleep(100);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.stage_dialog_back));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		assertEquals("Returned to wrong Activity", currentActivity, solo.getCurrentActivity());
@@ -273,10 +276,12 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(4000);
 		assertTrue("Sound not playing.", mediaPlayer.isPlaying());
 		int positionBeforeRestart = mediaPlayer.getCurrentPosition();
 		solo.goBack();
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(500);
 		assertFalse("Sound playing but should be paused.", mediaPlayer.isPlaying());
 		solo.clickOnButton(solo.getString(R.string.stage_dialog_restart));
@@ -301,7 +306,9 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.goBack();
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.stage_dialog_axes_on));
 		solo.clickOnButton(solo.getString(R.string.stage_dialog_resume));
 		solo.sleep(100);
@@ -340,15 +347,18 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		project.getXmlHeader().virtualScreenHeight = 700;
 		project.setDeviceData(getActivity());
 		storageHandler.saveProject(project);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Cannot click project.", UiTestUtils.clickOnTextInList(solo, testProject));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 
 		Utils.updateScreenWidthAndHeight(getActivity());
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Stage not resizeable.", ((StageActivity) solo.getCurrentActivity()).getResizePossible());
 		byte[] whitePixel = { (byte) 255, (byte) 255, (byte) 255, (byte) 255 };
 		byte[] screenPixel = StageActivity.stageListener.getPixels(0, 0, 1, 1);
@@ -360,6 +370,7 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		screenPixel = StageActivity.stageListener.getPixels(0, Values.SCREEN_HEIGHT - 1, 1, 1);
 		UiTestUtils.compareByteArrays(whitePixel, screenPixel);
 		solo.goBack();
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.stage_dialog_button_maximize));
 		solo.clickOnView(solo.getView(R.id.stage_dialog_button_continue));
 		solo.sleep(100);
@@ -377,6 +388,7 @@ public class StageDialogTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		UiTestUtils.compareByteArrays(whitePixel, screenPixel);
 
 		solo.goBack();
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.stage_dialog_button_maximize));
 		solo.clickOnView(solo.getView(R.id.stage_dialog_button_continue));
 		solo.sleep(100);

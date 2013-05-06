@@ -99,6 +99,7 @@ public class FormulaEditorKeyboardTest extends android.test.ActivityInstrumentat
 	public void testNormalKeysKeyboard() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
@@ -188,6 +189,7 @@ public class FormulaEditorKeyboardTest extends android.test.ActivityInstrumentat
 		String itemString = "";
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
@@ -253,6 +255,7 @@ public class FormulaEditorKeyboardTest extends android.test.ActivityInstrumentat
 		String itemString = "";
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
@@ -349,6 +352,7 @@ public class FormulaEditorKeyboardTest extends android.test.ActivityInstrumentat
 		String itemString = "";
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
@@ -427,6 +431,7 @@ public class FormulaEditorKeyboardTest extends android.test.ActivityInstrumentat
 		String itemString = "";
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));

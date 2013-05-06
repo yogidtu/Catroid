@@ -121,9 +121,12 @@ public class LegoNXTTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 		DeviceListActivity deviceListActivity = new DeviceListActivity();
 		Reflection.setPrivateField(deviceListActivity, "autoConnectIDs", autoConnectIDs);
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(2000);
 
 		ListView deviceList = solo.getCurrentListViews().get(0);
@@ -202,12 +205,16 @@ public class LegoNXTTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 			}
 		}
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(spriteName);
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.scripts));
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		ArrayList<String> autoConnectIDs = new ArrayList<String>();
 		autoConnectIDs.add(connectedDeviceMacAdress);
@@ -215,9 +222,11 @@ public class LegoNXTTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 		Reflection.setPrivateField(deviceListActivity, "autoConnectIDs", autoConnectIDs);
 
 		UiTestUtils.clickOnActionBar(solo, R.id.button_play);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(6500);// increase this sleep if probs!
 
 		solo.goBack();
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(500);
 		solo.goBack();
 		solo.sleep(1000);
@@ -225,6 +234,7 @@ public class LegoNXTTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 		solo.sleep(1000);
 		//Device is still connected (until visiting main menu or exiting program)!
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(1000);
 		solo.assertCurrentActivity("BT connection was not there anymore!!!", StageActivity.class);
 
@@ -242,9 +252,12 @@ public class LegoNXTTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 		autoConnectIDs.add(PAIRED_UNAVAILABLE_DEVICE_MAC);
 		Reflection.setPrivateField(deviceListActivity, "autoConnectIDs", autoConnectIDs);
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(10000); //yes, has to be that long! waiting for auto connection timeout!
 
 		assertTrue("I should be on the bluetooth device choosing screen, but am not!",
@@ -270,14 +283,18 @@ public class LegoNXTTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 			solo.sleep(5000);
 		}
 
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(1000);
 		solo.assertCurrentActivity("Devicelist not shown!", DeviceListActivity.class);
 		solo.goBack();
 		solo.sleep(1000);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(1000);
 		solo.assertCurrentActivity("Devicelist not shown!", DeviceListActivity.class);
 

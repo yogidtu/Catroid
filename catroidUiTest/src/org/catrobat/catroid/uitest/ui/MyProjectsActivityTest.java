@@ -171,6 +171,7 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 		assertEquals("MyProjectsActivity not in Portrait mode!", Configuration.ORIENTATION_PORTRAIT, solo
 				.getCurrentActivity().getResources().getConfiguration().orientation);
 
@@ -616,10 +617,11 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		String delete = solo.getString(R.string.delete);
 		createProjects();
 		solo.sleep(2000);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
-
+		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.openActionMode(solo, delete, R.id.delete);
 
 		solo.clickOnCheckBox(1);
@@ -652,9 +654,11 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		String delete = solo.getString(R.string.delete);
 		createProjects();
 		solo.sleep(200);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.openActionMode(solo, delete, R.id.delete);
 
@@ -671,8 +675,10 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		String delete = solo.getString(R.string.delete);
 		createProjects();
 		solo.sleep(200);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForFragmentById(R.id.fragment_projects_list);
 
 		UiTestUtils.openActionMode(solo, delete, R.id.delete);
@@ -751,9 +757,11 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		String rename = solo.getString(R.string.rename);
 		createProjects();
 		solo.sleep(200);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.openActionMode(solo, rename, R.id.rename);
 		solo.clickOnText(rename);
@@ -784,9 +792,11 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		String ok = solo.getString(R.string.ok);
 		createProjects();
 		solo.sleep(200);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.openActionMode(solo, rename, R.id.rename);
 
@@ -950,9 +960,11 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		String hideDetailsText = solo.getString(R.string.hide_details);
 		createProjects();
 		solo.sleep(200);
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		View projectDetails = solo.getView(R.id.my_projects_activity_list_item_details);
 		UiTestUtils.openOptionsMenu(solo);
@@ -969,6 +981,7 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		assertEquals("Project details are not showing!", View.VISIBLE, projectDetails.getVisibility());
 
@@ -1184,6 +1197,7 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 				UiTestUtils.clickOnTextInList(solo, UiTestUtils.COPIED_PROJECT_NAME));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		assertTrue("project " + UiTestUtils.COPIED_PROJECT_NAME + " was not added",
 				solo.searchText(UiTestUtils.COPIED_PROJECT_NAME, 1, true));
@@ -1223,9 +1237,11 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		String copy = solo.getString(R.string.copy);
 		createProjects();
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
+		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.openActionMode(solo, copy, R.id.copy);
 
@@ -1369,10 +1385,12 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(2000);
 
 		if (makeScreenshot) {
 			solo.goBack();
+			UiTestUtils.clickOnHintOverlay(solo);
 			solo.clickOnText(solo.getString(R.string.stage_dialog_screenshot));
 			solo.goBack();
 		} else {

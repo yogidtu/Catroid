@@ -78,6 +78,7 @@ public class TransparentWhenBrickTest extends ActivityInstrumentationTestCase2<S
 
 	public void testTapOnSideAreaOfForegroundSprite() {
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		Reflection.setPrivateField(StageActivity.stageListener, "makeAutomaticScreenshot", false);
 		solo.sleep(2000);
 		assertTrue("Sprite cat is not at x=0 and y=0",
@@ -104,6 +105,7 @@ public class TransparentWhenBrickTest extends ActivityInstrumentationTestCase2<S
 	public void testTapOnHalfTransparentAreaOfForegroundSprite() {
 		fish.look.setAlphaValue(0.5f);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		Reflection.setPrivateField(StageActivity.stageListener, "makeAutomaticScreenshot", false);
 		solo.sleep(2000);
 		assertTrue("Sprite cat is not at x=0 and y=0",
@@ -130,6 +132,7 @@ public class TransparentWhenBrickTest extends ActivityInstrumentationTestCase2<S
 	public void testTapOnFullTransparentAreaOfForegroundSprite() {
 		fish.look.setAlphaValue(0.0f);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
+		UiTestUtils.clickOnHintOverlay(solo);
 		Reflection.setPrivateField(StageActivity.stageListener, "makeAutomaticScreenshot", false);
 		solo.sleep(2000);
 		assertTrue("Sprite cat is not at x=0 and y=0",
