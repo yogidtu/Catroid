@@ -161,8 +161,7 @@ public class FormulaElement implements Serializable {
 			case USER_VARIABLE:
 				UserVariablesContainer userVariables = ProjectManager.getInstance().getCurrentProject()
 						.getUserVariables();
-				String spriteName = sprite == null ? null : sprite.getName();
-				UserVariable userVariable = userVariables.getUserVariable(value, spriteName);
+				UserVariable userVariable = userVariables.getUserVariable(value, sprite);
 				if (userVariable == null) {
 					returnValue = NOT_EXISTING_USER_VARIABLE_INTERPRETATION_VALUE;
 					break;
@@ -301,25 +300,25 @@ public class FormulaElement implements Serializable {
 		Double returnValue = 0d;
 		switch (sensor) {
 			case LOOK_BRIGHTNESS:
-				returnValue = (double) sprite.look.getBrightnessValue();
+				returnValue = (double) sprite.look.getBrightnessInUserInterfaceDimensionUnit();
 				break;
 			case LOOK_GHOSTEFFECT:
-				returnValue = (double) sprite.look.getAlphaValue();
+				returnValue = (double) sprite.look.getGhostEffectInUserInterfaceDimensionUnit();
 				break;
 			case LOOK_LAYER:
 				returnValue = (double) sprite.look.getZIndex();
 				break;
 			case LOOK_ROTATION:
-				returnValue = (double) sprite.look.getRotation();
+				returnValue = (double) sprite.look.getRotationInUserInterfaceDimensionUnit();
 				break;
 			case LOOK_SIZE:
-				returnValue = (double) sprite.look.getScaleX();
+				returnValue = (double) sprite.look.getSizeInUserInterfaceDimensionUnit();
 				break;
 			case LOOK_X:
-				returnValue = (double) sprite.look.getXPosition();
+				returnValue = (double) sprite.look.getXInUserInterfaceDimensionUnit();
 				break;
 			case LOOK_Y:
-				returnValue = (double) sprite.look.getYPosition();
+				returnValue = (double) sprite.look.getYInUserInterfaceDimensionUnit();
 				break;
 		}
 		return returnValue;
@@ -429,7 +428,7 @@ public class FormulaElement implements Serializable {
 	public FormulaElement clone() {
 		FormulaElement leftChildClone = leftChild == null ? null : leftChild.clone();
 		FormulaElement rightChildClone = rightChild == null ? null : rightChild.clone();
-		return new FormulaElement(type, new String(value), null, leftChildClone, rightChildClone);
+		return new FormulaElement(type, new String(value == null ? "" : value), null, leftChildClone, rightChildClone);
 	}
 
 }

@@ -34,6 +34,7 @@ import org.catrobat.catroid.web.ServerCalls;
 import org.catrobat.catroid.web.WebconnectionException;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.ResultReceiver;
@@ -55,6 +56,7 @@ public class ProjectUploadService extends IntentService {
 	private boolean result;
 	public ResultReceiver receiver;
 	private Integer notificationId;
+	private String username;
 
 	public ProjectUploadService() {
 		super("ProjectUploadService");
@@ -67,6 +69,7 @@ public class ProjectUploadService extends IntentService {
 		this.projectName = intent.getStringExtra("uploadName");
 		this.projectDescription = intent.getStringExtra("projectDescription");
 		this.token = intent.getStringExtra("token");
+		this.username = intent.getStringExtra("username");
 		this.serverAnswer = "";
 		this.result = true;
 		this.notificationId = intent.getIntExtra("notificationId", 0);
@@ -109,8 +112,9 @@ public class ProjectUploadService extends IntentService {
 			String userEmail = UtilDeviceInfo.getUserEmail(this);
 			String language = UtilDeviceInfo.getUserLanguageCode(this);
 
+			Context context = getApplicationContext();
 			ServerCalls.getInstance().uploadProject(projectName, projectDescription, zipFileString, userEmail,
-					language, token, receiver, notificationId);
+					language, token, username, receiver, notificationId, context);
 
 			zipFile.delete();
 		} catch (IOException e) {

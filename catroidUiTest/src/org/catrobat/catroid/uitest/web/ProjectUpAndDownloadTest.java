@@ -23,12 +23,14 @@
 package org.catrobat.catroid.uitest.web;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.SoundInfo;
+import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
@@ -61,7 +63,10 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 	private String testDescription = UiTestUtils.PROJECTDESCRIPTION1;
 	private String newTestDescription = UiTestUtils.PROJECTDESCRIPTION2;
 	private String saveToken;
+	private String uploadDialogTitle;
 	private int serverProjectId;
+
+	private Project standardProject;
 
 	public ProjectUpAndDownloadTest() {
 		super(MainMenuActivity.class);
@@ -73,7 +78,8 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 	public void setUp() throws Exception {
 		solo = new Solo(getInstrumentation(), getActivity());
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		saveToken = prefs.getString(Constants.TOKEN, "0");
+		saveToken = prefs.getString(Constants.TOKEN, Constants.NO_TOKEN);
+		uploadDialogTitle = solo.getString(R.string.upload_project_dialog_title);
 	}
 
 	@Override
@@ -93,6 +99,20 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 				ServerCalls.useTestUrl = true;
 			}
 		});
+	}
+
+	public void testTokenReplacementAfterUpload() throws Throwable {
+		setServerURLToTestUrl();
+
+		UiTestUtils.createValidUser(getActivity());
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		String originalToken = sharedPreferences.getString(Constants.TOKEN, Constants.NO_TOKEN);
+		uploadProject(newTestProject, newTestDescription);
+		String newToken = sharedPreferences.getString(Constants.TOKEN, Constants.NO_TOKEN);
+
+		assertFalse("Original token not available", originalToken.equals(Constants.NO_TOKEN));
+		assertFalse("New token not available", newToken.equals(Constants.NO_TOKEN));
+		assertFalse("Original token should be replaced by new token after upload", originalToken.equals(newToken));
 	}
 
 	public void testUploadProjectSuccess() throws Throwable {
@@ -134,7 +154,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		StorageHandler.getInstance().saveProject(testProject);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
-		solo.sleep(500);
+		solo.waitForText(uploadDialogTitle);
 
 		// enter a new title
 		solo.clearEditText(0);
@@ -147,7 +167,6 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.enterText(1, newTestDescription);
 
 		solo.clickOnButton(solo.getString(R.string.upload_button));
-		solo.sleep(500);
 
 		String errorMessage = solo.getString(R.string.error_project_version);
 		String linkText = solo.getString(R.string.dialog_wrong_project_version_apk_link_text);
@@ -261,7 +280,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		String serverProjectDescription = downloadedProject.getDescription();
 		assertTrue("Project name on server was not correctly renamed",
 				serverProjectName.equalsIgnoreCase(projectNameSetWhenUploading));
-		assertTrue("Project name on server was not correctly renamed",
+		assertTrue("Project description on server was not correctly renamed",
 				serverProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
 	}
 
@@ -306,34 +325,32 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 				serverProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
 	}
 
-	//	public void testUpAndDownloadJapaneseUnicodeProject() throws Throwable {
-	//		setServerURLToTestUrl();
-	//
-	//		String testProject = UiTestUtils.JAPANESE_PROJECT_NAME;
-	//		createTestProject(testProject);
-	//
-	//		//intent to the main activity is sent since changing activity orientation is not working
-	//		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-	//		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
-	//		getActivity().startActivity(intent);
-	//
-	//		UiTestUtils.createValidUser(getActivity());
-	//
-	//		uploadProject(testProject, "");
-	//		solo.sleep(5000);
-	//
-	//		Project uploadProject = StorageHandler.getInstance().loadProject(testProject);
-	//		String DeserializedProjectName = uploadProject.getName();
-	//		assertTrue("Deserialized project name was changed", DeserializedProjectName.equalsIgnoreCase(testProject));
-	//
-	//		UiTestUtils.clearAllUtilTestProjects();
-	//
-	//		downloadProjectAndReplace(testProject);
-	//		Project downloadedProject = StorageHandler.getInstance().loadProject(testProject);
-	//
-	//		String serverProjectName = downloadedProject.getName();
-	//		assertTrue("Project name on server was changed", serverProjectName.equalsIgnoreCase(testProject));
-	//	}
+	public void testUpAndDownloadJapaneseUnicodeProject() throws Throwable {
+		setServerURLToTestUrl();
+
+		String testProject = UiTestUtils.JAPANESE_PROJECT_NAME;
+		createTestProject(testProject);
+
+		//intent to the main activity is sent since changing activity orientation is not working
+		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
+		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		getActivity().startActivity(intent);
+
+		UiTestUtils.createValidUser(getActivity());
+
+		uploadProject(testProject, "");
+		solo.sleep(5000);
+
+		Project uploadProject = StorageHandler.getInstance().loadProject(testProject);
+		String DeserializedProjectName = uploadProject.getName();
+		assertTrue("Deserialized project name was changed", DeserializedProjectName.equalsIgnoreCase(testProject));
+
+		downloadProjectAndReplace(testProject);
+		Project downloadedProject = StorageHandler.getInstance().loadProject(testProject);
+
+		String serverProjectName = downloadedProject.getName();
+		assertTrue("Project name on server was changed", serverProjectName.equalsIgnoreCase(testProject));
+	}
 
 	public void testDownload() throws Throwable {
 		setServerURLToTestUrl();
@@ -357,7 +374,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 			ProjectManager.INSTANCE.getFileChecksumContainer().addChecksum(soundInfo.getChecksum(),
 					soundInfo.getAbsolutePath());
 		}
-		ProjectManager.INSTANCE.saveProject();
+		StorageHandler.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
 		Project newProject = StorageHandler.getInstance().loadProject(projectName);
 		ProjectManager.INSTANCE.setProject(newProject);
 
@@ -375,6 +392,99 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		assertTrue("Project was successfully downloaded", serverProjectName.equalsIgnoreCase(projectName));
 	}
 
+	public void testUploadStandardProject() throws Throwable {
+		if (!createAndSaveStandardProject() || this.standardProject == null) {
+			fail("Standard project not created");
+		}
+
+		setServerURLToTestUrl();
+		UiTestUtils.createValidUser(getActivity());
+
+		String uploadButtonText = solo.getString(R.string.upload_button);
+
+		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
+		solo.waitForText(uploadButtonText);
+		solo.goBack();
+		solo.sleep(500);
+		solo.clickOnButton(uploadButtonText);
+
+		assertTrue("When uploading a project with the standard project name,  the error message should be shown",
+				solo.searchText(solo.getString(R.string.error_upload_project_with_default_name)));
+
+		solo.clickOnButton(solo.getString(R.string.close));
+
+		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
+		solo.waitForText(uploadButtonText);
+		solo.goBack();
+		solo.sleep(500);
+
+		while (solo.scrollUp()) {
+
+		}
+		solo.clearEditText(0);
+		solo.enterText(0, testProject);
+		solo.clickOnButton(uploadButtonText);
+		solo.waitForDialogToClose(10000);
+
+		assertTrue("Upload of unmodified standard project should not be possible, but succeeded",
+				solo.searchText(solo.getString(R.string.error_upload_default_project)));
+
+	}
+
+	public void testUploadModifiedStandardProject() throws Throwable {
+		if (!createAndSaveStandardProject() || this.standardProject == null) {
+			fail("Standard project not created");
+		}
+
+		setServerURLToTestUrl();
+		UiTestUtils.createValidUser(getActivity());
+
+		solo.waitForText(solo.getString(R.string.main_menu_continue));
+		solo.clickOnText(solo.getString(R.string.main_menu_continue));
+
+		solo.waitForText(solo.getString(R.string.default_project_sprites_pocketcode_name));
+		solo.clickOnText(solo.getString(R.string.default_project_sprites_pocketcode_name));
+
+		solo.waitForText(solo.getString(R.string.looks));
+		solo.clickOnButton(solo.getString(R.string.looks));
+
+		String deleteLookText = solo.getString(R.string.delete);
+		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_pocketcode_normalcat));
+		solo.waitForText(deleteLookText);
+		solo.clickOnText(deleteLookText);
+		solo.clickOnButton(solo.getString(R.string.ok));
+
+		solo.goBack();
+		solo.goBack();
+		solo.goBack();
+
+		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
+		String uploadButtonText = solo.getString(R.string.upload_button);
+		solo.waitForText(uploadButtonText);
+		solo.goBack();
+		solo.waitForText(uploadButtonText);
+		solo.clearEditText(0);
+		solo.enterText(0, testProject);
+		solo.clickOnButton(uploadButtonText);
+
+		assertTrue("Upload of the modified standard project should be possible, but did not succeed",
+				solo.waitForText(solo.getString(R.string.success_project_upload), 0, 10000));
+
+	}
+
+	private boolean createAndSaveStandardProject() {
+		try {
+			standardProject = StandardProjectHandler.createAndSaveStandardProject(
+					solo.getString(R.string.default_project_name), getInstrumentation().getTargetContext());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		ProjectManager.INSTANCE.setProject(standardProject);
+		StorageHandler.getInstance().saveProject(standardProject);
+		return true;
+	}
+
 	private void createTestProject(String projectToCreate) {
 		File directory = new File(Constants.DEFAULT_ROOT + "/" + projectToCreate);
 		if (directory.exists()) {
@@ -384,6 +494,11 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.enterText(0, projectToCreate);
+		solo.clickOnButton(solo.getString(R.string.ok));
+		solo.sleep(2000);
+
+		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		solo.enterText(0, "new sprite");
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.sleep(2000);
 
@@ -401,7 +516,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 
 	private void uploadProject(String uploadProjectName, String uploadProjectDescription) {
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
-		solo.sleep(500);
+		solo.waitForText(uploadDialogTitle);
 
 		// enter a new title
 		solo.clearEditText(0);
@@ -417,7 +532,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.sleep(500);
 
 		try {
-			boolean success = solo.waitForText(solo.getString(R.string.success_project_upload));
+			boolean success = solo.waitForText(solo.getString(R.string.success_project_upload), 1, 50000);
 			assertTrue("Upload failed. Internet connection?", success);
 			String resultString = (String) Reflection.getPrivateField(ServerCalls.getInstance(), "resultString");
 			JSONObject jsonObject;
@@ -437,6 +552,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
 		intent.setAction(Intent.ACTION_VIEW);
 		intent.setData(Uri.parse(downloadUrl));
+		solo.goBack();
 		launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity.class, intent);
 		solo.sleep(500);
 		assertTrue("OverwriteRenameDialog not shown.", solo.searchText(solo.getString(R.string.overwrite_text)));

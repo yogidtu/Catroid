@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.ui;
 
+import java.util.concurrent.locks.Lock;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
@@ -73,6 +75,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	public static final String ACTION_LOOK_RENAMED = "org.catrobat.catroid.LOOK_RENAMED";
 	public static final String ACTION_SOUND_DELETED = "org.catrobat.catroid.SOUND_DELETED";
 	public static final String ACTION_SOUND_RENAMED = "org.catrobat.catroid.SOUND_RENAMED";
+	public static final String ACTION_VARIABLE_DELETED = "org.catrobat.catroid.VARIABLE_DELETED";
 
 	private FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -84,6 +87,13 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 	private static int currentFragmentPosition;
 	private String currentFragmentTag;
+
+	private Lock viewSwitchLock = new ViewSwitchLock();
+
+	private boolean isSoundFragmentFromPlaySoundBrickNew = false;
+	private boolean isSoundFragmentHandleAddButtonHandled = false;
+	private boolean isLookFragmentFromSetLookBrickNew = false;
+	private boolean isLookFragmentHandleAddButtonHandled = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -112,7 +122,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_dropdown_item_1line, getResources().getStringArray(
+				R.layout.activity_script_spinner_item, getResources().getStringArray(
 						R.array.script_activity_spinner_items));
 
 		actionBar.setListNavigationCallbacks(spinnerAdapter, new OnNavigationListener() {
@@ -126,6 +136,16 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 					if (currentFragmentPosition == FRAGMENT_SOUNDS && soundFragment.isSoundPlaying()) {
 						soundFragment.stopSoundAndUpdateList();
+					}
+
+					if (currentFragmentPosition == FRAGMENT_SOUNDS && isSoundFragmentFromPlaySoundBrickNew) {
+						isSoundFragmentFromPlaySoundBrickNew = false;
+						isSoundFragmentHandleAddButtonHandled = false;
+					}
+
+					if (currentFragmentPosition == FRAGMENT_LOOKS && isLookFragmentFromSetLookBrickNew) {
+						isLookFragmentFromSetLookBrickNew = false;
+						isSoundFragmentHandleAddButtonHandled = false;
 					}
 
 					FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -223,6 +243,15 @@ public class ScriptActivity extends SherlockFragmentActivity {
 			return super.onOptionsItemSelected(item);
 		}
 
+		FormulaEditorVariableListFragment formulaEditorVariableListFragment = (FormulaEditorVariableListFragment) getSupportFragmentManager()
+				.findFragmentByTag(FormulaEditorVariableListFragment.VARIABLE_TAG);
+
+		if (formulaEditorVariableListFragment != null) {
+			if (formulaEditorVariableListFragment.isVisible()) {
+				return super.onOptionsItemSelected(item);
+			}
+		}
+
 		switch (item.getItemId()) {
 			case android.R.id.home:
 				Intent mainMenuIntent = new Intent(this, MainMenuActivity.class);
@@ -283,6 +312,10 @@ public class ScriptActivity extends SherlockFragmentActivity {
 			ProjectManager projectManager = ProjectManager.getInstance();
 			int currentSpritePosition = projectManager.getCurrentSpritePosition();
 			int currentScriptPosition = projectManager.getCurrentScriptPosition();
+			/*
+			 * Save project after stage in order to keep the values of user variables
+			 */
+			projectManager.saveProject();
 			projectManager.loadProject(projectManager.getCurrentProject().getName(), this, false);
 			projectManager.setCurrentSpriteWithPosition(currentSpritePosition);
 			projectManager.setCurrentScriptWithPosition(currentScriptPosition);
@@ -324,6 +357,33 @@ public class ScriptActivity extends SherlockFragmentActivity {
 			}
 		}
 
+		if (soundFragment != null) {
+			if (soundFragment.isVisible()) {
+				if (soundFragment.onKey(null, keyCode, event)) {
+					return true;
+				}
+			}
+		}
+
+		if (lookFragment != null) {
+			if (lookFragment.isVisible()) {
+				if (lookFragment.onKey(null, keyCode, event)) {
+					return true;
+				}
+			}
+		}
+
+		int backStackEntryCount = fragmentManager.getBackStackEntryCount();
+		for (int i = backStackEntryCount; i > 0; --i) {
+			String backStackEntryName = fragmentManager.getBackStackEntryAt(i - 1).getName();
+			if (backStackEntryName != null
+					&& (backStackEntryName.equals(LookFragment.TAG) || backStackEntryName.equals(SoundFragment.TAG))) {
+				fragmentManager.popBackStack();
+			} else {
+				break;
+			}
+		}
+
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (currentFragmentPosition == FRAGMENT_SCRIPTS) {
 				DragAndDropListView listView = scriptFragment.getListView();
@@ -340,6 +400,9 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	}
 
 	public void handleAddButton(View view) {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
 		currentFragment.handleAddButton();
 	}
 
@@ -347,6 +410,9 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		if (isHoveringActive()) {
 			scriptFragment.getListView().animateHoveringBrick();
 		} else {
+			if (!viewSwitchLock.tryLock()) {
+				return;
+			}
 			Intent intent = new Intent(this, PreStageActivity.class);
 			startActivityForResult(intent, PreStageActivity.REQUEST_RESOURCES_INIT);
 		}
@@ -355,6 +421,18 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		//Dismiss ActionMode without effecting checked items
+
+		FormulaEditorVariableListFragment formulaEditorVariableListFragment = (FormulaEditorVariableListFragment) getSupportFragmentManager()
+				.findFragmentByTag(FormulaEditorVariableListFragment.VARIABLE_TAG);
+
+		if (formulaEditorVariableListFragment != null) {
+			if (formulaEditorVariableListFragment.isVisible()) {
+				ListAdapter adapter = formulaEditorVariableListFragment.getListAdapter();
+				((ScriptActivityAdapterInterface) adapter).clearCheckedItems();
+				return super.dispatchKeyEvent(event);
+			}
+		}
+
 		if (currentFragment != null && currentFragment.getActionModeActive()) {
 			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
 				ListAdapter adapter = null;
@@ -367,15 +445,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 			}
 		}
 
-		FormulaEditorVariableListFragment formulaEditorVariableListFragment = (FormulaEditorVariableListFragment) getSupportFragmentManager()
-				.findFragmentByTag(FormulaEditorVariableListFragment.VARIABLE_TAG);
-
-		if (formulaEditorVariableListFragment != null) {
-			if (formulaEditorVariableListFragment.isVisible()) {
-				ListAdapter adapter = formulaEditorVariableListFragment.getListAdapter();
-				((ScriptActivityAdapterInterface) adapter).clearCheckedItems();
-			}
-		}
 		return super.dispatchKeyEvent(event);
 	}
 
@@ -415,4 +484,97 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		return fragment;
 	}
 
+	public void setCurrentFragment(int fragmentPosition) {
+		switch (fragmentPosition) {
+			case FRAGMENT_SCRIPTS:
+				currentFragment = scriptFragment;
+				currentFragmentPosition = FRAGMENT_SCRIPTS;
+				currentFragmentTag = ScriptFragment.TAG;
+				break;
+			case FRAGMENT_LOOKS:
+				currentFragment = lookFragment;
+				currentFragmentPosition = FRAGMENT_LOOKS;
+				currentFragmentTag = LookFragment.TAG;
+				break;
+			case FRAGMENT_SOUNDS:
+				currentFragment = soundFragment;
+				currentFragmentPosition = FRAGMENT_SOUNDS;
+				currentFragmentTag = SoundFragment.TAG;
+				break;
+		}
+	}
+
+	public boolean getIsSoundFragmentFromPlaySoundBrickNew() {
+		return this.isSoundFragmentFromPlaySoundBrickNew;
+	}
+
+	public void setIsSoundFragmentFromPlaySoundBrickNewFalse() {
+		this.isSoundFragmentFromPlaySoundBrickNew = false;
+	}
+
+	public boolean getIsSoundFragmentHandleAddButtonHandled() {
+		return this.isSoundFragmentHandleAddButtonHandled;
+	}
+
+	public void setIsSoundFragmentHandleAddButtonHandled(boolean isSoundFragmentHandleAddButtonHandled) {
+		this.isSoundFragmentHandleAddButtonHandled = isSoundFragmentHandleAddButtonHandled;
+	}
+
+	public boolean getIsLookFragmentFromSetLookBrickNew() {
+		return this.isLookFragmentFromSetLookBrickNew;
+	}
+
+	public void setIsLookFragmentFromSetLookBrickNewFalse() {
+		this.isLookFragmentFromSetLookBrickNew = false;
+	}
+
+	public boolean getIsLookFragmentHandleAddButtonHandled() {
+		return this.isLookFragmentHandleAddButtonHandled;
+	}
+
+	public void setIsLookFragmentHandleAddButtonHandled(boolean isLookFragmentHandleAddButtonHandled) {
+		this.isLookFragmentHandleAddButtonHandled = isLookFragmentHandleAddButtonHandled;
+	}
+
+	public void switchToFragmentFromScriptFragment(int fragmentPosition) {
+		ActionBar actionBar = getSupportActionBar();
+
+		ScriptActivityFragment scriptFragment = getFragment(ScriptActivity.FRAGMENT_SCRIPTS);
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		if (scriptFragment.isVisible()) {
+			fragmentTransaction.hide(scriptFragment);
+		}
+
+		switch (fragmentPosition) {
+			case FRAGMENT_LOOKS:
+				actionBar.setSelectedNavigationItem(ScriptActivity.FRAGMENT_LOOKS);
+				isLookFragmentFromSetLookBrickNew = true;
+
+				fragmentTransaction.addToBackStack(LookFragment.TAG);
+				if (lookFragment == null) {
+					lookFragment = new LookFragment();
+					fragmentTransaction.add(R.id.script_fragment_container, lookFragment, LookFragment.TAG);
+				} else {
+					fragmentTransaction.show(lookFragment);
+				}
+				setCurrentFragment(FRAGMENT_LOOKS);
+				break;
+
+			case FRAGMENT_SOUNDS:
+				actionBar.setSelectedNavigationItem(ScriptActivity.FRAGMENT_SOUNDS);
+				isSoundFragmentFromPlaySoundBrickNew = true;
+
+				fragmentTransaction.addToBackStack(SoundFragment.TAG);
+				if (soundFragment == null) {
+					soundFragment = new SoundFragment();
+					fragmentTransaction.add(R.id.script_fragment_container, soundFragment, SoundFragment.TAG);
+				} else {
+					fragmentTransaction.show(soundFragment);
+				}
+				setCurrentFragment(FRAGMENT_SOUNDS);
+				break;
+		}
+
+		fragmentTransaction.commit();
+	}
 }

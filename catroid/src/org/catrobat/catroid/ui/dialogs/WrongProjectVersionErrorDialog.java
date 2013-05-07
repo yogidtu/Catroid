@@ -57,7 +57,7 @@ public class WrongProjectVersionErrorDialog extends Dialog {
 		TextView apkUrlTextView = (TextView) findViewById(R.id.dialog_upload_project_error_text_view_apk_link);
 		apkUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
 
-		String apkUrl = context.getString(R.string.link_template, Constants.LATEST_CATROID_VERSION_LINK,
+		String apkUrl = context.getString(R.string.about_link_template, Constants.POCKETCODE_DOWNLOAD_LINK,
 				context.getString(R.string.dialog_wrong_project_version_apk_link_text));
 
 		apkUrlTextView.setText(Html.fromHtml(apkUrl));

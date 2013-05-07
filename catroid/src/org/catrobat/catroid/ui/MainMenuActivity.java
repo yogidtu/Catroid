@@ -24,6 +24,7 @@ package org.catrobat.catroid.ui;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.concurrent.locks.Lock;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -40,6 +41,7 @@ import org.catrobat.catroid.ui.dialogs.WrongProjectVersionErrorDialogFragment;
 import org.catrobat.catroid.utils.StatusBarNotificationManager;
 import org.catrobat.catroid.utils.UtilZip;
 import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.web.ServerCalls;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -110,6 +112,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	private static final String PROJECTNAME_TAG = "fname=";
 
 	private ActionBar actionBar;
+	private Lock viewSwitchLock = new ViewSwitchLock();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +143,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	@Override
 	protected void onResume() {
 		super.onResume();
+
 		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
 			return;
 		}
@@ -226,6 +230,9 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	}
 
 	public void handleContinueButton(View v) {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
 		if (ProjectManager.INSTANCE.getCurrentProject() != null) {
 			Intent intent = new Intent(MainMenuActivity.this, ProjectActivity.class);
 			startActivity(intent);
@@ -233,33 +240,51 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	}
 
 	public void handleNewButton(View v) {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
 		NewProjectDialog dialog = new NewProjectDialog();
 		dialog.show(getSupportFragmentManager(), NewProjectDialog.DIALOG_FRAGMENT_TAG);
 	}
 
 	public void handleProgramsButton(View v) {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
 		Intent intent = new Intent(MainMenuActivity.this, MyProjectsActivity.class);
 		startActivity(intent);
 	}
 
 	public void handleForumButton(View v) {
-		Intent browerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getText(R.string.catrobat_forum).toString()));
-		startActivity(browerIntent);
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getText(R.string.catrobat_forum).toString()));
+		startActivity(browserIntent);
 	}
 
 	public void handleWebButton(View v) {
-		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getText(R.string.catroid_website).toString()));
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+				Uri.parse(getText(R.string.pocketcode_website).toString()));
 		startActivity(browserIntent);
 	}
 
 	public void handleUploadButton(View v) {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		String token = preferences.getString(Constants.TOKEN, null);
+		String token = preferences.getString(Constants.TOKEN, Constants.NO_TOKEN);
+		String username = preferences.getString(Constants.USERNAME, Constants.NO_USERNAME);
 
-		if (token == null || token.length() == 0 || token.equals("0")) {
+		if (token == Constants.NO_TOKEN || token.length() != ServerCalls.TOKEN_LENGTH
+				|| token.equals(ServerCalls.TOKEN_CODE_INVALID)) {
 			showLoginRegisterDialog();
 		} else {
-			CheckTokenTask checkTokenTask = new CheckTokenTask(this, token);
+			CheckTokenTask checkTokenTask = new CheckTokenTask(this, token, username);
 			checkTokenTask.setOnCheckTokenCompleteListener(this);
 			checkTokenTask.execute();
 		}

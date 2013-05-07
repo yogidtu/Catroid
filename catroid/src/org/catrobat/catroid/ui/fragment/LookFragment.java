@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.concurrent.locks.Lock;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -37,6 +38,7 @@ import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.ViewSwitchLock;
 import org.catrobat.catroid.ui.adapter.LookAdapter;
 import org.catrobat.catroid.ui.adapter.LookAdapter.OnLookEditListener;
 import org.catrobat.catroid.ui.dialogs.DeleteLookDialog;
@@ -48,6 +50,7 @@ import org.catrobat.catroid.utils.Utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -63,6 +66,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -71,6 +75,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,12 +84,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.badlogic.gdx.graphics.Pixmap;
 
 public class LookFragment extends ScriptActivityFragment implements OnLookEditListener,
-		LoaderManager.LoaderCallbacks<Cursor> {
+		LoaderManager.LoaderCallbacks<Cursor>, Dialog.OnKeyListener {
 
 	public static final int REQUEST_SELECT_IMAGE = 0;
 	public static final int REQUEST_PAINTROID_EDIT_IMAGE = 1;
@@ -121,6 +127,15 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	private String paintroidIntentActivityName = "org.catrobat.paintroid.MainActivity";
 
 	private boolean isRenameActionMode;
+	private boolean isResultHandled = false;
+
+	private OnLookDataListChangedAfterNewListener lookDataListChangedAfterNewListener;
+
+	public void setOnLookDataListChangedAfterNewListener(OnLookDataListChangedAfterNewListener listener) {
+		lookDataListChangedAfterNewListener = listener;
+	}
+
+	private Lock viewSwitchLock = new ViewSwitchLock();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -193,6 +208,26 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				.getApplicationContext());
 
 		setShowDetails(settings.getBoolean(SHARED_PREFERENCE_NAME, false));
+
+		handleAddButtonFromNew();
+
+		if (isResultHandled) {
+			isResultHandled = false;
+
+			ScriptActivity scriptActivity = (ScriptActivity) getActivity();
+			if (scriptActivity.getIsLookFragmentFromSetLookBrickNew()
+					&& scriptActivity.getIsLookFragmentHandleAddButtonHandled()) {
+				switchToScriptFragment();
+			}
+		}
+	}
+
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		super.onHiddenChanged(hidden);
+		if (!hidden) {
+			handleAddButtonFromNew();
+		}
 	}
 
 	@Override
@@ -246,6 +281,8 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 					loadPictureFromCameraIntoCatroid();
 					break;
 			}
+
+			isResultHandled = true;
 		}
 	}
 
@@ -421,6 +458,10 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 	@Override
 	public void handleAddButton() {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
+
 		NewLookDialog dialog = new NewLookDialog();
 		dialog.showDialog(getActivity().getSupportFragmentManager(), this);
 	}
@@ -438,6 +479,10 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 	@Override
 	public void onLookEdit(View view) {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
+
 		handleEditLook(view);
 	}
 
@@ -481,6 +526,10 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		lookDataList.add(lookData);
 
 		adapter.notifyDataSetChanged();
+
+		if (lookDataListChangedAfterNewListener != null) {
+			lookDataListChangedAfterNewListener.onLookDataListChangedAfterNew(lookData);
+		}
 
 		//scroll down the list to the new item:
 		final ListView listView = getListView();
@@ -584,6 +633,12 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (!selectedLookData.getChecksum().equalsIgnoreCase(actualChecksum)) {
 			String oldFileName = selectedLookData.getLookFileName();
 			String newFileName = oldFileName.substring(oldFileName.indexOf('_') + 1);
+
+			//HACK for https://github.com/Catrobat/Catroid/issues/81
+			if (!newFileName.endsWith(".png")) {
+				newFileName = newFileName + ".png";
+			}
+
 			String projectName = ProjectManager.getInstance().getCurrentProject().getName();
 
 			try {
@@ -709,7 +764,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			setSelectMode(Constants.MULTI_SELECT);
+			setSelectMode(ListView.CHOICE_MODE_MULTIPLE);
 			setActionModeActive(true);
 
 			actionModeTitle = getString(R.string.copy);
@@ -735,7 +790,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				int position = iterator.next();
 				copyLook(position);
 			}
-			setSelectMode(Constants.SELECT_NONE);
+			setSelectMode(ListView.CHOICE_MODE_NONE);
 			adapter.clearCheckedItems();
 
 			actionMode = null;
@@ -755,7 +810,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			setSelectMode(Constants.SINGLE_SELECT);
+			setSelectMode(ListView.CHOICE_MODE_SINGLE);
 			mode.setTitle(getString(R.string.rename));
 
 			setActionModeActive(true);
@@ -778,7 +833,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				selectedLookData = (LookData) listView.getItemAtPosition(position);
 				showRenameDialog();
 			}
-			setSelectMode(Constants.SELECT_NONE);
+			setSelectMode(ListView.CHOICE_MODE_NONE);
 			adapter.clearCheckedItems();
 
 			actionMode = null;
@@ -798,7 +853,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			setSelectMode(Constants.MULTI_SELECT);
+			setSelectMode(ListView.CHOICE_MODE_MULTIPLE);
 			setActionModeActive(true);
 
 			actionModeTitle = getString(R.string.delete);
@@ -827,7 +882,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				deleteLook(position - numberDeleted);
 				++numberDeleted;
 			}
-			setSelectMode(Constants.SELECT_NONE);
+			setSelectMode(ListView.CHOICE_MODE_NONE);
 			adapter.clearCheckedItems();
 
 			actionMode = null;
@@ -847,7 +902,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-			setSelectMode(Constants.SINGLE_SELECT);
+			setSelectMode(ListView.CHOICE_MODE_SINGLE);
 			mode.setTitle(getString(R.string.edit_in_paintroid));
 
 			setActionModeActive(true);
@@ -869,7 +924,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				int position = iterator.next();
 				sendPaintroidIntent(position);
 			}
-			setSelectMode(Constants.SELECT_NONE);
+			setSelectMode(ListView.CHOICE_MODE_NONE);
 			adapter.clearCheckedItems();
 
 			actionMode = null;
@@ -918,5 +973,51 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	protected void showDeleteDialog() {
 		DeleteLookDialog deleteLookDialog = DeleteLookDialog.newInstance(selectedLookPosition);
 		deleteLookDialog.show(getFragmentManager(), DeleteLookDialog.DIALOG_FRAGMENT_TAG);
+	}
+
+	private void handleAddButtonFromNew() {
+		ScriptActivity scriptActivity = (ScriptActivity) getActivity();
+		if (scriptActivity.getIsLookFragmentFromSetLookBrickNew()
+				&& !scriptActivity.getIsLookFragmentHandleAddButtonHandled()) {
+			scriptActivity.setIsLookFragmentHandleAddButtonHandled(true);
+			handleAddButton();
+		}
+	}
+
+	@Override
+	public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+		switch (keyCode) {
+			case KeyEvent.KEYCODE_BACK:
+				ScriptActivity scriptActivity = (ScriptActivity) getActivity();
+				if (scriptActivity.getIsLookFragmentFromSetLookBrickNew()) {
+					switchToScriptFragment();
+
+					return true;
+				}
+			default:
+				break;
+		}
+		return false;
+	}
+
+	private void switchToScriptFragment() {
+		ScriptActivity scriptActivity = (ScriptActivity) getActivity();
+		ActionBar actionBar = scriptActivity.getSupportActionBar();
+		actionBar.setSelectedNavigationItem(ScriptActivity.FRAGMENT_SCRIPTS);
+		scriptActivity.setCurrentFragment(ScriptActivity.FRAGMENT_SCRIPTS);
+
+		FragmentTransaction fragmentTransaction = scriptActivity.getSupportFragmentManager().beginTransaction();
+		fragmentTransaction.hide(this);
+		fragmentTransaction.show(scriptActivity.getSupportFragmentManager().findFragmentByTag(ScriptFragment.TAG));
+		fragmentTransaction.commit();
+
+		scriptActivity.setIsLookFragmentFromSetLookBrickNewFalse();
+		scriptActivity.setIsLookFragmentHandleAddButtonHandled(false);
+	}
+
+	public interface OnLookDataListChangedAfterNewListener {
+
+		public void onLookDataListChangedAfterNew(LookData soundInfo);
+
 	}
 }
