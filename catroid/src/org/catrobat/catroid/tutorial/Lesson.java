@@ -8,7 +8,7 @@ public class Lesson {
 	public int lessonID;
 	public String lessonName;
 	private int currentStep;
-	public ArrayList<SurfaceObjectText> lessonContent = new ArrayList<SurfaceObjectText>();
+	private ArrayList<Task> lessonContent = new ArrayList<Task>();
 
 	public Lesson() {
 		this.currentStep = 0;
@@ -28,5 +28,9 @@ public class Lesson {
 
 	public int getSizeOfLesson() {
 		return this.lessonContent.size();
+	}
+
+	public void setLessonContent(ArrayList<Task> content) {
+		this.lessonContent = content;
 	}
 }

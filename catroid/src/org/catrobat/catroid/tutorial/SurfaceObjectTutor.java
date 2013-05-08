@@ -35,12 +35,14 @@ import android.graphics.Paint;
  * @author amore
  * 
  */
-public class SurfaceObjectText implements SurfaceObject {
+public class SurfaceObjectTutor implements SurfaceObject {
 
 	private Context context;
 	private TutorialOverlay tutorialOverlay;
 	private Bitmap bitmap;
 	private Paint paint;
+
+	private Resources resources;
 
 	private String text;
 	private int[] position;
@@ -48,11 +50,12 @@ public class SurfaceObjectText implements SurfaceObject {
 	private long lastUpdateTime = 0;
 	private int updateTime = 150;
 
+	private boolean holdTutor = false;
 	private int currentStep = 0;
 
-	public SurfaceObjectText(TutorialOverlay overlay, String text, int[] position) {
+	public SurfaceObjectTutor(TutorialOverlay overlay, int[] position) {
 		context = Tutorial.getInstance(null).getActualContext();
-		this.text = text;
+
 		this.position = position;
 		this.tutorialOverlay = overlay;
 		tutorialOverlay.addSurfaceObject(this);
@@ -63,17 +66,17 @@ public class SurfaceObjectText implements SurfaceObject {
 		paint = new Paint();
 		paint.setTextSize(25);
 		paint.setARGB(255, 0, 238, 0);
-		Resources resources = context.getResources();
+		resources = context.getResources();
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;
-		bitmap = BitmapFactory.decodeResource(resources, R.drawable.back_button, opts);
-		canvas.drawBitmap(bitmap, 100, 100, paint);
-		canvas.drawText(this.text, this.position[0], this.position[1], paint);
+		bitmap = BitmapFactory.decodeResource(resources, R.drawable.prof, opts);
+		canvas.drawBitmap(bitmap, position[0], position[1], paint);
+
 	}
 
 	@Override
 	public void update(long gameTime) {
-		if ((lastUpdateTime + updateTime) < gameTime) {
+		if ((lastUpdateTime + updateTime) < gameTime && !holdTutor) {
 			lastUpdateTime = gameTime;
 			currentStep++;
 		}

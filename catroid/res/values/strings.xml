@@ -511,4 +511,7 @@
     <string name="formula_editor_variable_context_action_item_selected">items selected!</string>
     <!--  -->
 
+	<!-- Tutorial Strings -->
+	<string name="tutorial_mandatory_welcome">Welcome to PocketCode. I am going to show you some basic functionalaty of Pocket Code.</string>
+	<!--  -->
 </resources>

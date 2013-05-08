@@ -110,7 +110,7 @@ public class TutorialController {
 		setupTutorialOverlay();
 		lessonCollection = new LessonCollection();
 		lessonCollection.setTutorialOverlay(tutorialOverlay);
-		lessonCollection = getMandatoryLesson();
+		lessonCollection = createMandatoryLesson();
 	}
 
 	public void initalizeLessons() {
@@ -124,7 +124,7 @@ public class TutorialController {
 		lessonCollection.switchToLesson(possibleLesson);
 	}
 
-	public LessonCollection getMandatoryLesson() {
+	public LessonCollection createMandatoryLesson() {
 		lessonCollection.addLesson("Mandatory");
 
 		return lessonCollection;

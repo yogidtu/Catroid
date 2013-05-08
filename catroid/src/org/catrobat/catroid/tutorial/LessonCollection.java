@@ -2,6 +2,10 @@ package org.catrobat.catroid.tutorial;
 
 import java.util.ArrayList;
 
+import org.catrobat.catroid.R;
+
+import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 
 public class LessonCollection {
@@ -27,16 +31,22 @@ public class LessonCollection {
 	}
 
 	public void addLesson(String lessonName) {
+		Context context = Tutorial.getInstance(null).getActualContext();
+		Resources resources = context.getResources();
 		Lesson lesson = new Lesson();
 		lesson.lessonID = lessonArray.size();
 		lesson.lessonName = lessonName;
-		ArrayList<SurfaceObjectText> contentList = new ArrayList<SurfaceObjectText>();
+		ArrayList<Task> contentList = new ArrayList<Task>();
 		int[] pos = { 100, 100 };
-		SurfaceObjectText text = new SurfaceObjectText(tutorialOverlay, "BLA BLA", pos);
-		contentList.add(text);
-		lesson.lessonContent = contentList;
+		SurfaceObjectText text = new SurfaceObjectText(tutorialOverlay,
+				resources.getString(R.string.tutorial_mandatory_welcome), pos);
+		SurfaceObjectTutor tutor = new SurfaceObjectTutor(tutorialOverlay, pos);
+		SurfaceObjectBubble bubble = new SurfaceObjectBubble(tutorialOverlay, pos);
+		Task task = new Task(text, tutor, bubble);
+		contentList.add(task);
+		lesson.setLessonContent(contentList);
 		lessonArray.add(lesson);
-		lessonArray.add(lesson);
+
 	}
 
 	public boolean switchToLesson(int lessonID) {
