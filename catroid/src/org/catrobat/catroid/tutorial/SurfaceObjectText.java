@@ -22,8 +22,6 @@
  */
 package org.catrobat.catroid.tutorial;
 
-import org.catrobat.catroid.R;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -66,8 +64,6 @@ public class SurfaceObjectText implements SurfaceObject {
 		Resources resources = context.getResources();
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;
-		bitmap = BitmapFactory.decodeResource(resources, R.drawable.back_button, opts);
-		canvas.drawBitmap(bitmap, 100, 100, paint);
 		canvas.drawText(this.text, this.position[0], this.position[1], paint);
 	}
 
