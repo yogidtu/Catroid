@@ -40,6 +40,7 @@ import org.catrobat.catroid.content.WhenScript;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BroadcastReceiverBrick;
 import org.catrobat.catroid.content.bricks.WhenBrick;
+import org.catrobat.catroid.content.bricks.WhenKeyBrick;
 import org.catrobat.catroid.content.bricks.WhenStartedBrick;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.utils.TestUtils;
@@ -103,7 +104,8 @@ public class XMLValidatingTest extends AndroidTestCase {
 		for (List<Brick> brickList : brickMap.values()) {
 			for (Brick brick : brickList) {
 				if (brick.getClass().equals(WhenBrick.class) || brick.getClass().equals(WhenStartedBrick.class)
-						|| brick.getClass().equals(BroadcastReceiverBrick.class)) {
+						|| brick.getClass().equals(BroadcastReceiverBrick.class)
+						|| brick.getClass().equals(WhenKeyBrick.class)) {
 					Log.i("XMLValidationtest", "These bricks are not in the new schema");
 				} else {
 					startScript.addBrick(brick);

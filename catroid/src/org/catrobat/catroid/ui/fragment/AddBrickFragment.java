@@ -80,6 +80,8 @@ import org.catrobat.catroid.content.bricks.TurnLeftBrick;
 import org.catrobat.catroid.content.bricks.TurnRightBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.content.bricks.WhenBrick;
+import org.catrobat.catroid.content.bricks.WhenKeyBrick;
+import org.catrobat.catroid.content.bricks.WhenKeyBrick.Key;
 import org.catrobat.catroid.content.bricks.WhenStartedBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
@@ -355,6 +357,9 @@ public class AddBrickFragment extends SherlockListFragment {
 
 		RepeatBrick repeatBrick = new RepeatBrick(sprite, BrickValues.REPEAT);
 		controlBrickList.add(repeatBrick);
+
+		WhenKeyBrick whenKeyBrick = new WhenKeyBrick(sprite, null, Key.KEY_PADUP);
+		controlBrickList.add(whenKeyBrick);
 
 		brickMap.put(context.getString(R.string.category_control), controlBrickList);
 
