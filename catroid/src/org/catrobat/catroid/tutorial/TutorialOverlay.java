@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -41,7 +42,7 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 	private Context context;
 	private List<SurfaceObject> surfaceObjects = Collections.synchronizedList(new ArrayList<SurfaceObject>());
 	private Cloud cloud;
-	private CloudController co;
+	private CloudController cloudController;
 	private boolean interrupt = false;
 	private long timeToWaitAfterRewind = 0;
 	private Paint paint = new Paint();
@@ -52,21 +53,17 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 		surfaceObjects.clear();
 		surfaceObjects = null;
 		cloud = null;
-		co = null;
+		cloudController = null;
 		super.finalize();
 
 	};
-
-	public void playIntro(SurfaceObject intro) {
-
-	}
 
 	public void clean() {
 		getHolder().removeCallback(this);
 		surfaceObjects.clear();
 		surfaceObjects = null;
 		cloud = null;
-		co = null;
+		cloudController = null;
 		context = null;
 	}
 
@@ -78,7 +75,8 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 		getHolder().setFormat(PixelFormat.TRANSPARENT);
 		getHolder().addCallback(this);
 		surfaceObjects = new ArrayList<SurfaceObject>();
-		co = new CloudController();
+		cloudController = new CloudController();
+
 		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 	}
 
@@ -149,7 +147,25 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-		return true;
+		Activity activity = (Activity) context;
+		boolean retval = false;
+
+		if (ev.getY() > 0 && ev.getY() < 100) {
+
+			if (isOnCloseButton(ev)) {
+				Tutorial.getInstance(null).stopTutorial();
+				cloudController.disapear();
+
+			}
+		}
+		return retval;
 	}
 
+	private boolean isOnCloseButton(MotionEvent ev) {
+		double[] closeButtonPosition = { 400, 430 };
+		if (ev.getX() > closeButtonPosition[0] && ev.getX() < closeButtonPosition[1]) {
+			return true;
+		}
+		return false;
+	}
 }

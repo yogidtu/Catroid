@@ -22,22 +22,20 @@ package org.catrobat.catroid.tutorial;
  * @author faxxe
  * 
  */
-public class CloudController {
-	private Cloud cloud;
+public class ClickableArea {
+	public final int x;
+	public final int y;
+	public final float width;
+	public final float height;
+	public final float centerX;
+	public final float centerY;
 
-	public CloudController() {
-		this.cloud = Cloud.getInstance(null);
-	}
-
-	public void fadeIn() {
-		cloud.fadeIn();
-	}
-
-	public void clear() {
-		cloud.clear();
-	}
-
-	public void disapear() {
-		cloud.disappear();
+	public ClickableArea(float x, float y, float width, float height) {
+		this.x = (int) x;
+		this.y = (int) y;
+		this.width = width;
+		this.height = height;
+		this.centerX = x + width / 2;
+		this.centerY = y + height / 2;
 	}
 }

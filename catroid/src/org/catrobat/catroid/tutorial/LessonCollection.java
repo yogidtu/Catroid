@@ -37,11 +37,11 @@ public class LessonCollection {
 		lesson.lessonID = lessonArray.size();
 		lesson.lessonName = lessonName;
 		ArrayList<Task> contentList = new ArrayList<Task>();
-		int[] pos = { 100, 100 };
-		SurfaceObjectText text = new SurfaceObjectText(tutorialOverlay,
-				resources.getString(R.string.tutorial_mandatory_welcome), pos);
+		int[] pos = { 100, 400 };
 		SurfaceObjectTutor tutor = new SurfaceObjectTutor(tutorialOverlay, pos);
-		SurfaceObjectBubble bubble = new SurfaceObjectBubble(tutorialOverlay, pos);
+		SurfaceObjectText text = new SurfaceObjectText(tutorialOverlay,
+				resources.getString(R.string.tutorial_mandatory_welcome));
+		SurfaceObjectBubble bubble = new SurfaceObjectBubble(tutorialOverlay, text);
 		Task task = new Task(text, tutor, bubble);
 		contentList.add(task);
 		lesson.setLessonContent(contentList);

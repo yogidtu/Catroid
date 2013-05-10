@@ -25,11 +25,11 @@ package org.catrobat.catroid.tutorial;
 import org.catrobat.catroid.R;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.NinePatchDrawable;
 
 /**
  * @author amore
@@ -39,24 +39,19 @@ public class SurfaceObjectBubble implements SurfaceObject {
 
 	private Context context;
 	private TutorialOverlay tutorialOverlay;
-	private Bitmap bitmap;
 	private Paint paint;
 
-	private Resources resources;
+	private Bitmap closeOverlay;
+	private SurfaceObjectText text;
 
-	private String text;
-	private int[] position;
+	private NinePatchDrawable bubble;
 
-	private long lastUpdateTime = 0;
-	private int updateTime = 150;
-
-	private int currentStep = 0;
-
-	public SurfaceObjectBubble(TutorialOverlay overlay, int[] position) {
+	public SurfaceObjectBubble(TutorialOverlay overlay, SurfaceObjectText text) {
 		context = Tutorial.getInstance(null).getActualContext();
-
-		this.position = position;
+		this.text = text;
 		this.tutorialOverlay = overlay;
+		bubble = (NinePatchDrawable) Tutorial.getInstance(null).getActualContext().getResources()
+				.getDrawable(R.drawable.bubble_catro);
 		tutorialOverlay.addSurfaceObject(this);
 	}
 
@@ -65,20 +60,19 @@ public class SurfaceObjectBubble implements SurfaceObject {
 		paint = new Paint();
 		paint.setTextSize(25);
 		paint.setARGB(255, 0, 238, 0);
-		resources = context.getResources();
+
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;
-		bitmap = BitmapFactory.decodeResource(resources, R.drawable.bubble_catro, opts);
-		canvas.drawBitmap(bitmap, position[0], position[1], paint);
+		closeOverlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.cancel_button, opts);
 
+		bubble.setBounds(200, 100, 450, 350);
+		bubble.draw(canvas);
+		text.draw(canvas);
+		canvas.drawBitmap(closeOverlay, 400, 50, paint);
 	}
 
 	@Override
 	public void update(long gameTime) {
-		if ((lastUpdateTime + updateTime) < gameTime) {
-			lastUpdateTime = gameTime;
-			currentStep++;
-		}
 
 	}
 

@@ -38,4 +38,9 @@ public class Task {
 		this.bubble = bubble;
 	}
 
+	public boolean executeTask(Task task) {
+
+		return true;
+	}
+
 }

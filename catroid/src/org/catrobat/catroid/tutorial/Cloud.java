@@ -41,6 +41,7 @@ public class Cloud implements SurfaceObject {
 	float sollX = 100;
 	float sollY = 100;
 	boolean visible;
+	ClickableArea clickableArea;
 
 	private Cloud() {
 
@@ -118,4 +119,16 @@ public class Cloud implements SurfaceObject {
 	public void fadeIn() {
 		this.targetAlpha = 175;
 	}
+
+	public void disappear() {
+		this.visible = false;
+		this.sollX = 0;
+		this.sollY = 0;
+
+	}
+
+	public ClickableArea getClickableArea() {
+		return this.clickableArea;
+	}
+
 }
