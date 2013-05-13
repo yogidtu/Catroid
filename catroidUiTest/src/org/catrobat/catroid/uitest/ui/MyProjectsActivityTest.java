@@ -57,6 +57,7 @@ import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -729,13 +730,6 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		UiTestUtils.openActionMode(solo, rename, R.id.rename);
 		solo.clickOnText(rename);
 		solo.clickOnCheckBox(0);
-		solo.clickOnCheckBox(1);
-		solo.sleep(100);
-		boolean checked = solo.getCurrentCheckBoxes().get(0).isChecked();
-
-		assertFalse("First project is still checked!", checked);
-		solo.scrollToTop();
-		solo.clickOnCheckBox(0);
 		UiTestUtils.acceptAndCloseActionMode(solo);
 
 		solo.clearEditText(0);
@@ -747,6 +741,26 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		solo.sleep(2000);
 		assertEquals("Current project not updated!", UiTestUtils.PROJECTNAME3, ProjectManager.getInstance()
 				.getCurrentProject().getName());
+	}
+
+	public void testRenameActionModeChecking() {
+		String rename = solo.getString(R.string.rename);
+		createProjects();
+		solo.sleep(200);
+		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
+		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
+		solo.waitForFragmentById(R.id.fragment_projects_list);
+
+		UiTestUtils.openActionMode(solo, rename, R.id.rename);
+
+		solo.clickOnText(rename);
+		checkIfCheckboxesAreCorrectlyChecked(false, false);
+
+		solo.clickOnCheckBox(0);
+		checkIfCheckboxesAreCorrectlyChecked(true, false);
+
+		solo.clickOnCheckBox(1);
+		checkIfCheckboxesAreCorrectlyChecked(false, true);
 	}
 
 	public void testCancelRenameActionMode() {
@@ -1247,6 +1261,15 @@ public class MyProjectsActivityTest extends ActivityInstrumentationTestCase2<Mai
 		String errorMessageProjectExists = solo.getString(R.string.error_project_exists);
 		assertTrue("No or wrong error message shown", solo.searchText(errorMessageProjectExists));
 		solo.clickOnButton(solo.getString(R.string.close));
+	}
+
+	private void checkIfCheckboxesAreCorrectlyChecked(boolean firstCheckboxExpectedChecked,
+			boolean secondCheckboxExpectedChecked) {
+		solo.sleep(300);
+		CheckBox firstCheckBox = solo.getCurrentCheckBoxes().get(0);
+		CheckBox secondCheckBox = solo.getCurrentCheckBoxes().get(1);
+		assertEquals("First checkbox not correctly checked", firstCheckboxExpectedChecked, firstCheckBox.isChecked());
+		assertEquals("Second checkbox not correctly checked", secondCheckboxExpectedChecked, secondCheckBox.isChecked());
 	}
 
 	public void createProjects() {
