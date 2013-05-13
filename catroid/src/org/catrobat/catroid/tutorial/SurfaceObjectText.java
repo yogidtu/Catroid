@@ -86,7 +86,7 @@ public class SurfaceObjectText implements SurfaceObject {
 	public void draw(Canvas canvas) {
 		paint = new Paint();
 		paint.setTextSize(25);
-		paint.setARGB(255, 0, 238, 0);
+		paint.setARGB(255, 0, 0, 0);
 
 		drawMultilineText(this.text, this.position[0], this.position[1], paint, canvas);
 

@@ -22,8 +22,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.catrobat.catroid.common.Constants;
+
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -46,6 +50,8 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 	private boolean interrupt = false;
 	private long timeToWaitAfterRewind = 0;
 	private Paint paint = new Paint();
+	private String paintroidIntentApplicationName = "org.catrobat.paintroid";
+	private String paintroidIntentActivityName = "org.catrobat.paintroid.MainActivity";
 
 	@Override
 	protected void finalize() throws Throwable {
@@ -147,7 +153,6 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-		Activity activity = (Activity) context;
 		boolean retval = false;
 
 		if (ev.getY() > 0 && ev.getY() < 100) {
@@ -157,8 +162,32 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 				cloudController.disapear();
 
 			}
+		} else if (ev.getY() > 700 && ev.getY() < 750) {
+
+			if (isOnNextButton(ev)) {
+				sendPaintroidIntent(Constants.NO_POSITION);
+
+			}
 		}
 		return retval;
+	}
+
+	public void sendPaintroidIntent(int selected_position) {
+		Intent intent = new Intent("android.intent.action.MAIN");
+		intent.setComponent(new ComponentName(paintroidIntentApplicationName, paintroidIntentActivityName));
+
+		intent.addCategory("android.intent.category.LAUNCHER");
+		((Activity) context).startActivityForResult(intent, 1);
+		//		loadPaintroidImageIntoCatroid(intent);
+	}
+
+	private boolean isOnNextButton(MotionEvent ev) {
+		double[] closeButtonPosition = { 300, 400 };
+		if (ev.getX() > closeButtonPosition[0] && ev.getX() < closeButtonPosition[1]) {
+			return true;
+		}
+		return false;
+
 	}
 
 	private boolean isOnCloseButton(MotionEvent ev) {

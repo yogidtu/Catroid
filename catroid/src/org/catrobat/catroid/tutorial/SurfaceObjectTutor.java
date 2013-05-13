@@ -65,7 +65,7 @@ public class SurfaceObjectTutor implements SurfaceObject {
 	public void draw(Canvas canvas) {
 		paint = new Paint();
 		paint.setTextSize(25);
-		paint.setARGB(255, 0, 238, 0);
+
 		resources = context.getResources();
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;

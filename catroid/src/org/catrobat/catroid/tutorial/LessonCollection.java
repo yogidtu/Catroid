@@ -42,6 +42,8 @@ public class LessonCollection {
 		SurfaceObjectText text = new SurfaceObjectText(tutorialOverlay,
 				resources.getString(R.string.tutorial_mandatory_welcome));
 		SurfaceObjectBubble bubble = new SurfaceObjectBubble(tutorialOverlay, text);
+		SurfaceObjectNextButton next = new SurfaceObjectNextButton(tutorialOverlay);
+
 		Task task = new Task(text, tutor, bubble);
 		contentList.add(task);
 		lesson.setLessonContent(contentList);

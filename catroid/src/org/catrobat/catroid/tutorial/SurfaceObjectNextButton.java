@@ -25,33 +25,38 @@ package org.catrobat.catroid.tutorial;
 import org.catrobat.catroid.R;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.NinePatchDrawable;
 
 /**
  * @author amore
  * 
  */
-public class SurfaceObjectBubble implements SurfaceObject {
+public class SurfaceObjectNextButton implements SurfaceObject {
 
 	private Context context;
 	private TutorialOverlay tutorialOverlay;
+	private Bitmap bitmap;
 	private Paint paint;
 
-	private Bitmap closeOverlay;
-	private SurfaceObjectText text;
+	private Resources resources;
 
-	private NinePatchDrawable bubble;
+	private String text;
+	private int[] position = { 300, 700 };
 
-	public SurfaceObjectBubble(TutorialOverlay overlay, SurfaceObjectText text) {
+	private long lastUpdateTime = 0;
+	private int updateTime = 150;
+
+	private boolean holdTutor = false;
+	private int currentStep = 0;
+
+	public SurfaceObjectNextButton(TutorialOverlay overlay) {
 		context = Tutorial.getInstance(null).getActualContext();
-		this.text = text;
+
 		this.tutorialOverlay = overlay;
-		bubble = (NinePatchDrawable) Tutorial.getInstance(null).getActualContext().getResources()
-				.getDrawable(R.drawable.bubble_catro);
 		tutorialOverlay.addSurfaceObject(this);
 	}
 
@@ -59,19 +64,21 @@ public class SurfaceObjectBubble implements SurfaceObject {
 	public void draw(Canvas canvas) {
 		paint = new Paint();
 		paint.setTextSize(25);
-
+		paint.setARGB(255, 0, 0, 0);
+		resources = context.getResources();
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;
-		closeOverlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.cancel_button, opts);
-
-		bubble.setBounds(200, 100, 450, 350);
-		bubble.draw(canvas);
-		text.draw(canvas);
-		canvas.drawBitmap(closeOverlay, 400, 50, paint);
+		bitmap = BitmapFactory.decodeResource(resources, R.drawable.formula_green, opts);
+		canvas.drawBitmap(bitmap, position[0], position[1], paint);
+		canvas.drawText("NEXT", position[0] + 5, position[1] + 25, paint);
 	}
 
 	@Override
 	public void update(long gameTime) {
+		if ((lastUpdateTime + updateTime) < gameTime && !holdTutor) {
+			lastUpdateTime = gameTime;
+			currentStep++;
+		}
 
 	}
 
