@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.adapter.BrickCategoryAdapter;
 
 import android.content.SharedPreferences;
@@ -68,6 +69,12 @@ public class BrickCategoryFragment extends SherlockListFragment {
 		setUpActionBar();
 		getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.GONE);
 		setupBrickCategories();
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this.getActivity());
+		if (Hint.isActive(this.getActivity())) {
+			hint.overlayHint();
+		}
 
 		return rootView;
 	}

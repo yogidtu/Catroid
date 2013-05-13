@@ -34,31 +34,23 @@ public class HintObject {
 	private int pointerYCoordinate;
 	private int textXCoordinate;
 	private int textYCoordinate;
-	private String text;
+	private String hintText;
 	private int maxWidthObject;
 
 	public HintObject(int[] coordinates, String text) {
-		this.pointerXCoordinate = ScreenParameters.getInstance().setCoordinatesToDensity(
-				coordinates[0] + ScreenParameters.getInstance().getTextMarginLeft(), true);
+		this.pointerXCoordinate = ScreenParameters.getInstance().setCoordinatesToDensity(coordinates[0], true);
 		this.pointerYCoordinate = ScreenParameters.getInstance().setCoordinatesToDensity(coordinates[1], false);
 
 		this.maxWidthObject = coordinates[2];
-		this.text = addingLineBreaks(text);
+		this.hintText = addingLineBreaks(text);
 		examineTextPositions(coordinates);
 
 	}
 
 	private void examineTextPositions(int[] coordinates) {
-		this.textXCoordinate = ScreenParameters.getInstance().setCoordinatesToDensity(
-				coordinates[0] - ScreenParameters.getInstance().getTextMarginLeft(), true);
+		this.textXCoordinate = pointerXCoordinate + 60;
 
-		if ((Hint.getInstance().getScreenHeight() - pointerYCoordinate) < 150) {
-			this.textYCoordinate = ScreenParameters.getInstance().setCoordinatesToDensity(
-					coordinates[1] - ScreenParameters.getInstance().getTextMarginBottom(), false);
-		} else {
-			this.textYCoordinate = ScreenParameters.getInstance().setCoordinatesToDensity(
-					coordinates[1] + ScreenParameters.getInstance().getTextMarginTop(), false);
-		}
+		this.textYCoordinate = ScreenParameters.getInstance().setCoordinatesToDensity(coordinates[1], false);
 
 	}
 
@@ -75,17 +67,24 @@ public class HintObject {
 			formatedText = text;
 		} else {
 
-			String[] words = text.split(" ");
-			String currentLine = "";
+			formatedText = insertLineBreakInString(paint, textWidth, text);
+		}
 
-			for (int i = 0; i < words.length; i++) {
-				if (paint.measureText(currentLine + words[i] + " ") < textWidth) {
-					currentLine += words[i] + " ";
-					formatedText += words[i] + " ";
-				} else {
-					currentLine = words[i] + " ";
-					formatedText += "\n" + words[i] + " ";
-				}
+		return formatedText;
+	}
+
+	private String insertLineBreakInString(Paint paint, int textWidth, String text) {
+		String[] words = text.split(" ");
+		String currentLine = "";
+		String formatedText = "";
+
+		for (int i = 0; i < words.length; i++) {
+			if (paint.measureText(currentLine + words[i] + " ") < textWidth) {
+				currentLine += words[i] + " ";
+				formatedText += words[i] + " ";
+			} else {
+				currentLine = words[i] + " ";
+				formatedText += "\n" + words[i] + " ";
 			}
 		}
 
@@ -100,8 +99,8 @@ public class HintObject {
 		return pointerYCoordinate;
 	}
 
-	public String getText() {
-		return text;
+	public String getHintText() {
+		return hintText;
 	}
 
 	public int getTextXCoordinate() {

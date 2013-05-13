@@ -46,6 +46,7 @@ import android.view.SurfaceView;
  * 
  */
 public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
+
 	private Context context;
 	private Paint paint = new Paint();
 	int alpha = 255;
@@ -62,7 +63,7 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 		Activity currentActivity = (Activity) context;
 		currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		paint.setTextSize(25);
-		paint.setARGB(255, 0, 238, 0);
+		paint.setARGB(255, 255, 255, 255);
 	}
 
 	@Override
@@ -88,8 +89,9 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 		for (int i = 0; i < allHints.size(); i++) {
 			HintObject hint = allHints.get(i);
 			Bitmap bitmap = createBitmap();
+
 			canvas.drawBitmap(bitmap, hint.getXCoordinate(), hint.getYCoordinate(), paint);
-			drawMultilineText(hint.getText(), hint.getTextXCoordinate(), hint.getTextYCoordinate(), paint, canvas);
+			drawMultilineText(hint.getHintText(), hint.getTextXCoordinate(), hint.getTextYCoordinate(), paint, canvas);
 		}
 
 	}

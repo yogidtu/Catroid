@@ -156,12 +156,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 			}
 		});
 		actionBar.setSelectedNavigationItem(currentFragmentPosition);
-
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		if (Hint.isActive(this)) {
-			hint.overlayHint();
-		}
 	}
 
 	private void updateCurrentFragment(int fragmentPosition, FragmentTransaction fragmentTransaction) {
@@ -200,6 +194,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		} else {
 			fragmentTransaction.add(R.id.script_fragment_container, currentFragment, currentFragmentTag);
 		}
+
 	}
 
 	// Code from Stackoverflow to reduce memory problems

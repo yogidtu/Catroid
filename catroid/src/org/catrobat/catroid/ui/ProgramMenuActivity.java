@@ -57,11 +57,6 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 		actionBar.setTitle(title);
 		actionBar.setHomeButtonEnabled(true);
 
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		if (Hint.isActive(this)) {
-			hint.overlayHint();
-		}
 	}
 
 	@Override
@@ -71,6 +66,12 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 			((Button) findViewById(R.id.program_menu_button_looks)).setText(R.string.backgrounds);
 		} else {
 			((Button) findViewById(R.id.program_menu_button_looks)).setText(R.string.looks);
+		}
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this);
+		if (Hint.isActive(this)) {
+			hint.overlayHint();
 		}
 	}
 

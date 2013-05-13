@@ -514,12 +514,12 @@
 	<!-- Hint Strings -->
 	<string name="hint_menu_show_hints">Show Hints</string>
 	
-	<string name="hint_mainmenu_welcome">Welcome to Catroid! This Hints only appears on first execution.</string>
+	<string name="hint_mainmenu_welcome">Welcome to PocketCode! This Hints only appears on first execution.</string>
 	<string name="hint_mainmenu_continue">Click here to continue the current project.</string>
 	<string name="hint_mainmenu_new">Click here to create a new project.</string>
 	<string name="hint_mainmenu_programs">Click here to get a list of all your projects.</string>
 	<string name="hint_mainmenu_community">Click here to get to the Catrobat Community.</string>
-	<string name="hint_mainmenu_web">Click here to visit the Catrobat webside.</string>
+	<string name="hint_mainmenu_web">Click here to visit the PocketCode webside.</string>
 	<string name="hint_mainmenu_upload">Click here to upload one of your projects.</string>
 	
 	<string name="hint_project_background">Click here to change the background of the project.</string>
@@ -566,6 +566,17 @@
 	<string name="hint_sound_recorder">Click here to record a sound.</string>
 	
 	<string name="hint_formula_editor">Here you can find everything to compute something for your brick.</string>
+
+	<string name="hint_brick_control_when_program_started">When Program Started Brick</string>
+	<string name="hint_brick_control_when_tapped">When Tapped Brick</string>
+	<string name="hint_brick_control_wait">Wait Brick</string>
+	<string name="hint_brick_control_when_receive">When I receive brick</string>
+	<string name="hint_brick_control_broadcast">Broadcast brick</string>
+	<string name="hint_brick_control_broadcast_and_wait">broadcast and wait brick</string>
+	<string name="hint_brick_control_note">wait brick</string>
+	<string name="hint_brick_control_forever">forever brick</string>
+	<string name="hint_brick_control_if">if brick</string>
+	<string name="hint_brick_control_repeat">repeat brick</string>
 	<!--  -->
 	
 </resources>

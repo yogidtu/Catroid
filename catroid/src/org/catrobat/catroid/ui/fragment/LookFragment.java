@@ -34,6 +34,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
@@ -136,6 +137,14 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_look, null);
+
+		Hint hint = Hint.getInstance();
+		hint = Hint.getInstance();
+		Hint.setContext(this.getActivity());
+		if (Hint.isActive(this.getActivity())) {
+			hint.overlayHint();
+		}
+
 		return rootView;
 	}
 
@@ -216,6 +225,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				switchToScriptFragment();
 			}
 		}
+
 	}
 
 	@Override

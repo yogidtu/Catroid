@@ -34,6 +34,9 @@ import org.catrobat.catroid.ui.dialogs.StageDialog;
 import org.catrobat.catroid.ui.fragment.AddBrickFragment;
 import org.catrobat.catroid.ui.fragment.BrickCategoryFragment;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
+import org.catrobat.catroid.ui.fragment.LookFragment;
+import org.catrobat.catroid.ui.fragment.ScriptFragment;
+import org.catrobat.catroid.ui.fragment.SoundFragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -128,8 +131,10 @@ public class HintController {
 		allHints.add(createHint(coord, hintStrings[3]));
 		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_forum));
 		allHints.add(createHint(coord, hintStrings[4]));
-		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_upload));
+		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_web));
 		allHints.add(createHint(coord, hintStrings[5]));
+		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_upload));
+		allHints.add(createHint(coord, hintStrings[6]));
 
 		setSharedPreferences("PREF_HINT_MAINMENU_ACTIVE", false);
 	}
@@ -443,13 +448,16 @@ public class HintController {
 	public int checkFragment() {
 		int fragmentNumber = -1;
 		ScriptActivity activity = (ScriptActivity) context;
-		Bundle bundle = activity.getIntent().getExtras();
+
 		Fragment isBrickCategory = activity.getSupportFragmentManager().findFragmentByTag(
 				BrickCategoryFragment.BRICK_CATEGORY_FRAGMENT_TAG);
 		Fragment isAddBrickFragment = activity.getSupportFragmentManager().findFragmentByTag(
 				AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
 		Fragment isFormulaEditor = activity.getSupportFragmentManager().findFragmentByTag(
 				FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
+		Fragment isScriptFragment = activity.getSupportFragmentManager().findFragmentByTag(ScriptFragment.TAG);
+		Fragment isLooksFragment = activity.getSupportFragmentManager().findFragmentByTag(LookFragment.TAG);
+		Fragment isSoundFragment = activity.getSupportFragmentManager().findFragmentByTag(SoundFragment.TAG);
 
 		if (isBrickCategory != null && isAddBrickFragment == null) {
 			fragmentNumber = 0;
@@ -457,14 +465,12 @@ public class HintController {
 			fragmentNumber = 1;
 		} else if (isFormulaEditor != null) {
 			fragmentNumber = 2;
-		} else if (bundle != null) {
-			if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SCRIPTS) == 0) {
-				fragmentNumber = 3;
-			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_LOOKS) == 1) {
-				fragmentNumber = 4;
-			} else if (bundle.getInt(ScriptActivity.EXTRA_FRAGMENT_POSITION, ScriptActivity.FRAGMENT_SOUNDS) == 2) {
-				fragmentNumber = 5;
-			}
+		} else if (isScriptFragment != null) {
+			fragmentNumber = 3;
+		} else if (isLooksFragment != null) {
+			fragmentNumber = 4;
+		} else if (isSoundFragment != null) {
+			fragmentNumber = 5;
 		}
 		return fragmentNumber;
 
@@ -486,7 +492,7 @@ public class HintController {
 
 		int viewWidth = view.getWidth();
 		int viewHeight = view.getHeight();
-		coordinates[0] = (coordinates[0] + viewWidth / 2) - 25;
+		coordinates[0] = (coordinates[0] + viewWidth / 3) - 25;
 		coordinates[1] = (coordinates[1] + viewHeight / 2) - 25;
 		coordinates[2] = viewWidth;
 		coordinates = normalizeCoordinates(coordinates);
@@ -500,7 +506,7 @@ public class HintController {
 		view.getLocationInWindow(coordinates);
 		int viewWidth = view.getWidth();
 		int viewHeight = view.getHeight();
-		coordinates[0] = (coordinates[0] + viewWidth / 2) - 25;
+		coordinates[0] = (coordinates[0] + viewWidth / 3) - 25;
 		coordinates[1] = (coordinates[1] + viewHeight / 2) - 25;
 		coordinates[2] = viewWidth;
 		coordinates = normalizeCoordinates(coordinates);
@@ -528,10 +534,10 @@ public class HintController {
 	}
 
 	public void setSharedPreferences(String preferenceName, boolean tag) {
-		//		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		//		SharedPreferences.Editor sharedPreferencesEditor = preferences.edit();
-		//		sharedPreferencesEditor.putBoolean(preferenceName, tag);
-		//		sharedPreferencesEditor.commit();
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences.Editor sharedPreferencesEditor = preferences.edit();
+		sharedPreferencesEditor.putBoolean(preferenceName, tag);
+		sharedPreferencesEditor.commit();
 	}
 
 }

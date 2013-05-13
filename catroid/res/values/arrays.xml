@@ -137,16 +137,16 @@
 	</string-array>
 	
 	<string-array name="hints_brick_control">
-	    <item>eins</item>
-	    <item>zwei</item>
-	    <item>drei</item>
-	    <item>vier</item>
-	    <item>fünf</item>
-	    <item>sechs</item>
-	    <item>sieben</item>
-	    <item>acht</item>
-	    <item>neun</item>
-	    <item>zehn</item>
+	    <item>@string/hint_brick_control_when_program_started</item>
+	    <item>@string/hint_brick_control_when_tapped</item>
+	    <item>@string/hint_brick_control_wait</item>
+	    <item>@string/hint_brick_control_when_receive</item>
+	    <item>@string/hint_brick_control_broadcast</item>
+	    <item>@string/hint_brick_control_broadcast_and_wait</item>
+	    <item>@string/hint_brick_control_note</item>
+	    <item>@string/hint_brick_control_forever</item>
+	    <item>@string/hint_brick_control_if</item>
+	    <item>@string/hint_brick_control_repeat</item>
 	</string-array>
 	
 	<string-array name="hints_brick_motion">

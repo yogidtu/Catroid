@@ -120,11 +120,6 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			loadProgramFromExternalSource(loadExternalProjectUri);
 		}
 
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		if (Hint.isActive(this)) {
-			hint.overlayHint();
-		}
 	}
 
 	@Override
@@ -139,6 +134,12 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		setMainMenuButtonContinueText();
 		findViewById(R.id.main_menu_button_continue).setEnabled(true);
 		StatusBarNotificationManager.INSTANCE.displayDialogs(this);
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this);
+		if (Hint.isActive(this)) {
+			hint.overlayHint();
+		}
 	}
 
 	@Override

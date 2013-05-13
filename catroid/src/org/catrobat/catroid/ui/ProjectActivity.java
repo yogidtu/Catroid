@@ -53,11 +53,6 @@ public class ProjectActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_project);
 
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		if (Hint.isActive(this)) {
-			hint.overlayHint();
-		}
 	}
 
 	@Override
@@ -71,6 +66,12 @@ public class ProjectActivity extends SherlockFragmentActivity {
 
 		spritesListFragment = (SpritesListFragment) getSupportFragmentManager().findFragmentById(
 				R.id.fragment_sprites_list);
+
+		Hint hint = Hint.getInstance();
+		Hint.setContext(this);
+		if (Hint.isActive(this)) {
+			hint.overlayHint();
+		}
 	}
 
 	// Code from Stackoverflow to reduce memory problems

@@ -101,6 +101,13 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 		listView = (DragAndDropListView) rootView.findViewById(R.id.brick_list_view);
 
+		Hint hint = Hint.getInstance();
+		hint = Hint.getInstance();
+		Hint.setContext(this.getActivity());
+		if (Hint.isActive(this.getActivity())) {
+			hint.overlayHint();
+		}
+
 		return rootView;
 	}
 
@@ -166,6 +173,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		getActivity().registerReceiver(brickListChangedReceiver, filterBrickListChanged);
 
 		initListeners();
+
 	}
 
 	@Override
@@ -241,11 +249,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		fragmentTransaction.addToBackStack(null);
 		fragmentTransaction.commit();
 
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this.getActivity());
-		if (Hint.isActive(this.getActivity())) {
-			hint.overlayHint();
-		}
 		adapter.notifyDataSetChanged();
 	}
 
@@ -295,12 +298,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		fragmentTransaction.commit();
 
 		adapter.notifyDataSetChanged();
-
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this.getActivity());
-		if (Hint.isActive(this.getActivity())) {
-			hint.overlayHint();
-		}
 
 	}
 

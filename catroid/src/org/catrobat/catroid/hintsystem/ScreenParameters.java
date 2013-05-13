@@ -31,7 +31,7 @@ public class ScreenParameters {
 
 	private int textMarginTop = 10;
 	private int textMarginBottom = 5;
-	private int textMarginLeft = 10;
+	private int textMarginLeft = 5;
 	private int textMarginRight = 40;
 
 	private ScreenParameters() {

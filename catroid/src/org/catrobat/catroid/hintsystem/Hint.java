@@ -30,7 +30,7 @@ import org.catrobat.catroid.stage.StageActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
-import android.view.Display;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.WindowManager;
 
@@ -40,9 +40,10 @@ import android.view.WindowManager;
  */
 public class Hint {
 
-	public static boolean HINT_ACTIVE = true;
+	private static boolean debugMode = true;
+
 	private static Hint hint = new Hint();
-	public static boolean welcome = true;
+	public static boolean welcome = false;
 	private static Context context;
 	private WindowManager windowManager;
 	private HintOverlay hintOverlay;
@@ -54,6 +55,7 @@ public class Hint {
 	}
 
 	public static Hint getInstance() {
+
 		if (hint == null) {
 			hint = new Hint();
 		}
@@ -80,7 +82,6 @@ public class Hint {
 	public void removeHint() {
 		windowManager = ((Activity) context).getWindowManager();
 		windowManager.removeViewImmediate(hintOverlay);
-		//windowManager.removeView(hintOverlay);
 		hintOverlay = null;
 		System.gc();
 		System.runFinalization();
@@ -103,21 +104,31 @@ public class Hint {
 	}
 
 	public int getScreenHeight() {
-		Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
-		int screenHeight = display.getHeight();
+		int screenHeight = 0;
+		DisplayMetrics deviceDisplayMetrics = new DisplayMetrics();
+
+		windowManager.getDefaultDisplay().getMetrics(deviceDisplayMetrics);
+
+		screenHeight = deviceDisplayMetrics.heightPixels;
 		return screenHeight;
 	}
 
 	public int getScreenWidth() {
-		Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
-		int screenWidth = display.getWidth();
+		int screenWidth = 0;
+		DisplayMetrics deviceDisplayMetrics = new DisplayMetrics();
+
+		windowManager.getDefaultDisplay().getMetrics(deviceDisplayMetrics);
+
+		screenWidth = deviceDisplayMetrics.widthPixels;
 		return screenWidth;
 	}
 
 	public static boolean isActive(Activity activity) {
-		//String preferenceName = getPreferenceName(activity);
-		//return controller.getSharedPreferencesIsHintActive(preferenceName);
-		return true;
+		if (debugMode) {
+			return true;
+		}
+		String preferenceName = getPreferenceName(activity);
+		return controller.getSharedPreferencesIsHintActive(preferenceName);
 	}
 
 	private static String getPreferenceName(Activity activity) {
@@ -136,26 +147,7 @@ public class Hint {
 				preferenceName = "PREF_HINT_PROGRAMMENU_ACTIVE";
 				break;
 			case 4:
-				switch (controller.checkFragment()) {
-				//					case 0:
-				//						preferenceName = "PREF_HINT_BRICKCATEGORY_ACTIVE";
-				//						break;
-				//					case 1:
-				//						preferenceName = "PREF_HINT_ADDBRICK_ACTIVE";
-				//						break;
-				//					case 2:
-				//						preferenceName = "PREF_HINT_FORMULAEDITOR_ACTIVE";
-				//						break;
-					case 3:
-						preferenceName = "PREF_HINT_SCRIPTS_ACTIVE";
-						break;
-					case 4:
-						preferenceName = "PREF_HINT_LOOKS_ACTIVE";
-						break;
-					case 5:
-						preferenceName = "PREF_HINT_SOUNDS_ACTIVE";
-						break;
-				}
+				preferenceName = getFragmentPreferenceName();
 				break;
 			case 5:
 				preferenceName = "PREF_HINT_SETTINGS_ACTIVE";
@@ -164,12 +156,41 @@ public class Hint {
 				if (((StageActivity) activity).getStageDialog().isShowing()) {
 					preferenceName = "PREF_HINT_STAGE_ACTIVE";
 					break;
-					//				} else {
-					//					preferenceName = "PREF_HINT_STAGEDIALOG_ACTIVE";
-					//					break;
+				} else {
+					preferenceName = "PREF_HINT_STAGEDIALOG_ACTIVE";
+					break;
 				}
+			case 7:
+				preferenceName = "PREF_HINT_SOUNDRECORDER_ACTIVE";
+				break;
 		}
 
+		return preferenceName;
+	}
+
+	public static String getFragmentPreferenceName() {
+		String preferenceName = "";
+
+		switch (controller.checkFragment()) {
+			case 0:
+				preferenceName = "PREF_HINT_BRICKCATEGORY_ACTIVE";
+				break;
+			case 1:
+				preferenceName = "PREF_HINT_ADDBRICK_ACTIVE";
+				break;
+			case 2:
+				preferenceName = "PREF_HINT_FORMULAEDITOR_ACTIVE";
+				break;
+			case 3:
+				preferenceName = "PREF_HINT_SCRIPTS_ACTIVE";
+				break;
+			case 4:
+				preferenceName = "PREF_HINT_LOOKS_ACTIVE";
+				break;
+			case 5:
+				preferenceName = "PREF_HINT_SOUNDS_ACTIVE";
+				break;
+		}
 		return preferenceName;
 	}
 }

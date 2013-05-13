@@ -508,6 +508,73 @@
     <string name="formula_editor_variable_dialog_for_this_sprite_only">Nur für dieses Objekt</string>
     <string name="formula_editor_variable_dialog_hint">Namen eingeben</string>
     <string name="formula_editor_variable_context_action_item_selected">Variablen ausgewählt!</string>
-    <!--  -->
+
+    	<!-- Hint Strings -->
+	<string name="hint_menu_show_hints">Hinweise anzeigen</string>
+	
+	<string name="hint_mainmenu_welcome">Willkommen bei PocketCode! Diese Hinweise werden nur bei der ersten ausführung angezeigt.</string>
+	<string name="hint_mainmenu_continue">Klicke hier um das aktuelle Projekt fortzusetzen.</string>
+	<string name="hint_mainmenu_new">Klicke hier um ein neues Projekt zu erstellen.</string>
+	<string name="hint_mainmenu_programs">Klicke hier um eine Liste aller vorhandenen Projekte anzuzeigen.</string>
+	<string name="hint_mainmenu_community">Klicke hier um zum PocketCodeForum zu gelangen.</string>
+	<string name="hint_mainmenu_web">Klicke hier um zur PocketCode Webseite zu gelangen.</string>
+	<string name="hint_mainmenu_upload">Klicke hier um ein Projekt hochzuladen.</string>
+	
+	<string name="hint_project_background">Klicke hier um den Hintergrund zu verändern.</string>
+	<string name="hint_project_objects">Klicke auf ein Objekt und bearbeite es anschließend.</string>
+	<string name="hint_project_add">Klicke hier und füge ein neues Objekt hinzu.</string>
+	<string name="hint_project_play">Klicke hier um das Projekt auszuführen.</string>
+	
+	<string name="hint_myprojects_programs">Hier sind alle deine Projekte aufgelistet.</string>
+	<string name="hint_myprojects_add">Klicke hier um ein neues Projekt zu erstellen.</string>	
+	
+	<string name="hint_programmenu_scripts">Klicke hier um Scripte zu erstellen/bearbeiten.</string>
+	<string name="hint_programmenu_looks">Klicke hier um Aussehen zu erstellen/bearbeiten.</string>
+	<string name="hint_programmenu_sounds">Klicke hier um Klänge zu erstellen/bearbeiten.</string>
+	<string name="hint_programmenu_play">Klick hier um das Projekt auszuführen.</string>
+
+	<string name="hint_scripts_bricks">Hier findest du die Bricks, die in deinem Script verwendet werden.</string>
+	<string name="hint_scripts_add">Klicke hier um einen neuen Brick deinem Script hinzuzufügen.</string>
+	<string name="hint_scripts_play">Klicke hier um das Projekt zu starten.</string>
+	
+	<string name="hint_looks_costumes">Hier findest du alle Kostüme aufgelistet.</string>
+	<string name="hint_looks_add">Klicke hier um ein Kostüm hinzuzufügen.</string>
+	<string name="hint_looks_play">Klicke hier um das Projekt zu starten.</string>	
+	
+	<string name="hint_sounds_items">Hier findest du alle Klänge aufgelistet.</string>
+	<string name="hint_sounds_add">Klicke hier um einen neuen Klang hinzuzufügen.</string>
+	<string name="hint_sounds_play">Klick hier um das Projekt zu starten.</string>
+	
+	<string name="hint_brick_category_control">Hier sind die Steuerungs Bricks.</string>
+	<string name="hint_brick_category_motion">Hier sind die Bewegungs Bricks</string>
+	<string name="hint_brick_category_sounds">Hier sind die Klang Bricks.</string>
+	<string name="hint_brick_category_looks">Hier sind die Aussehen Bricks.</string>
+	<string name="hint_brick_category_variables">Hier sind die Variablen Bricks.</string>	
+	<string name="hint_brick_category_lego">Hier sind die Lego Mindstorm Bricks.</string>
+	
+	<string name="hint_settings_lego">Hier kannst du die Lego Mindstorm Bricks aktivieren/deaktivieren.</string>
+	
+	<string name="hint_stage">Dein Code wird here ausgeführt und du kannst sehen was du programmiert hast.</string>
+	<string name="hint_stage_back">Hier kommst du zurück um das Programm zu bearbeiten.</string>
+	<string name="hint_stage_resume">Hier kannst du das Programm weiter ausführen.</string>
+	<string name="hint_stage_restart">Hier kannst du das Programm neu starten.</string>
+	<string name="hint_stage_axes">Hier kannst du die Achsen an- und auschalten.</string>
+	<string name="hint_stage_screenshot">Hier kannst du einen Screenshot von deinem Programm machen.</string>
+	
+	<string name="hint_sound_recorder">Hier kannst du einen Klang aufnehmen.</string>
+	
+	<string name="hint_formula_editor">Hier findest du alles um eine Berechnung durchzuführen.</string>
+
+	<string name="hint_brick_control_when_program_started">Wenn Programm gestartet Brick</string>
+	<string name="hint_brick_control_when_tapped">Wenn angetippt</string>
+	<string name="hint_brick_control_wait">Warte Brick</string>
+	<string name="hint_brick_control_when_receive">Wenn ich empfange brick</string>
+	<string name="hint_brick_control_broadcast">Verschicke an alle brick</string>
+	<string name="hint_brick_control_broadcast_and_wait">Verschicke und warte brick</string>
+	<string name="hint_brick_control_note">Notiz brick</string>
+	<string name="hint_brick_control_forever">Wiederhole fortlaufend brick</string>
+	<string name="hint_brick_control_if">falls brick</string>
+	<string name="hint_brick_control_repeat">wiederhole brick</string>
+	<!--  -->
 
 </resources>

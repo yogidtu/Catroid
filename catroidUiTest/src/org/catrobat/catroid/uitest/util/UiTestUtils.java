@@ -1401,7 +1401,6 @@ public class UiTestUtils {
 			if (v instanceof HintOverlay) {
 				solo.waitForView(v);
 				solo.clickOnView(v);
-				//solo.sleep(500);
 				break;
 			}
 		}
