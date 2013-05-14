@@ -33,8 +33,10 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.ui.dialogs.WrongProjectVersionErrorDialog;
 import org.catrobat.catroid.utils.Utils;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -89,8 +91,9 @@ public class ProjectManager {
 				&& (project.getCatrobatLanguageVersion() > Constants.SUPPORTED_CATROBAT_LANGUAGE_VERSION)) {
 			project = oldProject;
 			if (errorMessage) {
-				Utils.showErrorDialog(context, context.getString(R.string.error_project_compatability));
-				// TODO show dialog to download latest catroid version instead
+				Dialog uploadProjectErrorDialog = new WrongProjectVersionErrorDialog(context);
+				uploadProjectErrorDialog.show();
+
 			}
 			return false;
 		} else if (!Utils.isApplicationDebuggable(context)

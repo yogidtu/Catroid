@@ -261,7 +261,7 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 		assertEquals("Sprite at index 4 is not \"pig\"!", "pig", fourth.getName());
 	}
 
-	public void testShouldDisplayDialogIfVersionNumberTooHigh() throws Throwable {
+	public void testDisplayDialogIfProjectVersionNumberToHigh() throws Throwable {
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 		// Prevent Utils from returning true in isApplicationDebuggable
 		Reflection.setPrivateField(Utils.class, "isUnderTest", true);
@@ -276,9 +276,26 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 			}
 		});
 
-		solo.getText(solo.getString(R.string.error_project_compatability), true);
-		solo.clickOnButton(0);
-		solo.waitForDialogToClose(500);
+		assertTrue("Error message not shown", solo.searchText(solo.getString(R.string.error_project_compatability)));
+	}
+
+	public void testDisplayDialogIfPocketCodeVersionToLow() throws Throwable {
+		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		// Prevent Utils from returning true in isApplicationDebuggable
+		Reflection.setPrivateField(Utils.class, "isUnderTest", true);
+
+		boolean result = UiTestUtils
+				.createTestProjectOnLocalStorageWithCatrobatLanguageVersion(Constants.SUPPORTED_CATROBAT_LANGUAGE_VERSION + 1);
+		assertTrue("Could not create test project.", result);
+
+		runTestOnUiThread(new Runnable() {
+			public void run() {
+				ProjectManager.INSTANCE.loadProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME, getActivity(), true);
+			}
+		});
+
+		assertTrue("Error message not shown", solo.searchText(solo.getString(R.string.error_project_version)));
+
 	}
 
 	public void createTestProject(String projectName) {
