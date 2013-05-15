@@ -513,6 +513,6 @@
     <!--  -->
 
 	<!-- Tutorial Strings -->
-	<string name="tutorial_mandatory_welcome">Welcome to PocketCode. I am going to show you some basic functionalaty of Pocket Code.</string>
+	<string name="tutorial_mandatory_welcome">Welcome to PocketCode. This Tutorial introduces the basic function of Pocket Code.</string>
 	<!--  -->
 </resources>

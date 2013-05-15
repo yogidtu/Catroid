@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.stage.PreStageActivity;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -162,14 +162,23 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 				cloudController.disapear();
 
 			}
-		} else if (ev.getY() > 700 && ev.getY() < 750) {
+		} else if (ev.getY() > 350 && ev.getY() < 400) {
 
 			if (isOnNextButton(ev)) {
-				sendPaintroidIntent(Constants.NO_POSITION);
-
+				Tutorial.getInstance(null).pauseTutorial();
+				startProject();
 			}
 		}
 		return retval;
+	}
+
+	public void startProject() {
+		Activity activity = (Activity) context;
+		//		if (!viewSwitchLock.tryLock()) {
+		//			return;
+		//		}
+		Intent intent = new Intent(activity, PreStageActivity.class);
+		((Activity) context).startActivityForResult(intent, PreStageActivity.REQUEST_RESOURCES_INIT);
 	}
 
 	public void sendPaintroidIntent(int selected_position) {
@@ -182,8 +191,11 @@ public class TutorialOverlay extends SurfaceView implements SurfaceHolder.Callba
 	}
 
 	private boolean isOnNextButton(MotionEvent ev) {
-		double[] closeButtonPosition = { 300, 400 };
-		if (ev.getX() > closeButtonPosition[0] && ev.getX() < closeButtonPosition[1]) {
+		double[] startButtonPosition = { 200, 300 };
+		Activity activity = (Activity) context;
+
+		if ((activity.getLocalClassName().compareTo("ui.MainMenuActivity") == 0) && ev.getX() > startButtonPosition[0]
+				&& ev.getX() < startButtonPosition[1]) {
 			return true;
 		}
 		return false;

@@ -28,7 +28,6 @@ import android.util.Log;
  * 
  */
 public class TutorialThread extends Thread implements Runnable {
-	private LessonCollection lessonCollection;
 	public boolean tutorialThreadRunning = true;
 	private volatile ArrayList<String> notifies = new ArrayList<String>();
 	private boolean interrupted = false;
@@ -83,18 +82,16 @@ public class TutorialThread extends Thread implements Runnable {
 		while (tutorialThreadRunning) {
 
 			if (!interrupted) {
-				boolean notification = lessonCollection.executeTask();
 
-				if (notification == true) {
-					synchronized (this) {
-						try {
-							Log.i("tutorial", Thread.currentThread().getName() + ": waiting for notification");
-							wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+				synchronized (this) {
+					try {
+						Log.i("tutorial", Thread.currentThread().getName() + ": waiting for notification");
+						wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
+
 			}
 
 			if (interrupted) {
@@ -117,31 +114,13 @@ public class TutorialThread extends Thread implements Runnable {
 	public boolean resetAndCheckIfEndTutorial() {
 		Log.i("tutorial", "Tutorial stopped in TUT-Thread");
 
-		boolean nextLesson = lessonCollection.nextLesson();
-
-		if (tutorialThreadRunning && !nextLesson) {
+		if (tutorialThreadRunning) {
 			Log.i("tutorial", "STOP Tutorial");
 			Tutorial.getInstance(null).stopButtonTutorial();
 			return true;
 		}
 
 		return false;
-	}
-
-	public boolean resetAndGoToPreviousLesson() {
-		Log.i("tutorial", "Tutorial stopped in TUT-Thread");
-
-		boolean previousLesson = lessonCollection.previousLesson();
-
-		if (tutorialThreadRunning && previousLesson) {
-			Log.i("tutorial", "Lesson changed to Previous lesson");
-			return true;
-		}
-		return false;
-	}
-
-	public void setLessonCollection(LessonCollection lessonCollection) {
-		this.lessonCollection = lessonCollection;
 	}
 
 	public void setNotification(String notification) {

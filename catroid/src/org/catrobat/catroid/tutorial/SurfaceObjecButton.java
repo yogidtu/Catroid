@@ -35,7 +35,7 @@ import android.graphics.Paint;
  * @author amore
  * 
  */
-public class SurfaceObjectNextButton implements SurfaceObject {
+public class SurfaceObjecButton implements SurfaceObject {
 
 	private Context context;
 	private TutorialOverlay tutorialOverlay;
@@ -45,7 +45,7 @@ public class SurfaceObjectNextButton implements SurfaceObject {
 	private Resources resources;
 
 	private String text;
-	private int[] position = { 300, 700 };
+	private int[] position = { 200, 350 };
 
 	private long lastUpdateTime = 0;
 	private int updateTime = 150;
@@ -53,7 +53,7 @@ public class SurfaceObjectNextButton implements SurfaceObject {
 	private boolean holdTutor = false;
 	private int currentStep = 0;
 
-	public SurfaceObjectNextButton(TutorialOverlay overlay) {
+	public SurfaceObjecButton(TutorialOverlay overlay) {
 		context = Tutorial.getInstance(null).getActualContext();
 
 		this.tutorialOverlay = overlay;
@@ -70,7 +70,7 @@ public class SurfaceObjectNextButton implements SurfaceObject {
 		opts.inScaled = false;
 		bitmap = BitmapFactory.decodeResource(resources, R.drawable.formula_green, opts);
 		canvas.drawBitmap(bitmap, position[0], position[1], paint);
-		canvas.drawText("NEXT", position[0] + 5, position[1] + 25, paint);
+		canvas.drawText("START", position[0] + 15, position[1] + 25, paint);
 	}
 
 	@Override

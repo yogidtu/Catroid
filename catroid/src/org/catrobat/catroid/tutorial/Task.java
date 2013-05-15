@@ -38,6 +38,10 @@ public class Task {
 		this.bubble = bubble;
 	}
 
+	public Task(SurfaceObjectText text) {
+		this.text = text;
+	}
+
 	public boolean executeTask(Task task) {
 
 		return true;

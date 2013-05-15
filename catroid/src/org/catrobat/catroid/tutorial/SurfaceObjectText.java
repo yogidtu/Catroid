@@ -22,7 +22,11 @@
  */
 package org.catrobat.catroid.tutorial;
 
+import org.catrobat.catroid.R;
+
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -37,13 +41,17 @@ public class SurfaceObjectText implements SurfaceObject {
 	private TutorialOverlay tutorialOverlay;
 	private Paint paint;
 
-	private String text;
-	private int[] position = { 220, 150 };
+	private String text = "Tutorial";
+	private int[] position = { 150, 150 };
 
 	private long lastUpdateTime = 0;
 	private int updateTime = 150;
 
 	private int currentStep = 0;
+	private Bitmap closeOverlay;
+
+	private int textSize = 25;
+	private int textWidth = 200;
 
 	public SurfaceObjectText(TutorialOverlay overlay, String text) {
 		context = Tutorial.getInstance(null).getActualContext();
@@ -54,12 +62,34 @@ public class SurfaceObjectText implements SurfaceObject {
 		tutorialOverlay.addSurfaceObject(this);
 	}
 
+	public SurfaceObjectText(TutorialOverlay overlay) {
+		context = Tutorial.getInstance(null).getActualContext();
+		this.tutorialOverlay = overlay;
+		paint = new Paint();
+	}
+
+	public void setPositionX(int coordinateX) {
+		this.position[0] = coordinateX;
+	}
+
+	public void setPositionY(int coordinateY) {
+		this.position[1] = coordinateY;
+	}
+
+	public void addToSurfaceOverlay() {
+		tutorialOverlay.addSurfaceObject(this);
+	}
+
+	public void setText(String text) {
+		this.text = addingLineBreaks(text);
+	}
+
+	public void setTextSize(int size) {
+		this.textSize = size;
+	}
+
 	private String addingLineBreaks(String text) {
-		int textWidth = 200;
-
-		Paint paint = new Paint();
-		paint.setTextSize(25);
-
+		paint.setTextSize(textSize);
 		String formatedText = "";
 		if (paint.measureText(text) < textWidth) {
 			formatedText = text;
@@ -84,10 +114,14 @@ public class SurfaceObjectText implements SurfaceObject {
 
 	@Override
 	public void draw(Canvas canvas) {
-		paint = new Paint();
-		paint.setTextSize(25);
-		paint.setARGB(255, 0, 0, 0);
+		paint.setTextSize(textSize);
 
+		paint.setARGB(255, 255, 255, 255);
+
+		BitmapFactory.Options opts = new BitmapFactory.Options();
+		opts.inScaled = false;
+		closeOverlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.cancel_button, opts);
+		canvas.drawBitmap(closeOverlay, 400, 50, paint);
 		drawMultilineText(this.text, this.position[0], this.position[1], paint, canvas);
 
 	}

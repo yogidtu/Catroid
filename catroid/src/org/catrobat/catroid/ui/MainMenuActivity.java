@@ -126,7 +126,6 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Tutorial.getInstance(this).resumeTutorial();
 
 		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
 			return;
@@ -139,7 +138,10 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		StatusBarNotificationManager.INSTANCE.displayDialogs(this);
 
 		if (!Tutorial.getInstance(null).isActive()) {
-			Tutorial.getInstance(null).startTutorial();
+			Tutorial.getInstance(this).startTutorial();
+		} else {
+			Tutorial.getInstance(this).resumeTutorial();
+
 		}
 
 	}
@@ -182,7 +184,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_tutorial: {
-				Tutorial.getInstance(null).startTutorial();
+				Tutorial.getInstance(this).startTutorial();
 				return true;
 			}
 			case R.id.menu_settings: {

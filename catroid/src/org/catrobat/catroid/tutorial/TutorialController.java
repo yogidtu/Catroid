@@ -18,18 +18,18 @@
  */
 package org.catrobat.catroid.tutorial;
 
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Values;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.PixelFormat;
-import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.WindowManager;
 
 /**
@@ -43,7 +43,6 @@ public class TutorialController {
 	Dialog dialog = null;
 	private Cloud cloud;
 	private TutorialOverlay tutorialOverlay;
-	private LessonCollection lessonCollection;
 	private WindowManager windowManager;
 	private static WindowManager.LayoutParams dragViewParameters;
 	private TutorialThread tutorialThread;
@@ -55,7 +54,6 @@ public class TutorialController {
 		Cloud.getInstance(context).clear();
 		cloud = null;
 		tutorialOverlay = null;
-		lessonCollection = null;
 		windowManager = null;
 		tutorialThread = null;
 		context = null;
@@ -106,28 +104,19 @@ public class TutorialController {
 		return currentActivity;
 	}
 
-	public void initalizeLessonCollection() {
-		setupTutorialOverlay();
-		lessonCollection = new LessonCollection();
-		lessonCollection.setTutorialOverlay(tutorialOverlay);
-		lessonCollection = createMandatoryLesson();
-	}
-
-	public void initalizeLessons() {
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		int possibleLesson = preferences.getInt(PREF_TUTORIAL_LESSON, 0);
-		lessonCollection.setLastPossibleLessonNumber(possibleLesson);
-
-		Log.i("tutorial", "The lesson out of the Preferences is: " + possibleLesson);
-
-		lessonCollection.setTutorialOverlay(tutorialOverlay);
-		lessonCollection.switchToLesson(possibleLesson);
-	}
-
-	public LessonCollection createMandatoryLesson() {
-		lessonCollection.addLesson("Mandatory");
-
-		return lessonCollection;
+	public void setupTutorialStartView() {
+		Context context = Tutorial.getInstance(null).getActualContext();
+		Resources resources = context.getResources();
+		SurfaceObjectText tutorialHeadline = new SurfaceObjectText(tutorialOverlay);
+		tutorialHeadline.setText("Tutorial");
+		tutorialHeadline.setTextSize(40);
+		tutorialHeadline.addToSurfaceOverlay();
+		SurfaceObjectText welcomeText = new SurfaceObjectText(tutorialOverlay);
+		welcomeText.setText(resources.getString(R.string.tutorial_mandatory_welcome));
+		welcomeText.setPositionX(150);
+		welcomeText.setPositionY(200);
+		welcomeText.addToSurfaceOverlay();
+		SurfaceObjecButton next = new SurfaceObjecButton(tutorialOverlay);
 	}
 
 	@SuppressLint("ParserError")
@@ -135,7 +124,6 @@ public class TutorialController {
 		if (tutorialThread == null) {
 			tutorialThread = new TutorialThread(this.context);
 			tutorialThread.setName("TutorialThread");
-			tutorialThread.setLessonCollection(lessonCollection);
 			tutorialThread.startThread();
 		} else {
 			synchronized (tutorialThread) {
@@ -166,43 +154,6 @@ public class TutorialController {
 		return windowParameters;
 	}
 
-	public void setSharedPreferences() {
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		SharedPreferences.Editor sharedPreferencesEditor = preferences.edit();
-		sharedPreferencesEditor.putInt(PREF_TUTORIAL_LESSON, lessonCollection.getLastPossibleLessonNumber());
-		sharedPreferencesEditor.commit();
-	}
-
-	public void setDialog(Dialog dialog) {
-		this.dialog = dialog;
-	}
-
-	public Dialog getDialog() {
-		return this.dialog;
-	}
-
-	public void stepBackward() {
-		//		tutorialThread.setInterruptRoutine(ACTIONS.REWIND);
-		tutorialThread.setInterrupt(true);
-		tutorialThread.notifyThread();
-
-		tutorialThread.setInterrupt(false);
-		tutorialThread.notifyThread();
-	}
-
-	public void stepForward() {
-		tutorialThread.setInterrupt(true);
-		tutorialThread.notifyThread();
-
-		tutorialThread.setInterrupt(false);
-		tutorialThread.notifyThread();
-	}
-
-	public void stopButtonTutorial() {
-		this.dialog = null;
-		cleanAll();
-	}
-
 	public void setupTutorialOverlay() {
 		if (tutorialOverlay == null) {
 			dragViewParameters = createLayoutParameters();
@@ -217,13 +168,6 @@ public class TutorialController {
 		}
 	}
 
-	public boolean dispatchTouchEvent(MotionEvent ev) {
-		Activity activity = correctActivity((Activity) context);
-		boolean retval;
-		retval = activity.dispatchTouchEvent(ev);
-		return retval;
-	}
-
 	public void setActivityChanged(Context newContext) {
 		this.context = newContext;
 		activityChanged = true;
@@ -231,5 +175,25 @@ public class TutorialController {
 
 	public boolean getActivityChanged() {
 		return activityChanged;
+	}
+
+	public int getScreenHeight() {
+		int screenHeight = 0;
+		DisplayMetrics deviceDisplayMetrics = new DisplayMetrics();
+
+		windowManager.getDefaultDisplay().getMetrics(deviceDisplayMetrics);
+
+		screenHeight = deviceDisplayMetrics.heightPixels;
+		return screenHeight;
+	}
+
+	public int getScreenWidth() {
+		int screenWidth = 0;
+		DisplayMetrics deviceDisplayMetrics = new DisplayMetrics();
+
+		windowManager.getDefaultDisplay().getMetrics(deviceDisplayMetrics);
+
+		screenWidth = deviceDisplayMetrics.widthPixels;
+		return screenWidth;
 	}
 }

@@ -18,15 +18,10 @@
  */
 package org.catrobat.catroid.tutorial;
 
-import org.catrobat.catroid.ProjectManager;
-
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.util.Log;
-import android.view.Display;
-import android.view.MotionEvent;
 
 /**
  * @author faxxe
@@ -78,14 +73,17 @@ public class Tutorial {
 	}
 
 	public void startTutorial() {
-		ProjectManager.getInstance().initializeDefaultProject(context);
+		//ProjectManager.getInstance().initializeDefaultProject(context);
+		//initialize tutorial project
 		Activity currentActivity = (Activity) context;
 
 		currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		ScreenParameters.getInstance().setScreenParameters();
 
 		setTutorialActive();
-		tutorialController.initalizeLessonCollection();
+		tutorialController.setupTutorialOverlay();
+		tutorialController.setupTutorialStartView();
+		//		tutorialController.initalizeLessonCollection();
 		//		tutorialController.initalizeLessons();
 		tutorialController.resumeTutorial();
 		return;
@@ -97,22 +95,16 @@ public class Tutorial {
 
 	public void stopButtonTutorial() {
 		stopTutorial();
-		tutorialController.stopButtonTutorial();
 		clear();
 		System.gc();
 		Log.i("tutorial", "Tutorial.java: stopButtonTutorial: calling finalisation");
 		System.runFinalization();
 	}
 
-	public boolean dispatchTouchEvent(MotionEvent ev) {
-		return tutorialController.dispatchTouchEvent(ev);
-	}
-
 	public void stopTutorial() {
 		pauseTutorial();
 		setTutorialNotActive();
 		tutorialController.stopThread();
-		tutorialController.setSharedPreferences();
 		Activity currentActivity = (Activity) context;
 		currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 	}
@@ -146,35 +138,15 @@ public class Tutorial {
 		return tutorialActive;
 	}
 
-	public void stepBackward() {
-		tutorialController.stepBackward();
-	}
-
-	public void stepForward() {
-		tutorialController.stepForward();
-	}
-
-	public void setDialog(Dialog dialog) {
-		tutorialController.setDialog(dialog);
-	}
-
-	public Dialog getDialog() {
-		return tutorialController.getDialog();
-	}
-
 	public float getDensity() {
 		return context.getResources().getDisplayMetrics().density;
 	}
 
 	public int getScreenHeight() {
-		Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
-		int screenHeight = display.getHeight();
-		return screenHeight;
+		return tutorialController.getScreenHeight();
 	}
 
 	public int getScreenWidth() {
-		Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
-		int screenWidth = display.getWidth();
-		return screenWidth;
+		return tutorialController.getScreenWidth();
 	}
 }

@@ -26,7 +26,6 @@ import org.catrobat.catroid.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.NinePatchDrawable;
@@ -60,14 +59,10 @@ public class SurfaceObjectBubble implements SurfaceObject {
 		paint = new Paint();
 		paint.setTextSize(25);
 
-		BitmapFactory.Options opts = new BitmapFactory.Options();
-		opts.inScaled = false;
-		closeOverlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.cancel_button, opts);
-
 		bubble.setBounds(200, 100, 450, 350);
 		bubble.draw(canvas);
 		text.draw(canvas);
-		canvas.drawBitmap(closeOverlay, 400, 50, paint);
+
 	}
 
 	@Override
