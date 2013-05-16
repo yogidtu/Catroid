@@ -138,15 +138,15 @@ public class FormulaEditorUserVariableFragmentTest extends
 		int iteration = 0;
 
 		solo.clickOnButton(solo.getString(R.string.ok));
-		solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable), 0, 1000);
+		solo.waitForText(solo.getString(R.string.formula_editor_variables), 0, 1000);
 
-		while (!solo.searchText(solo.getString(R.string.formula_editor_make_new_variable), true)) {
+		while (!solo.searchText(solo.getString(R.string.formula_editor_variables), true)) {
 
 			if (iteration++ < MAX_ITERATIONS && iteration > 1) {
 				solo.goBack();
 				assertTrue("Variable Fragment not shown",
-						solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable), 0, 4000));
-				solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+						solo.waitForText(solo.getString(R.string.formula_editor_variables), 0, 4000));
+				solo.clickOnView(solo.getView(R.id.button_add));
 				assertTrue("Add Variable Dialog not shown",
 						solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 
@@ -166,7 +166,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 			Log.i("info", "(" + iteration + ")OkButton-found: " + solo.searchButton(solo.getString(R.string.ok)));
 
 			solo.clickOnButton(solo.getString(R.string.ok));
-			solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable), 0, 1000);
+			solo.waitForText(solo.getString(R.string.formula_editor_variables), 0, 1000);
 		}
 	}
 
@@ -205,7 +205,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
 		solo.waitForFragmentByTag(FormulaEditorVariableListFragment.VARIABLE_TAG);
 
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		assertTrue("Variable Dialog not shown", solo.waitForText(solo.getString(R.string.ok)));
@@ -213,8 +213,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		EditText editText = (EditText) solo.getView(R.id.dialog_formula_editor_variable_name_edit_text);
 		solo.enterText(editText, userVariableString);
 		finishUserVariableCreationSafeButSlow(userVariableString, false);
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 
 		ListView listView = getVariableListView();
 		assertTrue("UserVariable not added!", listView.getCount() == 2);
@@ -333,9 +332,8 @@ public class FormulaEditorUserVariableFragmentTest extends
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
 		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 
@@ -366,9 +364,8 @@ public class FormulaEditorUserVariableFragmentTest extends
 		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		EditText editText = (EditText) solo.getView(R.id.dialog_formula_editor_variable_name_edit_text);
@@ -376,8 +373,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		solo.enterText(editText, itemString);
 		finishUserVariableCreationSafeButSlow(itemString, true);
 
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 		solo.clickOnText(itemString);
 		solo.waitForView(solo.getView(R.id.formula_editor_edit_field));
 		EditText text = (EditText) solo.getView(R.id.formula_editor_edit_field);
@@ -388,18 +384,15 @@ public class FormulaEditorUserVariableFragmentTest extends
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
 		itemString = itemString.replace(QUOTE, "");
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 		solo.clickLongOnText(itemString);
 		assertTrue("Delete not shown", solo.waitForText(solo.getString(R.string.delete)));
 		solo.goBack();
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 		solo.clickLongOnText(itemString);
 		assertTrue("Delete not shown", solo.waitForText(solo.getString(R.string.delete)));
 		solo.clickOnText(solo.getString(R.string.delete));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 
 		ListView userVariableListView = getVariableListView();
 
@@ -418,24 +411,23 @@ public class FormulaEditorUserVariableFragmentTest extends
 		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		EditText editText = (EditText) solo.getView(R.id.dialog_formula_editor_variable_name_edit_text);
 		solo.enterText(editText, itemString);
 		finishUserVariableCreationSafeButSlow(itemString, true);
 
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		editText = (EditText) solo.getView(R.id.dialog_formula_editor_variable_name_edit_text);
 		solo.enterText(editText, itemString2nd);
 		finishUserVariableCreationSafeButSlow(itemString2nd, true);
 
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		editText = (EditText) solo.getView(R.id.dialog_formula_editor_variable_name_edit_text);
@@ -444,8 +436,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		finishUserVariableCreationSafeButSlow(itemString3rd, true);
 
 		solo.clickOnView(solo.getView(R.id.delete));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 		solo.clickOnCheckBox(0);
 		solo.clickOnCheckBox(1);
 		solo.clickOnImage(ACTIONMODE_INDEX);
@@ -473,24 +464,23 @@ public class FormulaEditorUserVariableFragmentTest extends
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
 		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		EditText editText = (EditText) solo.getView(R.id.dialog_formula_editor_variable_name_edit_text);
 		solo.enterText(editText, itemString);
 		finishUserVariableCreationSafeButSlow(itemString, true);
 
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		editText = (EditText) solo.getView(R.id.dialog_formula_editor_variable_name_edit_text);
 		solo.enterText(editText, itemString2nd);
 		finishUserVariableCreationSafeButSlow(itemString2nd, true);
 
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		editText = (EditText) solo.getView(R.id.dialog_formula_editor_variable_name_edit_text);
@@ -499,8 +489,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		finishUserVariableCreationSafeButSlow(itemString3rd, true);
 
 		solo.clickOnView(solo.getView(R.id.delete));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 		solo.clickOnCheckBox(0);
 		solo.clickOnCheckBox(1);
 		solo.goBack();
@@ -518,10 +507,9 @@ public class FormulaEditorUserVariableFragmentTest extends
 		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		solo.goBack();
@@ -535,7 +523,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 
 		assertTrue(itemString + " not found:", solo.searchText(itemString, true));
 
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		assertTrue("Add Variable Dialog not shown",
@@ -560,8 +548,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 		assertFalse(itemString + "  should not be found:", solo.searchText(itemString, true));
 		assertTrue(itemString2nd + " not found:", solo.searchText(itemString2nd, true));
 
@@ -575,9 +562,8 @@ public class FormulaEditorUserVariableFragmentTest extends
 		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 		String itemString = "var1";
@@ -586,9 +572,8 @@ public class FormulaEditorUserVariableFragmentTest extends
 		solo.enterText(editText, itemString);
 		finishUserVariableCreationSafeButSlow(itemString, true);
 
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 
@@ -617,8 +602,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
 
 		assertTrue("MenuItem should have been found!", solo.getView(R.id.delete) != null);
 		assertTrue("MenuItem should not be found!", solo.getView(R.id.copy) == null);
@@ -626,7 +610,7 @@ public class FormulaEditorUserVariableFragmentTest extends
 		assertTrue("MenuItem should not be found!", solo.getView(R.id.insert_below) == null);
 		assertTrue("MenuItem should not be found!", solo.getView(R.id.move) == null);
 		assertTrue("MenuItem should not be found!", solo.getView(R.id.rename) == null);
-		assertTrue("MenuItem should not be found!", solo.getView(R.id.edit_in_paintroid) == null);
+		assertTrue("MenuItem should not be found!", solo.getView(R.id.edit_in_pocket_paint) == null);
 		assertTrue("MenuItem should not be found!", solo.getView(R.id.show_details) == null);
 		assertTrue("MenuItem should not be found!", solo.getView(R.id.settings) == null);
 	}
@@ -637,9 +621,8 @@ public class FormulaEditorUserVariableFragmentTest extends
 		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
-		assertTrue("Variable Fragment not shown",
-				solo.waitForText(solo.getString(R.string.formula_editor_make_new_variable)));
-		solo.clickOnView(solo.getView(R.id.formula_editor_variable_list_bottom_bar));
+		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
+		solo.clickOnView(solo.getView(R.id.button_add));
 		assertTrue("Add Variable Dialog not shown",
 				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_title)));
 

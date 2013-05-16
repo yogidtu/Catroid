@@ -78,7 +78,6 @@ public class StageActivity extends AndroidApplication {
 	}
 
 	public void manageLoadAndFinish() {
-		finish();
 		stageListener.pause();
 		stageListener.finish();
 
