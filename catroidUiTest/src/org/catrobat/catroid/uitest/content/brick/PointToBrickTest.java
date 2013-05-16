@@ -123,9 +123,14 @@ public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptAct
 		solo.clickLongOnText(spriteName1);
 		solo.waitForText(solo.getString(R.string.delete));
 		solo.clickOnText(solo.getString(R.string.delete));
+		String yes = solo.getString(R.string.yes);
+		solo.waitForText(yes);
+		solo.clickOnText(yes);
 		solo.clickLongOnText(newSpriteName);
 		solo.waitForText(solo.getString(R.string.delete));
 		solo.clickOnText(solo.getString(R.string.delete));
+		solo.waitForText(yes);
+		solo.clickOnText(yes);
 
 		solo.clickOnText(spriteName2);
 		solo.sleep(200);
