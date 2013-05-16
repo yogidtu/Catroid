@@ -43,7 +43,6 @@ public class Hint {
 	private static boolean debugMode = true;
 
 	private static Hint hint = new Hint();
-	public static boolean welcome = false;
 	private static Context context;
 	private WindowManager windowManager;
 	private HintOverlay hintOverlay;

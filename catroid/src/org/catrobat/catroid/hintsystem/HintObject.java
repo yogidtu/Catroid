@@ -56,8 +56,7 @@ public class HintObject {
 
 	private String addingLineBreaks(String text) {
 		int screenWidth = Hint.getInstance().getScreenWidth();
-		int marginRight = ScreenParameters.getInstance().getTextMarginRight() * screenWidth / 100;
-		int textWidth = maxWidthObject - marginRight;
+		int textWidth = maxWidthObject - 40;
 
 		Paint paint = new Paint();
 		paint.setTextSize(25);

@@ -69,12 +69,7 @@ public class HintController {
 
 		switch (checkActivity()) {
 			case 0:
-				if (!Hint.welcome) {
-					getWelcomeHint();
-
-				} else {
-					getMainMenuHints();
-				}
+				getMainMenuHints();
 				break;
 			case 1:
 				getProjectHints();
@@ -106,17 +101,6 @@ public class HintController {
 		return hint;
 	}
 
-	private void getWelcomeHint() {
-		Activity activity = (Activity) context;
-		int[] coord = { 0, 0, 0 };
-		Resources resources = activity.getResources();
-		String[] hintStrings = resources.getStringArray(R.array.hints_mainmenu);
-
-		coord = examineCoordinates(activity.findViewById(R.id.main_menu));
-		allHints.add(createHint(coord, hintStrings[0]));
-
-	}
-
 	private void getMainMenuHints() {
 		Activity activity = (Activity) context;
 		int[] coord = { 0, 0, 0 };
@@ -124,17 +108,17 @@ public class HintController {
 		String[] hintStrings = resources.getStringArray(R.array.hints_mainmenu);
 
 		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_continue));
-		allHints.add(createHint(coord, hintStrings[1]));
+		allHints.add(createHint(coord, hintStrings[0]));
 		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_new));
-		allHints.add(createHint(coord, hintStrings[2]));
+		allHints.add(createHint(coord, hintStrings[1]));
 		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_programs));
-		allHints.add(createHint(coord, hintStrings[3]));
+		allHints.add(createHint(coord, hintStrings[2]));
 		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_forum));
-		allHints.add(createHint(coord, hintStrings[4]));
+		allHints.add(createHint(coord, hintStrings[3]));
 		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_web));
-		allHints.add(createHint(coord, hintStrings[5]));
+		allHints.add(createHint(coord, hintStrings[4]));
 		coord = examineCoordinates(activity.findViewById(R.id.main_menu_button_upload));
-		allHints.add(createHint(coord, hintStrings[6]));
+		allHints.add(createHint(coord, hintStrings[5]));
 
 		setSharedPreferences("PREF_HINT_MAINMENU_ACTIVE", false);
 	}

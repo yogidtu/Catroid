@@ -81,7 +81,6 @@
     
     <!-- Hint Strings -->
 	<string-array name="hints_mainmenu">
-	    <item>@string/hint_mainmenu_welcome</item>
 	    <item>@string/hint_mainmenu_continue</item>
 	    <item>@string/hint_mainmenu_new</item>
 	    <item>@string/hint_mainmenu_programs</item>

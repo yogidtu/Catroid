@@ -37,6 +37,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.drawable.NinePatchDrawable;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -51,6 +52,9 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 	private Paint paint = new Paint();
 	int alpha = 255;
 	private Resources res;
+	private Bitmap tooltipButton;
+	private NinePatchDrawable bubble;
+	private ArrayList<HintObject> allHints;
 
 	public HintOverlay(Context context) {
 		super(context);
@@ -62,41 +66,33 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 		getHolder().addCallback(this);
 		Activity currentActivity = (Activity) context;
 		currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-		paint.setTextSize(25);
-		paint.setARGB(255, 255, 255, 255);
+		paint.setTextSize(15);
+		paint.setARGB(255, 0, 0, 0);
 	}
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		Hint.getInstance().removeHint();
-		showWelcomeHint();
 		return true;
-
-	}
-
-	private void showWelcomeHint() {
-		if (!Hint.welcome) {
-			Hint.getInstance().overlayHint();
-			Hint.welcome = true;
-		}
 
 	}
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		ArrayList<HintObject> allHints = Hint.getHints();
+		allHints = Hint.getHints();
 
 		for (int i = 0; i < allHints.size(); i++) {
 			HintObject hint = allHints.get(i);
-			Bitmap bitmap = createBitmap();
-
-			canvas.drawBitmap(bitmap, hint.getXCoordinate(), hint.getYCoordinate(), paint);
+			bubble = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.bubble);
+			bubble.setBounds(180, hint.getYCoordinate() - 20, 450, hint.getYCoordinate() + 50);
+			bubble.draw(canvas);
+			tooltipButton = createBitmap(R.drawable.tooltip_button);
+			canvas.drawBitmap(tooltipButton, hint.getXCoordinate() - 10, hint.getYCoordinate(), paint);
 			drawMultilineText(hint.getHintText(), hint.getTextXCoordinate(), hint.getTextYCoordinate(), paint, canvas);
 		}
-
 	}
 
-	void drawMultilineText(String str, int x, int y, Paint paint, Canvas canvas) {
+	private void drawMultilineText(String str, int x, int y, Paint paint, Canvas canvas) {
 		int lineHeight = 0;
 		int yoffset = 0;
 		String[] lines = str.split("\n");
@@ -111,11 +107,11 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 
-	public Bitmap createBitmap() {
+	public Bitmap createBitmap(int id) {
 		res = context.getResources();
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;
-		Bitmap bitmap = BitmapFactory.decodeResource(res, R.drawable.arrow, opts);
+		Bitmap bitmap = BitmapFactory.decodeResource(res, id, opts);
 		return bitmap;
 	}
 

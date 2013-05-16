@@ -512,12 +512,11 @@
     	<!-- Hint Strings -->
 	<string name="hint_menu_show_hints">Hinweise anzeigen</string>
 	
-	<string name="hint_mainmenu_welcome">Willkommen bei PocketCode! Diese Hinweise werden nur bei der ersten ausführung angezeigt.</string>
 	<string name="hint_mainmenu_continue">Klicke hier um das aktuelle Projekt fortzusetzen.</string>
 	<string name="hint_mainmenu_new">Klicke hier um ein neues Projekt zu erstellen.</string>
 	<string name="hint_mainmenu_programs">Klicke hier um eine Liste aller vorhandenen Projekte anzuzeigen.</string>
-	<string name="hint_mainmenu_community">Klicke hier um zum PocketCodeForum zu gelangen.</string>
-	<string name="hint_mainmenu_web">Klicke hier um zur PocketCode Webseite zu gelangen.</string>
+	<string name="hint_mainmenu_community">Klicke hier um zum Pocket Code Forum zu gelangen.</string>
+	<string name="hint_mainmenu_web">Klicke hier um zur Pocket Code Webseite zu gelangen.</string>
 	<string name="hint_mainmenu_upload">Klicke hier um ein Projekt hochzuladen.</string>
 	
 	<string name="hint_project_background">Klicke hier um den Hintergrund zu verändern.</string>
