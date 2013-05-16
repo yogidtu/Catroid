@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.catrobat.catroid.common.CostumeData;
+import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.physics.PhysicWorldConverter;
 
 import com.badlogic.gdx.graphics.Pixmap;
@@ -39,8 +39,8 @@ public final class PhysicShapeBuilderStrategyFastHull implements PhysicShapeBuil
 	private final Stack<Vector2> convexHull = new Stack<Vector2>();
 
 	@Override
-	public Shape[] build(CostumeData costumeData) {
-		Pixmap pixmap = costumeData.getPixmap();
+	public Shape[] build(LookData lookData) {
+		Pixmap pixmap = lookData.getPixmap();
 		int width = pixmap.getWidth();
 		int height = pixmap.getHeight();
 		convexHull.clear();

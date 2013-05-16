@@ -22,17 +22,17 @@
  */
 package org.catrobat.catroid.physics;
 
-import org.catrobat.catroid.content.Costume;
+import org.catrobat.catroid.content.Look;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.physics.shapebuilder.PhysicShapeBuilder;
 
 import com.badlogic.gdx.physics.box2d.Shape;
 
-public class PhysicCostume extends Costume {
+public class PhysicLook extends Look {
 	private final PhysicObject physicObject;
 	private final PhysicShapeBuilder physicShapeBuilder;
 
-	public PhysicCostume(Sprite sprite, PhysicShapeBuilder physicShapeBuilder, PhysicObject physicObject) {
+	public PhysicLook(Sprite sprite, PhysicShapeBuilder physicShapeBuilder, PhysicObject physicObject) {
 		super(sprite);
 
 		this.physicShapeBuilder = physicShapeBuilder;
@@ -42,7 +42,7 @@ public class PhysicCostume extends Costume {
 	@Override
 	protected boolean checkImageChanged() {
 		if (super.checkImageChanged()) {
-			Shape[] shapes = physicShapeBuilder.getShape(getCostumeData(), getSize());
+			Shape[] shapes = physicShapeBuilder.getShape(getLookData(), getSize());
 			physicObject.setShape(shapes);
 			return true;
 		}
@@ -51,22 +51,22 @@ public class PhysicCostume extends Costume {
 	}
 
 	public void updatePositionAndRotation() {
-		super.setXYPosition(physicObject.getXPosition(), physicObject.getYPosition());
+		super.setXYInUserInterfaceDimensionUnit(physicObject.getXPosition(), physicObject.getYPosition());
 		super.setRotation(physicObject.getAngle());
 	}
 
 	@Override
-	public void setXPosition(float x) {
+	public void setXInUserInterfaceDimensionUnit(float x) {
 		physicObject.setXPosition(x);
 	}
 
 	@Override
-	public void setYPosition(float y) {
+	public void setYInUserInterfaceDimensionUnit(float y) {
 		physicObject.setYPosition(y);
 	}
 
 	@Override
-	public void setXYPosition(float x, float y) {
+	public void setXYInUserInterfaceDimensionUnit(float x, float y) {
 		physicObject.setXYPosition(x, y);
 	}
 
@@ -81,12 +81,12 @@ public class PhysicCostume extends Costume {
 	}
 
 	@Override
-	public float getXPosition() {
+	public float getXInUserInterfaceDimensionUnit() {
 		return physicObject.getXPosition();
 	}
 
 	@Override
-	public float getYPosition() {
+	public float getYInUserInterfaceDimensionUnit() {
 		return physicObject.getYPosition();
 	}
 
@@ -94,7 +94,7 @@ public class PhysicCostume extends Costume {
 	public void setSize(float size) {
 		super.setSize(size);
 
-		Shape[] shapes = physicShapeBuilder.getShape(getCostumeData(), getSize());
+		Shape[] shapes = physicShapeBuilder.getShape(getLookData(), getSize());
 		physicObject.setShape(shapes);
 	}
 

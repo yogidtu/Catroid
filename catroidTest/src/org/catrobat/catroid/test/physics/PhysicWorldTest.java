@@ -25,7 +25,7 @@ package org.catrobat.catroid.test.physics;
 import java.util.Map;
 
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.physics.PhysicCostume;
+import org.catrobat.catroid.physics.PhysicLook;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicWorld;
 import org.catrobat.catroid.test.utils.TestUtils;
@@ -138,7 +138,7 @@ public class PhysicWorldTest extends AndroidTestCase {
 			IllegalAccessException {
 		Sprite sprite = new Sprite("TestSprite");
 		PhysicObject physicObject = physicWorld.getPhysicObject(sprite);
-		sprite.costume = new PhysicCostume(sprite, null, physicObject);
+		sprite.costume = new PhysicLook(sprite, null, physicObject);
 
 		Vector2 velocity = new Vector2(2.3f, 4.5f);
 		float rotationSpeed = 45.0f;

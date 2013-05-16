@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.catrobat.catroid.common.CostumeData;
+import org.catrobat.catroid.common.LookData;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -40,20 +40,20 @@ public class PhysicShapeBuilder {
 	public PhysicShapeBuilder() {
 	}
 
-	public synchronized Shape[] getShape(CostumeData costumeData, float scaleFactor) {
-		if (costumeData == null) {
+	public synchronized Shape[] getShape(LookData lookData, float scaleFactor) {
+		if (lookData == null) {
 			return null;
 		}
 
-		String key = getKey(costumeData, scaleFactor);
+		String key = getKey(lookData, scaleFactor);
 		if (shapeMap.containsKey(key)) {
 			return shapeMap.get(key);
 		}
 
-		Shape[] shapes = shapeMap.get(getKey(costumeData, 1.0f));
+		Shape[] shapes = shapeMap.get(getKey(lookData, 1.0f));
 		if (shapes == null) {
-			shapes = strategy.build(costumeData);
-			shapeMap.put(getKey(costumeData, 1.0f), shapes);
+			shapes = strategy.build(lookData);
+			shapeMap.put(getKey(lookData, 1.0f), shapes);
 		}
 
 		if (scaleFactor != 1.0f) {
@@ -65,8 +65,8 @@ public class PhysicShapeBuilder {
 		return shapes;
 	}
 
-	private String getKey(CostumeData costumeData, float scaleFactor) {
-		return costumeData.getChecksum() + (int) (scaleFactor * 10);
+	private String getKey(LookData lookData, float scaleFactor) {
+		return lookData.getChecksum() + (int) (scaleFactor * 10);
 	}
 
 	private Shape[] scaleShapes(Shape[] shapes, float scaleFactor) {

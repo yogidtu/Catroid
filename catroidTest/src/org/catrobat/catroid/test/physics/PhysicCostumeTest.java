@@ -24,7 +24,7 @@ package org.catrobat.catroid.test.physics;
 
 import org.catrobat.catroid.common.CostumeData;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.physics.PhysicCostume;
+import org.catrobat.catroid.physics.PhysicLook;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicWorld;
 import org.catrobat.catroid.physics.shapebuilder.PhysicShapeBuilder;
@@ -96,7 +96,7 @@ public class PhysicCostumeTest extends AndroidTestCase {
 	public void testPositionAndAngle() {
 		PhysicWorld physicWorld = new PhysicWorld();
 		PhysicObject physicObject = physicWorld.getPhysicObject(new Sprite("TestSprite"));
-		PhysicCostume physicCostume = new PhysicCostume(null, null, physicObject);
+		PhysicLook physicCostume = new PhysicLook(null, null, physicObject);
 
 		float x = 1.2f;
 		physicCostume.setXPosition(x);
@@ -125,7 +125,7 @@ public class PhysicCostumeTest extends AndroidTestCase {
 		Sprite sprite = new Sprite("TestSprite");
 		PhysicShapeBuilder physicShapeBuilder = new PhysicShapeBuilderMock();
 		PhysicObjectMock physicObjectMock = new PhysicObjectMock();
-		PhysicCostume physicCostume = new PhysicCostume(sprite, physicShapeBuilder, physicObjectMock);
+		PhysicLook physicCostume = new PhysicLook(sprite, physicShapeBuilder, physicObjectMock);
 		float size = 3.14f;
 
 		assertFalse("Set shape has been executed", physicObjectMock.setShapeExecuted);
@@ -139,7 +139,7 @@ public class PhysicCostumeTest extends AndroidTestCase {
 		assertEquals("Wrong shapes", shapes, physicObjectMock.setShapeExecutedWithShapes);
 	}
 
-	private class PhysicCostumeUpdateMock extends PhysicCostume {
+	private class PhysicCostumeUpdateMock extends PhysicLook {
 
 		public PhysicCostumeUpdateMock(Sprite sprite, PhysicShapeBuilder physicShapeBuilder, PhysicObject physicObject) {
 			super(sprite, physicShapeBuilder, physicObject);
@@ -157,7 +157,7 @@ public class PhysicCostumeTest extends AndroidTestCase {
 		}
 	}
 
-	private class PhysicCostumeMock extends PhysicCostume {
+	private class PhysicCostumeMock extends PhysicLook {
 
 		public PhysicCostumeMock(Sprite sprite, PhysicShapeBuilder physicShapeBuilder, PhysicObject physicObject) {
 			super(sprite, physicShapeBuilder, physicObject);

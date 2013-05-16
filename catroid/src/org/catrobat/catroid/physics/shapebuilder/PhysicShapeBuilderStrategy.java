@@ -22,10 +22,10 @@
  */
 package org.catrobat.catroid.physics.shapebuilder;
 
-import org.catrobat.catroid.common.CostumeData;
+import org.catrobat.catroid.common.LookData;
 
 import com.badlogic.gdx.physics.box2d.Shape;
 
 public interface PhysicShapeBuilderStrategy {
-	public Shape[] build(CostumeData costumeData);
+	public Shape[] build(LookData lookData);
 }

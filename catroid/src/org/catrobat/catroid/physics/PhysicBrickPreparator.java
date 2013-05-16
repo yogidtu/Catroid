@@ -63,7 +63,7 @@ public class PhysicBrickPreparator {
 					if (brick instanceof PhysicObjectBrick) {
 						if (physicObject == null) {
 							physicObject = physicWorld.getPhysicObject(sprite);
-							sprite.costume = new PhysicCostume(sprite, physicShapeBuilder, physicObject);
+							sprite.look = new PhysicLook(sprite, physicShapeBuilder, physicObject);
 						}
 						((PhysicObjectBrick) brick).setPhysicObject(physicObject);
 					} else if (brick instanceof PhysicWorldBrick) {

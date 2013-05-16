@@ -78,17 +78,15 @@ public class PhysicWorld {
 
 	private void updateSprites() {
 		PhysicObject physicObject;
-		PhysicCostume costume;
+		PhysicLook costume;
 		for (Entry<Sprite, PhysicObject> entry : physicObjects.entrySet()) {
 			physicObject = entry.getValue();
 			if (physicObject.getType() != Type.DYNAMIC) {
 			}
 			physicObject.setIfOnEdgeBounce(false);
 
-			costume = (PhysicCostume) entry.getKey().costume;
-			costume.aquireXYWidthHeightLock();
+			costume = (PhysicLook) entry.getKey().look;
 			costume.updatePositionAndRotation();
-			costume.releaseXYWidthHeightLock();
 		}
 	}
 
@@ -98,12 +96,12 @@ public class PhysicWorld {
 		//				}
 		//				PhysicRenderer.instance.render(perspectiveMatrix);
 
-		if (renderer == null) {
-			renderer = new Box2DDebugRenderer(PhysicDebugSettings.Render.RENDER_BODIES,
-					PhysicDebugSettings.Render.RENDER_JOINTS, PhysicDebugSettings.Render.RENDER_AABBs,
-					PhysicDebugSettings.Render.RENDER_INACTIVE_BODIES);
-		}
-		renderer.render(world, perspectiveMatrix.scl(PhysicWorld.RATIO));
+		//		if (renderer == null) {
+		//			renderer = new Box2DDebugRenderer(PhysicDebugSettings.Render.RENDER_BODIES,
+		//					PhysicDebugSettings.Render.RENDER_JOINTS, PhysicDebugSettings.Render.RENDER_AABBs,
+		//					PhysicDebugSettings.Render.RENDER_INACTIVE_BODIES);
+		//		}
+		//		renderer.render(world, perspectiveMatrix.scl(PhysicWorld.RATIO));
 	}
 
 	public void setGravity(Vector2 gravity) {

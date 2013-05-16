@@ -126,6 +126,14 @@ public class Project implements Serializable {
 		return xmlHeader.getCatrobatLanguageVersion();
 	}
 
+	public int getVirtualScreenWidth() {
+		return xmlHeader.virtualScreenWidth;
+	}
+
+	public int getVirtualScreenHeight() {
+		return xmlHeader.virtualScreenHeight;
+	}
+
 	public XmlHeader getXmlHeader() {
 		return this.xmlHeader;
 	}

@@ -65,11 +65,17 @@ import org.catrobat.catroid.content.bricks.PointInDirectionBrick.Direction;
 import org.catrobat.catroid.content.bricks.PointToBrick;
 import org.catrobat.catroid.content.bricks.RepeatBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
+import org.catrobat.catroid.content.bricks.SetBounceFactorBrick;
 import org.catrobat.catroid.content.bricks.SetBrightnessBrick;
+import org.catrobat.catroid.content.bricks.SetFrictionBrick;
 import org.catrobat.catroid.content.bricks.SetGhostEffectBrick;
+import org.catrobat.catroid.content.bricks.SetGravityBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
+import org.catrobat.catroid.content.bricks.SetMassBrick;
+import org.catrobat.catroid.content.bricks.SetPhysicObjectTypeBrick;
 import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.SetVariableBrick;
+import org.catrobat.catroid.content.bricks.SetVelocityBrick;
 import org.catrobat.catroid.content.bricks.SetVolumeToBrick;
 import org.catrobat.catroid.content.bricks.SetXBrick;
 import org.catrobat.catroid.content.bricks.SetYBrick;
@@ -77,7 +83,9 @@ import org.catrobat.catroid.content.bricks.ShowBrick;
 import org.catrobat.catroid.content.bricks.SpeakBrick;
 import org.catrobat.catroid.content.bricks.StopAllSoundsBrick;
 import org.catrobat.catroid.content.bricks.TurnLeftBrick;
+import org.catrobat.catroid.content.bricks.TurnLeftSpeedBrick;
 import org.catrobat.catroid.content.bricks.TurnRightBrick;
+import org.catrobat.catroid.content.bricks.TurnRightSpeedBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.content.bricks.WhenBrick;
 import org.catrobat.catroid.content.bricks.WhenStartedBrick;
@@ -276,7 +284,17 @@ public class AddBrickFragment extends SherlockListFragment {
 			GoNStepsBackBrick goNStepsBackBrick = new GoNStepsBackBrick(sprite, BrickValues.GO_BACK);
 			motionBrickList.add(goNStepsBackBrick);
 			motionBrickList.add(new ComeToFrontBrick(sprite));
+
+			motionBrickList.add(new SetPhysicObjectTypeBrick(sprite, BrickValues.PHYSIC_TYPE));
+			motionBrickList.add(new SetMassBrick(sprite, BrickValues.PHYSIC_MASS));
+			motionBrickList.add(new SetBounceFactorBrick(sprite, BrickValues.PHYSIC_BOUNCE_FACTOR));
+			motionBrickList.add(new SetFrictionBrick(sprite, BrickValues.PHYSIC_FRICTION));
 		}
+
+		motionBrickList.add(new SetGravityBrick(sprite, BrickValues.PHYSIC_GRAVITY));
+		motionBrickList.add(new SetVelocityBrick(sprite, BrickValues.PHYSIC_VELOCITY));
+		motionBrickList.add(new TurnLeftSpeedBrick(sprite, BrickValues.PHYSIC_TURN_DEGREES));
+		motionBrickList.add(new TurnRightSpeedBrick(sprite, BrickValues.PHYSIC_TURN_DEGREES));
 
 		brickMap.put(context.getString(R.string.category_motion), motionBrickList);
 

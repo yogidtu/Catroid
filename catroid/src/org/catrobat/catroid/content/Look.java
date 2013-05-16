@@ -258,13 +258,14 @@ public class Look extends Image {
 		}
 	}
 
-	protected void checkImageChanged() {
+	protected boolean checkImageChanged() {
+		boolean hasChanged = imageChanged;
 		if (imageChanged) {
 			if (lookData == null) {
 				setBounds(getX() + getWidth() / 2f, getY() + getHeight() / 2f, 0f, 0f);
 				setDrawable(null);
 				imageChanged = false;
-				return;
+				return hasChanged;
 			}
 
 			pixmap = lookData.getPixmap();
@@ -288,6 +289,7 @@ public class Look extends Image {
 
 			imageChanged = false;
 		}
+		return hasChanged;
 	}
 
 	protected Pixmap adjustBrightness(Pixmap currentPixmap) {

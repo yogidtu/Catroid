@@ -22,7 +22,7 @@
  */
 package org.catrobat.catroid.physics.shapebuilder;
 
-import org.catrobat.catroid.common.CostumeData;
+import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.physics.PhysicWorldConverter;
 
 import android.graphics.Point;
@@ -35,8 +35,8 @@ import com.badlogic.gdx.physics.box2d.Shape;
 public class PhysicShapeBuilderStrategyRectangle implements PhysicShapeBuilderStrategy {
 
 	@Override
-	public Shape[] build(CostumeData costumeData) {
-		Pixmap pixmap = costumeData.getPixmap();
+	public Shape[] build(LookData lookData) {
+		Pixmap pixmap = lookData.getPixmap();
 
 		Point start = null;
 		Point end = null;
