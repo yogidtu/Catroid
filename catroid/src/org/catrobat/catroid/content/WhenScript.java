@@ -22,6 +22,11 @@
  */
 package org.catrobat.catroid.content;
 
+import java.util.ArrayList;
+
+import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.IfLogicEndBrick;
+import org.catrobat.catroid.content.bricks.LoopEndBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.WhenBrick;
 
@@ -46,7 +51,6 @@ public class WhenScript extends Script {
 
 	public WhenScript(Sprite sprite) {
 		super(sprite);
-		super.isFinished = true;
 		this.position = 0;
 		this.action = TAPPED;
 	}
@@ -58,7 +62,6 @@ public class WhenScript extends Script {
 
 	@Override
 	protected Object readResolve() {
-		isFinished = true;
 		super.readResolve();
 		return this;
 	}
@@ -79,9 +82,29 @@ public class WhenScript extends Script {
 	@Override
 	public ScriptBrick getScriptBrick() {
 		if (brick == null) {
-			brick = new WhenBrick(sprite, this);
+			brick = new WhenBrick(object, this);
 		}
 
 		return brick;
+	}
+
+	@Override
+	public Script copyScriptForSprite(Sprite copySprite) {
+		WhenScript cloneScript = new WhenScript(copySprite);
+		ArrayList<Brick> cloneBrickList = cloneScript.getBrickList();
+
+		cloneScript.action = getAction();
+
+		for (Brick brick : getBrickList()) {
+			Brick copiedBrick = brick.copyBrickForSprite(copySprite, cloneScript);
+			if (copiedBrick instanceof IfLogicEndBrick) {
+				setIfBrickReferences((IfLogicEndBrick) copiedBrick, (IfLogicEndBrick) brick);
+			} else if (copiedBrick instanceof LoopEndBrick) {
+				setLoopBrickReferences((LoopEndBrick) copiedBrick, (LoopEndBrick) brick);
+			}
+			cloneBrickList.add(copiedBrick);
+		}
+
+		return cloneScript;
 	}
 }

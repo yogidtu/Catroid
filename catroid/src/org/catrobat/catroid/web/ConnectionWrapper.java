@@ -35,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -55,6 +56,15 @@ public class ConnectionWrapper {
 	public static final String FTP_USERNAME = "ftp-uploader";
 	public static final String FTP_PASSWORD = "cat.ftp.loader";
 	public static final int FILE_TYPE = org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE;
+	public static final String FTP_ENCODING = "UTF-8";
+
+	public static final String TAG_PROGRESS = "currentDownloadProgress";
+	public static final String TAG_ENDOFFILE = "endOfFileReached";
+	public static final String TAG_UNKNOWN = "unknown";
+	public static final String TAG_NOTIFICATION_ID = "notificationId";
+	public static final String TAG_PROJECT_NAME = "projectName";
+	public static final String TAG_PROJECT_TITLE = "projectTitle";
+
 	private FTPClient ftpClient = new FTPClient();
 
 	public String doFtpPostFileUpload(String urlString, HashMap<String, String> postValues, String fileTag,
@@ -62,6 +72,9 @@ public class ConnectionWrapper {
 			WebconnectionException {
 		String answer = "";
 		try {
+			// important to call this before connect
+			ftpClient.setControlEncoding(FTP_ENCODING);
+
 			ftpClient.connect(urlString, ServerCalls.FTP_PORT);
 			ftpClient.login(FTP_USERNAME, FTP_PASSWORD);
 
@@ -79,8 +92,8 @@ public class ConnectionWrapper {
 
 			String fileName = "";
 			if (filePath != null) {
-				fileName = postValues.get("projectTitle");
-				String extension = filePath.substring(filePath.lastIndexOf(".") + 1).toLowerCase();
+				fileName = postValues.get(TAG_PROJECT_TITLE);
+				String extension = filePath.substring(filePath.lastIndexOf(".") + 1).toLowerCase(Locale.ENGLISH);
 				FtpProgressInputStream ftpProgressStream = new FtpProgressInputStream(inputStream, receiver,
 						notificationId, fileName);
 				boolean result = ftpClient.storeFile(fileName + "." + extension, ftpProgressStream);
@@ -115,9 +128,9 @@ public class ConnectionWrapper {
 	private String sendUploadPost(String httpPostUrl, HashMap<String, String> postValues, String fileTag,
 			String filePath) throws IOException, WebconnectionException {
 
-		MultiPartFormOutputStream out = buildPost(httpPostUrl, postValues);
+		HttpBuilder httpBuilder = buildPost(httpPostUrl, postValues);
 
-		out.close();
+		httpBuilder.close();
 
 		// response code != 2xx -> error
 		urlConnection.getResponseCode();
@@ -144,18 +157,18 @@ public class ConnectionWrapper {
 	private void sendUpdateIntent(ResultReceiver receiver, long progress, boolean endOfFileReached, boolean unknown,
 			Integer notificationId, String projectName) {
 		Bundle progressBundle = new Bundle();
-		progressBundle.putLong("currentDownloadProgress", progress);
-		progressBundle.putBoolean("endOfFileReached", endOfFileReached);
-		progressBundle.putBoolean("unknown", unknown);
-		progressBundle.putInt("notificationId", notificationId);
-		progressBundle.putString("projectName", projectName);
+		progressBundle.putLong(TAG_PROGRESS, progress);
+		progressBundle.putBoolean(TAG_ENDOFFILE, endOfFileReached);
+		progressBundle.putBoolean(TAG_UNKNOWN, unknown);
+		progressBundle.putInt(TAG_NOTIFICATION_ID, notificationId);
+		progressBundle.putString(TAG_PROJECT_NAME, projectName);
 		receiver.send(Constants.UPDATE_DOWNLOAD_PROGRESS, progressBundle);
 	}
 
 	public void doHttpPostFileDownload(String urlString, HashMap<String, String> postValues, String filePath,
 			ResultReceiver receiver, Integer notificationId, String projectName) throws IOException {
-		MultiPartFormOutputStream out = buildPost(urlString, postValues);
-		out.close();
+		HttpBuilder httpBuilder = buildPost(urlString, postValues);
+		httpBuilder.close();
 
 		URL downloadUrl = new URL(urlString);
 		urlConnection = (HttpURLConnection) downloadUrl.openConnection();
@@ -219,9 +232,8 @@ public class ConnectionWrapper {
 	}
 
 	public String doHttpPost(String urlString, HashMap<String, String> postValues) throws IOException {
-		MultiPartFormOutputStream out = buildPost(urlString, postValues);
-		//HttpBuilder out = buildPost(urlString, postValues);
-		out.close();
+		HttpBuilder httpBuilder = buildPost(urlString, postValues);
+		httpBuilder.close();
 
 		InputStream resultStream = null;
 
@@ -231,32 +243,31 @@ public class ConnectionWrapper {
 		return getString(resultStream);
 	}
 
-	private MultiPartFormOutputStream buildPost(String urlString, HashMap<String, String> postValues)
-			throws IOException {
+	private HttpBuilder buildPost(String urlString, HashMap<String, String> postValues) throws IOException {
 		if (postValues == null) {
 			postValues = new HashMap<String, String>();
 		}
 
 		URL url = new URL(urlString);
 
-		String boundary = MultiPartFormOutputStream.createBoundary();
-		urlConnection = (HttpURLConnection) MultiPartFormOutputStream.createConnection(url);
+		String boundary = HttpBuilder.createBoundary();
+		urlConnection = (HttpURLConnection) HttpBuilder.createConnection(url);
 
 		urlConnection.setRequestProperty("Accept", "*/*");
-		urlConnection.setRequestProperty("Content-Type", MultiPartFormOutputStream.getContentType(boundary));
+		urlConnection.setRequestProperty("Content-Type", HttpBuilder.getContentType(boundary));
 
 		urlConnection.setRequestProperty("Connection", "Keep-Alive");
 		urlConnection.setRequestProperty("Cache-Control", "no-cache");
 
-		MultiPartFormOutputStream out = new MultiPartFormOutputStream(urlConnection.getOutputStream(), boundary);
+		HttpBuilder httpBuilder = new HttpBuilder(urlConnection.getOutputStream(), boundary);
 
 		Set<Entry<String, String>> entries = postValues.entrySet();
 		for (Entry<String, String> entry : entries) {
 			Log.d(TAG, "key: " + entry.getKey() + ", value: " + entry.getValue());
-			out.writeField(entry.getKey(), entry.getValue());
+			httpBuilder.writeField(entry.getKey(), entry.getValue());
 		}
 
-		return out;
+		return httpBuilder;
 	}
 
 	/*

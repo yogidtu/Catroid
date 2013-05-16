@@ -32,23 +32,24 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.RepeatBrick;
-import org.catrobat.catroid.ui.ScriptTabActivity;
+import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
-import org.catrobat.catroid.ui.fragment.ScriptFragment;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class RepeatBrickTest extends ActivityInstrumentationTestCase2<ScriptTabActivity> {
+public class RepeatBrickTest extends ActivityInstrumentationTestCase2<ScriptActivity> {
 
 	private Solo solo;
 	private Project project;
 
 	public RepeatBrickTest() {
-		super(ScriptTabActivity.class);
+		super(ScriptActivity.class);
 	}
 
 	@Override
@@ -59,7 +60,6 @@ public class RepeatBrickTest extends ActivityInstrumentationTestCase2<ScriptTabA
 
 	@Override
 	public void tearDown() throws Exception {
-		UiTestUtils.goBackToHome(getInstrumentation());
 		solo.finishOpenedActivities();
 		UiTestUtils.clearAllUtilTestProjects();
 		super.tearDown();
@@ -68,13 +68,12 @@ public class RepeatBrickTest extends ActivityInstrumentationTestCase2<ScriptTabA
 
 	@Smoke
 	public void testRepeatBrick() {
-		ScriptTabActivity activity = (ScriptTabActivity) solo.getCurrentActivity();
-		ScriptFragment fragment = (ScriptFragment) activity.getTabFragment(ScriptTabActivity.INDEX_TAB_SCRIPTS);
-		BrickAdapter adapter = fragment.getAdapter();
+		ListView dragDropListView = UiTestUtils.getScriptListView(solo);
+		BrickAdapter adapter = (BrickAdapter) dragDropListView.getAdapter();
 
 		int childrenCount = adapter.getChildCountFromLastGroup();
 		int groupCount = adapter.getScriptCount();
-		assertEquals("Incorrect number of bricks.", 2 + 1, solo.getCurrentListViews().get(0).getChildCount()); // don't forget the footer
+		assertEquals("Incorrect number of bricks.", 2, dragDropListView.getChildCount());
 		assertEquals("Incorrect number of bricks.", 1, childrenCount);
 
 		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
@@ -82,6 +81,18 @@ public class RepeatBrickTest extends ActivityInstrumentationTestCase2<ScriptTabA
 
 		assertEquals("Wrong Brick instance.", projectBrickList.get(0), adapter.getChild(groupCount - 1, 0));
 		assertNotNull("TextView does not exist", solo.getText(solo.getString(R.string.brick_repeat)));
+
+		UiTestUtils.insertValueViaFormulaEditor(solo, 0, 1);
+		TextView timesTextView = (TextView) solo.getView(R.id.brick_repeat_time_text_view);
+		assertTrue("Specifier hasn't changed from plural to singular",
+				timesTextView.getText()
+						.equals(timesTextView.getResources().getQuantityString(R.plurals.time_plural, 1)));
+
+		UiTestUtils.insertValueViaFormulaEditor(solo, 0, 5);
+		timesTextView = (TextView) solo.getView(R.id.brick_repeat_time_text_view);
+		assertTrue("Specifier hasn't changed from singular to plural",
+				timesTextView.getText()
+						.equals(timesTextView.getResources().getQuantityString(R.plurals.time_plural, 5)));
 	}
 
 	private void createProject() {

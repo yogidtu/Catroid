@@ -25,6 +25,7 @@ package org.catrobat.catroid.uitest.content.brick;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.BroadcastScript;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
@@ -32,24 +33,32 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BroadcastBrick;
 import org.catrobat.catroid.content.bricks.BroadcastWaitBrick;
-import org.catrobat.catroid.ui.ScriptTabActivity;
+import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
-import org.catrobat.catroid.ui.fragment.ScriptFragment;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
-import org.catrobat.catroid.R;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class BroadcastBricksTest extends ActivityInstrumentationTestCase2<ScriptTabActivity> {
+public class BroadcastBricksTest extends ActivityInstrumentationTestCase2<ScriptActivity> {
 
 	private Solo solo;
 	private Project project;
 
+	private static final int SECOND_BRICK_SPINNER_INDEX = 1;
+	private static final int THIRD_BRICK_SPINNER_INDEX = 2;
+
+	private static final int BROADCAST_RECEIVE_SPINNER_ID = R.id.brick_broadcast_receive_spinner;
+	private static final int BROADCAST_SPINNER_ID = R.id.brick_broadcast_spinner;
+	private static final int BROADCAST_WAIT_SPINNER_ID = R.id.brick_broadcast_wait_spinner;
+
 	public BroadcastBricksTest() {
-		super(ScriptTabActivity.class);
+		super(ScriptActivity.class);
 	}
 
 	@Override
@@ -60,7 +69,6 @@ public class BroadcastBricksTest extends ActivityInstrumentationTestCase2<Script
 
 	@Override
 	public void tearDown() throws Exception {
-		UiTestUtils.goBackToHome(getInstrumentation());
 		solo.finishOpenedActivities();
 		UiTestUtils.clearAllUtilTestProjects();
 		super.tearDown();
@@ -69,80 +77,131 @@ public class BroadcastBricksTest extends ActivityInstrumentationTestCase2<Script
 
 	@Smoke
 	public void testBroadcastBricks() {
-		ScriptTabActivity activity = (ScriptTabActivity) solo.getCurrentActivity();
-		ScriptFragment fragment = (ScriptFragment) activity.getTabFragment(ScriptTabActivity.INDEX_TAB_SCRIPTS);
-		BrickAdapter adapter = fragment.getAdapter();
+		ListView view = UiTestUtils.getScriptListView(solo);
+		BrickAdapter adapter = (BrickAdapter) view.getAdapter();
 
 		int childrenCount = ProjectManager.getInstance().getCurrentSprite().getScript(adapter.getScriptCount() - 1)
 				.getBrickList().size();
-		assertEquals("Incorrect number of bricks.", 3 + 1, solo.getCurrentListViews().get(0).getChildCount()); // don't forget the footer
+		assertEquals("Incorrect number of bricks.", 3, UiTestUtils.getScriptListView(solo).getChildCount());
 		assertEquals("Incorrect number of bricks.", 2, childrenCount);
 
 		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
 		assertEquals("Incorrect number of bricks.", 2, projectBrickList.size());
-		assertEquals("Wrong Brick instance.", projectBrickList.get(0), adapter.getItem(1));
+		assertTrue("Wrong Brick instance.", projectBrickList.get(0) instanceof BroadcastBrick);
+		assertTrue("Wrong Brick instance.", adapter.getItem(1) instanceof BroadcastBrick);
 
 		String testString = "test";
 		String testString2 = "test2";
 		String testString3 = "test3";
 
-		String buttonNewBroadcastText = solo.getString(R.string.new_broadcast_message);
-		solo.clickOnText(buttonNewBroadcastText, 1);
-		solo.clearEditText(0);
-		solo.enterText(0, testString);
+		enterNewTextIntoSpinner(BROADCAST_RECEIVE_SPINNER_ID, testString);
+		// just to get focus
+		String brickBroadcastString = solo.getString(R.string.brick_broadcast);
+		solo.clickOnText(brickBroadcastString);
+		if (solo.searchText(solo.getString(R.string.brick_context_dialog_move_brick), true)) {
+			solo.goBack();
+		}
+
+		assertEquals("Wrong selection", testString, ((Spinner) solo.getView(BROADCAST_RECEIVE_SPINNER_ID))
+				.getSelectedItem().toString());
+		assertNotSame("Wrong selection", testString, ((Spinner) solo.getView(BROADCAST_SPINNER_ID)).getSelectedItem()
+				.toString());
+
+		solo.pressSpinnerItem(SECOND_BRICK_SPINNER_INDEX, 1);
 		solo.sleep(200);
-		solo.sendKey(Solo.ENTER);
-		solo.sleep(400);
-		solo.setActivityOrientation(Solo.LANDSCAPE);
+		assertEquals("Wrong selection", testString, ((Spinner) solo.getView(BROADCAST_SPINNER_ID)).getSelectedItem()
+				.toString());
+
+		solo.pressSpinnerItem(THIRD_BRICK_SPINNER_INDEX, 1);
+		solo.sleep(200);
+		assertEquals("Wrong selection", testString, ((Spinner) solo.getView(BROADCAST_WAIT_SPINNER_ID))
+				.getSelectedItem().toString());
+
+		enterNewTextIntoSpinner(BROADCAST_SPINNER_ID, testString2);
+		// just to get focus
+		solo.clickOnText(brickBroadcastString);
+		if (solo.searchText(solo.getString(R.string.brick_context_dialog_move_brick), true)) {
+			solo.goBack();
+		}
+
+		checkIfSpinnerTextsCorrect(testString, testString2, testString);
+
+		enterNewTextIntoSpinner(BROADCAST_WAIT_SPINNER_ID, testString3);
+		// just to get focus
+		solo.clickOnText(brickBroadcastString);
+		if (solo.searchText(solo.getString(R.string.brick_context_dialog_move_brick), true)) {
+			solo.goBack();
+		}
+
+		checkIfSpinnerTextsCorrect(testString, testString2, testString3);
+
+		solo.pressSpinnerItem(SECOND_BRICK_SPINNER_INDEX, 1);
+		solo.sleep(200);
+		assertEquals("Wrong selection", testString3, ((Spinner) solo.getView(BROADCAST_SPINNER_ID)).getSelectedItem()
+				.toString());
+
+		solo.clickOnView(solo.getView(BROADCAST_RECEIVE_SPINNER_ID));
+		solo.waitForText(solo.getString(R.string.new_broadcast_message));
+		solo.clickInList(0);
+		solo.waitForView(EditText.class);
+		solo.goBack();
+		solo.goBack();
+
+		solo.clickOnView(solo.getView(BROADCAST_SPINNER_ID));
+		solo.waitForText(solo.getString(R.string.new_broadcast_message));
+		solo.clickInList(0);
+		solo.waitForView(EditText.class);
+		solo.goBack();
+		solo.goBack();
+
+		solo.clickOnView(solo.getView(BROADCAST_WAIT_SPINNER_ID));
+		solo.waitForText(solo.getString(R.string.new_broadcast_message));
+		solo.clickInList(0);
+		solo.waitForView(EditText.class);
+		solo.goBack();
+		solo.goBack();
+
+		checkIfSpinnerTextsCorrect(testString, testString3, testString3);
+
+		solo.clickLongOnText(solo.getString(R.string.brick_broadcast_receive));
+		solo.clickOnText(solo.getString(R.string.delete));
+
+		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
+		solo.clickOnText(solo.getString(R.string.category_control));
+		solo.searchText(solo.getString(R.string.category_control));
+		//click on brick broadcast
+		solo.clickOnScreen(200, 700);
+
+        solo.sleep(500);
+		// Click on broadcast brick to add it to the script brick
+        solo.clickOnScreen(200, 250);
+		if (solo.searchText(solo.getString(R.string.brick_context_dialog_move_brick), true)) {
+			solo.goBack();
+		}
+
+		assertEquals("Wrong selection", solo.getString(R.string.brick_broadcast_default_value),
+				((Spinner) solo.getView(R.id.brick_broadcast_spinner)).getSelectedItem().toString());
+
+	}
+
+	private void checkIfSpinnerTextsCorrect(String firstTextSpinner, String secondTextSpinner, String thirdTextSpinner) {
+		assertEquals("Wrong selection", firstTextSpinner, ((Spinner) solo.getView(BROADCAST_RECEIVE_SPINNER_ID))
+				.getSelectedItem().toString());
+		assertEquals("Wrong selection", secondTextSpinner, ((Spinner) solo.getView(BROADCAST_SPINNER_ID))
+				.getSelectedItem().toString());
+		assertEquals("Wrong selection", thirdTextSpinner, ((Spinner) solo.getView(BROADCAST_WAIT_SPINNER_ID))
+				.getSelectedItem().toString());
+	}
+
+	private void enterNewTextIntoSpinner(int spinnerId, String text) {
+		solo.clickOnView(solo.getView(spinnerId));
+		solo.waitForText(solo.getString(R.string.new_broadcast_message));
+		solo.clickInList(0);
+		solo.waitForView(EditText.class);
+		solo.enterText(0, text);
+		solo.sleep(200);
+		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.sleep(300);
-		solo.setActivityOrientation(Solo.PORTRAIT);
-		solo.sleep(600);
-		solo.clickOnText(solo.getString(R.string.brick_broadcast_receive)); //just to get focus for solo
-
-		assertEquals("Wrong selection", testString, (String) solo.getCurrentSpinners().get(0).getSelectedItem());
-		assertNotSame("Wrong selection", testString, solo.getCurrentSpinners().get(1).getSelectedItem());
-
-		solo.pressSpinnerItem(1, 2);
-		solo.sleep(200);
-		assertEquals("Wrong selection", testString, (String) solo.getCurrentSpinners().get(1).getSelectedItem());
-
-		solo.pressSpinnerItem(2, 2);
-		solo.sleep(200);
-		assertEquals("Wrong selection", testString, (String) solo.getCurrentSpinners().get(2).getSelectedItem());
-
-		solo.clickOnText(buttonNewBroadcastText, 2);
-		solo.clearEditText(0);
-		solo.enterText(0, testString2);
-		solo.sleep(200);
-		solo.sendKey(Solo.ENTER);
-		solo.sleep(400);
-		solo.setActivityOrientation(Solo.LANDSCAPE);
-		solo.sleep(300);
-		solo.setActivityOrientation(Solo.PORTRAIT);
-		solo.sleep(600);
-
-		assertEquals("Wrong selection", testString, (String) solo.getCurrentSpinners().get(0).getSelectedItem());
-		assertEquals("Wrong selection", testString2, (String) solo.getCurrentSpinners().get(1).getSelectedItem());
-		assertEquals("Wrong selection", testString, (String) solo.getCurrentSpinners().get(2).getSelectedItem());
-
-		solo.clickOnText(buttonNewBroadcastText, 3);
-		solo.clearEditText(0);
-		solo.enterText(0, testString3);
-		solo.sleep(200);
-		solo.sendKey(Solo.ENTER);
-		solo.sleep(400);
-		solo.setActivityOrientation(Solo.LANDSCAPE);
-		solo.sleep(300);
-		solo.setActivityOrientation(Solo.PORTRAIT);
-		solo.sleep(600);
-
-		assertEquals("Wrong selection", testString, (String) solo.getCurrentSpinners().get(0).getSelectedItem());
-		assertEquals("Wrong selection", testString2, (String) solo.getCurrentSpinners().get(1).getSelectedItem());
-		assertEquals("Wrong selection", testString3, (String) solo.getCurrentSpinners().get(2).getSelectedItem());
-
-		solo.pressSpinnerItem(1, 4);
-		solo.sleep(200);
-		assertEquals("Wrong selection", testString3, (String) solo.getCurrentSpinners().get(1).getSelectedItem());
 	}
 
 	private void createProject() {
