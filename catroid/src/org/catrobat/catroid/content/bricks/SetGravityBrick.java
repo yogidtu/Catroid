@@ -147,6 +147,22 @@ public class SetGravityBrick extends BrickBaseType implements PhysicWorldBrick, 
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_gravity_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
+
+		TextView setGravityLabel = (TextView) view.findViewById(R.id.brick_set_gravity_label);
+		TextView setGravityX = (TextView) view.findViewById(R.id.brick_set_gravity_x_textview);
+		TextView setGravityY = (TextView) view.findViewById(R.id.brick_set_gravity_y_textview);
+		TextView setGravityUnit = (TextView) view.findViewById(R.id.brick_set_gravity_unit);
+		EditText editX = (EditText) view.findViewById(R.id.brick_set_gravity_edit_text_x);
+		EditText editY = (EditText) view.findViewById(R.id.brick_set_gravity_edit_text_y);
+		setGravityLabel.setTextColor(setGravityLabel.getTextColors().withAlpha(alphaValue));
+		setGravityX.setTextColor(setGravityX.getTextColors().withAlpha(alphaValue));
+		setGravityY.setTextColor(setGravityY.getTextColors().withAlpha(alphaValue));
+		setGravityUnit.setTextColor(setGravityUnit.getTextColors().withAlpha(alphaValue));
+		editX.setTextColor(editX.getTextColors().withAlpha(alphaValue));
+		editX.getBackground().setAlpha(alphaValue);
+		editY.setTextColor(editY.getTextColors().withAlpha(alphaValue));
+		editY.getBackground().setAlpha(alphaValue);
+
 		this.alphaValue = (alphaValue);
 		return view;
 	}

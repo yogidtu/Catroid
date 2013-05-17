@@ -147,6 +147,22 @@ public class SetVelocityBrick extends BrickBaseType implements PhysicObjectBrick
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_velocity_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
+
+		TextView setVelocityLabel = (TextView) view.findViewById(R.id.brick_set_velocity_label);
+		TextView setVelocityX = (TextView) view.findViewById(R.id.brick_set_velocity_x_textview);
+		TextView setVelocityY = (TextView) view.findViewById(R.id.brick_set_velocity_y_textview);
+		TextView setVelocityUnit = (TextView) view.findViewById(R.id.brick_set_velocity_unit);
+		EditText editX = (EditText) view.findViewById(R.id.brick_set_velocity_edit_text_x);
+		EditText editY = (EditText) view.findViewById(R.id.brick_set_velocity_edit_text_y);
+		setVelocityLabel.setTextColor(setVelocityLabel.getTextColors().withAlpha(alphaValue));
+		setVelocityX.setTextColor(setVelocityX.getTextColors().withAlpha(alphaValue));
+		setVelocityY.setTextColor(setVelocityY.getTextColors().withAlpha(alphaValue));
+		setVelocityUnit.setTextColor(setVelocityUnit.getTextColors().withAlpha(alphaValue));
+		editX.setTextColor(editX.getTextColors().withAlpha(alphaValue));
+		editX.getBackground().setAlpha(alphaValue);
+		editY.setTextColor(editY.getTextColors().withAlpha(alphaValue));
+		editY.getBackground().setAlpha(alphaValue);
+
 		this.alphaValue = (alphaValue);
 		return view;
 	}
