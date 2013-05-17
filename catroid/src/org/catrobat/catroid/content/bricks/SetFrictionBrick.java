@@ -148,7 +148,7 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.setX(sprite, friction));
+		sequence.addAction(ExtendedActions.setFriction(sprite, physicObject, friction));
 		return null;
 	}
 }

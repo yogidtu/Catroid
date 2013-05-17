@@ -362,7 +362,7 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	public static Action friction(Sprite sprite, PhysicObject physicObject, Formula friction) {
+	public static Action setFriction(Sprite sprite, PhysicObject physicObject, Formula friction) {
 		SetFrictionAction action = action(SetFrictionAction.class);
 		action.setSprite(sprite);
 		action.setPhysicObject(physicObject);
