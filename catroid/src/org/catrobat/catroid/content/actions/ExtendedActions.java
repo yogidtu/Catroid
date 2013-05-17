@@ -411,7 +411,7 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	public static Action setTurnLeftSpeed(Sprite sprite, PhysicObject physicObject, Formula speed) {
+	public static Action turnLeftSpeed(Sprite sprite, PhysicObject physicObject, Formula speed) {
 		TurnLeftSpeedAction action = action(TurnLeftSpeedAction.class);
 		action.setSprite(sprite);
 		action.setPhysicObject(physicObject);
@@ -419,7 +419,7 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	public static Action setTurnRightSpeed(Sprite sprite, PhysicObject physicObject, Formula speed) {
+	public static Action turnRightSpeed(Sprite sprite, PhysicObject physicObject, Formula speed) {
 		TurnRightSpeedAction action = action(TurnRightSpeedAction.class);
 		action.setSprite(sprite);
 		action.setPhysicObject(physicObject);

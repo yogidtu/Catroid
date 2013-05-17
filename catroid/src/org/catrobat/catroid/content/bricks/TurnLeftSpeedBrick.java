@@ -1,6 +1,6 @@
 /**
  *  Catroid: An on-device visual programming system for Android devices
- *  Copyright (C) 2010-2013 The Catrobat Team
+ *  Copyleft (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
  *  
  *  This program is free software: you can redistribute it and/or modify
@@ -22,38 +22,49 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.List;
+
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicObjectBrick;
-import org.catrobat.catroid.ui.ScriptTabActivity;
-import org.catrobat.catroid.ui.dialogs.BrickTextDialog;
+import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
-import android.text.InputType;
-import android.view.LayoutInflater;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class TurnLeftSpeedBrick implements PhysicObjectBrick, OnClickListener {
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+
+public class TurnLeftSpeedBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
 	private static final long serialVersionUID = 1L;
 
 	private PhysicObject physicObject;
-	private Sprite sprite;
-	private float degreesPerSecond;
+	private Formula degreesPerSecond;
 
-	private transient View view;
+	private transient View prototypeView;
 
 	public TurnLeftSpeedBrick() {
 	}
 
-	public TurnLeftSpeedBrick(Sprite sprite, float degrees) {
+	public TurnLeftSpeedBrick(Sprite sprite, float degreesPerSecond) {
 		this.sprite = sprite;
-		this.degreesPerSecond = degrees;
+		this.degreesPerSecond = new Formula(degreesPerSecond);
+	}
+
+	public TurnLeftSpeedBrick(Sprite sprite, Formula degreesPerSecond) {
+		this.sprite = sprite;
+		this.degreesPerSecond = degreesPerSecond;
 	}
 
 	@Override
@@ -62,8 +73,10 @@ public class TurnLeftSpeedBrick implements PhysicObjectBrick, OnClickListener {
 	}
 
 	@Override
-	public void execute() {
-		physicObject.setRotationSpeed(degreesPerSecond);
+	public Brick copyBrickForSprite(Sprite sprite, Script script) {
+		TurnLeftSpeedBrick copyBrick = (TurnLeftSpeedBrick) clone();
+		copyBrick.sprite = sprite;
+		return copyBrick;
 	}
 
 	@Override
@@ -72,13 +85,25 @@ public class TurnLeftSpeedBrick implements PhysicObjectBrick, OnClickListener {
 	}
 
 	@Override
-	public Sprite getSprite() {
-		return this.sprite;
-	}
+	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
+		if (animationState) {
+			return view;
+		}
 
-	@Override
-	public View getView(Context context, int brickId, BaseAdapter adapter) {
 		view = View.inflate(context, R.layout.brick_turn_left_speed, null);
+		view = getViewWithAlpha(alphaValue);
+
+		setCheckboxView(R.id.brick_turn_left_speed_checkbox);
+
+		final Brick brickInstance = this;
+		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				checked = isChecked;
+				adapter.handleCheck(brickInstance, isChecked);
+			}
+		});
 
 		TextView text = (TextView) view.findViewById(R.id.brick_turn_left_speed_prototype_text_view);
 		EditText edit = (EditText) view.findViewById(R.id.brick_turn_left_speed_edit_text);
@@ -93,41 +118,37 @@ public class TurnLeftSpeedBrick implements PhysicObjectBrick, OnClickListener {
 
 	@Override
 	public View getPrototypeView(Context context) {
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View view = inflater.inflate(R.layout.brick_turn_left_speed, null);
+		prototypeView = View.inflate(context, R.layout.brick_turn_left_speed, null);
+		TextView textXPosition = (TextView) prototypeView.findViewById(R.id.brick_turn_left_speed_prototype_text_view);
+		textXPosition.setText(String.valueOf(degreesPerSecond.interpretInteger(sprite)));
+		return prototypeView;
+	}
+
+	@Override
+	public View getViewWithAlpha(int alphaValue) {
+		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_turn_left_speed_layout);
+		Drawable background = layout.getBackground();
+		background.setAlpha(alphaValue);
+		this.alphaValue = (alphaValue);
 		return view;
 	}
 
 	@Override
 	public Brick clone() {
-		return new TurnLeftSpeedBrick(sprite, degreesPerSecond);
+		return new TurnLeftSpeedBrick(sprite, degreesPerSecond.clone());
 	}
 
 	@Override
 	public void onClick(final View view) {
-		ScriptTabActivity activity = (ScriptTabActivity) view.getContext();
+		if (checkbox.getVisibility() == View.VISIBLE) {
+			return;
+		}
+		FormulaEditorFragment.showFragment(view, this, degreesPerSecond);
+	}
 
-		BrickTextDialog editDialog = new BrickTextDialog() {
-			@Override
-			protected void initialize() {
-				input.setText(String.valueOf(degreesPerSecond));
-				input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL
-						| InputType.TYPE_NUMBER_FLAG_SIGNED);
-				input.setSelectAllOnFocus(true);
-			}
-
-			@Override
-			protected boolean handleOkButton() {
-				try {
-					degreesPerSecond = Float.parseFloat(input.getText().toString());
-				} catch (NumberFormatException exception) {
-					Toast.makeText(getActivity(), R.string.error_no_number_entered, Toast.LENGTH_SHORT).show();
-				}
-
-				return true;
-			}
-		};
-
-		editDialog.show(activity.getSupportFragmentManager(), "dialog_turn_left_speed_brick");
+	@Override
+	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
+		sequence.addAction(ExtendedActions.turnLeftSpeed(sprite, physicObject, degreesPerSecond));
+		return null;
 	}
 }
