@@ -30,6 +30,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.SpeakBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.UserVariable;
+import org.catrobat.catroid.physics.PhysicObject;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -358,6 +359,14 @@ public class ExtendedActions extends Actions {
 		action.setIsForeverRepeat(true);
 		action.setAction(foreverSequence);
 		action.setSprite(sprite);
+		return action;
+	}
+
+	public static Action friction(Sprite sprite, PhysicObject physicObject, Formula friction) {
+		SetFrictionAction action = action(SetFrictionAction.class);
+		action.setSprite(sprite);
+		action.setPhysicObject(physicObject);
+		action.setFriction(friction);
 		return action;
 	}
 }
