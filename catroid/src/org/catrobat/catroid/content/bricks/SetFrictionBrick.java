@@ -22,36 +22,47 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.List;
+
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicObjectBrick;
-import org.catrobat.catroid.ui.ScriptTabActivity;
-import org.catrobat.catroid.ui.dialogs.BrickTextDialog;
+import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
-import android.text.InputType;
-import android.view.LayoutInflater;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class SetFrictionBrick implements PhysicObjectBrick, OnClickListener {
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+
+public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
 	private static final long serialVersionUID = 1L;
 
 	private PhysicObject physicObject;
-	private Sprite sprite;
-	private float friction;
+	private Formula friction;
 
-	private transient View view;
+	private transient View prototypeView;
 
 	public SetFrictionBrick() {
 	}
 
 	public SetFrictionBrick(Sprite sprite, float friction) {
+		this.sprite = sprite;
+		this.friction = new Formula(friction);
+	}
+
+	public SetFrictionBrick(Sprite sprite, Formula friction) {
 		this.sprite = sprite;
 		this.friction = friction;
 	}
@@ -62,8 +73,10 @@ public class SetFrictionBrick implements PhysicObjectBrick, OnClickListener {
 	}
 
 	@Override
-	public void execute() {
-		physicObject.setFriction(friction / 100.0f);
+	public Brick copyBrickForSprite(Sprite sprite, Script script) {
+		SetFrictionBrick copyBrick = (SetFrictionBrick) clone();
+		copyBrick.sprite = sprite;
+		return copyBrick;
 	}
 
 	@Override
@@ -72,13 +85,25 @@ public class SetFrictionBrick implements PhysicObjectBrick, OnClickListener {
 	}
 
 	@Override
-	public Sprite getSprite() {
-		return this.sprite;
-	}
+	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
+		if (animationState) {
+			return view;
+		}
 
-	@Override
-	public View getView(Context context, int brickId, BaseAdapter adapter) {
 		view = View.inflate(context, R.layout.brick_set_friction, null);
+		view = getViewWithAlpha(alphaValue);
+
+		setCheckboxView(R.id.brick_set_friction_checkbox);
+
+		final Brick brickInstance = this;
+		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				checked = isChecked;
+				adapter.handleCheck(brickInstance, isChecked);
+			}
+		});
 
 		TextView text = (TextView) view.findViewById(R.id.brick_set_friction_prototype_text_view);
 		EditText edit = (EditText) view.findViewById(R.id.brick_set_friction_edit_text);
@@ -93,40 +118,37 @@ public class SetFrictionBrick implements PhysicObjectBrick, OnClickListener {
 
 	@Override
 	public View getPrototypeView(Context context) {
-		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View view = inflater.inflate(R.layout.brick_set_friction, null);
+		prototypeView = View.inflate(context, R.layout.brick_set_friction, null);
+		TextView textXPosition = (TextView) prototypeView.findViewById(R.id.brick_set_friction_prototype_text_view);
+		textXPosition.setText(String.valueOf(friction.interpretInteger(sprite)));
+		return prototypeView;
+	}
+
+	@Override
+	public View getViewWithAlpha(int alphaValue) {
+		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_friction_layout);
+		Drawable background = layout.getBackground();
+		background.setAlpha(alphaValue);
+		this.alphaValue = (alphaValue);
 		return view;
 	}
 
 	@Override
 	public Brick clone() {
-		return new SetFrictionBrick(sprite, friction);
+		return new SetFrictionBrick(getSprite(), friction.clone());
 	}
 
 	@Override
 	public void onClick(final View view) {
-		ScriptTabActivity activity = (ScriptTabActivity) view.getContext();
+		if (checkbox.getVisibility() == View.VISIBLE) {
+			return;
+		}
+		FormulaEditorFragment.showFragment(view, this, friction);
+	}
 
-		BrickTextDialog editDialog = new BrickTextDialog() {
-			@Override
-			protected void initialize() {
-				input.setText(String.valueOf(friction));
-				input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-				input.setSelectAllOnFocus(true);
-			}
-
-			@Override
-			protected boolean handleOkButton() {
-				try {
-					friction = Float.parseFloat(input.getText().toString());
-				} catch (NumberFormatException exception) {
-					Toast.makeText(getActivity(), R.string.error_no_number_entered, Toast.LENGTH_SHORT).show();
-				}
-
-				return true;
-			}
-		};
-
-		editDialog.show(activity.getSupportFragmentManager(), "dialog_set_friction_brick");
+	@Override
+	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
+		sequence.addAction(ExtendedActions.setFriction(sprite, physicObject, friction));
+		return null;
 	}
 }

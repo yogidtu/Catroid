@@ -28,8 +28,6 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.IfOnEdgeBounceBrick;
-import org.catrobat.catroid.content.bricks.IfOnEndgeBouncePhysicBrick;
 import org.catrobat.catroid.physics.shapebuilder.PhysicShapeBuilder;
 
 /**
@@ -55,10 +53,10 @@ public class PhysicBrickPreparator {
 				for (int index = 0; index < brickList.size(); index++) {
 					Brick brick = brickList.get(index);
 
-					if (brick instanceof IfOnEdgeBounceBrick) {
-						brick = new IfOnEndgeBouncePhysicBrick();
-						brickList.set(index, brick);
-					}
+					//					if (brick instanceof IfOnEdgeBounceBrick) {
+					//						brick = new IfOnEndgeBouncePhysicBrick();
+					//						brickList.set(index, brick);
+					//					}
 
 					if (brick instanceof PhysicObjectBrick) {
 						if (physicObject == null) {

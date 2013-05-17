@@ -22,11 +22,13 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.List;
+
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicObjectBrick;
-import org.catrobat.catroid.ui.ScriptTabActivity;
 import org.catrobat.catroid.ui.dialogs.BrickTextDialog;
 
 import android.content.Context;
@@ -39,19 +41,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SetBounceFactorBrick implements PhysicObjectBrick, OnClickListener {
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+
+public class SetBounceFactorBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
 	private static final long serialVersionUID = 1L;
 
 	private PhysicObject physicObject;
-	private Sprite sprite;
-	private float bounceFactor;
+	private Formula bounceFactor;
 
-	private transient View view;
+	private transient View prototypeView;
 
 	public SetBounceFactorBrick() {
 	}
 
 	public SetBounceFactorBrick(Sprite sprite, float bounceFactor) {
+		this.sprite = sprite;
+		this.bounceFactor = new Formula(bounceFactor);
+	}
+
+	public SetBounceFactorBrick(Sprite sprite, Formula bounceFactor) {
 		this.sprite = sprite;
 		this.bounceFactor = bounceFactor;
 	}
@@ -62,33 +70,23 @@ public class SetBounceFactorBrick implements PhysicObjectBrick, OnClickListener 
 	}
 
 	@Override
-	public void execute() {
-		physicObject.setBounceFactor(bounceFactor / 100.0f);
-	}
-
-	@Override
 	public void setPhysicObject(PhysicObject physicObject) {
 		this.physicObject = physicObject;
 	}
 
 	@Override
-	public Sprite getSprite() {
-		return this.sprite;
-	}
-
-	@Override
 	public View getView(Context context, int brickId, BaseAdapter adapter) {
-		view = View.inflate(context, R.layout.brick_set_bounce_factor, null);
+		prototypeView = View.inflate(context, R.layout.brick_set_bounce_factor, null);
 
-		TextView text = (TextView) view.findViewById(R.id.brick_set_bounce_factor_prototype_text_view);
-		EditText edit = (EditText) view.findViewById(R.id.brick_set_bounce_factor_edit_text);
+		TextView text = (TextView) prototypeView.findViewById(R.id.brick_set_bounce_factor_prototype_text_view);
+		EditText edit = (EditText) prototypeView.findViewById(R.id.brick_set_bounce_factor_edit_text);
 
 		edit.setText(String.valueOf(bounceFactor));
 		text.setVisibility(View.GONE);
 		edit.setVisibility(View.VISIBLE);
 		edit.setOnClickListener(this);
 
-		return view;
+		return prototypeView;
 	}
 
 	@Override
@@ -128,5 +126,12 @@ public class SetBounceFactorBrick implements PhysicObjectBrick, OnClickListener 
 		};
 
 		editDialog.show(activity.getSupportFragmentManager(), "dialog_set_bounce_factor_brick");
+	}
+
+	@Override
+	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
+		// TODO:
+		//		sequence.addAction(ExtendedActions.setX(sprite, xPosition));
+		return null;
 	}
 }
