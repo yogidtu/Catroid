@@ -25,13 +25,13 @@ package org.catrobat.catroid.hintsystem;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.common.Values;
-import org.catrobat.catroid.stage.StageActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.WindowManager;
 
 /**
@@ -39,8 +39,6 @@ import android.view.WindowManager;
  * 
  */
 public class Hint {
-
-	private static boolean debugMode = true;
 
 	private static Hint hint = new Hint();
 	private static Context context;
@@ -86,9 +84,13 @@ public class Hint {
 		System.runFinalization();
 	}
 
+	public void setHintPosition(int x, int y, String text) {
+		hintOverlay.setPostions(x, y, text);
+	}
+
 	public WindowManager.LayoutParams createLayoutParameters() {
 		WindowManager.LayoutParams windowParameters = new WindowManager.LayoutParams();
-		windowParameters.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
+		windowParameters.gravity = Gravity.BOTTOM | Gravity.RIGHT;
 		windowParameters.height = Values.SCREEN_HEIGHT;
 		windowParameters.width = Values.SCREEN_WIDTH;
 		windowParameters.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -122,74 +124,8 @@ public class Hint {
 		return screenWidth;
 	}
 
-	public static boolean isActive(Activity activity) {
-		if (debugMode) {
-			return true;
-		}
-		String preferenceName = getPreferenceName(activity);
-		return controller.getSharedPreferencesIsHintActive(preferenceName);
-	}
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		return controller.dispatchTouchEvent(ev);
 
-	private static String getPreferenceName(Activity activity) {
-		String preferenceName = "";
-		switch (controller.checkActivity()) {
-			case 0:
-				preferenceName = "PREF_HINT_MAINMENU_ACTIVE";
-				break;
-			case 1:
-				preferenceName = "PREF_HINT_PROJECT_ACTIVE";
-				break;
-			case 2:
-				preferenceName = "PREF_HINT_MYPROJECTS_ACTIVE";
-				break;
-			case 3:
-				preferenceName = "PREF_HINT_PROGRAMMENU_ACTIVE";
-				break;
-			case 4:
-				preferenceName = getFragmentPreferenceName();
-				break;
-			case 5:
-				preferenceName = "PREF_HINT_SETTINGS_ACTIVE";
-				break;
-			case 6:
-				if (((StageActivity) activity).getStageDialog().isShowing()) {
-					preferenceName = "PREF_HINT_STAGE_ACTIVE";
-					break;
-				} else {
-					preferenceName = "PREF_HINT_STAGEDIALOG_ACTIVE";
-					break;
-				}
-			case 7:
-				preferenceName = "PREF_HINT_SOUNDRECORDER_ACTIVE";
-				break;
-		}
-
-		return preferenceName;
-	}
-
-	public static String getFragmentPreferenceName() {
-		String preferenceName = "";
-
-		switch (controller.checkFragment()) {
-			case 0:
-				preferenceName = "PREF_HINT_BRICKCATEGORY_ACTIVE";
-				break;
-			case 1:
-				preferenceName = "PREF_HINT_ADDBRICK_ACTIVE";
-				break;
-			case 2:
-				preferenceName = "PREF_HINT_FORMULAEDITOR_ACTIVE";
-				break;
-			case 3:
-				preferenceName = "PREF_HINT_SCRIPTS_ACTIVE";
-				break;
-			case 4:
-				preferenceName = "PREF_HINT_LOOKS_ACTIVE";
-				break;
-			case 5:
-				preferenceName = "PREF_HINT_SOUNDS_ACTIVE";
-				break;
-		}
-		return preferenceName;
 	}
 }

@@ -45,6 +45,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
 
@@ -522,6 +523,14 @@ public class HintController {
 		SharedPreferences.Editor sharedPreferencesEditor = preferences.edit();
 		sharedPreferencesEditor.putBoolean(preferenceName, tag);
 		sharedPreferencesEditor.commit();
+	}
+
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		Activity activity = (Activity) context;
+		boolean retval;
+		retval = activity.dispatchTouchEvent(ev);
+		return retval;
+
 	}
 
 }

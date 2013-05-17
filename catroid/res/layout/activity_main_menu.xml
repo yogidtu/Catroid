@@ -34,6 +34,7 @@
         android:layout_height="0dp"
         android:layout_weight="1.5"
         android:drawableLeft="@drawable/ic_main_menu_continue"
+        android:drawableRight="@drawable/tooltip_button"
         android:onClick="handleContinueButton"
         android:text="@string/main_menu_continue" />
 
@@ -41,6 +42,7 @@
         android:id="@+id/main_menu_button_new"
         style="@style/MainMenuButton"
         android:drawableLeft="@drawable/ic_main_menu_new"
+        android:drawableRight="@drawable/tooltip_button"
         android:onClick="handleNewButton"
         android:text="@string/main_menu_new" />
 
@@ -48,6 +50,7 @@
         android:id="@+id/main_menu_button_programs"
         style="@style/MainMenuButton"
         android:drawableLeft="@drawable/ic_main_menu_programs"
+        android:drawableRight="@drawable/tooltip_button"
         android:onClick="handleProgramsButton"
         android:text="@string/main_menu_programs" />
 
@@ -55,6 +58,7 @@
         android:id="@+id/main_menu_button_forum"
         style="@style/MainMenuButton"
         android:drawableLeft="@drawable/ic_main_menu_forum"
+        android:drawableRight="@drawable/tooltip_button"
         android:onClick="handleForumButton"
         android:text="@string/main_menu_forum" />
 
@@ -62,6 +66,7 @@
         android:id="@+id/main_menu_button_web"
         style="@style/MainMenuButton"
         android:drawableLeft="@drawable/ic_main_menu_community"
+        android:drawableRight="@drawable/tooltip_button"
         android:onClick="handleWebButton"
         android:text="@string/main_menu_web" />
 
@@ -70,6 +75,7 @@
         style="@style/MainMenuButton"
         android:drawableLeft="@drawable/ic_main_menu_upload"
         android:onClick="handleUploadButton"
+        android:drawableRight="@drawable/tooltip_button"
         android:text="@string/main_menu_upload" />
 
 </LinearLayout>

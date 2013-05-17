@@ -25,6 +25,7 @@ package org.catrobat.catroid.hintsystem;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.ui.MainMenuActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -52,15 +53,18 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 	private Paint paint = new Paint();
 	int alpha = 255;
 	private Resources res;
-	private Bitmap tooltipButton;
-	private NinePatchDrawable bubble;
 	private ArrayList<HintObject> allHints;
+	private NinePatchDrawable bubble;
+
+	private int hintPositionX;
+	private int hintPositionY;
+	private String hintText;
 
 	public HintOverlay(Context context) {
 		super(context);
 		this.context = context;
 		this.setBackgroundColor(Color.BLACK);
-		this.getBackground().setAlpha(100);
+		this.getBackground().setAlpha(0);
 		this.setZOrderOnTop(true); //necessary 
 		getHolder().setFormat(PixelFormat.TRANSPARENT);
 		getHolder().addCallback(this);
@@ -68,27 +72,172 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 		currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		paint.setTextSize(15);
 		paint.setARGB(255, 0, 0, 0);
+
 	}
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-		Hint.getInstance().removeHint();
-		return true;
 
+		boolean returnValue = true;
+
+		if (ev.getX() > 400 && ev.getX() < 480) {
+			if (ev.getY() > 150 && ev.getY() < 230) {
+				handleContinueToolTip();
+			} else if (ev.getY() > 300 && ev.getY() < 350) {
+				handleNewToolTip();
+			} else if (ev.getY() > 400 && ev.getY() < 450) {
+				handleProgramsToolTip();
+			} else if (ev.getY() > 500 && ev.getY() < 550) {
+				handleForumToolTip();
+			} else if (ev.getY() > 600 && ev.getY() < 650) {
+				handleCommunityToolTip();
+			} else if (ev.getY() > 700 && ev.getY() < 800) {
+				handleUploadToolTip();
+			}
+		} else {
+			if (MainMenuActivity.hintShown) {
+				Hint.getInstance().removeHint();
+				Hint hint = Hint.getInstance();
+				hint.overlayHint();
+				MainMenuActivity.hintShown = false;
+			}
+
+			returnValue = Hint.getInstance().dispatchTouchEvent(ev);
+
+		}
+		return returnValue;
+
+	}
+
+	public void handleContinueToolTip() {
+		Hint.getInstance().removeHint();
+
+		if (!MainMenuActivity.hintShown) {
+
+			allHints = Hint.getHints();
+			HintObject continueHint = allHints.get(0);
+
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
+					continueHint.getHintText());
+			MainMenuActivity.hintShown = true;
+		} else {
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			MainMenuActivity.hintShown = false;
+		}
+	}
+
+	public void handleNewToolTip() {
+		Hint.getInstance().removeHint();
+		if (!MainMenuActivity.hintShown) {
+
+			allHints = Hint.getHints();
+			HintObject continueHint = allHints.get(1);
+
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
+					continueHint.getHintText());
+			MainMenuActivity.hintShown = true;
+		} else {
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			MainMenuActivity.hintShown = false;
+		}
+	}
+
+	public void handleProgramsToolTip() {
+		Hint.getInstance().removeHint();
+		if (!MainMenuActivity.hintShown) {
+
+			allHints = Hint.getHints();
+			HintObject continueHint = allHints.get(2);
+
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
+					continueHint.getHintText());
+			MainMenuActivity.hintShown = true;
+		} else {
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			MainMenuActivity.hintShown = false;
+		}
+	}
+
+	public void handleForumToolTip() {
+		Hint.getInstance().removeHint();
+		if (!MainMenuActivity.hintShown) {
+
+			allHints = Hint.getHints();
+			HintObject continueHint = allHints.get(3);
+
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
+					continueHint.getHintText());
+			MainMenuActivity.hintShown = true;
+		} else {
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			MainMenuActivity.hintShown = false;
+		}
+	}
+
+	public void handleCommunityToolTip() {
+		Hint.getInstance().removeHint();
+		if (!MainMenuActivity.hintShown) {
+
+			allHints = Hint.getHints();
+			HintObject continueHint = allHints.get(4);
+
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
+					continueHint.getHintText());
+			MainMenuActivity.hintShown = true;
+		} else {
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			MainMenuActivity.hintShown = false;
+		}
+	}
+
+	public void handleUploadToolTip() {
+		Hint.getInstance().removeHint();
+		if (!MainMenuActivity.hintShown) {
+
+			allHints = Hint.getHints();
+			HintObject continueHint = allHints.get(5);
+
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
+					continueHint.getHintText());
+			MainMenuActivity.hintShown = true;
+		} else {
+			Hint hint = Hint.getInstance();
+			hint.overlayHint();
+			MainMenuActivity.hintShown = false;
+		}
+	}
+
+	public void setPostions(int x, int y, String text) {
+		hintPositionX = x;
+		hintPositionY = y;
+		hintText = text;
 	}
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		allHints = Hint.getHints();
 
-		for (int i = 0; i < allHints.size(); i++) {
-			HintObject hint = allHints.get(i);
+		if (hintText != null) {
 			bubble = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.bubble);
-			bubble.setBounds(180, hint.getYCoordinate() - 20, 450, hint.getYCoordinate() + 50);
+			bubble.setBounds(hintPositionX - 20, hintPositionY - 30, hintPositionX + 250, hintPositionY + 50);
 			bubble.draw(canvas);
-			tooltipButton = createBitmap(R.drawable.tooltip_button);
-			canvas.drawBitmap(tooltipButton, hint.getXCoordinate() - 10, hint.getYCoordinate(), paint);
-			drawMultilineText(hint.getHintText(), hint.getTextXCoordinate(), hint.getTextYCoordinate(), paint, canvas);
+			drawMultilineText(hintText, hintPositionX, hintPositionY, paint, canvas);
 		}
 	}
 

@@ -33,7 +33,6 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.SoundInfo;
-import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
@@ -145,13 +144,6 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_sound, null);
-
-		Hint hint = Hint.getInstance();
-		hint = Hint.getInstance();
-		Hint.setContext(this.getActivity());
-		if (Hint.isActive(this.getActivity())) {
-			hint.overlayHint();
-		}
 
 		return rootView;
 	}

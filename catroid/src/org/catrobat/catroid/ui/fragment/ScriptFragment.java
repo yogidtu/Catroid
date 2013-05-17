@@ -31,7 +31,6 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
-import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
@@ -106,13 +105,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		View rootView = inflater.inflate(R.layout.fragment_script, null);
 
 		listView = (DragAndDropListView) rootView.findViewById(R.id.brick_list_view);
-
-		Hint hint = Hint.getInstance();
-		hint = Hint.getInstance();
-		Hint.setContext(this.getActivity());
-		if (Hint.isActive(this.getActivity())) {
-			hint.overlayHint();
-		}
 
 		return rootView;
 	}

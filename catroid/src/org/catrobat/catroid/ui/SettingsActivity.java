@@ -23,7 +23,6 @@
 package org.catrobat.catroid.ui;
 
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.hintsystem.Hint;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,12 +44,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 		actionBar.setTitle(R.string.preference_title);
 		actionBar.setHomeButtonEnabled(true);
-
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		if (Hint.isActive(this)) {
-			hint.overlayHint();
-		}
 
 	}
 

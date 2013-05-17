@@ -85,7 +85,6 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.formulaeditor.Operators;
-import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.adapter.PrototypeBrickAdapter;
 
 import android.content.Context;
@@ -128,12 +127,6 @@ public class AddBrickFragment extends SherlockListFragment {
 
 		setUpActionBar();
 		setupBrickCategories();
-
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this.getActivity());
-		if (Hint.isActive(this.getActivity())) {
-			hint.overlayHint();
-		}
 
 		return view;
 	}

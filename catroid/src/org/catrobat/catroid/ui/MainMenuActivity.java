@@ -91,6 +91,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		}
 	}
 
+	public static boolean hintShown = false;
 	private static final String TAG = "MainMenuActivity";
 	private static final String PROJECTNAME_TAG = "fname=";
 
@@ -137,9 +138,8 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 
 		Hint hint = Hint.getInstance();
 		Hint.setContext(this);
-		if (Hint.isActive(this)) {
-			hint.overlayHint();
-		}
+		hint.overlayHint();
+
 	}
 
 	@Override
@@ -202,6 +202,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	}
 
 	public void handleContinueButton(View v) {
+
 		if (ProjectManager.INSTANCE.getCurrentProject() != null) {
 			Intent intent = new Intent(MainMenuActivity.this, ProjectActivity.class);
 			startActivity(intent);

@@ -67,12 +67,6 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 		} else {
 			((Button) findViewById(R.id.program_menu_button_looks)).setText(R.string.looks);
 		}
-
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		if (Hint.isActive(this)) {
-			hint.overlayHint();
-		}
 	}
 
 	@Override

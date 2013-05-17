@@ -54,11 +54,6 @@ public class MyProjectsActivity extends SherlockFragmentActivity {
 		findViewById(R.id.bottom_bar_separator).setVisibility(View.GONE);
 		findViewById(R.id.button_play).setVisibility(View.GONE);
 
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		if (Hint.isActive(this)) {
-			hint.overlayHint();
-		}
 		projectsListFragment = (ProjectsListFragment) getSupportFragmentManager().findFragmentById(
 				R.id.fragment_projects_list);
 	}

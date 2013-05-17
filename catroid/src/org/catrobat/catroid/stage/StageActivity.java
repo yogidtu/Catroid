@@ -26,7 +26,6 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Values;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
-import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
 
 import android.content.pm.ActivityInfo;
@@ -59,22 +58,13 @@ public class StageActivity extends AndroidApplication {
 			stageListener.setMakeAutomaticScreenshot(false);
 		}
 
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		if (Hint.isActive(this)) {
-			hint.overlayHint();
-		}
 	}
 
 	@Override
 	public void onBackPressed() {
 		pause();
 		stageDialog.show();
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		if (Hint.isActive(this)) {
-			hint.overlayHint();
-		}
+
 	}
 
 	public void manageLoadAndFinish() {
