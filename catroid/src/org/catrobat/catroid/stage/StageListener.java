@@ -85,7 +85,7 @@ public class StageListener implements ApplicationListener {
 	private int screenshotHeight;
 	private int screenshotX;
 	private int screenshotY;
-	private byte[] screenshot;
+	private byte[] screenshot = null;
 	// in first frame, framebuffer could be empty and screenshot
 	// would be white
 	private boolean skipFirstFrameForAutomaticScreenshot;
@@ -129,6 +129,8 @@ public class StageListener implements ApplicationListener {
 	public int maximizeViewPortWidth = 0;
 
 	public boolean axesOn = false;
+
+	private byte[] thumbnail;
 
 	StageListener() {
 	}
@@ -249,6 +251,10 @@ public class StageListener implements ApplicationListener {
 		for (Sprite sprite : sprites) {
 			sprite.resume();
 			sprite.resetSprite();
+		}
+		if (thumbnail != null) {
+			prepareScreenshotFiles();
+			saveScreenshot(thumbnail);
 		}
 
 	}
@@ -372,8 +378,8 @@ public class StageListener implements ApplicationListener {
 			if (skipFirstFrameForAutomaticScreenshot) {
 				skipFirstFrameForAutomaticScreenshot = false;
 			} else {
-				prepareScreenshotFiles();
-				this.makeThumbnail();
+				thumbnail = ScreenUtils.getFrameBufferPixels(screenshotX, screenshotY, screenshotWidth,
+						screenshotHeight, true);
 				makeAutomaticScreenshot = false;
 			}
 		}
@@ -438,12 +444,6 @@ public class StageListener implements ApplicationListener {
 		font.dispose();
 		axes.dispose();
 		disposeTextures();
-	}
-
-	private void makeThumbnail() {
-		byte[] screenshot = ScreenUtils.getFrameBufferPixels(screenshotX, screenshotY, screenshotWidth,
-				screenshotHeight, true);
-		this.saveScreenshot(screenshot);
 	}
 
 	public boolean makeScreenshot() {
