@@ -36,7 +36,7 @@ public class SetMassAction extends TemporalAction {
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setBounceFactor(mass.interpretFloat(sprite));
+		physicObject.setMass(mass.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {

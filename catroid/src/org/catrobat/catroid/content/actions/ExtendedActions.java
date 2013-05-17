@@ -31,6 +31,8 @@ import org.catrobat.catroid.content.bricks.SpeakBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicObject.Type;
+import org.catrobat.catroid.physics.PhysicWorld;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -362,11 +364,66 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
+	public static Action setBounceFactor(Sprite sprite, PhysicObject physicObject, Formula bounceFactor) {
+		SetBounceFactorAction action = action(SetBounceFactorAction.class);
+		action.setSprite(sprite);
+		action.setPhysicObject(physicObject);
+		action.setBounceFactor(bounceFactor);
+		return action;
+	}
+
 	public static Action setFriction(Sprite sprite, PhysicObject physicObject, Formula friction) {
 		SetFrictionAction action = action(SetFrictionAction.class);
 		action.setSprite(sprite);
 		action.setPhysicObject(physicObject);
 		action.setFriction(friction);
+		return action;
+	}
+
+	public static Action setGravity(Sprite sprite, PhysicWorld physicWorld, Formula gravityX, Formula gravityY) {
+		SetGravityAction action = action(SetGravityAction.class);
+		action.setSprite(sprite);
+		action.setPhysicWorld(physicWorld);
+		action.setGravity(gravityX, gravityY);
+		return action;
+	}
+
+	public static Action setMass(Sprite sprite, PhysicObject physicObject, Formula mass) {
+		SetMassAction action = action(SetMassAction.class);
+		action.setSprite(sprite);
+		action.setPhysicObject(physicObject);
+		action.setMass(mass);
+		return action;
+	}
+
+	public static Action setPhysicObjectType(Sprite sprite, PhysicObject physicObject, Type type) {
+		SetPhysicObjectTypeAction action = action(SetPhysicObjectTypeAction.class);
+		action.setPhysicObject(physicObject);
+		action.setType(type);
+		return action;
+	}
+
+	public static Action setVelocity(Sprite sprite, PhysicObject physicObject, Formula velocityX, Formula velocityY) {
+		SetVelocityAction action = action(SetVelocityAction.class);
+		action.setSprite(sprite);
+		action.setPhysicObject(physicObject);
+		action.setVelocity(velocityX, velocityY);
+		return action;
+	}
+
+	public static Action setTurnLeftSpeed(Sprite sprite, PhysicObject physicObject, Formula speed) {
+		TurnLeftSpeedAction action = action(TurnLeftSpeedAction.class);
+		action.setSprite(sprite);
+		action.setPhysicObject(physicObject);
+		action.setSpeed(speed);
+		return action;
+	}
+
+	public static Action setTurnRightSpeed(Sprite sprite, PhysicObject physicObject, Formula speed) {
+		TurnRightSpeedAction action = action(TurnRightSpeedAction.class);
+		action.setSprite(sprite);
+		action.setPhysicObject(physicObject);
+		action.setSpeed(speed);
 		return action;
 	}
 }

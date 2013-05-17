@@ -36,7 +36,7 @@ public class SetFrictionAction extends TemporalAction {
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setBounceFactor(friction.interpretFloat(sprite));
+		physicObject.setFriction(friction.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {

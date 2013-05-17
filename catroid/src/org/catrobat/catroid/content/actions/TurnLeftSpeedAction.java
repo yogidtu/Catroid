@@ -36,7 +36,7 @@ public class TurnLeftSpeedAction extends TemporalAction {
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setBounceFactor(speed.interpretFloat(sprite));
+		physicObject.setRotationSpeed(speed.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {
