@@ -22,8 +22,11 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.List;
+
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicObject.Type;
 import org.catrobat.catroid.physics.PhysicObjectBrick;
@@ -35,13 +38,16 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 
-public class SetPhysicObjectTypeBrick implements PhysicObjectBrick {
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+
+public class SetPhysicObjectTypeBrick extends BrickBaseType implements PhysicObjectBrick {
 	private static final long serialVersionUID = 1L;
 
 	private PhysicObject physicObject;
-	private Sprite sprite;
 	private Type type;
 
 	private transient View view;
@@ -60,11 +66,6 @@ public class SetPhysicObjectTypeBrick implements PhysicObjectBrick {
 	}
 
 	@Override
-	public void execute() {
-		physicObject.setType(type);
-	}
-
-	@Override
 	public void setPhysicObject(PhysicObject physicObject) {
 		this.physicObject = physicObject;
 	}
@@ -80,9 +81,21 @@ public class SetPhysicObjectTypeBrick implements PhysicObjectBrick {
 	}
 
 	@Override
-	public View getView(Context context, int brickId, BaseAdapter adapter) {
+	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
 
 		view = View.inflate(context, R.layout.brick_set_physic_object_type, null);
+
+		setCheckboxView(R.id.brick_set_physic_object_checkbox);
+		final Brick brickInstance = this;
+		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				checked = isChecked;
+				adapter.handleCheck(brickInstance, isChecked);
+			}
+
+		});
 
 		final Spinner spinner = (Spinner) view.findViewById(R.id.brick_set_physic_object_type_spinner);
 		spinner.setAdapter(createAdapter(context));
@@ -132,5 +145,11 @@ public class SetPhysicObjectTypeBrick implements PhysicObjectBrick {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.brick_set_physic_object_type, null);
 		return view;
+	}
+
+	@Override
+	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
+		sequence.addAction(ExtendedActions.setPhysicObjectType(sprite, physicObject, type));
+		return null;
 	}
 }
