@@ -75,11 +75,7 @@ public class PointToActionTest extends AndroidTestCase {
 			sprite1.look.act(1.0f);
 		}
 
-<<<<<<< HEAD:catroidTest/src/org/catrobat/catroid/test/content/brick/PointToBrickTest.java
-		assertEquals("Wrong direction", -135.0, sprite1.costume.getRotation(), 1e-3);
-=======
 		assertEquals("Wrong direction", -135.0, sprite1.look.getRotation(), 1e-3);
->>>>>>> master:catroidTest/src/org/catrobat/catroid/test/content/actions/PointToActionTest.java
 	}
 
 }

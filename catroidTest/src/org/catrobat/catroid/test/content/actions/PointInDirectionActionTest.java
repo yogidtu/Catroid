@@ -34,79 +34,43 @@ public class PointInDirectionActionTest extends AndroidTestCase {
 
 	public void testPointRight() {
 		Sprite sprite = new Sprite("test");
-<<<<<<< HEAD:catroidTest/src/org/catrobat/catroid/test/content/brick/PointInDirectionBrickTest.java
-		PointInDirectionBrick pointInDirectionBrick = new PointInDirectionBrick(sprite, Direction.DIRECTION_RIGHT);
-
-		pointInDirectionBrick.execute();
-		assertEquals("Wrong direction", 0f, sprite.costume.getRotation(), 1e-3);
-=======
 		PointInDirectionAction action = ExtendedActions.pointInDirection(sprite,
 				new Formula(Direction.DIRECTION_RIGHT.getDegrees()));
 		action.act(1.0f);
 		assertEquals("Wrong direction", 0f, sprite.look.getRotation(), 1e-3);
->>>>>>> master:catroidTest/src/org/catrobat/catroid/test/content/actions/PointInDirectionActionTest.java
 	}
 
 	public void testPointLeft() {
 		Sprite sprite = new Sprite("test");
-<<<<<<< HEAD:catroidTest/src/org/catrobat/catroid/test/content/brick/PointInDirectionBrickTest.java
-		PointInDirectionBrick pointInDirectionBrick = new PointInDirectionBrick(sprite, Direction.DIRECTION_LEFT);
-
-		pointInDirectionBrick.execute();
-		assertEquals("Wrong direction", 180f, sprite.costume.getRotation(), 1e-3);
-=======
 		PointInDirectionAction action = ExtendedActions.pointInDirection(sprite,
 				new Formula(Direction.DIRECTION_LEFT.getDegrees()));
 		action.act(1.0f);
 		assertEquals("Wrong direction", 180f, sprite.look.getRotation(), 1e-3);
->>>>>>> master:catroidTest/src/org/catrobat/catroid/test/content/actions/PointInDirectionActionTest.java
 	}
 
 	public void testPointUp() {
 		Sprite sprite = new Sprite("test");
-<<<<<<< HEAD:catroidTest/src/org/catrobat/catroid/test/content/brick/PointInDirectionBrickTest.java
-		PointInDirectionBrick pointInDirectionBrick = new PointInDirectionBrick(sprite, Direction.DIRECTION_UP);
-
-		pointInDirectionBrick.execute();
-		assertEquals("Wrong direction", 90f, sprite.costume.getRotation(), 1e-3);
-=======
 		PointInDirectionAction action = ExtendedActions.pointInDirection(sprite,
 				new Formula(Direction.DIRECTION_UP.getDegrees()));
 		action.act(1.0f);
 		assertEquals("Wrong direction", 90f, sprite.look.getRotation(), 1e-3);
->>>>>>> master:catroidTest/src/org/catrobat/catroid/test/content/actions/PointInDirectionActionTest.java
 	}
 
 	public void testPointDown() {
 		Sprite sprite = new Sprite("test");
-<<<<<<< HEAD:catroidTest/src/org/catrobat/catroid/test/content/brick/PointInDirectionBrickTest.java
-		PointInDirectionBrick pointInDirectionBrick = new PointInDirectionBrick(sprite, Direction.DIRECTION_DOWN);
-
-		pointInDirectionBrick.execute();
-		assertEquals("Wrong direction", -90f, sprite.costume.getRotation(), 1e-3);
-=======
 		PointInDirectionAction action = ExtendedActions.pointInDirection(sprite,
 				new Formula(Direction.DIRECTION_DOWN.getDegrees()));
 		action.act(1.0f);
 		assertEquals("Wrong direction", -90f, sprite.look.getRotation(), 1e-3);
->>>>>>> master:catroidTest/src/org/catrobat/catroid/test/content/actions/PointInDirectionActionTest.java
 	}
 
 	public void testRotateAndPoint() {
 		Sprite sprite = new Sprite("test");
-<<<<<<< HEAD:catroidTest/src/org/catrobat/catroid/test/content/brick/PointInDirectionBrickTest.java
-		sprite.costume.setRotation(-42);
-		PointInDirectionBrick pointInDirectionBrick = new PointInDirectionBrick(sprite, Direction.DIRECTION_RIGHT);
-
-		pointInDirectionBrick.execute();
-		assertEquals("Wrong direction", 0f, sprite.costume.getRotation(), 1e-3);
-=======
 		sprite.look.setRotation(-42);
 		PointInDirectionAction action = ExtendedActions.pointInDirection(sprite,
 				new Formula(Direction.DIRECTION_RIGHT.getDegrees()));
 		action.act(1.0f);
 		assertEquals("Wrong direction", 0f, sprite.look.getRotation(), 1e-3);
->>>>>>> master:catroidTest/src/org/catrobat/catroid/test/content/actions/PointInDirectionActionTest.java
 	}
 
 }
