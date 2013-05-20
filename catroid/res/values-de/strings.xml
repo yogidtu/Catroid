@@ -126,6 +126,7 @@
     <string name="add_look_from_camera">Von Kamera</string>
     <string name="select_look_from_gallery">Bild auswählen</string>
     <string name="select_look_from_camera">Photo auswählen</string>
+    <string name="download_image_in_progress">Lade Bild&#8230;</string>
     <string name="look_measure">Abmessung:</string>
     <!--  -->
 
@@ -395,6 +396,7 @@
     <string name="error_load_project">Beim Laden des Projektes ist ein Fehler aufgetreten.</string>
     <string name="error_screenshot_failed">Beim Speichern des Screenshots ist ein Fehler aufgetreten.</string>
     <string name="error_load_image">Beim Laden des Bildes ist ein Fehler aufgetreten.</string>
+    <string name="error_load_image_from_picasa">Beim Laden des Picasa-Bildes ist ein Fehler aufgetreten.</string>
     <string name="error_load_sound">Beim Laden des Audiofiles ist ein Fehler aufgetreten.</string>
     <string name="error_internet_connection">Unbekannter Fehler aufgetreten. Überprüfe deine Internetverbindung.</string>
     <string name="error_project_compatability">Das Projekt ist nicht mit dieser Version von Pocket Code kompatibel.</string>

@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -38,12 +40,17 @@ import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.LookAdapter;
 import org.catrobat.catroid.ui.fragment.LookFragment;
+import org.catrobat.catroid.uitest.mockups.MockCursor;
+import org.catrobat.catroid.uitest.mockups.MockLoader;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.Utils;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.content.Loader;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.Display;
@@ -69,6 +76,13 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 	private static final String FIRST_TEST_LOOK_NAME = "lookNameTest";
 	private static final String SECOND_TEST_LOOK_NAME = "lookNameTest2";
 	private static final String THIRD_TEST_LOOK_NAME = "lookNameTest3";
+
+	private final String picasaImageName = "after";
+	private final String picasaImageId = "5878650380696945922";
+	private final String picasaImageUri = "content://com.google.android.gallery3d.provider/picasa/item/"
+			+ picasaImageId;
+	private final String picasaAlternativeImageUri = "content://com.android.gallery3d.provider/picasa/item/"
+			+ picasaImageId;
 
 	private String copy;
 	private String rename;
@@ -367,8 +381,44 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 		assertEquals("Picture changed", md5ChecksumImageFileBeforeIntent, md5ChecksumImageFileAfterIntent);
 	}
 
-	public void testEditImageInPaintroidThreeWorkflows() {
+	public void testGetImageFromPicasa() {
+		LookFragment lookFragment = getLookFragment();
+		Loader<Cursor> loader = new MockLoader(getActivity(), picasaImageUri);
 
+		Map<String, String> cursorMap = new HashMap<String, String>();
+		cursorMap.put(MediaStore.MediaColumns.DATA, null);
+		cursorMap.put(MediaStore.MediaColumns.DISPLAY_NAME, "after.png");
+		Cursor cursor = new MockCursor(cursorMap);
+
+		lookFragment.onLoadFinished(loader, cursor);
+		if (!solo.waitForText(picasaImageName)) {
+			fail("Picasa image hasn't been copied to catroid");
+		}
+	}
+
+	public void testGetImageFromPicasaNoCursorPriorAndroid3() {
+		LookFragment lookFragment = getLookFragment();
+		Loader<Cursor> loader = new MockLoader(getActivity(), picasaImageUri);
+
+		lookFragment.onLoadFinished(loader, null);
+		String fileName = (String) Reflection.getPrivateField(LookFragment.class, "temporaryImageName");
+		if (!solo.waitForText(fileName)) {
+			fail("Picasa image hasn't been copied to catroid");
+		}
+	}
+
+	public void testGetImageFromPicasaNoCursorPriorAndroid3AndAlternativeUri() {
+		LookFragment lookFragment = getLookFragment();
+		Loader<Cursor> loader = new MockLoader(getActivity(), picasaAlternativeImageUri);
+
+		lookFragment.onLoadFinished(loader, null);
+		String fileName = (String) Reflection.getPrivateField(LookFragment.class, "temporaryImageName");
+		if (!solo.waitForText(fileName)) {
+			fail("Picasa image hasn't been copied to catroid");
+		}
+	}
+
+	public void testEditImageInPaintroidThreeWorkflows() {
 		Reflection.setPrivateField(getLookFragment(), "pocketPaintIntentApplicationName", "destroy.intent");
 		Reflection.setPrivateField(getLookFragment(), "pocketPaintIntentActivityName", "for.science");
 

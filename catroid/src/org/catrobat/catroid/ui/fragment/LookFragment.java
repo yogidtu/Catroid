@@ -23,7 +23,10 @@
 package org.catrobat.catroid.ui.fragment;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,17 +54,18 @@ import org.catrobat.catroid.utils.Utils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -109,6 +113,8 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	private static String actionModeTitle;
 	private static String singleItemAppendixActionMode;
 	private static String multipleItemAppendixActionMode;
+
+	private static final String temporaryImageName = "TemporaryImage";
 
 	private LookAdapter adapter;
 	private ArrayList<LookData> lookDataList;
@@ -334,39 +340,103 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle arguments) {
 		Uri imageUri = null;
-
 		if (arguments != null) {
 			imageUri = (Uri) arguments.get(LOADER_ARGUMENTS_IMAGE_URI);
 		}
-		String[] projection = { MediaStore.MediaColumns.DATA };
-		return new CursorLoader(getActivity(), imageUri, projection, null, null, null);
+
+		String[] selection = { MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DISPLAY_NAME };
+		return new CursorLoader(getActivity(), imageUri, selection, null, null, null);
 	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		String originalImagePath = "";
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		CursorLoader cursorLoader = (CursorLoader) loader;
+		Uri selectedImageUri = cursorLoader.getUri();
 
-		boolean catchedExpetion = false;
+		if (selectedImageUri.toString().startsWith("content://com.android.gallery3d")) {
+			selectedImageUri = Uri.parse(selectedImageUri.toString().replace("com.android.gallery3d",
+					"com.google.android.gallery3d"));
+		}
 
-		if (data == null) {
-			originalImagePath = cursorLoader.getUri().getPath();
-		} else {
-			int columnIndex = data.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-			data.moveToFirst();
+		String selectedImageName = temporaryImageName + ".png";
+		if (cursor != null) {
+			cursor.moveToFirst();
 
-			try {
-				originalImagePath = data.getString(columnIndex);
-			} catch (CursorIndexOutOfBoundsException e) {
-				catchedExpetion = true;
+			String cursorData = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+			if (cursorData != null) {
+				selectedImageUri = Uri.parse(cursorData);
+			}
+
+			String cursorDisplayName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME));
+			if (cursorDisplayName != null) {
+				selectedImageName = cursorDisplayName;
 			}
 		}
 
-		if (catchedExpetion || (data == null && originalImagePath.equals(""))) {
-			Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image));
-			return;
+		if (selectedImageUri.toString().startsWith("content://com.google.android.gallery3d")) {
+			copyImageFromPicasa(selectedImageUri, selectedImageName);
+		} else {
+			copyImageToCatroid(selectedImageUri.toString());
 		}
-		copyImageToCatroid(originalImagePath);
+	}
+
+	private void copyImageFromPicasa(final Uri selectedImageUri, final String selectedImageName) {
+		String currentProjectName = ProjectManager.getInstance().getCurrentProject().getName();
+		File imageDirectory = new File(Utils.buildPath(Utils.buildProjectPath(currentProjectName),
+				Constants.IMAGE_DIRECTORY));
+		final File cacheFile = new File(imageDirectory, selectedImageName);
+
+		final int LOADING_IMAGE_CANCELLED = 404;
+		final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null,
+				getString(R.string.download_image_in_progress), false, true);
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					final InputStream inputStream = getActivity().getContentResolver()
+							.openInputStream(selectedImageUri);
+
+					progressDialog.setOnCancelListener(new OnCancelListener() {
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							try {
+								((ProgressDialog) dialog).setMax(LOADING_IMAGE_CANCELLED);
+								inputStream.close();
+							} catch (IOException ioException) {
+							}
+						}
+					});
+
+					OutputStream outputStream = new FileOutputStream(cacheFile);
+					byte[] buffer = new byte[1024 * 4];
+					int bytesRead;
+					while ((bytesRead = inputStream.read(buffer)) != -1) {
+						outputStream.write(buffer, 0, bytesRead);
+					}
+					outputStream.close();
+
+					getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							copyImageToCatroid(cacheFile.getAbsolutePath());
+							cacheFile.delete();
+						}
+					});
+				} catch (Exception exception) {
+					if (progressDialog.getMax() != LOADING_IMAGE_CANCELLED) {
+						getActivity().runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image_from_picasa));
+							}
+						});
+					}
+				} finally {
+					progressDialog.dismiss();
+				}
+			}
+		}).start();
 	}
 
 	@Override
