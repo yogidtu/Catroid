@@ -263,7 +263,7 @@ public class UiTestUtils {
 
 		Formula formula = (Formula) Reflection.getPrivateField(theBrick, fieldName);
 
-		assertEquals("Wrong text in field", newValue, formula.interpretFloat(theBrick.getSprite()), 0.01f);
+		assertEquals("Wrong text in field", newValue, formula.interpretDouble(theBrick.getSprite()), 0.01f);
 		assertEquals("Text not updated in the brick list", newValue,
 				Double.parseDouble(solo.getEditText(editTextNumber).getText().toString().replace(',', '.')), 0.01f);
 
@@ -777,10 +777,10 @@ public class UiTestUtils {
 		FormulaElement operatorElementMinus = new FormulaElement(FormulaElement.ElementType.OPERATOR, "MINUS", null);
 
 		UserVariablesContainer variableContainer = project.getUserVariables();
-		variableContainer.addProjectUserVariable("global", 2.0);
+		variableContainer.addProjectUserVariable("global");
 		FormulaElement variableElementGlobal = new FormulaElement(FormulaElement.ElementType.USER_VARIABLE, "global",
 				null);
-		variableContainer.addSpriteUserVariableToSprite(firstSprite, "local", 3.0);
+		variableContainer.addSpriteUserVariableToSprite(firstSprite, "local");
 		FormulaElement variableElemetLocal = new FormulaElement(FormulaElement.ElementType.USER_VARIABLE, "local", null);
 
 		FormulaElement sensorElemet = new FormulaElement(FormulaElement.ElementType.SENSOR, "COMPASS_DIRECTION", null);
