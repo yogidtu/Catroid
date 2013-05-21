@@ -443,23 +443,6 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 		assertEquals("Cached image hasn't been deleted.", imageFilesInFolder + 1, imageDirectory.list().length);
 	}
 
-	//	public void testCancelPicasaImage() {
-	//		if (!isJenkinsTestingDevice()) {
-	//			return;
-	//		}
-	//
-	//		LookFragment lookFragment = getLookFragment();
-	//		Loader<Cursor> loader = new MockLoader(getActivity(), picasaAlternativeImageUri);
-	//
-	//		lookFragment.onLoadFinished(loader, null);
-	//		solo.waitForText(getActivity().getString(R.string.download_image_in_progress));
-	//		solo.clickOnScreen(10, 10);
-	//
-	//		assertFalse("Did not return to look fragment.", !solo.waitForText(FIRST_TEST_LOOK_NAME));
-	//		solo.sleep(500);
-	//		checkIfNumberOfLooksIsEqual(1);
-	//	}
-
 	public void testEditImageInPaintroidThreeWorkflows() {
 		Reflection.setPrivateField(getLookFragment(), "pocketPaintIntentApplicationName", "destroy.intent");
 		Reflection.setPrivateField(getLookFragment(), "pocketPaintIntentActivityName", "for.science");

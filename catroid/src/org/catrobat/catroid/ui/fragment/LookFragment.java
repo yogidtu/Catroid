@@ -23,6 +23,7 @@
 package org.catrobat.catroid.ui.fragment;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,7 +60,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -381,64 +381,79 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		}
 	}
 
-	private void copyImageFromPicasa(final Uri selectedImageUri, final String selectedImageName) {
+	private void copyImageFromPicasa(Uri selectedImageUri, String selectedImageName) {
+		final File cachedFile = getCachedFileForPicasa(selectedImageName);
+		try {
+			final InputStream inputStream = getActivity().getContentResolver().openInputStream(selectedImageUri);
+			final OutputStream outputStream = new FileOutputStream(cachedFile);
+
+			final int DOWNLOAD_CANCELLED = -1;
+			final ProgressDialog progressDialog = showPicasaProgressDialog(inputStream, DOWNLOAD_CANCELLED);
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						copyInputStreamToOutputStream(inputStream, outputStream);
+						inputStream.close();
+						outputStream.close();
+						getActivity().runOnUiThread(new Runnable() {
+
+							@Override
+							public void run() {
+								copyImageToCatroid(cachedFile.getAbsolutePath());
+								cachedFile.delete();
+							}
+						});
+					} catch (IOException ioException) {
+						cachedFile.delete();
+						if (progressDialog.getProgress() != DOWNLOAD_CANCELLED) {
+							getActivity().runOnUiThread(new Runnable() {
+
+								@Override
+								public void run() {
+									Utils.showErrorDialog(getActivity(),
+											getString(R.string.error_load_image_from_picasa));
+								}
+							});
+						}
+					}
+				}
+			}).start();
+		} catch (FileNotFoundException fileNotFoundException) {
+		}
+	}
+
+	private File getCachedFileForPicasa(String imageName) {
 		String currentProjectName = ProjectManager.getInstance().getCurrentProject().getName();
 		File imageDirectory = new File(Utils.buildPath(Utils.buildProjectPath(currentProjectName),
 				Constants.IMAGE_DIRECTORY));
-		final File cacheFile = new File(imageDirectory, selectedImageName);
+		return new File(imageDirectory, imageName);
+	}
 
-		final int LOADING_IMAGE_CANCELLED = 404;
+	private void copyInputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {
+		byte[] buffer = new byte[1024 * 4];
+		int bytesRead;
+		while ((bytesRead = inputStream.read(buffer)) != -1) {
+			outputStream.write(buffer, 0, bytesRead);
+		}
+	}
+
+	private ProgressDialog showPicasaProgressDialog(final InputStream inputStream, final int cancelProgressId) {
 		final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), null,
 				getString(R.string.download_image_in_progress), false, true);
+		progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 
-		new Thread(new Runnable() {
 			@Override
-			public void run() {
+			public void onCancel(DialogInterface dialog) {
+				progressDialog.setProgress(cancelProgressId);
 				try {
-					final InputStream inputStream = getActivity().getContentResolver()
-							.openInputStream(selectedImageUri);
-
-					progressDialog.setOnCancelListener(new OnCancelListener() {
-						@Override
-						public void onCancel(DialogInterface dialog) {
-							try {
-								((ProgressDialog) dialog).setMax(LOADING_IMAGE_CANCELLED);
-								inputStream.close();
-							} catch (IOException ioException) {
-							}
-						}
-					});
-
-					OutputStream outputStream = new FileOutputStream(cacheFile);
-					byte[] buffer = new byte[1024 * 4];
-					int bytesRead;
-					while ((bytesRead = inputStream.read(buffer)) != -1) {
-						outputStream.write(buffer, 0, bytesRead);
-					}
-					outputStream.close();
-
-					getActivity().runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							copyImageToCatroid(cacheFile.getAbsolutePath());
-							cacheFile.delete();
-						}
-					});
-				} catch (Exception exception) {
-					if (progressDialog.getMax() != LOADING_IMAGE_CANCELLED) {
-						cacheFile.delete();
-						getActivity().runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image_from_picasa));
-							}
-						});
-					}
-				} finally {
-					progressDialog.dismiss();
+					inputStream.close();
+				} catch (IOException ioException) {
 				}
 			}
-		}).start();
+		});
+		return progressDialog;
 	}
 
 	@Override
