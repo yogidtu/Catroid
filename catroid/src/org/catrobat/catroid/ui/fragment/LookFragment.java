@@ -425,6 +425,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 					});
 				} catch (Exception exception) {
 					if (progressDialog.getMax() != LOADING_IMAGE_CANCELLED) {
+						cacheFile.delete();
 						getActivity().runOnUiThread(new Runnable() {
 							@Override
 							public void run() {

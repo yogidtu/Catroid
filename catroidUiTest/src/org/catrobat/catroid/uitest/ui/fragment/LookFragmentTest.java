@@ -46,6 +46,9 @@ import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.Utils;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -76,6 +79,8 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 	private static final String FIRST_TEST_LOOK_NAME = "lookNameTest";
 	private static final String SECOND_TEST_LOOK_NAME = "lookNameTest2";
 	private static final String THIRD_TEST_LOOK_NAME = "lookNameTest3";
+
+	private final String googleAccount = "robert.painsi@gmail.com";
 
 	private final String picasaImageName = "after";
 	private final String picasaImageId = "5878650380696945922";
@@ -381,7 +386,20 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 		assertEquals("Picture changed", md5ChecksumImageFileBeforeIntent, md5ChecksumImageFileAfterIntent);
 	}
 
+	private boolean isJenkinsTestingDevice() {
+		for (Account account : ((AccountManager) getActivity().getSystemService(Context.ACCOUNT_SERVICE)).getAccounts()) {
+			if (account.type.equals("com.google") && account.name.equals(googleAccount)) {
+				return true;
+			}
+		}
+		return true;
+	}
+
 	public void testGetImageFromPicasa() {
+		if (!isJenkinsTestingDevice()) {
+			return;
+		}
+
 		LookFragment lookFragment = getLookFragment();
 		Loader<Cursor> loader = new MockLoader(getActivity(), picasaImageUri);
 
@@ -397,6 +415,10 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 	}
 
 	public void testGetImageFromPicasaNoCursorPriorAndroid3() {
+		if (!isJenkinsTestingDevice()) {
+			return;
+		}
+
 		LookFragment lookFragment = getLookFragment();
 		Loader<Cursor> loader = new MockLoader(getActivity(), picasaImageUri);
 
@@ -408,6 +430,10 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 	}
 
 	public void testGetImageFromPicasaNoCursorPriorAndroid3AndAlternativeUri() {
+		if (!isJenkinsTestingDevice()) {
+			return;
+		}
+
 		LookFragment lookFragment = getLookFragment();
 		Loader<Cursor> loader = new MockLoader(getActivity(), picasaAlternativeImageUri);
 
@@ -417,6 +443,23 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 			fail("Picasa image hasn't been copied to catroid");
 		}
 	}
+
+	//	public void testCancelPicasaImage() {
+	//		if (!isJenkinsTestingDevice()) {
+	//			return;
+	//		}
+	//
+	//		LookFragment lookFragment = getLookFragment();
+	//		Loader<Cursor> loader = new MockLoader(getActivity(), picasaAlternativeImageUri);
+	//
+	//		lookFragment.onLoadFinished(loader, null);
+	//		solo.waitForText(getActivity().getString(R.string.download_image_in_progress));
+	//		solo.clickOnScreen(10, 10);
+	//
+	//		assertFalse("Did not return to look fragment.", !solo.waitForText(FIRST_TEST_LOOK_NAME));
+	//		solo.sleep(500);
+	//		checkIfNumberOfLooksIsEqual(1);
+	//	}
 
 	public void testEditImageInPaintroidThreeWorkflows() {
 		Reflection.setPrivateField(getLookFragment(), "pocketPaintIntentApplicationName", "destroy.intent");
