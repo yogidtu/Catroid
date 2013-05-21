@@ -399,18 +399,12 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 			return;
 		}
 
-		LookFragment lookFragment = getLookFragment();
-		Loader<Cursor> loader = new MockLoader(getActivity(), picasaImageUri);
-
 		Map<String, String> cursorMap = new HashMap<String, String>();
 		cursorMap.put(MediaStore.MediaColumns.DATA, null);
 		cursorMap.put(MediaStore.MediaColumns.DISPLAY_NAME, picasaImageName + ".png");
 		Cursor cursor = new MockCursor(cursorMap);
 
-		lookFragment.onLoadFinished(loader, cursor);
-		if (!solo.waitForText(picasaImageName)) {
-			fail("Picasa image hasn't been copied to catroid");
-		}
+		checkImageFromPicasa(cursor, picasaImageName);
 	}
 
 	public void testGetImageFromPicasaNoCursorPriorAndroid3() {
@@ -418,14 +412,8 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 			return;
 		}
 
-		LookFragment lookFragment = getLookFragment();
-		Loader<Cursor> loader = new MockLoader(getActivity(), picasaImageUri);
-
-		lookFragment.onLoadFinished(loader, null);
-		String fileName = (String) Reflection.getPrivateField(LookFragment.class, "temporaryImageName");
-		if (!solo.waitForText(fileName)) {
-			fail("Picasa image hasn't been copied to catroid");
-		}
+		checkImageFromPicasa(new MockLoader(getActivity(), picasaImageUri), null,
+				(String) Reflection.getPrivateField(LookFragment.class, "temporaryImageName"));
 	}
 
 	public void testGetImageFromPicasaNoCursorPriorAndroid3AndAlternativeUri() {
@@ -433,14 +421,26 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 			return;
 		}
 
-		LookFragment lookFragment = getLookFragment();
-		Loader<Cursor> loader = new MockLoader(getActivity(), picasaAlternativeImageUri);
+		checkImageFromPicasa(new MockLoader(getActivity(), picasaAlternativeImageUri), null,
+				(String) Reflection.getPrivateField(LookFragment.class, "temporaryImageName"));
+	}
 
-		lookFragment.onLoadFinished(loader, null);
-		String fileName = (String) Reflection.getPrivateField(LookFragment.class, "temporaryImageName");
-		if (!solo.waitForText(fileName)) {
+	private void checkImageFromPicasa(Cursor cursor, String imageName) {
+		Loader<Cursor> loader = new MockLoader(getActivity(), picasaImageUri);
+		checkImageFromPicasa(loader, cursor, imageName);
+	}
+
+	private void checkImageFromPicasa(Loader<Cursor> loader, Cursor cursor, String imageName) {
+		File imageDirectory = new File(Utils.buildPath(
+				Utils.buildProjectPath(projectManager.getCurrentProject().getName()), Constants.IMAGE_DIRECTORY));
+		int imageFilesInFolder = imageDirectory.list().length;
+
+		getLookFragment().onLoadFinished(loader, cursor);
+		if (!solo.waitForText(imageName)) {
 			fail("Picasa image hasn't been copied to catroid");
 		}
+
+		assertEquals("Cached image hasn't been deleted.", imageFilesInFolder + 1, imageDirectory.list().length);
 	}
 
 	//	public void testCancelPicasaImage() {

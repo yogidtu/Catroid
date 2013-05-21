@@ -353,7 +353,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		CursorLoader cursorLoader = (CursorLoader) loader;
 		Uri selectedImageUri = cursorLoader.getUri();
 
-		if (selectedImageUri.toString().startsWith("content://com.android.gallery3d")) {
+		if (selectedImageUri != null && selectedImageUri.toString().startsWith("content://com.android.gallery3d")) {
 			selectedImageUri = Uri.parse(selectedImageUri.toString().replace("com.android.gallery3d",
 					"com.google.android.gallery3d"));
 		}
@@ -373,7 +373,8 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 			}
 		}
 
-		if (selectedImageUri.toString().startsWith("content://com.google.android.gallery3d")) {
+		if (selectedImageUri != null
+				&& selectedImageUri.toString().startsWith("content://com.google.android.gallery3d")) {
 			copyImageFromPicasa(selectedImageUri, selectedImageName);
 		} else {
 			copyImageToCatroid(selectedImageUri.toString());
