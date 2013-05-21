@@ -81,7 +81,6 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 	private static final String THIRD_TEST_LOOK_NAME = "lookNameTest3";
 
 	private final String googleAccount = "robert.painsi@gmail.com";
-
 	private final String picasaImageName = "after";
 	private final String picasaImageId = "5878650380696945922";
 	private final String picasaImageUri = "content://com.google.android.gallery3d.provider/picasa/item/"
@@ -405,7 +404,7 @@ public class LookFragmentTest extends ActivityInstrumentationTestCase2<MainMenuA
 
 		Map<String, String> cursorMap = new HashMap<String, String>();
 		cursorMap.put(MediaStore.MediaColumns.DATA, null);
-		cursorMap.put(MediaStore.MediaColumns.DISPLAY_NAME, "after.png");
+		cursorMap.put(MediaStore.MediaColumns.DISPLAY_NAME, picasaImageName + ".png");
 		Cursor cursor = new MockCursor(cursorMap);
 
 		lookFragment.onLoadFinished(loader, cursor);
