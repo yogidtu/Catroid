@@ -80,6 +80,12 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 
 		boolean returnValue = true;
 
+		if (ev.getY() > 0 && ev.getY() < 100) {
+			Hint.getInstance().removeHint();
+			MainMenuActivity activity = (MainMenuActivity) context;
+			activity.openOptionsMenu();
+		}
+
 		if (ev.getX() > 400 && ev.getX() < 480) {
 			if (ev.getY() > 150 && ev.getY() < 230) {
 				handleContinueToolTip();
@@ -102,6 +108,7 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 				MainMenuActivity.hintShown = false;
 			}
 
+			Hint.getInstance().removeHint();
 			returnValue = Hint.getInstance().dispatchTouchEvent(ev);
 
 		}
