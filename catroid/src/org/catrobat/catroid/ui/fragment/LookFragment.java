@@ -65,6 +65,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -114,7 +115,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	private static String singleItemAppendixActionMode;
 	private static String multipleItemAppendixActionMode;
 
-	private static final String temporaryImageName = "TemporaryImage";
+	private static final String temporaryImageName = Resources.getSystem().getString(R.string.look);
 
 	private LookAdapter adapter;
 	private ArrayList<LookData> lookDataList;
