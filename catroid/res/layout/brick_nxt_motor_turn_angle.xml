@@ -46,6 +46,7 @@
             android:layout_height="wrap_content" >
 
             <TextView
+                android:id="@+id/brick_nxt_motor_turn_label"
                 style="@style/BrickText.SingleLine"
                 android:text="@string/brick_motor_turn_angle" >
             </TextView>
@@ -64,6 +65,7 @@
             android:layout_height="wrap_content" >
 
             <TextView
+                android:id="@+id/brick_nxt_motor_turn_angle"
                 style="@style/BrickText.SingleLine"
                 android:text="@string/motor_angle" >
             </TextView>
@@ -75,13 +77,14 @@
 
             <EditText
                 android:id="@+id/motor_turn_angle_edit_text"
-                style="@style/BrickEditText"
+                style="@style/BrickEditTextMultiple"
                 android:clickable="false"
                 android:inputType="number|numberDecimal|numberSigned"
                 android:visibility="gone" >
             </EditText>
 
             <TextView
+                android:id="@+id/brick_nxt_motor_turn_degree"
                 style="@style/BrickText"
                 android:text="@string/degree_symbol" >
             </TextView>

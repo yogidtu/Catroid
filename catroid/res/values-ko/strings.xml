@@ -80,7 +80,7 @@
     <string name="edit_look">"수정"</string>
     <string name="lookname_invalid">"형태의 이름이 잘못되었습니다."</string>
     <string name="copy_look_addition">"복사"</string>
-    <string name="paintroid_not_installed">"그림판이 설치되어 있지 않습니다! \n그림판을 설치하겠습니까?"</string>
+    <string name="pocket_paint_not_installed">"그림판이 설치되어 있지 않습니다! \n그림판을 설치하겠습니까?"</string>
     <string name="default_look_name">"형태"</string>
     <string name="delete_look_dialog">"형태를 삭제하겠습니까?"</string>
     <string name="add_look_from_camera">"카메라에서 가져오기"</string>
@@ -285,6 +285,9 @@
     <string name="no_paired_nxt">"패어링된  NXT를 찾을 수 없습니다"</string>
     <string name="none_found">"패어링 안된 장치를 찾을 수 없습니다."</string>
     <string name="none_paired">"페어링 된 장치를 찾을 수 없습니다"</string>
+    <!--  -->
+
+
     <!-- Lego Mindstorms Strings -->
     <string name="brick_motor_action">"NXT 이동 모터"</string>
     <string name="motor">"모터"</string>
@@ -298,6 +301,14 @@
     <string name="nxt_tone_hundred_hz">"x100Hz"</string>
     <string name="number_to_small">"값이 너무 작습니다!"</string>
     <string name="number_to_big">"값이 너무 큽니다!"</string>
+    <string name="nxt_motor_a">A</string>
+    <string name="nxt_motor_b">B</string>
+    <string name="nxt_motor_c">C</string>
+    <string name="nxt_motor_a_and_c">A+C</string>
+    <string name="nxt_motor_all">"모두"</string>
+    <!--  -->
+
+
     <!-- Formula Editor Strings -->
     <string name="formula_editor_decimal_mark">"."</string>
     <string name="formula_editor_title">"수식 편집기"</string>

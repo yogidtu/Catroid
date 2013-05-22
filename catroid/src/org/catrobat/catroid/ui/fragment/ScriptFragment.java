@@ -58,7 +58,9 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.actionbarsherlock.view.ActionMode;
@@ -122,7 +124,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.findItem(R.id.show_details).setVisible(false);
 		menu.findItem(R.id.rename).setVisible(false);
-		menu.findItem(R.id.edit_in_paintroid).setVisible(false);
+		menu.findItem(R.id.edit_in_pocket_paint).setVisible(false);
 		menu.findItem(R.id.copy).setVisible(false);
 
 		super.onPrepareOptionsMenu(menu);
@@ -137,7 +139,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	@Override
 	public void onStart() {
 		super.onStart();
-
 		sprite = ProjectManager.INSTANCE.getCurrentSprite();
 		if (sprite == null) {
 			return;
@@ -174,7 +175,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	@Override
 	public void onPause() {
 		super.onPause();
-
 		ProjectManager projectManager = ProjectManager.INSTANCE;
 		if (projectManager.getCurrentProject() != null) {
 			projectManager.saveProject();
@@ -225,6 +225,18 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	}
 
 	public BrickAdapter getAdapter() {
+		BottomBar.enableButtons(getActivity());
+
+		LinearLayout layoutAdd = (LinearLayout) getActivity().findViewById(R.id.button_add);
+
+		layoutAdd.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleAddButton();
+			}
+		});
+		BottomBar.setButtonVisible(getSherlockActivity());
+		BottomBar.enableButtons(getSherlockActivity());
 		return adapter;
 	}
 
@@ -266,6 +278,14 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		if (sprite == null) {
 			return;
 		}
+
+		getSherlockActivity().findViewById(R.id.button_add).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				handleAddButton();
+			}
+		});
 
 		adapter = new BrickAdapter(getActivity(), sprite, listView);
 		adapter.setOnBrickEditListener(this);
@@ -369,7 +389,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	}
 
 	@Override
-	public void startEditInPaintroidActionMode() {
+	public void startEditInPocketPaintActionMode() {
 	}
 
 	@Override
