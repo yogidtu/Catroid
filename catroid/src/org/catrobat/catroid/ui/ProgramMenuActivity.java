@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.ui;
 
+import java.util.concurrent.locks.Lock;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
@@ -41,6 +43,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class ProgramMenuActivity extends SherlockFragmentActivity {
 	private ActionBar actionBar;
+	private Lock viewSwitchLock = new ViewSwitchLock();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -78,11 +81,6 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 		}
 		if (requestCode == StageActivity.STAGE_ACTIVITY_FINISH) {
 			SensorHandler.stopSensorListeners();
-			ProjectManager projectManager = ProjectManager.getInstance();
-			/*
-			 * Save project after stage in order to keep the values of user variables
-			 */
-			projectManager.saveProject();
 		}
 	}
 
@@ -128,6 +126,10 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 	}
 
 	public void handlePlayButton(View view) {
+		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
+		ProjectManager.getInstance().getCurrentProject().getUserVariables().resetAllUserVariables();
 		Intent intent = new Intent(this, PreStageActivity.class);
 		startActivityForResult(intent, PreStageActivity.REQUEST_RESOURCES_INIT);
 	}

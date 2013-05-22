@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.ui;
 
+import java.util.concurrent.locks.Lock;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
@@ -95,6 +97,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	private boolean isLookFragmentHandleAddButtonHandled = false;
 
 	private LinearLayout btn_add = null;
+	private Lock viewSwitchLock = new ViewSwitchLock();
 
 	@Override
 	protected void onResume() {
@@ -343,11 +346,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		}
 		if (requestCode == StageActivity.STAGE_ACTIVITY_FINISH) {
 			SensorHandler.stopSensorListeners();
-			ProjectManager projectManager = ProjectManager.getInstance();
-			/*
-			 * Save project after stage in order to keep the values of user variables
-			 */
-			projectManager.saveProject();
 		}
 	}
 
@@ -437,6 +435,10 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		if (isHoveringActive()) {
 			scriptFragment.getListView().animateHoveringBrick();
 		} else {
+			if (!viewSwitchLock.tryLock()) {
+				return;
+			}
+			ProjectManager.getInstance().getCurrentProject().getUserVariables().resetAllUserVariables();
 			Intent intent = new Intent(this, PreStageActivity.class);
 			startActivityForResult(intent, PreStageActivity.REQUEST_RESOURCES_INIT);
 		}
