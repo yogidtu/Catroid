@@ -59,7 +59,7 @@ public class Tutorial {
 
 	private void loadPaintroidImageIntoCatroid(Intent intent) {
 		Bundle bundle = intent.getExtras();
-		String pathOfPaintroidImage = bundle.getString(Constants.EXTRA_PICTURE_PATH_PAINTROID);
+		String pathOfPaintroidImage = bundle.getString(Constants.EXTRA_PICTURE_PATH_POCKET_PAINT);
 
 		//int[] imageDimensions = ImageEditing.getImageDimensions(pathOfPaintroidImage);
 		//if (imageDimensions[0] < 0 || imageDimensions[1] < 0) {
