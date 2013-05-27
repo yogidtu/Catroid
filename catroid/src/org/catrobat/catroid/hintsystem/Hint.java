@@ -115,46 +115,45 @@ public class Hint {
 				ImageView tooltipPlayButton = new ImageView(context);
 				tooltipPlayButton.setImageDrawable(context.getResources().getDrawable(R.drawable.tooltip_button));
 				addButton.addView(tooltipPlayButton);
+				break;
 
-				//				LinearLayout backgroundHeadline = (LinearLayout) activity
-				//						.findViewById(R.id.spritelist_background_headline);
-				//				ImageView tooltipSpriteBackground = new ImageView(context);
-				//				tooltipSpriteBackground.setImageDrawable(context.getResources().getDrawable(R.drawable.tooltip_button));
-				//				backgroundHeadline.addView(tooltipSpriteBackground);
 		}
 
 	}
 
 	public void removeHint() {
-		removeToolTipButtons();
+
 		windowManager = ((Activity) context).getWindowManager();
 		windowManager.removeViewImmediate(hintOverlay);
 		hintOverlay = null;
 		System.gc();
 		System.runFinalization();
+		removeToolTipButtons();
 	}
 
 	public void removeToolTipButtons() {
 		Activity activity = (Activity) context;
-		if (controller.checkActivity() == 0) {
-			Button button = (Button) activity.findViewById(R.id.main_menu_button_continue);
-			button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_continue, 0,
-					R.drawable.ic_arrow_right_dark, 0);
-			button = (Button) activity.findViewById(R.id.main_menu_button_new);
-			button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_new, 0,
-					R.drawable.ic_arrow_right_dark, 0);
-			button = (Button) activity.findViewById(R.id.main_menu_button_programs);
-			button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_programs, 0,
-					R.drawable.ic_arrow_right_dark, 0);
-			button = (Button) activity.findViewById(R.id.main_menu_button_forum);
-			button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_forum, 0,
-					R.drawable.ic_arrow_right_dark, 0);
-			button = (Button) activity.findViewById(R.id.main_menu_button_web);
-			button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_community, 0,
-					R.drawable.ic_arrow_right_dark, 0);
-			button = (Button) activity.findViewById(R.id.main_menu_button_upload);
-			button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_upload, 0,
-					R.drawable.ic_arrow_right_dark, 0);
+		switch (controller.checkActivity()) {
+			case 0:
+				Button button = (Button) activity.findViewById(R.id.main_menu_button_continue);
+				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_continue, 0,
+						R.drawable.ic_arrow_right_dark, 0);
+				button = (Button) activity.findViewById(R.id.main_menu_button_new);
+				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_new, 0,
+						R.drawable.ic_arrow_right_dark, 0);
+				button = (Button) activity.findViewById(R.id.main_menu_button_programs);
+				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_programs, 0,
+						R.drawable.ic_arrow_right_dark, 0);
+				button = (Button) activity.findViewById(R.id.main_menu_button_forum);
+				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_forum, 0,
+						R.drawable.ic_arrow_right_dark, 0);
+				button = (Button) activity.findViewById(R.id.main_menu_button_web);
+				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_community, 0,
+						R.drawable.ic_arrow_right_dark, 0);
+				button = (Button) activity.findViewById(R.id.main_menu_button_upload);
+				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_upload, 0,
+						R.drawable.ic_arrow_right_dark, 0);
+				break;
 
 		}
 

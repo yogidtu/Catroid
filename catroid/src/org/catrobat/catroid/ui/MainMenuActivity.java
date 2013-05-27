@@ -95,7 +95,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		}
 	}
 
-	public static boolean hintShown = false;
+	public static boolean hintDisplayed = false;
 	private static final String TAG = "MainMenuActivity";
 	private static final String PROJECTNAME_TAG = "fname=";
 	private Lock viewSwitchLock = new ViewSwitchLock();
@@ -140,10 +140,6 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		setMainMenuButtonContinueText();
 		findViewById(R.id.main_menu_button_continue).setEnabled(true);
 		StatusBarNotificationManager.INSTANCE.displayDialogs(this);
-
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		hint.overlayHint();
 
 	}
 
@@ -200,6 +196,16 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			case R.id.menu_about: {
 				AboutDialogFragment aboutDialog = new AboutDialogFragment();
 				aboutDialog.show(getSupportFragmentManager(), AboutDialogFragment.DIALOG_FRAGMENT_TAG);
+				return true;
+			}
+			case R.id.button_tooltip: {
+				Hint hint = Hint.getInstance();
+				Hint.setContext(this);
+				if (!hintDisplayed) {
+					hint.overlayHint();
+				} else {
+					hint.removeHint();
+				}
 				return true;
 			}
 		}

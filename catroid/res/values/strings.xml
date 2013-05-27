@@ -528,6 +528,7 @@
     <!--  -->
 
 	<!-- Hint Strings -->
+	<string name="hint_menu_tips">Tool Tips</string>
 	<string name="hint_menu_show_hints">Show Hints</string>
 	
 	<string name="hint_mainmenu_continue">Click here to continue the current project.</string>

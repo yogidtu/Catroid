@@ -22,7 +22,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item
+    
+	<item
         android:id="@+id/menu_showHints"
         android:showAsAction="withText"
         android:title="@string/hint_menu_show_hints" />
@@ -34,5 +35,10 @@
         android:id="@+id/menu_about"
         android:showAsAction="withText"
         android:title="@string/main_menu_about_pocketcode"/>
-
+    <item
+        android:id="@+id/button_tooltip"
+        android:icon="@drawable/tooltip_button"
+        android:showAsAction="always"
+        android:title="@string/hint_menu_tips" />
+    
 </menu>

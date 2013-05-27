@@ -29,10 +29,21 @@ package org.catrobat.catroid.hintsystem;
 public class ScreenParameters {
 	private static ScreenParameters screenParameters = new ScreenParameters();
 
-	private int textMarginTop = 10;
-	private int textMarginBottom = 5;
-	private int textMarginLeft = 5;
-	private int textMarginRight = 40;
+	private int actionBarMenuWidth = 100;
+	private int actionBarMenuXPosition = 380;
+	private int actionBarMenuHeight = 100;
+	private int actionBarMenuYPosition = 0;
+
+	private int mainMenuToolTipXPosition = 400;
+	private int mainMenuToolTipWidth = 80;
+	private int mainMenuToolTipHeight = 80;
+
+	private int mainMenuContinueToolTipYPosition = 150;
+	private int mainMenuNewToolTipYPosition = 300;
+	private int mainMenuPropgramsToolTipYPosition = 400;
+	private int mainMenuForumToolTipYPosition = 500;
+	private int mainMenuCommunityToolTipYPosition = 600;
+	private int mainMenuUploadToolTipYPosition = 700;
 
 	private ScreenParameters() {
 
@@ -82,20 +93,56 @@ public class ScreenParameters {
 		return value;
 	}
 
-	public int getTextMarginTop() {
-		return textMarginTop;
+	public int getActionBarMenuWidth() {
+		return actionBarMenuWidth;
 	}
 
-	public int getTextMarginBottom() {
-		return textMarginBottom;
+	public int getActionBarMenuXPosition() {
+		return actionBarMenuXPosition;
 	}
 
-	public int getTextMarginLeft() {
-		return textMarginLeft;
+	public int getActionBarMenuHeight() {
+		return actionBarMenuHeight;
 	}
 
-	public int getTextMarginRight() {
-		return textMarginRight;
+	public int getActionBarMenuYPosition() {
+		return actionBarMenuYPosition;
+	}
+
+	public int getMainMenuToolTipXPosition() {
+		return mainMenuToolTipXPosition;
+	}
+
+	public int getMainMenuToolTipWidth() {
+		return mainMenuToolTipWidth;
+	}
+
+	public int getMainMenuToolTipHeight() {
+		return mainMenuToolTipHeight;
+	}
+
+	public int getMainMenuContinueToolTipYPosition() {
+		return mainMenuContinueToolTipYPosition;
+	}
+
+	public int getMainMenuNewToolTipYPosition() {
+		return mainMenuNewToolTipYPosition;
+	}
+
+	public int getMainMenuPropgramsToolTipYPosition() {
+		return mainMenuPropgramsToolTipYPosition;
+	}
+
+	public int getMainMenuForumToolTipYPosition() {
+		return mainMenuForumToolTipYPosition;
+	}
+
+	public int getMainMenuCommunityToolTipYPosition() {
+		return mainMenuCommunityToolTipYPosition;
+	}
+
+	public int getMainMenuUploadToolTipYPosition() {
+		return mainMenuUploadToolTipYPosition;
 	}
 
 }

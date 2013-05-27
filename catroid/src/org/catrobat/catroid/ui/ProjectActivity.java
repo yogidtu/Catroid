@@ -56,10 +56,6 @@ public class ProjectActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_project);
 
-		Hint hint = Hint.getInstance();
-		Hint.setContext(this);
-		hint.overlayHint();
-
 	}
 
 	@Override

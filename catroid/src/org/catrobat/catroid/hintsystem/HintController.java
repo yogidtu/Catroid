@@ -529,6 +529,7 @@ public class HintController {
 		Activity activity = (Activity) context;
 		boolean retval;
 		retval = activity.dispatchTouchEvent(ev);
+		retval = activity.dispatchTouchEvent(ev);
 		return retval;
 
 	}
