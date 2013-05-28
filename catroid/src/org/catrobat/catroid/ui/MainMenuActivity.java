@@ -69,6 +69,9 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class MainMenuActivity extends SherlockFragmentActivity implements OnCheckTokenCompleteListener {
 
+	private String TYPE_FILE = "file";
+	private String TYPE_HTTP = "http";
+
 	private class DownloadReceiver extends ResultReceiver {
 
 		public DownloadReceiver(Handler handler) {
@@ -267,6 +270,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
+
 		Intent browserIntent = new Intent(Intent.ACTION_VIEW,
 				Uri.parse(getText(R.string.pocketcode_website).toString()));
 		startActivity(browserIntent);
@@ -325,7 +329,8 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	}
 
 	private void loadProgramFromExternalSource(Uri loadExternalProjectUri) {
-		if (loadExternalProjectUri.getScheme().equals("http")) {
+		String scheme = loadExternalProjectUri.getScheme();
+		if (scheme.startsWith((TYPE_HTTP))) {
 			String url = loadExternalProjectUri.toString();
 			int projectNameIndex = url.lastIndexOf(PROJECTNAME_TAG) + PROJECTNAME_TAG.length();
 			String projectName = url.substring(projectNameIndex);
@@ -343,7 +348,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			downloadIntent.putExtra("notificationId", notificationId);
 			startService(downloadIntent);
 
-		} else if (loadExternalProjectUri.getScheme().equals("file")) {
+		} else if (scheme.equals(TYPE_FILE)) {
 
 			String path = loadExternalProjectUri.getPath();
 			int a = path.lastIndexOf('/') + 1;

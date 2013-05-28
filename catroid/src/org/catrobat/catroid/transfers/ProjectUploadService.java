@@ -86,10 +86,18 @@ public class ProjectUploadService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		receiver = (ResultReceiver) intent.getParcelableExtra("receiver");
 		try {
+			if (projectPath == null) {
+				result = false;
+				Log.e(TAG, "project path is null");
+				return;
+			}
+
 			File directoryPath = new File(projectPath);
 			String[] paths = directoryPath.list();
 
 			if (paths == null) {
+				result = false;
+				Log.e(TAG, "project path is not valid");
 				return;
 			}
 
@@ -105,6 +113,7 @@ public class ProjectUploadService extends IntentService {
 			}
 			if (!UtilZip.writeToZipFile(paths, zipFileString)) {
 				zipFile.delete();
+				result = false;
 				return;
 			}
 
@@ -119,7 +128,7 @@ public class ProjectUploadService extends IntentService {
 			zipFile.delete();
 		} catch (IOException e) {
 			e.printStackTrace();
-
+			result = false;
 		} catch (WebconnectionException webException) {
 			serverAnswer = webException.getMessage();
 			serverStatusCode = webException.getStatusCode();
