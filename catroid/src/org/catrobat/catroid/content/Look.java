@@ -60,7 +60,7 @@ public class Look extends Image {
 	private HashMap<String, ArrayList<SequenceAction>> broadcastWaitSequenceMap;
 	private ParallelAction whenParallelAction;
 	private ArrayList<Action> actionsToRestart;
-	private boolean allActionAreFinished = false;
+	private boolean allActionsAreFinished = true;
 
 	public Look(Sprite sprite) {
 		this.sprite = sprite;
@@ -116,7 +116,7 @@ public class Look extends Image {
 		cloneLook.broadcastWaitSequenceMap = new HashMap<String, ArrayList<SequenceAction>>(
 				this.broadcastWaitSequenceMap);
 		cloneLook.whenParallelAction = null;
-		cloneLook.allActionAreFinished = this.allActionAreFinished;
+		cloneLook.allActionsAreFinished = this.allActionsAreFinished;
 		cloneLook.actionsToRestart = new ArrayList<Action>();
 
 		return cloneLook;
@@ -240,7 +240,7 @@ public class Look extends Image {
 	@Override
 	public void act(float delta) {
 		Array<Action> actions = getActions();
-		allActionAreFinished = false;
+		allActionsAreFinished = false;
 		int finishedCount = 0;
 		for (int i = 0, n = actions.size; i < n; i++) {
 			for (Iterator<Action> iterator = actionsToRestart.iterator(); iterator.hasNext();) {
@@ -254,7 +254,7 @@ public class Look extends Image {
 			}
 		}
 		if (finishedCount == actions.size) {
-			allActionAreFinished = true;
+			allActionsAreFinished = true;
 		}
 	}
 
@@ -459,7 +459,7 @@ public class Look extends Image {
 	}
 
 	public boolean getAllActionsAreFinished() {
-		return allActionAreFinished;
+		return allActionsAreFinished;
 	}
 
 	public void putBroadcastSequenceAction(String broadcastMessage, SequenceAction action) {
