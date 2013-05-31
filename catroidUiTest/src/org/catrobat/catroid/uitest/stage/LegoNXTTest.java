@@ -117,12 +117,9 @@ public class LegoNXTTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 		DeviceListActivity deviceListActivity = new DeviceListActivity();
 		Reflection.setPrivateField(deviceListActivity, "autoConnectIDs", autoConnectIDs);
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(2000);
 
 		ListView deviceList = solo.getCurrentListViews().get(0);
@@ -269,18 +266,14 @@ public class LegoNXTTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 			solo.sleep(5000);
 		}
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(1000);
 		solo.assertCurrentActivity("Devicelist not shown!", DeviceListActivity.class);
 		solo.goBack();
 		solo.sleep(1000);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(1000);
 		solo.assertCurrentActivity("Devicelist not shown!", DeviceListActivity.class);
 

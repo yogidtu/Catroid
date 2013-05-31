@@ -24,7 +24,6 @@ package org.catrobat.catroid.hintsystem;
 
 import java.util.ArrayList;
 
-import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Values;
 
 import android.app.Activity;
@@ -34,9 +33,6 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 /**
  * @author amore
@@ -50,10 +46,6 @@ public class Hint {
 	private HintOverlay hintOverlay;
 
 	static HintController controller = new HintController();
-
-	private Hint() {
-
-	}
 
 	public static Hint getInstance() {
 
@@ -73,48 +65,20 @@ public class Hint {
 		ScreenParameters screenparameters = ScreenParameters.getInstance();
 		screenparameters.setDensityParameter(density);
 
-		addToolTipButtons();
-
 		WindowManager.LayoutParams windowParameters = createLayoutParameters();
 		windowManager = ((Activity) context).getWindowManager();
 		hintOverlay = new HintOverlay(context);
 		windowManager.addView(hintOverlay, windowParameters);
+		addToolTipButtons();
 	}
 
 	private void addToolTipButtons() {
-		Activity activity = (Activity) context;
-
 		switch (controller.checkActivity()) {
 			case 0:
-				Button button = (Button) activity.findViewById(R.id.main_menu_button_continue);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_continue, 0,
-						R.drawable.tooltip_button, 0);
-				button = (Button) activity.findViewById(R.id.main_menu_button_new);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_new, 0,
-						R.drawable.tooltip_button, 0);
-				button = (Button) activity.findViewById(R.id.main_menu_button_programs);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_programs, 0,
-						R.drawable.tooltip_button, 0);
-				button = (Button) activity.findViewById(R.id.main_menu_button_forum);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_forum, 0,
-						R.drawable.tooltip_button, 0);
-				button = (Button) activity.findViewById(R.id.main_menu_button_web);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_community, 0,
-						R.drawable.tooltip_button, 0);
-				button = (Button) activity.findViewById(R.id.main_menu_button_upload);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_upload, 0,
-						R.drawable.tooltip_button, 0);
+				hintOverlay.addToolTipButtonsToMainMenuActivity();
 				break;
 			case 1:
-				LinearLayout addButton = (LinearLayout) activity.findViewById(R.id.button_add);
-				ImageView tooltipAddButton = new ImageView(context);
-				tooltipAddButton.setImageDrawable(context.getResources().getDrawable(R.drawable.tooltip_button));
-				addButton.addView(tooltipAddButton);
-
-				addButton = (LinearLayout) activity.findViewById(R.id.button_play);
-				ImageView tooltipPlayButton = new ImageView(context);
-				tooltipPlayButton.setImageDrawable(context.getResources().getDrawable(R.drawable.tooltip_button));
-				addButton.addView(tooltipPlayButton);
+				hintOverlay.addToolTipButtonsToProjectActivity();
 				break;
 
 		}
@@ -125,42 +89,28 @@ public class Hint {
 
 		windowManager = ((Activity) context).getWindowManager();
 		windowManager.removeViewImmediate(hintOverlay);
+		removeToolTipButtons();
 		hintOverlay = null;
 		System.gc();
 		System.runFinalization();
-		removeToolTipButtons();
+
 	}
 
 	public void removeToolTipButtons() {
-		Activity activity = (Activity) context;
 		switch (controller.checkActivity()) {
 			case 0:
-				Button button = (Button) activity.findViewById(R.id.main_menu_button_continue);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_continue, 0,
-						R.drawable.ic_arrow_right_dark, 0);
-				button = (Button) activity.findViewById(R.id.main_menu_button_new);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_new, 0,
-						R.drawable.ic_arrow_right_dark, 0);
-				button = (Button) activity.findViewById(R.id.main_menu_button_programs);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_programs, 0,
-						R.drawable.ic_arrow_right_dark, 0);
-				button = (Button) activity.findViewById(R.id.main_menu_button_forum);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_forum, 0,
-						R.drawable.ic_arrow_right_dark, 0);
-				button = (Button) activity.findViewById(R.id.main_menu_button_web);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_community, 0,
-						R.drawable.ic_arrow_right_dark, 0);
-				button = (Button) activity.findViewById(R.id.main_menu_button_upload);
-				button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_upload, 0,
-						R.drawable.ic_arrow_right_dark, 0);
+				hintOverlay.removeMainMenuActivityToolTipButtons();
 				break;
-
+			case 1:
+				hintOverlay.removeProjectActivityToolTipButtons();
+				break;
 		}
 
 	}
 
-	public void setHintPosition(int x, int y, String text) {
-		hintOverlay.setPostions(x, y, text);
+	public boolean setHintPosition(int x, int y, String text) {
+		return hintOverlay.setPostions(x, y, text);
+
 	}
 
 	public WindowManager.LayoutParams createLayoutParameters() {
@@ -203,4 +153,9 @@ public class Hint {
 		return controller.dispatchTouchEvent(ev);
 
 	}
+
+	public HintOverlay getHintOverlay() {
+		return hintOverlay;
+	}
+
 }

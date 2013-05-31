@@ -70,17 +70,13 @@ public class RenameSpriteDialogTest extends ActivityInstrumentationTestCase2<Mai
 
 	public void testRenameSpriteDialog() throws NameNotFoundException, IOException {
 		createTestProject(testProject);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(200);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.sleep(1000);
-		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Cannot click on project.", UiTestUtils.clickOnTextInList(solo, testProject));
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickLongOnText(cat);
 
 		solo.clickOnText(solo.getString(R.string.rename));
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(100);
 		solo.clearEditText(0);
 		UiTestUtils.enterText(solo, 0, kat);
@@ -95,13 +91,10 @@ public class RenameSpriteDialogTest extends ActivityInstrumentationTestCase2<Mai
 
 	public void testRenameSpriteDialogMixedCase() throws NameNotFoundException, IOException {
 		createTestProject(testProject);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.sleep(500);
-		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Cannot click on project.", UiTestUtils.clickOnTextInList(solo, testProject));
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickLongOnText(cat);
 
 		solo.sleep(1000);

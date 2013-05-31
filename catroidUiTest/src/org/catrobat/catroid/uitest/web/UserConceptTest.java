@@ -80,7 +80,6 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		setTestUrl();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, null).commit();
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(loginDialogTitle);
@@ -93,8 +92,6 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 	public void testRegisterNewUser() throws Throwable {
 		setTestUrl();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		prefs.edit().putString(Constants.TOKEN, Constants.NO_TOKEN).commit();
 
@@ -110,7 +107,6 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		setTestUrl();
 		UiTestUtils.createValidUser(getActivity());
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(uploadDialogTitle);
 
@@ -123,7 +119,6 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, "").commit();
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(loginDialogTitle);
 		fillLoginDialog(true);
@@ -142,7 +137,6 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, "wrong_token").commit();
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(loginDialogTitle);
@@ -157,7 +151,6 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, null).commit();
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(loginDialogTitle);
 		fillLoginDialog(false);

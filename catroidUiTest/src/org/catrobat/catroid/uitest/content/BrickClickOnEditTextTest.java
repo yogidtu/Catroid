@@ -105,7 +105,6 @@ public class BrickClickOnEditTextTest extends ActivityInstrumentationTestCase2<M
 		assertTrue("Set brick should be instance of SetXBrick", brickListToCheck.get(1) instanceof SetXBrick);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		editTextFieldVisibility(solo.getString(R.string.category_control));
 		editTextFieldVisibility(solo.getString(R.string.category_motion));
 		editTextFieldVisibility(solo.getString(R.string.category_sound));
@@ -134,7 +133,6 @@ public class BrickClickOnEditTextTest extends ActivityInstrumentationTestCase2<M
 	private void editTextFieldVisibility(String category) {
 
 		solo.clickOnText(category);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.searchText(category);
 		int ignoreFirstTwo = 0;
 

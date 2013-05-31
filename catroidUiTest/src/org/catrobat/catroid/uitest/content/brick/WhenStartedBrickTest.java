@@ -103,10 +103,8 @@ public class WhenStartedBrickTest extends ActivityInstrumentationTestCase2<MainM
 		solo.sleep(200);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_control));
 		solo.searchText(solo.getString(R.string.category_control));
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnScreen(200, whenBrickPosition);
 
 		yPosition = UiTestUtils.getListItemYPositions(solo, 1);

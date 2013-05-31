@@ -100,7 +100,6 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 		assertFalse("testProject was not deleted!", directory.exists());
 
 		String hintNewProjectText = solo.getString(R.string.new_project_dialog_hint);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.waitForText(hintNewProjectText);
 		EditText addNewProjectEditText = solo.getEditText(0);
@@ -123,7 +122,6 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 	}
 
 	public void testCreateNewProjectErrors() {
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.clearEditText(0);
 		solo.enterText(0, "");
@@ -162,7 +160,6 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 		File directory = new File(directoryPath);
 		UtilFile.deleteDirectory(directory);
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.clearEditText(0);
 		solo.enterText(0, projectNameWithBlacklistedCharacters);
@@ -180,7 +177,6 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 		File directory = new File(directoryPath);
 		UtilFile.deleteDirectory(directory);
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.clearEditText(0);
 		solo.enterText(0, projectNameWithWhitelistedCharacters);
@@ -194,7 +190,6 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 	}
 
 	public void testOrientation() throws NameNotFoundException {
-		UiTestUtils.clickOnHintOverlay(solo);
 		/// Method 1: Assert it is currently in portrait mode.
 		assertEquals("MainMenuActivity not in Portrait mode!", Configuration.ORIENTATION_PORTRAIT, getActivity()
 				.getResources().getConfiguration().orientation);
@@ -222,10 +217,8 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 		createTestProject(testProject2);
 		solo.sleep(200);
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(testProject2);
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 		ListView spritesList = (ListView) solo.getCurrentActivity().findViewById(android.R.id.list);
@@ -247,10 +240,8 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 		createTestProject(testProject3);
 		solo.sleep(200);
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(testProject3);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		solo.goBack();
@@ -271,7 +262,6 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 
 	public void testShouldDisplayDialogIfVersionNumberTooHigh() throws Throwable {
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		// Prevent Utils from returning true in isApplicationDebuggable
 		Reflection.setPrivateField(Utils.class, "isUnderTest", true);
 
@@ -349,13 +339,10 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 		ProjectManager.INSTANCE.setProject(standardProject);
 		StorageHandler.getInstance().saveProject(standardProject);
 
-		UiTestUtils.clickOnHintOverlay(solo);
-
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 		solo.sleep(300);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		Sprite backgroundSprite = standardProject.getSpriteList().get(0);
 		Script startingScript = backgroundSprite.getScript(0);
@@ -393,10 +380,8 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 		createTestProject(testProject);
 		createTestProject(testProject2);
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(testProject);
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 
@@ -406,7 +391,6 @@ public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainM
 
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(testProject2);
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 

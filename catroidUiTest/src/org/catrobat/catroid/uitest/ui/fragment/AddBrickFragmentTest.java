@@ -66,7 +66,6 @@ public class AddBrickFragmentTest extends ActivityInstrumentationTestCase2<MainM
 		goToAddBrickFromMainMenu();
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		checkActionBarInACategory(solo.getString(R.string.category_control), "control");
 		checkActionBarInACategory(solo.getString(R.string.category_motion), "motion");
 		checkActionBarInACategory(solo.getString(R.string.category_sound), "sound");
@@ -97,12 +96,10 @@ public class AddBrickFragmentTest extends ActivityInstrumentationTestCase2<MainM
 		goToAddBrickFromMainMenu();
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Categories text in action bar not found before selecting a category",
 				solo.waitForText(solo.getString(R.string.categories), 0, 2000));
 
 		solo.clickOnText(solo.getString(R.string.category_control));
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.goBack();
 
 		assertTrue("Categories text in action bar not found after selecting a category",
@@ -114,7 +111,6 @@ public class AddBrickFragmentTest extends ActivityInstrumentationTestCase2<MainM
 		String showDetails = solo.getString(R.string.show_details);
 
 		solo.clickOnText(categoryID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("The Actionbar wasn't correctly setted after opening category " + category,
 				solo.waitForText(categoryID, 0, 2000));
 		UiTestUtils.openOptionsMenu(solo);

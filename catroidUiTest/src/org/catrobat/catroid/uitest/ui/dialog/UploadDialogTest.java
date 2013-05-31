@@ -91,7 +91,6 @@ public class UploadDialogTest extends ActivityInstrumentationTestCase2<MainMenuA
 		setServerURLToTestURL();
 		createTestProject();
 		solo.sleep(200);
-		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.createValidUser(getActivity());
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(uploadDialogTitle);
@@ -134,11 +133,9 @@ public class UploadDialogTest extends ActivityInstrumentationTestCase2<MainMenuA
 		UiTestUtils.createValidUser(getActivity());
 
 		solo.sleep(300);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
-		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.longClickOnTextInList(solo, uploadProject.getName());
 		assertTrue("context menu not loaded in 5 seconds", solo.waitForText(actionSetDescriptionText, 0, 5000));
 		solo.clickOnText(actionSetDescriptionText);
@@ -175,7 +172,6 @@ public class UploadDialogTest extends ActivityInstrumentationTestCase2<MainMenuA
 		setServerURLToTestURL();
 		UiTestUtils.createValidUser(getActivity());
 		solo.sleep(200);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		boolean uploadDialogShown = solo.waitForText(uploadDialogTitle);
 

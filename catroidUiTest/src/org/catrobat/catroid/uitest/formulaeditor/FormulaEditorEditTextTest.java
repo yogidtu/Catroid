@@ -130,7 +130,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 	public void testSingleTapOnFunctionName() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		BackgroundColorSpan COLOR_HIGHLIGHT = (BackgroundColorSpan) Reflection.getPrivateField(
 				new FormulaEditorEditText(getActivity()), "COLOR_HIGHLIGHT");
@@ -156,7 +155,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 		BackgroundColorSpan COLOR_HIGHLIGHT = (BackgroundColorSpan) Reflection.getPrivateField(
 				new FormulaEditorEditText(getActivity()), "COLOR_HIGHLIGHT");
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		for (int i = 0; i < 6; i++) {
 			solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
 		}
@@ -214,7 +212,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 	public void testFunctionFirstParameterSelectionAndModification() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_math));
 		solo.clickOnText(getActivity().getString(R.string.formula_editor_function_sin));
@@ -262,7 +259,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 	public void testBracketValueSelectionAndModification() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_bracket_open));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
@@ -299,7 +295,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 		int functionRandomLength = solo.getCurrentActivity().getText(R.string.formula_editor_function_rand).length();
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_math));
 		solo.clickOnText(getActivity().getString(R.string.formula_editor_function_rand));
@@ -338,7 +333,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 	public void testNumberInsertion() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_decimal_mark));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
@@ -391,7 +385,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 	public void testGoBackToDiscardChanges() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_9));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_9));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_decimal_mark));
@@ -411,7 +404,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 	public void testErrorInFirstAndLastCharactersAndEmptyFormula() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		BackgroundColorSpan COLOR_ERROR = (BackgroundColorSpan) Reflection.getPrivateField(new FormulaEditorEditText(
 				getActivity()), "COLOR_ERROR");
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
@@ -438,7 +430,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 	public void testTextCursorAndScrolling() {
 
 		solo.clickOnEditText(1);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(3000);
 		solo.waitForText(solo.getCurrentActivity().getString(R.string.formula_editor_title));
 
@@ -475,7 +466,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 	@Smoke
 	public void testTextPreviewWithCursorPositions() {
 		solo.clickOnEditText(1);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		EditText preview = (EditText) UiTestUtils.getViewContainerByIds(solo, R.id.brick_wait_edit_text,
 				R.id.formula_editor_brick_space);
@@ -499,7 +489,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 		String editTextString = "";
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_plus));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_8));
@@ -568,7 +557,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 	public void testStrings() {
 
 		solo.clickOnEditText(0);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		FormulaEditorEditText formulaEditorEditText = (FormulaEditorEditText) solo
 				.getView(FORMULA_EDITOR_EDIT_TEXT_RID);
@@ -685,7 +673,6 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 		Reflection.setPrivateField(sensorHandler, "sensorManager", sensorManager);
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.waitForView(solo.getView(R.id.formula_editor_edit_field));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_minus));

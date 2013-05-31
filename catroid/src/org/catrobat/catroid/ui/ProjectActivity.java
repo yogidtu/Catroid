@@ -51,6 +51,9 @@ public class ProjectActivity extends SherlockFragmentActivity {
 	private SpritesListFragment spritesListFragment;
 	private Lock viewSwitchLock = new ViewSwitchLock();
 
+	public static boolean hintBubbleDisplayed = false;
+	public static boolean hintActive = false;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -158,6 +161,17 @@ public class ProjectActivity extends SherlockFragmentActivity {
 				Intent intent = new Intent(ProjectActivity.this, SettingsActivity.class);
 				startActivity(intent);
 				break;
+			}
+
+			case R.id.button_tooltip: {
+				Hint hint = Hint.getInstance();
+				Hint.setContext(this);
+				if (!hintActive) {
+					hint.overlayHint();
+				} else {
+					hint.removeHint();
+				}
+				return true;
 			}
 		}
 		return super.onOptionsItemSelected(item);

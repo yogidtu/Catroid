@@ -62,7 +62,6 @@ public class NewProjectDialogTest extends ActivityInstrumentationTestCase2<MainM
 
 	public void testNewProjectDialog() {
 		String buttonOkText = solo.getString(R.string.ok);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		assertTrue("dialog not loaded in 5 seconds",
 				solo.waitForText(solo.getString(R.string.new_project_dialog_title), 0, 5000));
@@ -75,7 +74,6 @@ public class NewProjectDialogTest extends ActivityInstrumentationTestCase2<MainM
 	}
 
 	public void testPositiveButtonDisabledOnCreate() {
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.sleep(500);
 
@@ -84,7 +82,6 @@ public class NewProjectDialogTest extends ActivityInstrumentationTestCase2<MainM
 	}
 
 	public void testPositiveButtonChangesState() {
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.sleep(1000);
 
@@ -107,7 +104,6 @@ public class NewProjectDialogTest extends ActivityInstrumentationTestCase2<MainM
 	}
 
 	public void testNewProjectDialogHeight() {
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.sleep(2000);
 

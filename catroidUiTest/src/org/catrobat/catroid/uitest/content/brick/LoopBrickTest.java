@@ -108,10 +108,8 @@ public class LoopBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		assertTrue("Wrong Brick instance.", projectBrickList.get(2) instanceof LoopEndBrick);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_control));
 		solo.searchText(solo.getString(R.string.category_control));
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.brick_broadcast_receive));
 
 		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
@@ -137,11 +135,9 @@ public class LoopBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		assertTrue("Wrong Brick instance.", projectBrickList.get(0) instanceof ChangeYByNBrick);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_control));
 		solo.searchText(solo.getString(R.string.category_control));
 		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnText(solo.getString(R.string.brick_repeat));
 
@@ -169,11 +165,9 @@ public class LoopBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		float foreverBrickPosition = 500;
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_control));
 		solo.searchText(solo.getString(R.string.category_control));
 		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnText(solo.getString(R.string.brick_forever));
 
@@ -188,11 +182,9 @@ public class LoopBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		assertTrue("Wrong Brick instance.", projectBrickList.get(4) instanceof LoopEndlessBrick);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_control));
 		solo.searchText(solo.getString(R.string.category_control));
 		fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnScreen(200, foreverBrickPosition);
 
@@ -252,11 +244,9 @@ public class LoopBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		clickOnDeleteInDialog();
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_looks));
 		solo.searchText(solo.getString(R.string.category_looks));
 		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnText(solo.getString(R.string.brick_clear_graphic_effect));
 
@@ -266,11 +256,9 @@ public class LoopBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		solo.drag(20, 20, addedYPosition, 0, 20);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_control));
 		solo.searchText(solo.getString(R.string.category_control));
 		fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnScreen(200, foreverBrickPosition);
 
@@ -280,11 +268,9 @@ public class LoopBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		solo.drag(20, 20, addedYPosition, yPosition.get(0), 20);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_control));
 		solo.searchText(solo.getString(R.string.category_control));
 		fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnScreen(200, foreverBrickPosition);
 
@@ -294,11 +280,9 @@ public class LoopBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		solo.drag(20, 20, addedYPosition, yPosition.get(2), 20);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_control));
 		solo.searchText(solo.getString(R.string.category_control));
 		fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnScreen(200, foreverBrickPosition);
 
@@ -308,11 +292,9 @@ public class LoopBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		solo.drag(20, 20, addedYPosition, yPosition.get(2), 20);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.category_control));
 		solo.searchText(solo.getString(R.string.category_control));
 		fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnScreen(200, foreverBrickPosition);
 

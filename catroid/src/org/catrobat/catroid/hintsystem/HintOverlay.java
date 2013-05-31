@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.ProjectActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -42,9 +43,13 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 /**
- * @author peter
+ * @author amore
  * 
  */
 public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
@@ -77,9 +82,55 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-
 		ScreenParameters screenParameters = ScreenParameters.getInstance();
+
 		boolean returnValue = true;
+
+		if (ev.getX() > screenParameters.getMainMenuToolTipXPosition()
+				&& ev.getX() < screenParameters.getMainMenuToolTipXPosition()
+						+ screenParameters.getMainMenuToolTipWidth() && !menuButtonActionBarClicked(ev)) {
+			//Unterscheide welche activity angezeigt wird
+			mainMenuToolTipClicked(ev);
+
+		} else {
+			returnValue = Hint.getInstance().dispatchTouchEvent(ev);
+
+		}
+		return returnValue;
+	}
+
+	private void mainMenuToolTipClicked(MotionEvent ev) {
+		ScreenParameters screenParameters = ScreenParameters.getInstance();
+
+		if (ev.getY() > screenParameters.getMainMenuContinueToolTipYPosition()
+				&& ev.getY() < screenParameters.getMainMenuContinueToolTipYPosition()
+						+ screenParameters.getMainMenuToolTipHeight()) {
+			handleContinueToolTip();
+		} else if (ev.getY() > screenParameters.getMainMenuNewToolTipYPosition()
+				&& ev.getY() < screenParameters.getMainMenuNewToolTipYPosition()
+						+ screenParameters.getMainMenuToolTipHeight()) {
+			handleNewToolTip();
+		} else if (ev.getY() > screenParameters.getMainMenuPropgramsToolTipYPosition()
+				&& ev.getY() < screenParameters.getMainMenuPropgramsToolTipYPosition()
+						+ screenParameters.getMainMenuToolTipHeight()) {
+			handleProgramsToolTip();
+		} else if (ev.getY() > screenParameters.getMainMenuForumToolTipYPosition()
+				&& ev.getY() < screenParameters.getMainMenuForumToolTipYPosition()
+						+ screenParameters.getMainMenuToolTipHeight()) {
+			handleForumToolTip();
+		} else if (ev.getY() > screenParameters.getMainMenuCommunityToolTipYPosition()
+				&& ev.getY() < screenParameters.getMainMenuCommunityToolTipYPosition()
+						+ screenParameters.getMainMenuToolTipHeight()) {
+			handleCommunityToolTip();
+		} else if (ev.getY() > screenParameters.getMainMenuUploadToolTipYPosition()
+				&& ev.getY() < screenParameters.getMainMenuUploadToolTipYPosition()
+						+ screenParameters.getMainMenuToolTipHeight()) {
+			handleUploadToolTip();
+		}
+	}
+
+	private boolean menuButtonActionBarClicked(MotionEvent ev) {
+		ScreenParameters screenParameters = ScreenParameters.getInstance();
 
 		if (ev.getX() > screenParameters.getActionBarMenuXPosition()
 				&& ev.getX() < screenParameters.getActionBarMenuXPosition() + screenParameters.getActionBarMenuWidth()) {
@@ -89,56 +140,16 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 				Hint.getInstance().removeHint();
 				MainMenuActivity activity = (MainMenuActivity) context;
 				activity.openOptionsMenu();
+				return true;
 			}
 		}
-
-		if (ev.getX() > screenParameters.getMainMenuToolTipXPosition()
-				&& ev.getX() < screenParameters.getMainMenuToolTipXPosition()
-						+ screenParameters.getMainMenuToolTipWidth()) {
-			if (ev.getY() > screenParameters.getMainMenuContinueToolTipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuContinueToolTipYPosition()
-							+ screenParameters.getMainMenuToolTipHeight()) {
-				handleContinueToolTip();
-			} else if (ev.getY() > screenParameters.getMainMenuNewToolTipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuNewToolTipYPosition()
-							+ screenParameters.getMainMenuToolTipHeight()) {
-				handleNewToolTip();
-			} else if (ev.getY() > screenParameters.getMainMenuPropgramsToolTipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuPropgramsToolTipYPosition()
-							+ screenParameters.getMainMenuToolTipHeight()) {
-				handleProgramsToolTip();
-			} else if (ev.getY() > screenParameters.getMainMenuForumToolTipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuForumToolTipYPosition()
-							+ screenParameters.getMainMenuToolTipHeight()) {
-				handleForumToolTip();
-			} else if (ev.getY() > screenParameters.getMainMenuCommunityToolTipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuCommunityToolTipYPosition()
-							+ screenParameters.getMainMenuToolTipHeight()) {
-				handleCommunityToolTip();
-			} else if (ev.getY() > screenParameters.getMainMenuUploadToolTipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuUploadToolTipYPosition()
-							+ screenParameters.getMainMenuToolTipHeight()) {
-				handleUploadToolTip();
-			}
-		} else {
-			if (MainMenuActivity.hintDisplayed) {
-				Hint.getInstance().removeHint();
-				Hint hint = Hint.getInstance();
-				hint.overlayHint();
-				MainMenuActivity.hintDisplayed = false;
-			}
-
-			Hint.getInstance().removeHint();
-			returnValue = Hint.getInstance().dispatchTouchEvent(ev);
-
-		}
-		return returnValue;
+		return false;
 	}
 
-	public void handleContinueToolTip() {
+	private void handleContinueToolTip() {
 		Hint.getInstance().removeHint();
 
-		if (!MainMenuActivity.hintDisplayed) {
+		if (!MainMenuActivity.hintBubbleDisplayed) {
 
 			allHints = Hint.getHints();
 			HintObject continueHint = allHints.get(0);
@@ -147,17 +158,17 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 			hint.overlayHint();
 			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
 					continueHint.getHintText());
-			MainMenuActivity.hintDisplayed = true;
+			MainMenuActivity.hintBubbleDisplayed = true;
 		} else {
 			Hint hint = Hint.getInstance();
 			hint.overlayHint();
-			MainMenuActivity.hintDisplayed = false;
+			MainMenuActivity.hintBubbleDisplayed = false;
 		}
 	}
 
-	public void handleNewToolTip() {
+	private void handleNewToolTip() {
 		Hint.getInstance().removeHint();
-		if (!MainMenuActivity.hintDisplayed) {
+		if (!MainMenuActivity.hintBubbleDisplayed) {
 
 			allHints = Hint.getHints();
 			HintObject continueHint = allHints.get(1);
@@ -166,17 +177,17 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 			hint.overlayHint();
 			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
 					continueHint.getHintText());
-			MainMenuActivity.hintDisplayed = true;
+			MainMenuActivity.hintBubbleDisplayed = true;
 		} else {
 			Hint hint = Hint.getInstance();
 			hint.overlayHint();
-			MainMenuActivity.hintDisplayed = false;
+			MainMenuActivity.hintBubbleDisplayed = false;
 		}
 	}
 
-	public void handleProgramsToolTip() {
+	private void handleProgramsToolTip() {
 		Hint.getInstance().removeHint();
-		if (!MainMenuActivity.hintDisplayed) {
+		if (!MainMenuActivity.hintBubbleDisplayed) {
 
 			allHints = Hint.getHints();
 			HintObject continueHint = allHints.get(2);
@@ -185,17 +196,17 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 			hint.overlayHint();
 			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
 					continueHint.getHintText());
-			MainMenuActivity.hintDisplayed = true;
+			MainMenuActivity.hintBubbleDisplayed = true;
 		} else {
 			Hint hint = Hint.getInstance();
 			hint.overlayHint();
-			MainMenuActivity.hintDisplayed = false;
+			MainMenuActivity.hintBubbleDisplayed = false;
 		}
 	}
 
-	public void handleForumToolTip() {
+	private void handleForumToolTip() {
 		Hint.getInstance().removeHint();
-		if (!MainMenuActivity.hintDisplayed) {
+		if (!MainMenuActivity.hintBubbleDisplayed) {
 
 			allHints = Hint.getHints();
 			HintObject continueHint = allHints.get(3);
@@ -204,17 +215,17 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 			hint.overlayHint();
 			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
 					continueHint.getHintText());
-			MainMenuActivity.hintDisplayed = true;
+			MainMenuActivity.hintBubbleDisplayed = true;
 		} else {
 			Hint hint = Hint.getInstance();
 			hint.overlayHint();
-			MainMenuActivity.hintDisplayed = false;
+			MainMenuActivity.hintBubbleDisplayed = false;
 		}
 	}
 
-	public void handleCommunityToolTip() {
+	private void handleCommunityToolTip() {
 		Hint.getInstance().removeHint();
-		if (!MainMenuActivity.hintDisplayed) {
+		if (!MainMenuActivity.hintBubbleDisplayed) {
 
 			allHints = Hint.getHints();
 			HintObject continueHint = allHints.get(4);
@@ -223,17 +234,17 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 			hint.overlayHint();
 			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
 					continueHint.getHintText());
-			MainMenuActivity.hintDisplayed = true;
+			MainMenuActivity.hintBubbleDisplayed = true;
 		} else {
 			Hint hint = Hint.getInstance();
 			hint.overlayHint();
-			MainMenuActivity.hintDisplayed = false;
+			MainMenuActivity.hintBubbleDisplayed = false;
 		}
 	}
 
-	public void handleUploadToolTip() {
+	private void handleUploadToolTip() {
 		Hint.getInstance().removeHint();
-		if (!MainMenuActivity.hintDisplayed) {
+		if (!MainMenuActivity.hintBubbleDisplayed) {
 
 			allHints = Hint.getHints();
 			HintObject continueHint = allHints.get(5);
@@ -242,18 +253,104 @@ public class HintOverlay extends SurfaceView implements SurfaceHolder.Callback {
 			hint.overlayHint();
 			hint.setHintPosition(continueHint.getXCoordinate(), continueHint.getYCoordinate(),
 					continueHint.getHintText());
-			MainMenuActivity.hintDisplayed = true;
+			MainMenuActivity.hintBubbleDisplayed = true;
 		} else {
 			Hint hint = Hint.getInstance();
 			hint.overlayHint();
-			MainMenuActivity.hintDisplayed = false;
+			MainMenuActivity.hintBubbleDisplayed = false;
 		}
 	}
 
-	public void setPostions(int x, int y, String text) {
+	public boolean addToolTipButtonsToMainMenuActivity() {
+		Activity activity = (Activity) context;
+
+		Button button = (Button) activity.findViewById(R.id.main_menu_button_continue);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_continue, 0,
+				R.drawable.icon_tooltip_inactive, 0);
+		button = (Button) activity.findViewById(R.id.main_menu_button_new);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_new, 0,
+				R.drawable.icon_tooltip_inactive, 0);
+		button = (Button) activity.findViewById(R.id.main_menu_button_programs);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_programs, 0,
+				R.drawable.icon_tooltip_inactive, 0);
+		button = (Button) activity.findViewById(R.id.main_menu_button_forum);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_forum, 0,
+				R.drawable.icon_tooltip_inactive, 0);
+		button = (Button) activity.findViewById(R.id.main_menu_button_web);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_community, 0,
+				R.drawable.icon_tooltip_inactive, 0);
+		button = (Button) activity.findViewById(R.id.main_menu_button_upload);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_upload, 0,
+				R.drawable.icon_tooltip_inactive, 0);
+
+		MainMenuActivity.hintActive = true;
+		return true;
+	}
+
+	public boolean addToolTipButtonsToProjectActivity() {
+		Activity activity = (Activity) context;
+
+		LinearLayout addButton = (LinearLayout) activity.findViewById(R.id.button_add);
+		ImageView tooltipAddButton = new ImageView(context);
+		tooltipAddButton.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_tooltip_inactive));
+		addButton.addView(tooltipAddButton);
+
+		addButton = (LinearLayout) activity.findViewById(R.id.button_play);
+		ImageView tooltipPlayButton = new ImageView(context);
+		tooltipPlayButton.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_tooltip_inactive));
+		addButton.addView(tooltipPlayButton);
+
+		ProjectActivity.hintActive = true;
+
+		return true;
+	}
+
+	public boolean removeMainMenuActivityToolTipButtons() {
+		Activity activity = (Activity) context;
+
+		Button button = (Button) activity.findViewById(R.id.main_menu_button_continue);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_continue, 0,
+				R.drawable.ic_arrow_right_dark, 0);
+		button = (Button) activity.findViewById(R.id.main_menu_button_new);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_new, 0, R.drawable.ic_arrow_right_dark,
+				0);
+		button = (Button) activity.findViewById(R.id.main_menu_button_programs);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_programs, 0,
+				R.drawable.ic_arrow_right_dark, 0);
+		button = (Button) activity.findViewById(R.id.main_menu_button_forum);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_forum, 0,
+				R.drawable.ic_arrow_right_dark, 0);
+		button = (Button) activity.findViewById(R.id.main_menu_button_web);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_community, 0,
+				R.drawable.ic_arrow_right_dark, 0);
+		button = (Button) activity.findViewById(R.id.main_menu_button_upload);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_upload, 0,
+				R.drawable.ic_arrow_right_dark, 0);
+
+		MainMenuActivity.hintActive = false;
+
+		return true;
+	}
+
+	public boolean removeProjectActivityToolTipButtons() {
+		Activity activity = (Activity) context;
+		LinearLayout buttonLayout = (LinearLayout) activity.findViewById(R.id.button_add);
+		View v = buttonLayout.getChildAt(1);
+		buttonLayout.removeView(v);
+
+		buttonLayout = (LinearLayout) activity.findViewById(R.id.button_play);
+		v = buttonLayout.getChildAt(1);
+		buttonLayout.removeView(v);
+		ProjectActivity.hintActive = false;
+
+		return true;
+	}
+
+	public boolean setPostions(int x, int y, String text) {
 		hintPositionX = x;
 		hintPositionY = y;
 		hintText = text;
+		return true;
 	}
 
 	@Override

@@ -23,10 +23,6 @@
  -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 	<item
-        android:id="@+id/menu_showHints"
-        android:showAsAction="withText"
-        android:title="@string/hint_menu_show_hints" />
-    <item
         android:id="@+id/copy"
         android:showAsAction="ifRoom"
         android:title="@string/copy" 
@@ -63,4 +59,10 @@
         android:id="@+id/settings"
         android:showAsAction="never"
         android:title="@string/main_menu_settings" />
+    <item
+        android:id="@+id/button_tooltip"
+        android:icon="@drawable/icon_tooltip_inactive"
+        android:showAsAction="always"
+        android:title="@string/hint_menu_tips" />
+    
 </menu>

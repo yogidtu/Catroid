@@ -93,8 +93,6 @@ public class IfBrickTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 	public void testStrings() {
 
 		solo.clickOnEditText(0);
-		UiTestUtils.clickOnHintOverlay(solo);
-
 		solo.sleep(100);
 
 		boolean isFound = solo.searchText(solo.getString(R.string.brick_if_begin_second_part));

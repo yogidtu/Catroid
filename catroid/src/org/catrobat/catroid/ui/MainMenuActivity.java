@@ -95,7 +95,8 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		}
 	}
 
-	public static boolean hintDisplayed = false;
+	public static boolean hintBubbleDisplayed = false;
+	public static boolean hintActive = false;
 	private static final String TAG = "MainMenuActivity";
 	private static final String PROJECTNAME_TAG = "fname=";
 	private Lock viewSwitchLock = new ViewSwitchLock();
@@ -182,12 +183,6 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_showHints: {
-				Hint hint = Hint.getInstance();
-				Hint.setContext(this);
-				hint.overlayHint();
-				return true;
-			}
 			case R.id.menu_settings: {
 				Intent intent = new Intent(MainMenuActivity.this, SettingsActivity.class);
 				startActivity(intent);
@@ -201,7 +196,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			case R.id.button_tooltip: {
 				Hint hint = Hint.getInstance();
 				Hint.setContext(this);
-				if (!hintDisplayed) {
+				if (!hintActive) {
 					hint.overlayHint();
 				} else {
 					hint.removeHint();

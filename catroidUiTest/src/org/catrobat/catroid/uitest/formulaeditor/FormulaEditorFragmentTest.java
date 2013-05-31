@@ -93,7 +93,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 	public void testChangeFormula() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
 		solo.sleep(50);
@@ -105,7 +104,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 		assertEquals("Value not saved!", "1 ", solo.getEditText(X_POS_EDIT_TEXT_ID).getText().toString());
 
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_plus));
 
@@ -125,7 +123,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 	public void testOnTheFlyUpdateOfBrickEditText() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
 
 		assertEquals("Wrong text in FormulaEditor", "1 ", solo.getEditText(FORMULA_EDITOR_EDIT_TEXT_ID).getText()
@@ -147,7 +144,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 	public void testUndo() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_minus));
@@ -195,7 +191,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 	public void testUndoRedo() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_9));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_minus));
@@ -239,7 +234,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 	public void testUndoLimit() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		int maxHistoryElements = (Integer) Reflection.getPrivateField(new FormulaEditorHistory(null),
 				"MAXIMUM_HISTORY_LENGTH");
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
@@ -280,7 +274,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 				+ getActivity().getString(R.string.formula_editor_function_cos) + "( 90 - - 30 ) , 1 ) ";
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.sleep(250);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
@@ -300,7 +293,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 				solo.searchText(solo.getString(R.string.formula_editor_changes_saved)));
 
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_random));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_math));
@@ -318,9 +310,7 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 
 		assertEquals("Wrong text in FormulaEditor", newXFormula, solo.getEditText(FORMULA_EDITOR_EDIT_TEXT_ID)
 				.getText().toString());
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(250);
 		assertEquals("Wrong text in FormulaEditor", newYFormula, solo.getEditText(FORMULA_EDITOR_EDIT_TEXT_ID)
 				.getText().toString());
@@ -344,7 +334,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 		String newXFormula = "random(9.9,1)";
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_random));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_9));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_decimal_mark));
@@ -364,7 +353,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 		String newYFormula = "random(7.0,1)";
 
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_random));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_7));
@@ -391,7 +379,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 		String newXFormula = "rand(rand(3),1)";
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_random));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_random));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_3));
@@ -412,7 +399,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 		String newYFormula = "rand(4,1)";
 
 		solo.clickOnEditText(Y_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_random));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_4));
@@ -435,7 +421,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 	public void testIfLandscapeOrientationIsDeactivated() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		int orientation = getActivity().getRequestedOrientation();
 
@@ -446,7 +431,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 	public void testGoBackAndEditTextSwitches() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_6));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_minus));
 
@@ -465,7 +449,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 		solo.goBack();
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_minus));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_4));
 
@@ -482,7 +465,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 	public void testRedoAndUndoButtonViewOfKeyboard() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Formula Editor Fragment not shown!",
 				solo.waitForText(solo.getString(R.string.formula_editor_title)));
 
@@ -513,7 +495,6 @@ public class FormulaEditorFragmentTest extends ActivityInstrumentationTestCase2<
 	public void testDeleteButtonViewOfKeyboard() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
-		UiTestUtils.clickOnHintOverlay(solo);
 		assertTrue("Formula Editor Fragment not shown!",
 				solo.waitForText(solo.getString(R.string.formula_editor_title)));
 

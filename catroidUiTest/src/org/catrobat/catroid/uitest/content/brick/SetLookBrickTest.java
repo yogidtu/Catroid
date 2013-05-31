@@ -103,12 +103,10 @@ public class SetLookBrickTest extends ActivityInstrumentationTestCase2<MainMenuA
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 
 		solo.waitForActivity(StageActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(1000);
 		Look look = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).look;
 		assertEquals("look not set", look.getImagePath(), lookDataList.get(0).getAbsolutePath());
 		solo.goBack();
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.goBack();
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 
@@ -117,7 +115,6 @@ public class SetLookBrickTest extends ActivityInstrumentationTestCase2<MainMenuA
 		assertTrue(lookName2 + " is not selected in Spinner", solo.searchText(lookName2));
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 		solo.sleep(1000);
 		look = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).look;
@@ -133,8 +130,6 @@ public class SetLookBrickTest extends ActivityInstrumentationTestCase2<MainMenuA
 		solo.goBack();
 		solo.goBack();
 		solo.clickOnText(solo.getString(R.string.backgrounds));
-
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		clickOnContextMenuItem(lookName, solo.getString(R.string.delete));
 		solo.clickOnButton(solo.getString(R.string.ok));
@@ -161,7 +156,6 @@ public class SetLookBrickTest extends ActivityInstrumentationTestCase2<MainMenuA
 
 		solo.clickOnText(solo.getString(R.string.backgrounds));
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		clickOnContextMenuItem(lookName, solo.getString(R.string.rename));
 
 		solo.clearEditText(0);
@@ -184,11 +178,9 @@ public class SetLookBrickTest extends ActivityInstrumentationTestCase2<MainMenuA
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		String lookPath = ProjectManager.getInstance().getCurrentSprite().getLookDataList().get(0).getAbsolutePath();
 		assertEquals("Wrong image shown in stage --> Problem with Adapter update in Script", look1ImagePath, lookPath);
 		solo.goBack();
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.goBack();
 
 		for (int i = 0; i < 5; ++i) {
@@ -239,12 +231,10 @@ public class SetLookBrickTest extends ActivityInstrumentationTestCase2<MainMenuA
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.sleep(5000);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(2000);
 		String lookPath = ProjectManager.getInstance().getCurrentSprite().look.getImagePath();
 		assertEquals("Wrong image shown in stage --> Problem with Adapter update in Script", lookImagePath, lookPath);
 		solo.goBack();
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.goBack();
 	}
 

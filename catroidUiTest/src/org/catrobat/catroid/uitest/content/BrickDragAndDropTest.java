@@ -143,16 +143,12 @@ public class BrickDragAndDropTest extends ActivityInstrumentationTestCase2<MainM
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 
-		UiTestUtils.clickOnHintOverlay(solo);
-
 		solo.clickOnText(solo.getString(categoryStringId));
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.goBack();
 		categoryStringId = UiTestUtils.getBrickCategory(solo, R.string.brick_stop_all_sounds);
 
 		solo.clickOnText(solo.getString(categoryStringId));
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.brick_stop_all_sounds));
 		solo.clickOnScreen(200, 200);
 		solo.sleep(200);

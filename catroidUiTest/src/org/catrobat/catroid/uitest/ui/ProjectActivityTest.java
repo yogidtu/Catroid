@@ -157,9 +157,7 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 		startScript1.addBrick(setVariableBrick1);
 		startScript1.addBrick(setVariableBrick2);
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(0);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.sleep(200);
 		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_pocketcode_name));
 		solo.sleep(200);
@@ -195,14 +193,11 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 		ProjectManager.getInstance().getCurrentProject().addSprite(sprite);
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
-		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnTextInList(solo, solo.getString(R.string.default_project_name));
 		solo.sleep(200);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_pocketcode_name));
 		solo.sleep(200);
 		solo.clickOnText(solo.getString(R.string.copy));
@@ -217,14 +212,11 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 	public void testCopySprite() {
 		UiTestUtils.createProjectForCopySprite(UiTestUtils.PROJECTNAME1, getActivity());
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
-		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.clickOnTextInList(solo, UiTestUtils.PROJECTNAME1);
 		solo.sleep(200);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_pocketcode_name));
 		solo.sleep(200);
 		assertEquals("Copy is not in context menu!", true, solo.searchText(getActivity().getString(R.string.copy)));
@@ -253,7 +245,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 		solo.clickOnText(solo.getString(R.string.default_project_sprites_pocketcode_name)
 				+ solo.getString(R.string.copy_sprite_name_suffix));
 		solo.sleep(500);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		assertEquals("The number of Bricks differs!", ProjectManager.getInstance().getCurrentSprite().getScript(0)
 				.getBrickList().size(), brickCounter);
@@ -262,14 +253,12 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 	public void testBackgroundSprite() {
 		String sometext = "something" + System.currentTimeMillis();
 
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.clickOnText(solo.getString(R.string.main_menu_new));
 		solo.waitForText(solo.getString(R.string.new_project_dialog_title));
 
 		enterTextAndCloseDialog(sometext);
 
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 		String spriteBackgroundLabel = solo.getString(R.string.background);
 		assertTrue("Wrong name for background sprite!", solo.searchText(spriteBackgroundLabel));
@@ -279,7 +268,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testAddNewSprite() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 		int spriteToCheckIndex = 2;
 		String spriteToCheckName = spriteList.get(spriteToCheckIndex).getName();
 
@@ -311,7 +299,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 		addSprite("eagle");
 
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		assertTrue("Sprite cat is first in list - should be visible on initial start without scrolling",
 				solo.searchText("cat", 0, false));
@@ -325,12 +312,10 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 	}
 
 	public void testOrientation() throws NameNotFoundException {
-		UiTestUtils.clickOnHintOverlay(solo);
 		/// Method 1: Assert it is currently in portrait mode.
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
-		UiTestUtils.clickOnHintOverlay(solo);
 		assertEquals("ProjectActivity not in Portrait mode!", Configuration.ORIENTATION_PORTRAIT, solo
 				.getCurrentActivity().getResources().getConfiguration().orientation);
 
@@ -351,7 +336,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testRenameSpriteContextMenu() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		final String spriteToRename = "renamedTestSpriteName";
 
@@ -373,7 +357,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testDeleteSpriteContextMenu() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		final String spriteToDelete = FIRST_TEST_SPRITE_NAME;
 
@@ -423,17 +406,14 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testMainMenuButton() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.clickOnHomeActionBarButton(solo);
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.assertCurrentActivity("Main menu is not displayed", MainMenuActivity.class);
 	}
 
 	public void testCheckMaxTextLines() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		int expectedLineCount = 1;
 		String spriteName = "poor poor poor poor poor poor poor poor me me me me me me";
@@ -446,7 +426,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testNewSpriteDialog() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 		String addedTestSpriteName = "addedTestSprite";
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
@@ -458,7 +437,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testNewSpriteDialogErrorMessages() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 		String spriteName = "spriteError";
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
@@ -506,7 +484,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testRenameSpriteDialog() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		// Rename sprite to name that already exists
 		//------------ OK Button:
@@ -552,7 +529,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testHeadlinesInList() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		ListView listView = solo.getCurrentListViews().get(0);
 
@@ -583,7 +559,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testClickOnHeadlines() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		String backgroundHeadline = solo.getString(R.string.spritelist_background_headline);
 		solo.clickOnText(backgroundHeadline);
@@ -596,7 +571,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testSpriteListDetails() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		String showDetailsText = solo.getString(R.string.show_details);
 		String hideDetailsText = solo.getString(R.string.hide_details);
@@ -630,7 +604,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 		solo.clickOnText(TEST_SPRITE_NAME);
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.goBack();
 
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
@@ -681,7 +654,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testBottomBarAndContextMenuOnActionModes() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		LinearLayout bottomBarLayout = (LinearLayout) solo.getView(R.id.bottom_bar);
 		LinearLayout addButton = (LinearLayout) bottomBarLayout.findViewById(R.id.button_add);
@@ -743,7 +715,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testDeleteActionModeCheckingAndTitle() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		UiTestUtils.openActionMode(solo, delete, R.id.delete);
 
@@ -788,7 +759,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testDeleteActionModeIfNothingSelected() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		int expectedNumberOfSprites = getCurrentNumberOfSprites();
 
@@ -807,7 +777,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testDeleteActionModeIfSelectedAndPressingBack() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 		int expectedNumberOfSprites = getCurrentNumberOfSprites();
 
 		int timeToWait = 300;
@@ -826,7 +795,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testDeleteActionMode() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		Sprite firstSprite = projectManager.getCurrentProject().getSpriteList().get(1);
 		Sprite secondSprite = projectManager.getCurrentProject().getSpriteList().get(2);
@@ -922,7 +890,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testDeleteMultipleSprites() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 		solo.scrollListToBottom(0);
 
 		UiTestUtils.openActionMode(solo, delete, R.id.delete);
@@ -947,7 +914,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testRenameActionModeChecking() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.openActionMode(solo, rename, 0);
 
 		checkIfCheckboxesAreCorrectlyChecked(false, false);
@@ -965,7 +931,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testRenameActionModeIfNothingSelected() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.openActionMode(solo, rename, 0);
 
 		int timeToWait = 200;
@@ -980,7 +945,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testRenameActionModeIfSelectedAndPressingBack() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 		UiTestUtils.openActionMode(solo, rename, 0);
 
 		int timeToWait = 200;
@@ -996,7 +960,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testRenameActionMode() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		String renamedSpriteName = "renamedSprite";
 
@@ -1018,7 +981,6 @@ public class ProjectActivityTest extends ActivityInstrumentationTestCase2<MainMe
 
 	public void testOverFlowMenuSettings() {
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
-		UiTestUtils.clickOnHintOverlay(solo);
 
 		solo.clickOnMenuItem(solo.getString(R.string.main_menu_settings));
 		solo.assertCurrentActivity("Not in SettingsActivity", SettingsActivity.class);
