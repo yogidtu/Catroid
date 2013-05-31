@@ -58,10 +58,9 @@ public class BroadcastActionTest extends AndroidTestCase {
 		ProjectManager.getInstance().setProject(project);
 
 		sprite.createStartScriptActionSequence();
-
-		while (!sprite.look.getAllActionsAreFinished()) {
+		do {
 			sprite.look.act(1.0f);
-		}
+		} while (!sprite.look.getAllActionsAreFinished());
 
 		assertEquals("Simple broadcast failed", testPosition, (int) sprite.look.getXInUserInterfaceDimensionUnit());
 	}
@@ -93,9 +92,9 @@ public class BroadcastActionTest extends AndroidTestCase {
 
 		sprite.createStartScriptActionSequence();
 
-		while (!sprite.look.getAllActionsAreFinished()) {
+		do {
 			sprite.look.act(1.0f);
-		}
+		} while (!sprite.look.getAllActionsAreFinished());
 
 		assertEquals("Broadcast and wait failed", testPosition, (int) sprite.look.getXInUserInterfaceDimensionUnit());
 	}

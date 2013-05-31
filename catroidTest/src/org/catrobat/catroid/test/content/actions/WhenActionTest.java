@@ -42,9 +42,9 @@ public class WhenActionTest extends AndroidTestCase {
 		sprite.addScript(whenScript);
 		sprite.createWhenScriptActionSequence(whenScript.getAction());
 
-		while (!sprite.look.getAllActionsAreFinished()) {
+		do {
 			sprite.look.act(1.0f);
-		}
+		} while (!sprite.look.getAllActionsAreFinished());
 
 		assertEquals("Simple broadcast failed", (float) testPosition, sprite.look.getX());
 	}

@@ -47,9 +47,9 @@ public class StartResumeSpriteTest extends AndroidTestCase {
 
 		testSprite.createStartScriptActionSequence();
 
-		while (!testSprite.look.getAllActionsAreFinished()) {
+		do {
 			testSprite.look.act(1.0f);
-		}
+		} while (!testSprite.look.getAllActionsAreFinished());
 
 		assertFalse("Sprite is not hidden", testSprite.look.show);
 		assertEquals("the size is not as expected", (float) size / 100, testSprite.look.getScaleX());

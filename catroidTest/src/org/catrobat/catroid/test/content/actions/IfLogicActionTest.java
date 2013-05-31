@@ -71,8 +71,7 @@ public class IfLogicActionTest extends AndroidTestCase {
 
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().deleteUserVariableByName(TEST_USERVARIABLE);
 
-		ProjectManager.getInstance().getCurrentProject().getUserVariables()
-				.addProjectUserVariable(TEST_USERVARIABLE);
+		ProjectManager.getInstance().getCurrentProject().getUserVariables().addProjectUserVariable(TEST_USERVARIABLE);
 
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
@@ -110,9 +109,9 @@ public class IfLogicActionTest extends AndroidTestCase {
 		ProjectManager.getInstance().setCurrentScript(testScript);
 
 		testSprite.createStartScriptActionSequence();
-		while (!testSprite.look.getAllActionsAreFinished()) {
-			testSprite.look.act(1f);
-		}
+		do {
+			testSprite.look.act(1.0f);
+		} while (!testSprite.look.getAllActionsAreFinished());
 
 		userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
@@ -130,8 +129,7 @@ public class IfLogicActionTest extends AndroidTestCase {
 
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().deleteUserVariableByName(TEST_USERVARIABLE);
 
-		ProjectManager.getInstance().getCurrentProject().getUserVariables()
-				.addProjectUserVariable(TEST_USERVARIABLE);
+		ProjectManager.getInstance().getCurrentProject().getUserVariables().addProjectUserVariable(TEST_USERVARIABLE);
 
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);
@@ -177,8 +175,7 @@ public class IfLogicActionTest extends AndroidTestCase {
 		ProjectManager.getInstance().setCurrentSprite(new Sprite("testSprite1"));
 
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().deleteUserVariableByName(TEST_USERVARIABLE);
-		ProjectManager.getInstance().getCurrentProject().getUserVariables()
-				.addProjectUserVariable(TEST_USERVARIABLE);
+		ProjectManager.getInstance().getCurrentProject().getUserVariables().addProjectUserVariable(TEST_USERVARIABLE);
 
 		UserVariable userVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getUserVariable(TEST_USERVARIABLE, null);

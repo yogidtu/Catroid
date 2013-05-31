@@ -84,7 +84,8 @@ public class RepeatActionTest extends InstrumentationTestCase {
 			}
 		}
 
-		assertEquals("Loop delay did was not 20ms!", deltaY * REPEAT_TIMES, (int) testSprite.look.getYInUserInterfaceDimensionUnit());
+		assertEquals("Loop delay did was not 20ms!", deltaY * REPEAT_TIMES,
+				(int) testSprite.look.getYInUserInterfaceDimensionUnit());
 
 	}
 
@@ -105,11 +106,12 @@ public class RepeatActionTest extends InstrumentationTestCase {
 		testSprite.addScript(testScript);
 		testSprite.createStartScriptActionSequence();
 
-		while (!testSprite.look.getAllActionsAreFinished()) {
+		do {
 			testSprite.look.act(1.0f);
-		}
+		} while (!testSprite.look.getAllActionsAreFinished());
 
-		assertEquals("Executed the wrong number of times!", REPEAT_TIMES * deltaY, (int) testSprite.look.getYInUserInterfaceDimensionUnit());
+		assertEquals("Executed the wrong number of times!", REPEAT_TIMES * deltaY,
+				(int) testSprite.look.getYInUserInterfaceDimensionUnit());
 	}
 
 	public void testRepeatCount() {
@@ -131,11 +133,12 @@ public class RepeatActionTest extends InstrumentationTestCase {
 		testSprite.addScript(testScript);
 		testSprite.createStartScriptActionSequence();
 
-		while (!testSprite.look.getAllActionsAreFinished()) {
+		do {
 			testSprite.look.act(1.0f);
-		}
+		} while (!testSprite.look.getAllActionsAreFinished());
 
-		assertEquals("Executed the wrong number of times!", deltaY * 9, (int) testSprite.look.getYInUserInterfaceDimensionUnit());
+		assertEquals("Executed the wrong number of times!", deltaY * 9,
+				(int) testSprite.look.getYInUserInterfaceDimensionUnit());
 
 	}
 
@@ -164,9 +167,9 @@ public class RepeatActionTest extends InstrumentationTestCase {
 
 		float timePerActCycle = 0.5f;
 
-		while (!testSprite.look.getAllActionsAreFinished()) {
+		do {
 			testSprite.look.act(timePerActCycle);
-		}
+		} while (!testSprite.look.getAllActionsAreFinished());
 
 		testSprite.look.act(delta);
 		assertEquals("Executed the wrong number of times!", REPEAT_TIMES * REPEAT_TIMES * deltaY,
