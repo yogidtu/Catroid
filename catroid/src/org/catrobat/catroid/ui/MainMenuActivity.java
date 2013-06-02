@@ -29,8 +29,8 @@ import java.util.concurrent.locks.Lock;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.stage.PreStageActivity;
+import org.catrobat.catroid.tooltipsystem.Tooltip;
 import org.catrobat.catroid.transfers.CheckTokenTask;
 import org.catrobat.catroid.transfers.CheckTokenTask.OnCheckTokenCompleteListener;
 import org.catrobat.catroid.transfers.ProjectDownloadService;
@@ -95,8 +95,8 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		}
 	}
 
-	public static boolean hintBubbleDisplayed = false;
-	public static boolean hintActive = false;
+	public static boolean tooltipBubbleDisplayed = false;
+	public static boolean tooltipActive = false;
 	private static final String TAG = "MainMenuActivity";
 	private static final String PROJECTNAME_TAG = "fname=";
 	private Lock viewSwitchLock = new ViewSwitchLock();
@@ -194,12 +194,12 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 				return true;
 			}
 			case R.id.button_tooltip: {
-				Hint hint = Hint.getInstance();
-				Hint.setContext(this);
-				if (!hintActive) {
-					hint.overlayHint();
+				Tooltip hint = Tooltip.getInstance();
+				Tooltip.setContext(this);
+				if (!tooltipActive) {
+					hint.startTooltipSystem();
 				} else {
-					hint.removeHint();
+					hint.stopTooltipSystem();
 				}
 				return true;
 			}

@@ -27,9 +27,9 @@ import java.util.concurrent.locks.Lock;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
-import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
+import org.catrobat.catroid.tooltipsystem.Tooltip;
 import org.catrobat.catroid.ui.adapter.SpriteAdapter;
 import org.catrobat.catroid.ui.dialogs.NewSpriteDialog;
 import org.catrobat.catroid.ui.fragment.SpritesListFragment;
@@ -51,8 +51,8 @@ public class ProjectActivity extends SherlockFragmentActivity {
 	private SpritesListFragment spritesListFragment;
 	private Lock viewSwitchLock = new ViewSwitchLock();
 
-	public static boolean hintBubbleDisplayed = false;
-	public static boolean hintActive = false;
+	public static boolean tooltipBubbleDisplayed = false;
+	public static boolean tooltipActive = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -113,12 +113,6 @@ public class ProjectActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_showHints: {
-				Hint hint = Hint.getInstance();
-				Hint.setContext(this);
-				hint.overlayHint();
-				return true;
-			}
 			case android.R.id.home: {
 				Intent intent = new Intent(this, MainMenuActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -164,12 +158,12 @@ public class ProjectActivity extends SherlockFragmentActivity {
 			}
 
 			case R.id.button_tooltip: {
-				Hint hint = Hint.getInstance();
-				Hint.setContext(this);
-				if (!hintActive) {
-					hint.overlayHint();
+				Tooltip hint = Tooltip.getInstance();
+				Tooltip.setContext(this);
+				if (!tooltipActive) {
+					hint.startTooltipSystem();
 				} else {
-					hint.removeHint();
+					hint.stopTooltipSystem();
 				}
 				return true;
 			}

@@ -27,7 +27,6 @@ import java.util.concurrent.locks.Lock;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
-import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
@@ -282,12 +281,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		}
 
 		switch (item.getItemId()) {
-			case R.id.menu_showHints: {
-				Hint hint = Hint.getInstance();
-				Hint.setContext(this);
-				hint.overlayHint();
-				return true;
-			}
 			case android.R.id.home:
 				Intent mainMenuIntent = new Intent(this, MainMenuActivity.class);
 				mainMenuIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -1,7 +1,7 @@
-package org.catrobat.catroid.uitest.hintsystem;
+package org.catrobat.catroid.uitest.tooltipsystem;
 
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.hintsystem.Hint;
+import org.catrobat.catroid.tooltipsystem.Tooltip;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -9,11 +9,11 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class HintInMainMenuTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
+public class TooltipInMainMenuTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
 
 	private Solo solo;
 
-	public HintInMainMenuTest() {
+	public TooltipInMainMenuTest() {
 		super(MainMenuActivity.class);
 	}
 
@@ -37,11 +37,11 @@ public class HintInMainMenuTest extends ActivityInstrumentationTestCase2<MainMen
 
 		solo.sleep(200);
 
-		Hint hint = Hint.getInstance();
+		Tooltip hint = Tooltip.getInstance();
 		assertNotNull("The hint is null", hint);
 		//		HintOverlay overlay = hint.getHintOverlay();
 		//		assertNotNull("The overlay is null", overlay);
-		assertNotNull("There are no Hints", Hint.getHints());
+		//		assertNotNull("There are no Hints", Tooltip.getHints());
 		//kann ich überprüfen, dass die tooltip buttons angezeigt werden??
 
 		solo.clickOnScreen(410, 160);

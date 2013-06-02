@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.hintsystem;
+package org.catrobat.catroid.tooltipsystem;
 
 import android.graphics.Paint;
 
@@ -28,34 +28,22 @@ import android.graphics.Paint;
  * @author amore
  * 
  */
-public class HintObject {
+public class ToolTipObject {
 
-	private int pointerXCoordinate;
-	private int pointerYCoordinate;
 	private int textXCoordinate;
 	private int textYCoordinate;
-	private String hintText;
+	private String tooltipText;
 	private int maxWidthObject;
 
-	public HintObject(int[] coordinates, String text) {
-		this.pointerXCoordinate = ScreenParameters.getInstance().setCoordinatesToDensity(coordinates[0], true);
-		this.pointerYCoordinate = ScreenParameters.getInstance().setCoordinatesToDensity(coordinates[1], false);
-
+	public ToolTipObject(int[] coordinates, String text) {
+		this.textXCoordinate = coordinates[0];
+		this.textYCoordinate = coordinates[1];
 		this.maxWidthObject = coordinates[2];
-		this.hintText = addingLineBreaks(text);
-		examineTextPositions(coordinates);
-
-	}
-
-	private void examineTextPositions(int[] coordinates) {
-		this.textXCoordinate = pointerXCoordinate + 60;
-
-		this.textYCoordinate = ScreenParameters.getInstance().setCoordinatesToDensity(coordinates[1], false);
+		this.tooltipText = addingLineBreaks(text);
 
 	}
 
 	private String addingLineBreaks(String text) {
-		int screenWidth = Hint.getInstance().getScreenWidth();
 		int textWidth = maxWidthObject - 40;
 
 		Paint paint = new Paint();
@@ -90,16 +78,8 @@ public class HintObject {
 		return formatedText;
 	}
 
-	public int getXCoordinate() {
-		return pointerXCoordinate;
-	}
-
-	public int getYCoordinate() {
-		return pointerYCoordinate;
-	}
-
-	public String getHintText() {
-		return hintText;
+	public String getTooltipText() {
+		return tooltipText;
 	}
 
 	public int getTextXCoordinate() {
@@ -109,5 +89,4 @@ public class HintObject {
 	public int getTextYCoordinate() {
 		return textYCoordinate;
 	}
-
 }

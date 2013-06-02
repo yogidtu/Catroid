@@ -23,7 +23,6 @@
 package org.catrobat.catroid.ui;
 
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.adapter.ProjectAdapter;
 import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
 import org.catrobat.catroid.ui.fragment.ProjectsListFragment;
@@ -97,12 +96,6 @@ public class MyProjectsActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_showHints: {
-				Hint hint = Hint.getInstance();
-				Hint.setContext(this);
-				hint.overlayHint();
-				return true;
-			}
 			case android.R.id.home: {
 				Intent intent = new Intent(this, MainMenuActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

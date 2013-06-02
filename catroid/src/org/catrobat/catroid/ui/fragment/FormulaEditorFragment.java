@@ -29,7 +29,6 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaEditorEditText;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.InternFormulaParser;
-import org.catrobat.catroid.hintsystem.Hint;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.dialogs.FormulaEditorComputeDialog;
 
@@ -135,9 +134,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		}
 		fragTransaction.commit();
 
-		Hint hint = Hint.getInstance();
-		Hint.setContext(activity);
-		hint.overlayHint();
 	}
 
 	public void updateBrickView() {
