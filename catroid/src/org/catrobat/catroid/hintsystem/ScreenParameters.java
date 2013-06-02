@@ -23,7 +23,7 @@
 package org.catrobat.catroid.hintsystem;
 
 /**
- * @author peter
+ * @author amore
  * 
  */
 public class ScreenParameters {
@@ -35,8 +35,8 @@ public class ScreenParameters {
 	private int actionBarMenuYPosition = 0;
 
 	private int mainMenuToolTipXPosition = 400;
-	private int mainMenuToolTipWidth = 80;
-	private int mainMenuToolTipHeight = 80;
+	private int toolTipWidth = 80;
+	private int toolTipHeight = 80;
 
 	private int mainMenuContinueToolTipYPosition = 150;
 	private int mainMenuNewToolTipYPosition = 300;
@@ -44,6 +44,15 @@ public class ScreenParameters {
 	private int mainMenuForumToolTipYPosition = 500;
 	private int mainMenuCommunityToolTipYPosition = 600;
 	private int mainMenuUploadToolTipYPosition = 700;
+
+	private int projectActivitySpriteBackgroundToolTipXPosition = 200;
+	private int projectActivitySpriteBackgroundToolTipYPosition = 120;
+	private int projectActivitySpriteObjectToolTipXPosition = 200;
+	private int projectActivitySpriteObjectToolTipYPosition = 300;
+	private int projectActivityAddButtonToolTipXPosition = 200;
+	private int projectActivityAddButtonToolTipYPosition = 700;
+	private int projectActivityPlayButtonToolTipXPosition = 400;
+	private int projectActivityPlayButtonToolTipYPosition = 700;
 
 	private ScreenParameters() {
 
@@ -113,12 +122,12 @@ public class ScreenParameters {
 		return mainMenuToolTipXPosition;
 	}
 
-	public int getMainMenuToolTipWidth() {
-		return mainMenuToolTipWidth;
+	public int getToolTipWidth() {
+		return toolTipWidth;
 	}
 
-	public int getMainMenuToolTipHeight() {
-		return mainMenuToolTipHeight;
+	public int getToolTipHeight() {
+		return toolTipHeight;
 	}
 
 	public int getMainMenuContinueToolTipYPosition() {
@@ -143,6 +152,38 @@ public class ScreenParameters {
 
 	public int getMainMenuUploadToolTipYPosition() {
 		return mainMenuUploadToolTipYPosition;
+	}
+
+	public int getProjectActivitySpriteBackgroundToolTipXPosition() {
+		return projectActivitySpriteBackgroundToolTipXPosition;
+	}
+
+	public int getProjectActivitySpriteBackgroundToolTipYPosition() {
+		return projectActivitySpriteBackgroundToolTipYPosition;
+	}
+
+	public int getProjectActivitySpriteObjectToolTipXPosition() {
+		return projectActivitySpriteObjectToolTipXPosition;
+	}
+
+	public int getProjectActivitySpriteObjectToolTipYPosition() {
+		return projectActivitySpriteObjectToolTipYPosition;
+	}
+
+	public int getProjectActivityAddButtonToolTipXPosition() {
+		return projectActivityAddButtonToolTipXPosition;
+	}
+
+	public int getProjectActivityAddButtonToolTipYPosition() {
+		return projectActivityAddButtonToolTipYPosition;
+	}
+
+	public int getProjectActivityPlayButtonToolTipXPosition() {
+		return projectActivityPlayButtonToolTipXPosition;
+	}
+
+	public int getProjectActivityPlayButtonToolTipYPosition() {
+		return projectActivityPlayButtonToolTipYPosition;
 	}
 
 }

@@ -24,15 +24,8 @@ package org.catrobat.catroid.hintsystem;
 
 import java.util.ArrayList;
 
-import org.catrobat.catroid.common.Values;
-
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.PixelFormat;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.WindowManager;
 
 /**
  * @author amore
@@ -42,8 +35,6 @@ public class Hint {
 
 	private static Hint hint = new Hint();
 	private static Context context;
-	private WindowManager windowManager;
-	private HintOverlay hintOverlay;
 
 	static HintController controller = new HintController();
 
@@ -61,92 +52,29 @@ public class Hint {
 	}
 
 	public void overlayHint() {
-		float density = context.getResources().getDisplayMetrics().density;
-		ScreenParameters screenparameters = ScreenParameters.getInstance();
-		screenparameters.setDensityParameter(density);
-
-		WindowManager.LayoutParams windowParameters = createLayoutParameters();
-		windowManager = ((Activity) context).getWindowManager();
-		hintOverlay = new HintOverlay(context);
-		windowManager.addView(hintOverlay, windowParameters);
-		addToolTipButtons();
-	}
-
-	private void addToolTipButtons() {
-		switch (controller.checkActivity()) {
-			case 0:
-				hintOverlay.addToolTipButtonsToMainMenuActivity();
-				break;
-			case 1:
-				hintOverlay.addToolTipButtonsToProjectActivity();
-				break;
-
-		}
-
+		controller.startHintSystem();
 	}
 
 	public void removeHint() {
-
-		windowManager = ((Activity) context).getWindowManager();
-		windowManager.removeViewImmediate(hintOverlay);
-		removeToolTipButtons();
-		hintOverlay = null;
-		System.gc();
-		System.runFinalization();
-
-	}
-
-	public void removeToolTipButtons() {
-		switch (controller.checkActivity()) {
-			case 0:
-				hintOverlay.removeMainMenuActivityToolTipButtons();
-				break;
-			case 1:
-				hintOverlay.removeProjectActivityToolTipButtons();
-				break;
-		}
-
+		controller.stopHintSystem();
 	}
 
 	public boolean setHintPosition(int x, int y, String text) {
-		return hintOverlay.setPostions(x, y, text);
+		return controller.setHintPositions(x, y, text);
 
-	}
-
-	public WindowManager.LayoutParams createLayoutParameters() {
-		WindowManager.LayoutParams windowParameters = new WindowManager.LayoutParams();
-		windowParameters.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-		windowParameters.height = Values.SCREEN_HEIGHT;
-		windowParameters.width = Values.SCREEN_WIDTH;
-		windowParameters.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-				| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
-		windowParameters.format = PixelFormat.TRANSLUCENT;
-		return windowParameters;
 	}
 
 	public static ArrayList<HintObject> getHints() {
-		ArrayList<HintObject> hints = controller.getHints();
-		return hints;
+		return controller.getHints();
+
 	}
 
 	public int getScreenHeight() {
-		int screenHeight = 0;
-		DisplayMetrics deviceDisplayMetrics = new DisplayMetrics();
-
-		windowManager.getDefaultDisplay().getMetrics(deviceDisplayMetrics);
-
-		screenHeight = deviceDisplayMetrics.heightPixels;
-		return screenHeight;
+		return controller.getScreenHeight();
 	}
 
 	public int getScreenWidth() {
-		int screenWidth = 0;
-		DisplayMetrics deviceDisplayMetrics = new DisplayMetrics();
-
-		windowManager.getDefaultDisplay().getMetrics(deviceDisplayMetrics);
-
-		screenWidth = deviceDisplayMetrics.widthPixels;
-		return screenWidth;
+		return controller.getScreenWidth();
 	}
 
 	public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -154,8 +82,8 @@ public class Hint {
 
 	}
 
-	public HintOverlay getHintOverlay() {
-		return hintOverlay;
+	public int checkActivity() {
+		return controller.checkActivity();
 	}
 
 }

@@ -2,7 +2,6 @@ package org.catrobat.catroid.uitest.hintsystem;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.hintsystem.Hint;
-import org.catrobat.catroid.hintsystem.HintOverlay;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -40,8 +39,8 @@ public class HintInMainMenuTest extends ActivityInstrumentationTestCase2<MainMen
 
 		Hint hint = Hint.getInstance();
 		assertNotNull("The hint is null", hint);
-		HintOverlay overlay = hint.getHintOverlay();
-		assertNotNull("The overlay is null", overlay);
+		//		HintOverlay overlay = hint.getHintOverlay();
+		//		assertNotNull("The overlay is null", overlay);
 		assertNotNull("There are no Hints", Hint.getHints());
 		//kann ich überprüfen, dass die tooltip buttons angezeigt werden??
 
