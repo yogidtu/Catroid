@@ -43,6 +43,7 @@ public class Sprite implements Serializable, Cloneable {
 	private ArrayList<LookData> lookList;
 	private ArrayList<SoundInfo> soundList;
 	public transient Look look;
+	protected AbstractActionFactory actionFactory = new ActionFactory();
 
 	public transient boolean isPaused;
 
@@ -66,7 +67,7 @@ public class Sprite implements Serializable, Cloneable {
 		return this;
 	}
 
-	private void init() {
+	protected void init() {
 		look = new Look(this);
 		isPaused = false;
 		if (soundList == null) {
@@ -267,6 +268,10 @@ public class Sprite implements Serializable, Cloneable {
 			ressources |= script.getRequiredResources();
 		}
 		return ressources;
+	}
+
+	public AbstractActionFactory getActionFactory() {
+		return actionFactory;
 	}
 
 	@Override

@@ -27,7 +27,6 @@ import java.util.List;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -175,7 +174,8 @@ public class LegoNxtMotorStopBrick extends BrickBaseType implements OnItemSelect
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.legoNxtMotorStop(motorEnum));
+		//		sequence.addAction(ExtendedActions.legoNxtMotorStop(motorEnum));
+		sequence.addAction(sprite.getActionFactory().createLegoNxtMotorStopAction(motorEnum));
 		return null;
 	}
 }

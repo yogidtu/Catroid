@@ -62,7 +62,7 @@ public class PhysicObject {
 
 		short collisionBits = 0;
 		setCollisionBits(collisionBits, collisionBits);
-		setType(Type.NONE);
+		setType(Type.DYNAMIC);
 	}
 
 	public void setShape(Shape[] shapes) {

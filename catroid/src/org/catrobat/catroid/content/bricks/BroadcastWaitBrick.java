@@ -30,7 +30,6 @@ import org.catrobat.catroid.common.MessageContainer;
 import org.catrobat.catroid.content.BroadcastScript;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.ui.dialogs.BrickTextDialog;
 
 import android.content.Context;
@@ -209,7 +208,8 @@ public class BroadcastWaitBrick extends BrickBaseType {
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.broadcastFromWaiter(sprite, broadcastMessage));
+		//		sequence.addAction(ExtendedActions.broadcastFromWaiter(sprite, broadcastMessage));
+		sequence.addAction(sprite.getActionFactory().createBroadcastActionFromWaiter(sprite, broadcastMessage));
 		return null;
 	}
 

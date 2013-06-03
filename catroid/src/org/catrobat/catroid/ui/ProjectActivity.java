@@ -31,6 +31,7 @@ import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.adapter.SpriteAdapter;
 import org.catrobat.catroid.ui.dialogs.NewSpriteDialog;
+import org.catrobat.catroid.ui.dialogs.NewSpritePhysicDialog;
 import org.catrobat.catroid.ui.fragment.SpritesListFragment;
 
 import android.content.Intent;
@@ -187,7 +188,8 @@ public class ProjectActivity extends SherlockFragmentActivity {
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
-		NewSpriteDialog dialog = new NewSpriteDialog();
+		//NewSpriteDialog dialog = new NewSpriteDialog();
+		NewSpritePhysicDialog dialog = new NewSpritePhysicDialog();
 		dialog.show(getSupportFragmentManager(), NewSpriteDialog.DIALOG_FRAGMENT_TAG);
 	}
 

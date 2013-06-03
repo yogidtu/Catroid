@@ -20,34 +20,33 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.actions;
+package org.catrobat.catroid.content;
 
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.physics.PhysicObject;
 
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
+public class PhysicSprite extends Sprite {
 
-public class TurnRightSpeedAction extends TemporalAction {
+	private static final long serialVersionUID = 1L;
 
-	private Sprite sprite;
-	private PhysicObject physicObject;
-	private Formula speed;
+	private transient PhysicObject physicObject;
+
+	public PhysicSprite(String name) {
+		super(name);
+	}
 
 	@Override
-	protected void update(float percent) {
-		physicObject.setRotationSpeed(-speed.interpretFloat(sprite));
+	protected void init() {
+		super.init();
+		physicObject = ProjectManager.getInstance().getCurrentProject().getPhysicObject(this);
+		actionFactory = new ActionPhysicsFactory();
 	}
 
-	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
+	@Override
+	public void resetSprite() {
+		super.resetSprite();
+		physicObject = ProjectManager.getInstance().getCurrentProject().getPhysicObject(this);
+		actionFactory = new ActionPhysicsFactory();
 	}
 
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
-	}
-
-	public void setSpeed(Formula speed) {
-		this.speed = speed;
-	}
 }

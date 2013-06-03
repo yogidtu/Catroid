@@ -1,6 +1,6 @@
 /**
  *  Catroid: An on-device visual programming system for Android devices
- *  Copyright (C) 2010-2013 The Catrobat Team
+ *  Copyleft (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
  *  
  *  This program is free software: you can redistribute it and/or modify
@@ -20,14 +20,15 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.bricks;
+package org.catrobat.catroid.content.bricks.physics;
 
 import java.util.List;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicObjectBrick;
@@ -46,25 +47,25 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class SetBounceFactorBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
+public class TurnLeftSpeedBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
 	private static final long serialVersionUID = 1L;
 
 	private PhysicObject physicObject;
-	private Formula bounceFactor;
+	private Formula degreesPerSecond;
 
 	private transient View prototypeView;
 
-	public SetBounceFactorBrick() {
+	public TurnLeftSpeedBrick() {
 	}
 
-	public SetBounceFactorBrick(Sprite sprite, float bounceFactor) {
+	public TurnLeftSpeedBrick(Sprite sprite, float degreesPerSecond) {
 		this.sprite = sprite;
-		this.bounceFactor = new Formula(bounceFactor);
+		this.degreesPerSecond = new Formula(degreesPerSecond);
 	}
 
-	public SetBounceFactorBrick(Sprite sprite, Formula bounceFactor) {
+	public TurnLeftSpeedBrick(Sprite sprite, Formula degreesPerSecond) {
 		this.sprite = sprite;
-		this.bounceFactor = bounceFactor;
+		this.degreesPerSecond = degreesPerSecond;
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class SetBounceFactorBrick extends BrickBaseType implements PhysicObjectB
 
 	@Override
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
-		SetBounceFactorBrick copyBrick = (SetBounceFactorBrick) clone();
+		TurnLeftSpeedBrick copyBrick = (TurnLeftSpeedBrick) clone();
 		copyBrick.sprite = sprite;
 		return copyBrick;
 	}
@@ -90,10 +91,10 @@ public class SetBounceFactorBrick extends BrickBaseType implements PhysicObjectB
 			return view;
 		}
 
-		view = View.inflate(context, R.layout.brick_set_bounce_factor, null);
+		view = View.inflate(context, R.layout.brick_turn_left_speed, null);
 		view = getViewWithAlpha(alphaValue);
 
-		setCheckboxView(R.id.brick_set_bounce_factor_checkbox);
+		setCheckboxView(R.id.brick_turn_left_speed_checkbox);
 
 		final Brick brickInstance = this;
 		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -105,10 +106,10 @@ public class SetBounceFactorBrick extends BrickBaseType implements PhysicObjectB
 			}
 		});
 
-		TextView text = (TextView) view.findViewById(R.id.brick_set_bounce_factor_prototype_text_view);
-		EditText edit = (EditText) view.findViewById(R.id.brick_set_bounce_factor_edit_text);
+		TextView text = (TextView) view.findViewById(R.id.brick_turn_left_speed_prototype_text_view);
+		EditText edit = (EditText) view.findViewById(R.id.brick_turn_left_speed_edit_text);
 
-		edit.setText(String.valueOf(bounceFactor));
+		edit.setText(String.valueOf(degreesPerSecond));
 		text.setVisibility(View.GONE);
 		edit.setVisibility(View.VISIBLE);
 		edit.setOnClickListener(this);
@@ -118,16 +119,15 @@ public class SetBounceFactorBrick extends BrickBaseType implements PhysicObjectB
 
 	@Override
 	public View getPrototypeView(Context context) {
-		prototypeView = View.inflate(context, R.layout.brick_set_bounce_factor, null);
-		TextView textXPosition = (TextView) prototypeView
-				.findViewById(R.id.brick_set_bounce_factor_prototype_text_view);
-		textXPosition.setText(String.valueOf(bounceFactor.interpretInteger(sprite)));
+		prototypeView = View.inflate(context, R.layout.brick_turn_left_speed, null);
+		TextView textXPosition = (TextView) prototypeView.findViewById(R.id.brick_turn_left_speed_prototype_text_view);
+		textXPosition.setText(String.valueOf(degreesPerSecond.interpretInteger(sprite)));
 		return prototypeView;
 	}
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_bounce_factor_layout);
+		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_turn_left_speed_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
 		this.alphaValue = (alphaValue);
@@ -136,7 +136,7 @@ public class SetBounceFactorBrick extends BrickBaseType implements PhysicObjectB
 
 	@Override
 	public Brick clone() {
-		return new SetBounceFactorBrick(getSprite(), bounceFactor.clone());
+		return new TurnLeftSpeedBrick(sprite, degreesPerSecond.clone());
 	}
 
 	@Override
@@ -144,12 +144,13 @@ public class SetBounceFactorBrick extends BrickBaseType implements PhysicObjectB
 		if (checkbox.getVisibility() == View.VISIBLE) {
 			return;
 		}
-		FormulaEditorFragment.showFragment(view, this, bounceFactor);
+		FormulaEditorFragment.showFragment(view, this, degreesPerSecond);
 	}
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.setBounceFactor(sprite, physicObject, bounceFactor));
+		//		sequence.addAction(ExtendedActions.turnLeftSpeed(sprite, physicObject, degreesPerSecond));
+		sequence.addAction(sprite.getActionFactory().createTurnLeftSpeedAction(sprite, physicObject, degreesPerSecond));
 		return null;
 	}
 }

@@ -20,28 +20,34 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.actions;
+package org.catrobat.catroid.content.actions.physics;
 
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicObject.Type;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public class SetPhysicObjectTypeAction extends TemporalAction {
+public class TurnRightSpeedAction extends TemporalAction {
 
+	private Sprite sprite;
 	private PhysicObject physicObject;
-	private Type type;
+	private Formula speed;
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setType(type);
+		physicObject.setRotationSpeed(-speed.interpretFloat(sprite));
+	}
+
+	public void setSprite(Sprite sprite) {
+		this.sprite = sprite;
 	}
 
 	public void setPhysicObject(PhysicObject physicObject) {
 		this.physicObject = physicObject;
 	}
 
-	public void setType(Type type) {
-		this.type = type;
+	public void setSpeed(Formula speed) {
+		this.speed = speed;
 	}
 }

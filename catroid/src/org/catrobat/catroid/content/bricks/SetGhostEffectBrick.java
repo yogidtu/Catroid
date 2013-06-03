@@ -27,7 +27,6 @@ import java.util.List;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
@@ -151,7 +150,8 @@ public class SetGhostEffectBrick extends BrickBaseType implements OnClickListene
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.setGhostEffect(sprite, transparency));
+		//		sequence.addAction(ExtendedActions.setGhostEffect(sprite, transparency));
+		sequence.addAction(sprite.getActionFactory().createSetGhostEffectAction(sprite, transparency));
 		return null;
 	}
 }

@@ -31,6 +31,8 @@ import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.MessageContainer;
 import org.catrobat.catroid.common.Values;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
+import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicWorld;
 import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
@@ -49,6 +51,8 @@ public class Project implements Serializable {
 	private List<Sprite> spriteList = new ArrayList<Sprite>();
 	@XStreamAlias("variables")
 	private UserVariablesContainer userVariables = null;
+
+	private transient PhysicWorld physicWorld;
 
 	public Project(Context context, String name) {
 		xmlHeader.setProgramName(name);
@@ -74,6 +78,7 @@ public class Project implements Serializable {
 			return;
 		}
 
+		physicWorld = new PhysicWorld(Values.SCREEN_WIDTH, Values.SCREEN_HEIGHT);
 		xmlHeader.setApplicationName(context.getString(R.string.app_name));
 		Sprite background = new Sprite(context.getString(R.string.background));
 		background.look.setZIndex(0);
@@ -168,10 +173,19 @@ public class Project implements Serializable {
 
 	// default constructor for XMLParser
 	public Project() {
+		physicWorld = new PhysicWorld(Values.SCREEN_WIDTH, Values.SCREEN_HEIGHT);
 	}
 
 	public UserVariablesContainer getUserVariables() {
 		return userVariables;
+	}
+
+	public PhysicWorld getPhysicWorld() {
+		return physicWorld;
+	}
+
+	public PhysicObject getPhysicObject(PhysicSprite physicSprite) {
+		return physicWorld.getPhysicObject(physicSprite);
 	}
 
 }

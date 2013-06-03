@@ -20,13 +20,14 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.bricks;
+package org.catrobat.catroid.content.bricks.physics;
 
 import java.util.List;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicObject.Type;
 import org.catrobat.catroid.physics.PhysicObjectBrick;
@@ -169,7 +170,8 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType implements PhysicObj
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.setPhysicObjectType(sprite, physicObject, type));
+		//		sequence.addAction(ExtendedActions.setPhysicObjectType(sprite, physicObject, type));
+		sequence.addAction(sprite.getActionFactory().createSetPhysicObjectTypeAction(sprite, physicObject, type));
 		return null;
 	}
 }

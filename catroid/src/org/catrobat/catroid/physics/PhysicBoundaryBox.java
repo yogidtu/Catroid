@@ -22,9 +22,6 @@
  */
 package org.catrobat.catroid.physics;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.content.Project;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -46,11 +43,14 @@ public class PhysicBoundaryBox {
 
 	/**
 	 * TODO: Create only one body with four shapes (sides). Refactor test after that.
+	 * 
+	 * @param height
+	 * @param width
 	 */
-	public void create() {
-		Project currentProject = ProjectManager.getInstance().getCurrentProject();
-		float boxWidth = PhysicWorldConverter.lengthCatToBox2d(currentProject.getVirtualScreenWidth());
-		float boxHeight = PhysicWorldConverter.lengthCatToBox2d(currentProject.getVirtualScreenHeight());
+	public void create(int width, int height) {
+		//		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+		float boxWidth = PhysicWorldConverter.lengthCatToBox2d(width);
+		float boxHeight = PhysicWorldConverter.lengthCatToBox2d(height);
 		float boxElementSize = PhysicWorldConverter.lengthCatToBox2d(PhysicBoundaryBox.FRAME_SIZE);
 		float halfBoxElementSize = boxElementSize / 2.0f;
 

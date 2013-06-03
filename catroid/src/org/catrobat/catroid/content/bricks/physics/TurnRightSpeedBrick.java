@@ -20,14 +20,15 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.bricks;
+package org.catrobat.catroid.content.bricks.physics;
 
 import java.util.List;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicObjectBrick;
@@ -46,25 +47,25 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
+public class TurnRightSpeedBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
 	private static final long serialVersionUID = 1L;
 
 	private PhysicObject physicObject;
-	private Formula friction;
+	private Formula degreesPerSecond;
 
 	private transient View prototypeView;
 
-	public SetFrictionBrick() {
+	public TurnRightSpeedBrick() {
 	}
 
-	public SetFrictionBrick(Sprite sprite, float friction) {
+	public TurnRightSpeedBrick(Sprite sprite, float degreesPerSecond) {
 		this.sprite = sprite;
-		this.friction = new Formula(friction);
+		this.degreesPerSecond = new Formula(degreesPerSecond);
 	}
 
-	public SetFrictionBrick(Sprite sprite, Formula friction) {
+	public TurnRightSpeedBrick(Sprite sprite, Formula degreesPerSecond) {
 		this.sprite = sprite;
-		this.friction = friction;
+		this.degreesPerSecond = degreesPerSecond;
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 
 	@Override
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
-		SetFrictionBrick copyBrick = (SetFrictionBrick) clone();
+		TurnRightSpeedBrick copyBrick = (TurnRightSpeedBrick) clone();
 		copyBrick.sprite = sprite;
 		return copyBrick;
 	}
@@ -90,10 +91,10 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 			return view;
 		}
 
-		view = View.inflate(context, R.layout.brick_set_friction, null);
+		view = View.inflate(context, R.layout.brick_turn_right_speed, null);
 		view = getViewWithAlpha(alphaValue);
 
-		setCheckboxView(R.id.brick_set_friction_checkbox);
+		setCheckboxView(R.id.brick_turn_right_speed_checkbox);
 
 		final Brick brickInstance = this;
 		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -105,10 +106,10 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 			}
 		});
 
-		TextView text = (TextView) view.findViewById(R.id.brick_set_friction_prototype_text_view);
-		EditText edit = (EditText) view.findViewById(R.id.brick_set_friction_edit_text);
+		TextView text = (TextView) view.findViewById(R.id.brick_turn_right_speed_prototype_text_view);
+		EditText edit = (EditText) view.findViewById(R.id.brick_turn_right_speed_edit_text);
 
-		edit.setText(String.valueOf(friction));
+		edit.setText(String.valueOf(degreesPerSecond));
 		text.setVisibility(View.GONE);
 		edit.setVisibility(View.VISIBLE);
 		edit.setOnClickListener(this);
@@ -118,15 +119,15 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 
 	@Override
 	public View getPrototypeView(Context context) {
-		prototypeView = View.inflate(context, R.layout.brick_set_friction, null);
-		TextView textXPosition = (TextView) prototypeView.findViewById(R.id.brick_set_friction_prototype_text_view);
-		textXPosition.setText(String.valueOf(friction.interpretInteger(sprite)));
+		prototypeView = View.inflate(context, R.layout.brick_turn_right_speed, null);
+		TextView textXPosition = (TextView) prototypeView.findViewById(R.id.brick_turn_right_speed_prototype_text_view);
+		textXPosition.setText(String.valueOf(degreesPerSecond.interpretInteger(sprite)));
 		return prototypeView;
 	}
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_friction_layout);
+		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_turn_right_speed_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
 		this.alphaValue = (alphaValue);
@@ -135,7 +136,7 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 
 	@Override
 	public Brick clone() {
-		return new SetFrictionBrick(getSprite(), friction.clone());
+		return new TurnRightSpeedBrick(sprite, degreesPerSecond.clone());
 	}
 
 	@Override
@@ -143,12 +144,13 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 		if (checkbox.getVisibility() == View.VISIBLE) {
 			return;
 		}
-		FormulaEditorFragment.showFragment(view, this, friction);
+		FormulaEditorFragment.showFragment(view, this, degreesPerSecond);
 	}
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.setFriction(sprite, physicObject, friction));
+		//		sequence.addAction(ExtendedActions.turnRightSpeed(sprite, physicObject, degreesPerSecond));
+		sequence.addAction(sprite.getActionFactory().createTurnRightSpeedAction(sprite, physicObject, degreesPerSecond));
 		return null;
 	}
 }

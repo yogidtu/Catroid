@@ -27,7 +27,6 @@ import java.util.List;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -108,7 +107,8 @@ public class StopAllSoundsBrick extends BrickBaseType {
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.stopAllSounds());
+		//		sequence.addAction(ExtendedActions.stopAllSounds());
+		sequence.addAction(sprite.getActionFactory().createStopAllSoundsAction());
 		return null;
 	}
 

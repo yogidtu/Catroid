@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.catrobat.catroid.content.Look;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.physics.PhysicObject.Type;
 
@@ -55,12 +56,16 @@ public class PhysicWorld {
 	private Box2DDebugRenderer renderer;
 	private int stabilizingStep = 0;
 
+	public PhysicWorld(int width, int height) {
+		this();
+		PhysicBoundaryBox physicBoundaryBox = new PhysicBoundaryBox(world);
+		physicBoundaryBox.create(width, height);
+	}
+
 	public PhysicWorld() {
 		world = new World(PhysicWorld.DEFAULT_GRAVITY, PhysicWorld.IGNORE_SLEEPING_OBJECTS);
 		physicObjects = new HashMap<Sprite, PhysicObject>();
 
-		PhysicBoundaryBox physicBoundaryBox = new PhysicBoundaryBox(world);
-		physicBoundaryBox.create();
 	}
 
 	public void step(float deltaTime) {
@@ -78,15 +83,17 @@ public class PhysicWorld {
 
 	private void updateSprites() {
 		PhysicObject physicObject;
-		PhysicLook costume;
+		Look look;
 		for (Entry<Sprite, PhysicObject> entry : physicObjects.entrySet()) {
 			physicObject = entry.getValue();
 			if (physicObject.getType() != Type.DYNAMIC) {
 			}
 			physicObject.setIfOnEdgeBounce(false);
 
-			costume = (PhysicLook) entry.getKey().look;
-			costume.updatePositionAndRotation();
+			look = entry.getKey().look;
+			look.setXInUserInterfaceDimensionUnit(physicObject.getXPosition());
+			look.setYInUserInterfaceDimensionUnit(physicObject.getYPosition());
+			look.setRotation(physicObject.getAngle());
 		}
 	}
 

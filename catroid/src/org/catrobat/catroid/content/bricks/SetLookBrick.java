@@ -28,7 +28,6 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.fragment.LookFragment;
 import org.catrobat.catroid.ui.fragment.LookFragment.OnLookDataListChangedAfterNewListener;
@@ -220,7 +219,8 @@ public class SetLookBrick extends BrickBaseType implements OnLookDataListChanged
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.setLook(sprite, look));
+		//		sequence.addAction(ExtendedActions.setLook(sprite, look));
+		sequence.addAction(sprite.getActionFactory().createSetLookAction(sprite, look));
 		return null;
 	}
 

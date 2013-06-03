@@ -20,37 +20,34 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.actions;
+package org.catrobat.catroid.content.actions.physics;
 
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.PhysicObject;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public class SetGravityAction extends TemporalAction {
+public class SetBounceFactorAction extends TemporalAction {
 
 	private Sprite sprite;
-	private PhysicWorld physicWorld;
-	private Formula gravityX;
-	private Formula gravityY;
+	private PhysicObject physicObject;
+	private Formula bounceFactor;
 
 	@Override
 	protected void update(float percent) {
-		physicWorld.setGravity(new Vector2(gravityX.interpretFloat(sprite), gravityY.interpretFloat(sprite)));
+		physicObject.setBounceFactor(bounceFactor.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 
-	public void setPhysicWorld(PhysicWorld physicWorld) {
-		this.physicWorld = physicWorld;
+	public void setPhysicObject(PhysicObject physicObject) {
+		this.physicObject = physicObject;
 	}
 
-	public void setGravity(Formula gravityX, Formula gravityY) {
-		this.gravityX = gravityX;
-		this.gravityY = gravityY;
+	public void setBounceFactor(Formula bounceFactor) {
+		this.bounceFactor = bounceFactor;
 	}
 }

@@ -356,7 +356,7 @@ public class StageListener implements ApplicationListener {
 				long timeBeforeActionsUpdate = SystemClock.uptimeMillis();
 				while (deltaTime > 0f) {
 					stage.act(optimizedDeltaTime);
-					physicWorld.step(optimizedDeltaTime); // XXX: Yeah baby!
+					project.getPhysicWorld().step(optimizedDeltaTime); // XXX: Yeah baby!
 					deltaTime -= optimizedDeltaTime;
 				}
 				long executionTimeOfActionsUpdate = SystemClock.uptimeMillis() - timeBeforeActionsUpdate;

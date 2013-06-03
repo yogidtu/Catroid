@@ -29,7 +29,6 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.dialogs.NewSpriteDialog;
 
@@ -194,7 +193,8 @@ public class PointToBrick extends BrickBaseType {
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.pointTo(sprite, pointedObject));
+		//		sequence.addAction(ExtendedActions.pointTo(sprite, pointedObject));
+		sequence.addAction(sprite.getActionFactory().createPointToAction(sprite, pointedObject));
 		return null;
 	}
 

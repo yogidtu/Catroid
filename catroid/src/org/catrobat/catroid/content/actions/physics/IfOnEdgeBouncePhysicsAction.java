@@ -20,34 +20,23 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.actions;
+package org.catrobat.catroid.content.actions.physics;
 
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicObject;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public class SetFrictionAction extends TemporalAction {
+public class IfOnEdgeBouncePhysicsAction extends TemporalAction {
 
 	private Sprite sprite;
-	private PhysicObject physicObject;
-	private Formula friction;
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setFriction(friction.interpretFloat(sprite));
+		throw new RuntimeException("This action is not implemented yet: " + this.getClass());
 	}
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
-	}
-
-	public void setFriction(Formula friction) {
-		this.friction = friction;
-	}
 }

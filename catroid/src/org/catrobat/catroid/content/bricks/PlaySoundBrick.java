@@ -28,7 +28,6 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.fragment.SoundFragment;
 import org.catrobat.catroid.ui.fragment.SoundFragment.OnSoundInfoListChangedAfterNewListener;
@@ -206,7 +205,8 @@ public class PlaySoundBrick extends BrickBaseType implements OnItemSelectedListe
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.playSound(sprite, sound));
+		//		sequence.addAction(ExtendedActions.playSound(sprite, sound));
+		sequence.addAction(sprite.getActionFactory().createPlaySoundAction(sprite, sound));
 		return null;
 	}
 

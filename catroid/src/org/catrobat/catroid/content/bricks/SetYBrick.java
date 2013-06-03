@@ -27,7 +27,6 @@ import java.util.List;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
@@ -145,7 +144,8 @@ public class SetYBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.setY(sprite, yPosition));
+		//		sequence.addAction(ExtendedActions.setY(sprite, yPosition));
+		sequence.addAction(sprite.getActionFactory().createSetYAction(sprite, yPosition));
 		return null;
 	}
 }

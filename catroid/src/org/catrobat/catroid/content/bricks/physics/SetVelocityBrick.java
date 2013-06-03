@@ -20,17 +20,18 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.bricks;
+package org.catrobat.catroid.content.bricks.physics;
 
 import java.util.List;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicWorld;
-import org.catrobat.catroid.physics.PhysicWorldBrick;
+import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicObjectBrick;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
@@ -47,28 +48,28 @@ import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class SetGravityBrick extends BrickBaseType implements PhysicWorldBrick, OnClickListener {
+public class SetVelocityBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
 	private static final long serialVersionUID = 1L;
 
-	private PhysicWorld physicWorld;
-	private Formula gravityX;
-	private Formula gravityY;
+	private PhysicObject physicObject;
+	private Formula velocityX;
+	private Formula velocityY;
 
 	private transient View prototypeView;
 
-	public SetGravityBrick() {
+	public SetVelocityBrick() {
 	}
 
-	public SetGravityBrick(Sprite sprite, Vector2 gravity) {
+	public SetVelocityBrick(Sprite sprite, Vector2 velocity) {
 		this.sprite = sprite;
-		this.gravityX = new Formula(gravity.x);
-		this.gravityY = new Formula(gravity.y);
+		this.velocityX = new Formula(velocity.x);
+		this.velocityY = new Formula(velocity.y);
 	}
 
-	public SetGravityBrick(Sprite sprite, Formula gravityX, Formula gravityY) {
+	public SetVelocityBrick(Sprite sprite, Formula velocityX, Formula velocityY) {
 		this.sprite = sprite;
-		this.gravityX = gravityX;
-		this.gravityY = gravityY;
+		this.velocityX = velocityX;
+		this.velocityY = velocityY;
 	}
 
 	@Override
@@ -78,14 +79,14 @@ public class SetGravityBrick extends BrickBaseType implements PhysicWorldBrick, 
 
 	@Override
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
-		SetGravityBrick copyBrick = (SetGravityBrick) clone();
+		SetVelocityBrick copyBrick = (SetVelocityBrick) clone();
 		copyBrick.sprite = sprite;
 		return copyBrick;
 	}
 
 	@Override
-	public void setPhysicWorld(PhysicWorld physicWorld) {
-		this.physicWorld = physicWorld;
+	public void setPhysicObject(PhysicObject physicObject) {
+		this.physicObject = physicObject;
 	}
 
 	@Override
@@ -94,10 +95,10 @@ public class SetGravityBrick extends BrickBaseType implements PhysicWorldBrick, 
 			return view;
 		}
 
-		view = View.inflate(context, R.layout.brick_set_gravity, null);
+		view = View.inflate(context, R.layout.brick_set_velocity, null);
 		view = getViewWithAlpha(alphaValue);
 
-		setCheckboxView(R.id.brick_set_gravity_checkbox);
+		setCheckboxView(R.id.brick_set_velocity_checkbox);
 
 		final Brick brickInstance = this;
 		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -108,19 +109,19 @@ public class SetGravityBrick extends BrickBaseType implements PhysicWorldBrick, 
 			}
 		});
 
-		TextView textX = (TextView) view.findViewById(R.id.brick_set_gravity_prototype_text_view_x);
-		EditText editX = (EditText) view.findViewById(R.id.brick_set_gravity_edit_text_x);
-		gravityX.setTextFieldId(R.id.brick_set_gravity_edit_text_x);
-		gravityX.refreshTextField(view);
+		TextView textX = (TextView) view.findViewById(R.id.brick_set_velocity_prototype_text_view_x);
+		EditText editX = (EditText) view.findViewById(R.id.brick_set_velocity_edit_text_x);
+		velocityX.setTextFieldId(R.id.brick_set_velocity_edit_text_x);
+		velocityX.refreshTextField(view);
 
 		textX.setVisibility(View.GONE);
 		editX.setVisibility(View.VISIBLE);
 		editX.setOnClickListener(this);
 
-		TextView textY = (TextView) view.findViewById(R.id.brick_set_gravity_prototype_text_view_y);
-		EditText editY = (EditText) view.findViewById(R.id.brick_set_gravity_edit_text_y);
-		gravityY.setTextFieldId(R.id.brick_set_gravity_edit_text_y);
-		gravityY.refreshTextField(view);
+		TextView textY = (TextView) view.findViewById(R.id.brick_set_velocity_prototype_text_view_y);
+		EditText editY = (EditText) view.findViewById(R.id.brick_set_velocity_edit_text_y);
+		velocityY.setTextFieldId(R.id.brick_set_velocity_edit_text_y);
+		velocityY.refreshTextField(view);
 		textY.setVisibility(View.GONE);
 		editY.setVisibility(View.VISIBLE);
 		editY.setOnClickListener(this);
@@ -129,35 +130,35 @@ public class SetGravityBrick extends BrickBaseType implements PhysicWorldBrick, 
 
 	@Override
 	public View getPrototypeView(Context context) {
-		prototypeView = View.inflate(context, R.layout.brick_set_gravity, null);
-		TextView textX = (TextView) prototypeView.findViewById(R.id.brick_set_gravity_prototype_text_view_x);
-		textX.setText(String.valueOf(gravityX.interpretInteger(sprite)));
-		TextView textY = (TextView) prototypeView.findViewById(R.id.brick_set_gravity_prototype_text_view_y);
-		textY.setText(String.valueOf(gravityY.interpretInteger(sprite)));
+		prototypeView = View.inflate(context, R.layout.brick_set_velocity, null);
+		TextView textX = (TextView) prototypeView.findViewById(R.id.brick_set_velocity_prototype_text_view_x);
+		textX.setText(String.valueOf(velocityX.interpretInteger(sprite)));
+		TextView textY = (TextView) prototypeView.findViewById(R.id.brick_set_velocity_prototype_text_view_y);
+		textY.setText(String.valueOf(velocityY.interpretInteger(sprite)));
 		return prototypeView;
 	}
 
 	@Override
 	public Brick clone() {
-		return new SetGravityBrick(getSprite(), gravityX.clone(), gravityY.clone());
+		return new SetVelocityBrick(getSprite(), velocityX.clone(), velocityY.clone());
 	}
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_gravity_layout);
+		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_velocity_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
 
-		TextView setGravityLabel = (TextView) view.findViewById(R.id.brick_set_gravity_label);
-		TextView setGravityX = (TextView) view.findViewById(R.id.brick_set_gravity_x_textview);
-		TextView setGravityY = (TextView) view.findViewById(R.id.brick_set_gravity_y_textview);
-		TextView setGravityUnit = (TextView) view.findViewById(R.id.brick_set_gravity_unit);
-		EditText editX = (EditText) view.findViewById(R.id.brick_set_gravity_edit_text_x);
-		EditText editY = (EditText) view.findViewById(R.id.brick_set_gravity_edit_text_y);
-		setGravityLabel.setTextColor(setGravityLabel.getTextColors().withAlpha(alphaValue));
-		setGravityX.setTextColor(setGravityX.getTextColors().withAlpha(alphaValue));
-		setGravityY.setTextColor(setGravityY.getTextColors().withAlpha(alphaValue));
-		setGravityUnit.setTextColor(setGravityUnit.getTextColors().withAlpha(alphaValue));
+		TextView setVelocityLabel = (TextView) view.findViewById(R.id.brick_set_velocity_label);
+		TextView setVelocityX = (TextView) view.findViewById(R.id.brick_set_velocity_x_textview);
+		TextView setVelocityY = (TextView) view.findViewById(R.id.brick_set_velocity_y_textview);
+		TextView setVelocityUnit = (TextView) view.findViewById(R.id.brick_set_velocity_unit);
+		EditText editX = (EditText) view.findViewById(R.id.brick_set_velocity_edit_text_x);
+		EditText editY = (EditText) view.findViewById(R.id.brick_set_velocity_edit_text_y);
+		setVelocityLabel.setTextColor(setVelocityLabel.getTextColors().withAlpha(alphaValue));
+		setVelocityX.setTextColor(setVelocityX.getTextColors().withAlpha(alphaValue));
+		setVelocityY.setTextColor(setVelocityY.getTextColors().withAlpha(alphaValue));
+		setVelocityUnit.setTextColor(setVelocityUnit.getTextColors().withAlpha(alphaValue));
 		editX.setTextColor(editX.getTextColors().withAlpha(alphaValue));
 		editX.getBackground().setAlpha(alphaValue);
 		editY.setTextColor(editY.getTextColors().withAlpha(alphaValue));
@@ -173,19 +174,21 @@ public class SetGravityBrick extends BrickBaseType implements PhysicWorldBrick, 
 			return;
 		}
 		switch (view.getId()) {
-			case R.id.brick_set_gravity_edit_text_x:
-				FormulaEditorFragment.showFragment(view, this, gravityX);
+			case R.id.brick_set_velocity_edit_text_x:
+				FormulaEditorFragment.showFragment(view, this, velocityX);
 				break;
 
-			case R.id.brick_set_gravity_edit_text_y:
-				FormulaEditorFragment.showFragment(view, this, gravityY);
+			case R.id.brick_set_velocity_edit_text_y:
+				FormulaEditorFragment.showFragment(view, this, velocityY);
 				break;
 		}
 	}
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.setGravity(sprite, physicWorld, gravityX, gravityY));
+		//		sequence.addAction(ExtendedActions.setVelocity(sprite, physicObject, velocityX, velocityY));
+		sequence.addAction(sprite.getActionFactory()
+				.createSetVelocityAction(sprite, physicObject, velocityX, velocityY));
 		return null;
 	}
 }
