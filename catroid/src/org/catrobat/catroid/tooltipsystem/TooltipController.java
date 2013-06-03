@@ -26,6 +26,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Values;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.fragment.AddBrickFragment;
@@ -53,7 +54,7 @@ import android.view.WindowManager;
  */
 public class TooltipController {
 
-	private ToolTipObject tooltip;
+	private TooltipObject tooltip;
 	private Context context;
 
 	private WindowManager windowManager;
@@ -63,19 +64,19 @@ public class TooltipController {
 
 	}
 
-	public ToolTipObject getTooltip(int id) {
+	public TooltipObject getTooltip(int id) {
 		switch (checkActivity()) {
 			case 0:
 				tooltip = getMainMenuTooltip(id);
 				break;
 			case 1:
 				tooltip = getProjectTooltip(id);
-				//				getProjectHints();
 				break;
 			case 2:
 				//				getMyProjectsHints();
 				break;
 			case 3:
+				tooltip = getProgramMenuTooltip(id);
 				//				getProgramMenuHints();
 				break;
 			case 4:
@@ -95,12 +96,12 @@ public class TooltipController {
 		return tooltip;
 	}
 
-	private ToolTipObject createTooltip(int[] coordinates, String text) {
-		ToolTipObject tooltip = new ToolTipObject(coordinates, text);
+	private TooltipObject createTooltip(int[] coordinates, String text) {
+		TooltipObject tooltip = new TooltipObject(coordinates, text);
 		return tooltip;
 	}
 
-	private ToolTipObject getMainMenuTooltip(int id) {
+	private TooltipObject getMainMenuTooltip(int id) {
 		MainMenuActivity activity = (MainMenuActivity) context;
 		int[] coord = { 0, 0, 0 };
 
@@ -150,7 +151,7 @@ public class TooltipController {
 		return -1;
 	}
 
-	private ToolTipObject getProjectTooltip(int id) {
+	private TooltipObject getProjectTooltip(int id) {
 		ProjectActivity activity = (ProjectActivity) context;
 		int[] coord = { 0, 0, 0 };
 
@@ -171,7 +172,6 @@ public class TooltipController {
 				coord = examineCoordinates(activity.findViewById(R.id.button_play));
 				tooltip = createTooltip(coord, context.getResources().getString(id));
 				break;
-
 		}
 		return tooltip;
 	}
@@ -202,24 +202,44 @@ public class TooltipController {
 	//
 	//		setSharedPreferences("PREF_HINT_MYPROJECTS_ACTIVE", false);
 	//	}
-	//
-	//	private void getProgramMenuHints() {
-	//		Activity activity = (Activity) context;
-	//		int[] coord = { 0, 0, 0 };
-	//		Resources resources = activity.getResources();
-	//		String[] hintStrings = resources.getStringArray(R.array.hints_programmenu);
-	//
-	//		coord = examineCoordinates(activity.findViewById(R.id.program_menu_button_scripts));
-	//		allHints.add(createHint(coord, hintStrings[0]));
-	//		coord = examineCoordinates(activity.findViewById(R.id.program_menu_button_looks));
-	//		allHints.add(createHint(coord, hintStrings[1]));
-	//		coord = examineCoordinates(activity.findViewById(R.id.program_menu_button_sounds));
-	//		allHints.add(createHint(coord, hintStrings[2]));
-	//		coord = examineCoordinates(activity.findViewById(R.id.button_play));
-	//		allHints.add(createHint(coord, hintStrings[3]));
-	//
-	//		setSharedPreferences("PREF_HINT_PROGRAMMENU_ACTIVE", false);
-	//	}
+
+	private TooltipObject getProgramMenuTooltip(int id) {
+		ProgramMenuActivity activity = (ProgramMenuActivity) context;
+		int[] coord = { 0, 0, 0 };
+
+		switch (getProgramMenuViewIdForTooltip(id)) {
+			case 0:
+				coord = examineCoordinates(activity.findViewById(R.id.program_menu_button_scripts));
+				tooltip = createTooltip(coord, context.getResources().getString(id));
+				break;
+			case 1:
+				coord = examineCoordinates(activity.findViewById(R.id.program_menu_button_looks));
+				tooltip = createTooltip(coord, context.getResources().getString(id));
+				break;
+			case 2:
+				coord = examineCoordinates(activity.findViewById(R.id.program_menu_button_sounds));
+				tooltip = createTooltip(coord, context.getResources().getString(id));
+				break;
+			case 3:
+				coord = examineCoordinates(activity.findViewById(R.id.button_play));
+				tooltip = createTooltip(coord, context.getResources().getString(id));
+				break;
+		}
+		return tooltip;
+	}
+
+	private int getProgramMenuViewIdForTooltip(int id) {
+		if (id == R.string.hint_programmenu_scripts) {
+			return 0;
+		} else if (id == R.string.hint_programmenu_looks) {
+			return 1;
+		} else if (id == R.string.hint_programmenu_sounds) {
+			return 2;
+		} else if (id == R.string.hint_programmenu_play) {
+			return 3;
+		}
+		return -1;
+	}
 
 	//	private void getScriptHints() {
 	//		switch (checkFragment()) {
@@ -547,20 +567,6 @@ public class TooltipController {
 		this.context = con;
 	}
 
-	//
-	//	public boolean getSharedPreferencesIsHintActive(String preferenceName) //
-	//		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context)//
-	//		boolean isHintActive = pref.getBoolean(preferenceName, true)//
-	//		return isHintActive//
-	//	//
-	///
-	//	public void setSharedPreferences(String preferenceName, boolean tag) //
-	//		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context)//
-	//		SharedPreferences.Editor sharedPreferencesEditor = preferences.edit()//
-	//		sharedPreferencesEditor.putBoolean(preferenceName, tag)//
-	//		sharedPreferencesEditor.commit()//
-	//	}
-
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		Activity activity = (Activity) context;
 		boolean retval;
@@ -579,7 +585,6 @@ public class TooltipController {
 		tooltipLayer = new TooltipLayer(context);
 		windowManager.addView(tooltipLayer, windowParameters);
 		addTooltipButtons();
-
 	}
 
 	private void addTooltipButtons() {
@@ -590,14 +595,16 @@ public class TooltipController {
 			case 1:
 				tooltipLayer.addTooltipButtonsToProjectActivity();
 				break;
-
+			case 3:
+				tooltipLayer.addTooltipButtonToProgramMenuActivity();
+				break;
 		}
 	}
 
 	public void stopTooltipSystem() {
+		removeTooltipButtons();
 		windowManager = ((Activity) context).getWindowManager();
 		windowManager.removeViewImmediate(tooltipLayer);
-		removeTooltipButtons();
 		tooltipLayer = null;
 		System.gc();
 		System.runFinalization();
@@ -612,8 +619,10 @@ public class TooltipController {
 			case 1:
 				tooltipLayer.removeProjectActivityTooltipButtons();
 				break;
+			case 3:
+				tooltipLayer.removeProgramMenuActivityTooltipButtons();
+				break;
 		}
-
 	}
 
 	public WindowManager.LayoutParams createLayoutParameters() {

@@ -26,4 +26,9 @@
         android:id="@+id/settings"
         android:showAsAction="never"
         android:title="@string/main_menu_settings"/>
+     <item
+        android:id="@+id/button_tooltip"
+        android:icon="@drawable/icon_tooltip_inactive"
+        android:showAsAction="always"
+        android:title="@string/hint_menu_tips" />
 </menu>

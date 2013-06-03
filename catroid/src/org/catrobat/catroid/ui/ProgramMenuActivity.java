@@ -29,6 +29,7 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
+import org.catrobat.catroid.tooltipsystem.Tooltip;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,6 +44,8 @@ import com.actionbarsherlock.view.MenuItem;
 public class ProgramMenuActivity extends SherlockFragmentActivity {
 	private ActionBar actionBar;
 	private Lock viewSwitchLock = new ViewSwitchLock();
+
+	public static boolean tooltipActive = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +104,16 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 			case R.id.settings: {
 				Intent intent = new Intent(this, SettingsActivity.class);
 				startActivity(intent);
+			}
+			case R.id.button_tooltip: {
+				Tooltip tooltip = Tooltip.getInstance();
+				Tooltip.setContext(this);
+				if (!tooltipActive) {
+					tooltip.startTooltipSystem();
+				} else {
+					tooltip.stopTooltipSystem();
+				}
+				return true;
 			}
 		}
 		return super.onOptionsItemSelected(item);

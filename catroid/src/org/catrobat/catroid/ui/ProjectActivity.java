@@ -51,7 +51,6 @@ public class ProjectActivity extends SherlockFragmentActivity {
 	private SpritesListFragment spritesListFragment;
 	private Lock viewSwitchLock = new ViewSwitchLock();
 
-	public static boolean tooltipBubbleDisplayed = false;
 	public static boolean tooltipActive = false;
 
 	@Override
@@ -158,12 +157,12 @@ public class ProjectActivity extends SherlockFragmentActivity {
 			}
 
 			case R.id.button_tooltip: {
-				Tooltip hint = Tooltip.getInstance();
+				Tooltip tooltip = Tooltip.getInstance();
 				Tooltip.setContext(this);
 				if (!tooltipActive) {
-					hint.startTooltipSystem();
+					tooltip.startTooltipSystem();
 				} else {
-					hint.stopTooltipSystem();
+					tooltip.stopTooltipSystem();
 				}
 				return true;
 			}

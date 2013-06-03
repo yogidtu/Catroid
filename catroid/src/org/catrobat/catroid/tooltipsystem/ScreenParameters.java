@@ -54,6 +54,15 @@ public class ScreenParameters {
 	private int projectActivityPlayButtonTooltipXPosition = 83;
 	private int projectActivityPlayButtonTooltipYPosition = 88;
 
+	private int programMenuScriptsTooltipXPosition = 83;
+	private int programMenuScriptsTooltipYPosition = 19;
+	private int programMenuLooksTooltipXPosition = 83;
+	private int programMenuLooksTooltipYPosition = 32;
+	private int programMenuSoundsTooltipXPosition = 83;
+	private int programMenuSoundsTooltipYPosition = 50;
+	private int programMenuPlayButtonTooltipXPosition = 83;
+	private int programMenuPlayButtonTooltipYPosition = 88;
+
 	private ScreenParameters() {
 
 	}
@@ -182,5 +191,41 @@ public class ScreenParameters {
 
 	public int getProjectActivityPlayButtonTooltipYPosition() {
 		return setRelativeCoordinatesToDensity(projectActivityPlayButtonTooltipYPosition, false);
+	}
+
+	public static ScreenParameters getScreenParameters() {
+		return screenParameters;
+	}
+
+	public int getProgramMenuScriptsTooltipXPosition() {
+		return setRelativeCoordinatesToDensity(programMenuScriptsTooltipXPosition, true);
+	}
+
+	public int getProgramMenuScriptsTooltipYPosition() {
+		return setRelativeCoordinatesToDensity(programMenuScriptsTooltipYPosition, false);
+	}
+
+	public int getProgramMenuLooksTooltipXPosition() {
+		return setRelativeCoordinatesToDensity(programMenuLooksTooltipXPosition, true);
+	}
+
+	public int getProgramMenuLooksTooltipYPosition() {
+		return setRelativeCoordinatesToDensity(programMenuLooksTooltipYPosition, false);
+	}
+
+	public int getProgramMenuSoundsTooltipXPosition() {
+		return setRelativeCoordinatesToDensity(programMenuSoundsTooltipXPosition, true);
+	}
+
+	public int getProgramMenuSoundsTooltipYPosition() {
+		return setRelativeCoordinatesToDensity(programMenuSoundsTooltipYPosition, false);
+	}
+
+	public int getProgramMenuPlayButtonTooltipXPosition() {
+		return setRelativeCoordinatesToDensity(programMenuPlayButtonTooltipXPosition, true);
+	}
+
+	public int getProgramMenuPlayButtonTooltipYPosition() {
+		return setRelativeCoordinatesToDensity(programMenuPlayButtonTooltipYPosition, false);
 	}
 }

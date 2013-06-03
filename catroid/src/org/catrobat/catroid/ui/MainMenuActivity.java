@@ -95,7 +95,6 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		}
 	}
 
-	public static boolean tooltipBubbleDisplayed = false;
 	public static boolean tooltipActive = false;
 	private static final String TAG = "MainMenuActivity";
 	private static final String PROJECTNAME_TAG = "fname=";
@@ -194,12 +193,12 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 				return true;
 			}
 			case R.id.button_tooltip: {
-				Tooltip hint = Tooltip.getInstance();
+				Tooltip tooltip = Tooltip.getInstance();
 				Tooltip.setContext(this);
 				if (!tooltipActive) {
-					hint.startTooltipSystem();
+					tooltip.startTooltipSystem();
 				} else {
-					hint.stopTooltipSystem();
+					tooltip.stopTooltipSystem();
 				}
 				return true;
 			}

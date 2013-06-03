@@ -62,7 +62,7 @@ public class Tooltip {
 
 	}
 
-	public static ToolTipObject getTooltip(int id) {
+	public static TooltipObject getTooltip(int id) {
 		return controller.getTooltip(id);
 	}
 

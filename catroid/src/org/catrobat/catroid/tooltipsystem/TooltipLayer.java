@@ -24,6 +24,7 @@ package org.catrobat.catroid.tooltipsystem;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 
 import android.app.Activity;
@@ -67,6 +68,8 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 	private int tooltipPositionY;
 	private String tooltipText;
 
+	private CoordinatesCollector collector;
+
 	public TooltipLayer(Context context) {
 		super(context);
 		this.context = context;
@@ -80,285 +83,89 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 		paint.setTextSize(15);
 		paint.setARGB(255, 0, 0, 0);
 
+		collector = new CoordinatesCollector();
 	}
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		boolean returnValue = true;
-		ScreenParameters screenParameters = ScreenParameters.getInstance();
 
-		if (ev.getY() > screenParameters.getActionBarMenuHeight()) {
+		if (!collector.isActionBarClicked(ev)) {
 			switch (Tooltip.getInstance().checkActivity()) {
 				case 0:
 					mainMenuTooltipClicked(ev);
-					returnValue = Tooltip.getInstance().dispatchTouchEvent(ev);
 					break;
 				case 1:
 					projectTooltipClicked(ev);
-					returnValue = Tooltip.getInstance().dispatchTouchEvent(ev);
+					break;
+				case 3:
+					programMenuTooltipClicked(ev);
 					break;
 			}
+			returnValue = Tooltip.getInstance().dispatchTouchEvent(ev);
 		} else {
-			menuButtonActionBarClicked(ev);
+			dispatchMenuButtonActionBarClick(ev);
 			returnValue = Tooltip.getInstance().dispatchTouchEvent(ev);
 		}
 		return returnValue;
 	}
 
-	private void projectTooltipClicked(MotionEvent ev) {
-		ScreenParameters screenParameters = ScreenParameters.getInstance();
-
-		if (ev.getX() > screenParameters.getProjectActivitySpriteBackgroundTooltipXPosition()
-				&& ev.getX() < screenParameters.getProjectActivitySpriteBackgroundTooltipXPosition()
-						+ screenParameters.getTooltipWidth()) {
-			if (ev.getY() > screenParameters.getProjectActivitySpriteBackgroundTooltipYPosition()
-					&& ev.getY() < screenParameters.getProjectActivitySpriteBackgroundTooltipYPosition()
-							+ screenParameters.getTooltipHeight()) {
-				handleSpritesBackgroundTooltip();
-			} else if (ev.getY() > screenParameters.getProjectActivitySpriteObjectTooltipYPosition()
-					&& ev.getY() < screenParameters.getProjectActivitySpriteObjectTooltipYPosition()
-							+ screenParameters.getTooltipHeight()) {
-				handleSpritesObjectTooltip();
-			}
-		}
-
-		if (ev.getY() > screenParameters.getProjectActivityAddButtonTooltipYPosition()
-				&& ev.getY() < screenParameters.getProjectActivityAddButtonTooltipYPosition()
-						+ screenParameters.getTooltipHeight()) {
-			if (ev.getX() > screenParameters.getProjectActivityAddButtonTooltipXPosition()
-					&& ev.getX() < screenParameters.getProjectActivityAddButtonTooltipXPosition()
-							+ screenParameters.getTooltipWidth()) {
-				handleSpritesAddButtonTooltip();
-			} else if (ev.getX() > screenParameters.getProjectActivityPlayButtonTooltipXPosition()
-					&& ev.getX() < screenParameters.getProjectActivityPlayButtonTooltipXPosition()
-							+ screenParameters.getTooltipWidth()) {
-				handleSpritesPlayButtonTooltip();
-			}
-		}
-
-	}
-
 	private void mainMenuTooltipClicked(MotionEvent ev) {
-		ScreenParameters screenParameters = ScreenParameters.getInstance();
-
-		if (ev.getX() > screenParameters.getMainMenuTooltipXPosition()
-				&& ev.getX() < screenParameters.getMainMenuTooltipXPosition() + screenParameters.getTooltipWidth()) {
-			if (ev.getY() > screenParameters.getMainMenuContinueTooltipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuContinueTooltipYPosition()
-							+ screenParameters.getTooltipHeight()) {
-				handleContinueTooltip();
-			} else if (ev.getY() > screenParameters.getMainMenuNewTooltipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuNewTooltipYPosition()
-							+ screenParameters.getTooltipHeight()) {
-				handleNewTooltip();
-			} else if (ev.getY() > screenParameters.getMainMenuProgramsTooltipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuProgramsTooltipYPosition()
-							+ screenParameters.getTooltipHeight()) {
-				handleProgramsTooltip();
-			} else if (ev.getY() > screenParameters.getMainMenuForumTooltipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuForumTooltipYPosition()
-							+ screenParameters.getTooltipHeight()) {
-				handleForumTooltip();
-			} else if (ev.getY() > screenParameters.getMainMenuCommunityTooltipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuCommunityTooltipYPosition()
-							+ screenParameters.getTooltipHeight()) {
-				handleWebTooltip();
-			} else if (ev.getY() > screenParameters.getMainMenuUploadTooltipYPosition()
-					&& ev.getY() < screenParameters.getMainMenuUploadTooltipYPosition()
-							+ screenParameters.getTooltipHeight()) {
-				handleUploadTooltip();
-			}
+		if (collector.isOnMainMenuActivityContinueTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_mainmenu_continue);
+		} else if (collector.isOnMainMenuActivityNewTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_mainmenu_new);
+		} else if (collector.isOnMainMenuActivityProgramsTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_mainmenu_programs);
+		} else if (collector.isOnMainMenuActivityForumTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_mainmenu_community);
+		} else if (collector.isOnMainMenuActivityWebTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_mainmenu_web);
+		} else if (collector.isOnMainMenuActivityUploadTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_mainmenu_upload);
 		}
 	}
 
-	private boolean menuButtonActionBarClicked(MotionEvent ev) {
-		ScreenParameters screenParameters = ScreenParameters.getInstance();
+	private void projectTooltipClicked(MotionEvent ev) {
+		if (collector.isOnProjectActivityBackgroundTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_project_background);
+		} else if (collector.isOnProjectActivityObjectTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_project_objects);
+		} else if (collector.isOnProjectActivityAddButtonTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_project_add);
+		} else if (collector.isOnProjectActivityPlayButtonTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_project_play);
+		}
+	}
 
-		if (ev.getX() > screenParameters.getActionBarMenuXPosition()
-				&& ev.getX() < screenParameters.getActionBarMenuXPosition() + screenParameters.getActionBarMenuWidth()) {
-			if (ev.getY() > screenParameters.getActionBarMenuYPosition()
-					&& ev.getY() < screenParameters.getActionBarMenuYPosition()
-							+ screenParameters.getActionBarMenuHeight()) {
-				Tooltip.getInstance().stopTooltipSystem();
-				Activity activity = (Activity) context;
-				activity.openOptionsMenu();
-				return true;
-			}
+	private void programMenuTooltipClicked(MotionEvent ev) {
+		if (collector.isOnProgramMenuActivityScriptsTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_programmenu_scripts);
+		} else if (collector.isOnProgramMenuActivityLooksTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_programmenu_looks);
+		} else if (collector.isOnProgramMenuActivitySoundsTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_programmenu_sounds);
+		} else if (collector.isOnProgramMenuActivityPlayButtonTooltipPosition(ev)) {
+			showTooltipBubble(R.string.hint_programmenu_play);
+		}
+	}
+
+	private void showTooltipBubble(int stringId) {
+		Tooltip.getInstance().stopTooltipSystem();
+		TooltipObject tooltipObject = Tooltip.getTooltip(stringId);
+		Tooltip.getInstance().startTooltipSystem();
+		Tooltip.getInstance().setTooltipPosition(tooltipObject.getTextXCoordinate(),
+				tooltipObject.getTextYCoordinate(), tooltipObject.getTooltipText());
+	}
+
+	private boolean dispatchMenuButtonActionBarClick(MotionEvent ev) {
+		if (collector.isMenuButtonActionBarPosition(ev)) {
+			Tooltip.getInstance().stopTooltipSystem();
+			Activity activity = (Activity) context;
+			activity.openOptionsMenu();
+			return true;
 		}
 		return false;
-	}
-
-	private void handleContinueTooltip() {
-		Tooltip.getInstance().stopTooltipSystem();
-		Tooltip tooltip = Tooltip.getInstance();
-
-		if (!MainMenuActivity.tooltipBubbleDisplayed) {
-			ToolTipObject continueTooltip = Tooltip.getTooltip(R.string.hint_mainmenu_continue);
-			tooltip.startTooltipSystem();
-			tooltip.setTooltipPosition(continueTooltip.getTextXCoordinate(), continueTooltip.getTextYCoordinate(),
-					continueTooltip.getTooltipText());
-			MainMenuActivity.tooltipBubbleDisplayed = true;
-		} else {
-			tooltip.startTooltipSystem();
-			MainMenuActivity.tooltipBubbleDisplayed = false;
-		}
-	}
-
-	private void handleNewTooltip() {
-		Tooltip.getInstance().stopTooltipSystem();
-		Tooltip tooltip = Tooltip.getInstance();
-		if (!MainMenuActivity.tooltipBubbleDisplayed) {
-
-			ToolTipObject newTooltip = Tooltip.getTooltip(R.string.hint_mainmenu_new);
-
-			tooltip.startTooltipSystem();
-			tooltip.setTooltipPosition(newTooltip.getTextXCoordinate(), newTooltip.getTextYCoordinate(),
-					newTooltip.getTooltipText());
-			MainMenuActivity.tooltipBubbleDisplayed = true;
-		} else {
-			tooltip.startTooltipSystem();
-			MainMenuActivity.tooltipBubbleDisplayed = false;
-		}
-	}
-
-	private void handleProgramsTooltip() {
-		Tooltip.getInstance().stopTooltipSystem();
-		Tooltip tooltip = Tooltip.getInstance();
-
-		if (!MainMenuActivity.tooltipBubbleDisplayed) {
-
-			ToolTipObject programsTooltip = Tooltip.getTooltip(R.string.hint_mainmenu_programs);
-			tooltip.startTooltipSystem();
-			tooltip.setTooltipPosition(programsTooltip.getTextXCoordinate(), programsTooltip.getTextYCoordinate(),
-					programsTooltip.getTooltipText());
-			MainMenuActivity.tooltipBubbleDisplayed = true;
-		} else {
-			tooltip.startTooltipSystem();
-			MainMenuActivity.tooltipBubbleDisplayed = false;
-		}
-	}
-
-	private void handleForumTooltip() {
-		Tooltip.getInstance().stopTooltipSystem();
-		Tooltip tooltip = Tooltip.getInstance();
-
-		if (!MainMenuActivity.tooltipBubbleDisplayed) {
-
-			ToolTipObject forumTooltip = Tooltip.getTooltip(R.string.hint_mainmenu_community);
-
-			tooltip.startTooltipSystem();
-			tooltip.setTooltipPosition(forumTooltip.getTextXCoordinate(), forumTooltip.getTextYCoordinate(),
-					forumTooltip.getTooltipText());
-			MainMenuActivity.tooltipBubbleDisplayed = true;
-		} else {
-			tooltip.startTooltipSystem();
-			MainMenuActivity.tooltipBubbleDisplayed = false;
-		}
-	}
-
-	private void handleWebTooltip() {
-		Tooltip.getInstance().stopTooltipSystem();
-		Tooltip tooltip = Tooltip.getInstance();
-
-		if (!MainMenuActivity.tooltipBubbleDisplayed) {
-
-			ToolTipObject webTooltip = Tooltip.getTooltip(R.string.hint_mainmenu_web);
-
-			tooltip.startTooltipSystem();
-			tooltip.setTooltipPosition(webTooltip.getTextXCoordinate(), webTooltip.getTextYCoordinate(),
-					webTooltip.getTooltipText());
-			MainMenuActivity.tooltipBubbleDisplayed = true;
-		} else {
-			tooltip.startTooltipSystem();
-			MainMenuActivity.tooltipBubbleDisplayed = false;
-		}
-	}
-
-	private void handleUploadTooltip() {
-		Tooltip.getInstance().stopTooltipSystem();
-		Tooltip tooltip = Tooltip.getInstance();
-
-		if (!MainMenuActivity.tooltipBubbleDisplayed) {
-			ToolTipObject uploadTooltip = Tooltip.getTooltip(R.string.hint_mainmenu_upload);
-
-			tooltip.startTooltipSystem();
-			tooltip.setTooltipPosition(uploadTooltip.getTextXCoordinate(), uploadTooltip.getTextYCoordinate(),
-					uploadTooltip.getTooltipText());
-			MainMenuActivity.tooltipBubbleDisplayed = true;
-		} else {
-			tooltip.startTooltipSystem();
-			MainMenuActivity.tooltipBubbleDisplayed = false;
-		}
-	}
-
-	private void handleSpritesBackgroundTooltip() {
-		Tooltip.getInstance().stopTooltipSystem();
-		Tooltip tooltip = Tooltip.getInstance();
-
-		if (!ProjectActivity.tooltipBubbleDisplayed) {
-
-			ToolTipObject spritesBackgroundTooltip = Tooltip.getTooltip(R.string.hint_project_background);
-
-			tooltip.startTooltipSystem();
-			tooltip.setTooltipPosition(spritesBackgroundTooltip.getTextXCoordinate(),
-					spritesBackgroundTooltip.getTextYCoordinate(), spritesBackgroundTooltip.getTooltipText());
-			ProjectActivity.tooltipBubbleDisplayed = true;
-		} else {
-			tooltip.startTooltipSystem();
-			ProjectActivity.tooltipBubbleDisplayed = false;
-		}
-	}
-
-	private void handleSpritesObjectTooltip() {
-		Tooltip.getInstance().stopTooltipSystem();
-		Tooltip tooltip = Tooltip.getInstance();
-
-		if (!ProjectActivity.tooltipBubbleDisplayed) {
-			ToolTipObject spritesObjectTooltip = Tooltip.getTooltip(R.string.hint_project_objects);
-
-			tooltip.startTooltipSystem();
-			tooltip.setTooltipPosition(spritesObjectTooltip.getTextXCoordinate(),
-					spritesObjectTooltip.getTextYCoordinate(), spritesObjectTooltip.getTooltipText());
-			ProjectActivity.tooltipBubbleDisplayed = true;
-		} else {
-			tooltip.startTooltipSystem();
-			ProjectActivity.tooltipBubbleDisplayed = false;
-		}
-	}
-
-	private void handleSpritesAddButtonTooltip() {
-		Tooltip.getInstance().stopTooltipSystem();
-		Tooltip tooltip = Tooltip.getInstance();
-
-		if (!ProjectActivity.tooltipBubbleDisplayed) {
-			ToolTipObject spritesAddButtonTooltip = Tooltip.getTooltip(R.string.hint_project_add);
-
-			tooltip.startTooltipSystem();
-			tooltip.setTooltipPosition(spritesAddButtonTooltip.getTextXCoordinate(),
-					spritesAddButtonTooltip.getTextYCoordinate(), spritesAddButtonTooltip.getTooltipText());
-			ProjectActivity.tooltipBubbleDisplayed = true;
-		} else {
-			tooltip.startTooltipSystem();
-			ProjectActivity.tooltipBubbleDisplayed = false;
-		}
-	}
-
-	private void handleSpritesPlayButtonTooltip() {
-		Tooltip.getInstance().stopTooltipSystem();
-		Tooltip tooltip = Tooltip.getInstance();
-
-		if (!ProjectActivity.tooltipBubbleDisplayed) {
-			ToolTipObject spritesPlayTooltip = Tooltip.getTooltip(R.string.hint_project_play);
-
-			tooltip.startTooltipSystem();
-			tooltip.setTooltipPosition(spritesPlayTooltip.getTextXCoordinate(),
-					spritesPlayTooltip.getTextYCoordinate(), spritesPlayTooltip.getTooltipText());
-			ProjectActivity.tooltipBubbleDisplayed = true;
-		} else {
-			tooltip.startTooltipSystem();
-			ProjectActivity.tooltipBubbleDisplayed = false;
-		}
-
 	}
 
 	public boolean addTooltipButtonsToMainMenuActivity() {
@@ -439,6 +246,49 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 		return true;
 	}
 
+	public boolean addTooltipButtonToProgramMenuActivity() {
+		Activity activity = (Activity) context;
+
+		Button button = (Button) activity.findViewById(R.id.program_menu_button_scripts);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_program_menu_scripts, 0,
+				R.drawable.icon_tooltip_inactive, 0);
+		button = (Button) activity.findViewById(R.id.program_menu_button_looks);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_program_menu_looks, 0,
+				R.drawable.icon_tooltip_inactive, 0);
+		button = (Button) activity.findViewById(R.id.program_menu_button_sounds);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_program_menu_sounds, 0,
+				R.drawable.icon_tooltip_inactive, 0);
+
+		LinearLayout currentView = (LinearLayout) activity.findViewById(R.id.button_play);
+		ImageView tooltipPlayButton = new ImageView(context);
+		tooltipPlayButton.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_tooltip_inactive));
+		currentView.addView(tooltipPlayButton);
+
+		ProgramMenuActivity.tooltipActive = true;
+		return true;
+	}
+
+	public boolean removeProgramMenuActivityTooltipButtons() {
+		Activity activity = (Activity) context;
+
+		Button button = (Button) activity.findViewById(R.id.program_menu_button_scripts);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_program_menu_scripts, 0,
+				R.drawable.ic_arrow_right_dark, 0);
+		button = (Button) activity.findViewById(R.id.program_menu_button_looks);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_program_menu_looks, 0,
+				R.drawable.ic_arrow_right_dark, 0);
+		button = (Button) activity.findViewById(R.id.program_menu_button_sounds);
+		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_program_menu_sounds, 0,
+				R.drawable.ic_arrow_right_dark, 0);
+
+		LinearLayout buttonLayout = (LinearLayout) activity.findViewById(R.id.button_play);
+		View v = buttonLayout.getChildAt(1);
+		buttonLayout.removeView(v);
+		ProgramMenuActivity.tooltipActive = false;
+
+		return true;
+	}
+
 	public boolean removeMainMenuActivityTooltipButtons() {
 		Activity activity = (Activity) context;
 
@@ -467,7 +317,7 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 	}
 
 	public boolean removeProjectActivityTooltipButtons() {
-		Activity activity = (Activity) context;
+		ProjectActivity activity = (ProjectActivity) context;
 
 		LinearLayout currentView = (LinearLayout) activity.findViewById(R.id.spritelist_background_headline);
 		RelativeLayout headlineBackgroundView = (RelativeLayout) currentView.getChildAt(0);

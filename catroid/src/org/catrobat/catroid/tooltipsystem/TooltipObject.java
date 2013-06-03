@@ -28,14 +28,14 @@ import android.graphics.Paint;
  * @author amore
  * 
  */
-public class ToolTipObject {
+public class TooltipObject {
 
 	private int textXCoordinate;
 	private int textYCoordinate;
 	private String tooltipText;
 	private int maxWidthObject;
 
-	public ToolTipObject(int[] coordinates, String text) {
+	public TooltipObject(int[] coordinates, String text) {
 		this.textXCoordinate = coordinates[0];
 		this.textYCoordinate = coordinates[1];
 		this.maxWidthObject = coordinates[2];
