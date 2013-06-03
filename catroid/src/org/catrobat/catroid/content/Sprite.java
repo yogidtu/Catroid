@@ -43,7 +43,7 @@ public class Sprite implements Serializable, Cloneable {
 	private ArrayList<LookData> lookList;
 	private ArrayList<SoundInfo> soundList;
 	public transient Look look;
-	protected AbstractActionFactory actionFactory = new ActionFactory();
+	protected ActionFactory actionFactory = new ActionFactory();
 
 	public transient boolean isPaused;
 
@@ -270,7 +270,7 @@ public class Sprite implements Serializable, Cloneable {
 		return ressources;
 	}
 
-	public AbstractActionFactory getActionFactory() {
+	public ActionFactory getActionFactory() {
 		return actionFactory;
 	}
 

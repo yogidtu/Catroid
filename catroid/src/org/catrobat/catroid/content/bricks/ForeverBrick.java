@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -113,8 +112,8 @@ public class ForeverBrick extends LoopBeginBrick {
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		SequenceAction foreverSequence = ExtendedActions.sequence();
-		Action action = ExtendedActions.forever(sprite, foreverSequence);
+		SequenceAction foreverSequence = sprite.getActionFactory().createSequence();
+		Action action = sprite.getActionFactory().createForeverAction(sprite, foreverSequence);
 		sequence.addAction(action);
 		LinkedList<SequenceAction> returnActionList = new LinkedList<SequenceAction>();
 		returnActionList.add(foreverSequence);
