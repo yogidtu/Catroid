@@ -199,8 +199,8 @@ public class PhysicObject {
 		return PhysicWorldConverter.vecBox2dToCat(body.getLinearVelocity());
 	}
 
-	public void setVelocity(Vector2 velocity) {
-		body.setLinearVelocity(PhysicWorldConverter.vecCatToBox2d(velocity));
+	public void setVelocity(float x, float y) {
+		body.setLinearVelocity(PhysicWorldConverter.lengthCatToBox2d(x), PhysicWorldConverter.lengthCatToBox2d(y));
 	}
 
 	public float getMass() {

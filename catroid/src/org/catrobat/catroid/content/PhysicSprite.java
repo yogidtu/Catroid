@@ -22,14 +22,10 @@
  */
 package org.catrobat.catroid.content;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.physics.PhysicObject;
 
 public class PhysicSprite extends Sprite {
 
 	private static final long serialVersionUID = 1L;
-
-	private transient PhysicObject physicObject;
 
 	public PhysicSprite(String name) {
 		super(name);
@@ -38,14 +34,12 @@ public class PhysicSprite extends Sprite {
 	@Override
 	protected void init() {
 		super.init();
-		physicObject = ProjectManager.getInstance().getCurrentProject().getPhysicObject(this);
 		actionFactory = new ActionPhysicsFactory();
 	}
 
 	@Override
 	public void resetSprite() {
 		super.resetSprite();
-		physicObject = ProjectManager.getInstance().getCurrentProject().getPhysicObject(this);
 		actionFactory = new ActionPhysicsFactory();
 	}
 

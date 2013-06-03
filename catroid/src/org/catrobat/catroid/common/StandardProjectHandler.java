@@ -33,14 +33,21 @@ import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.PhysicSprite;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.WhenScript;
+import org.catrobat.catroid.content.bricks.ForeverBrick;
+import org.catrobat.catroid.content.bricks.IfOnEdgeBounceBrick;
+import org.catrobat.catroid.content.bricks.LoopEndBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
+import org.catrobat.catroid.content.bricks.physics.SetBounceFactorBrick;
+import org.catrobat.catroid.content.bricks.physics.SetPhysicObjectTypeBrick;
 import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.utils.ImageEditing;
 import org.catrobat.catroid.utils.Utils;
 
@@ -66,7 +73,8 @@ public class StandardProjectHandler {
 		Project defaultProject = new Project(context, projectName);
 		StorageHandler.getInstance().saveProject(defaultProject);
 		ProjectManager.getInstance().setProject(defaultProject);
-		Sprite sprite = new Sprite(context.getString(R.string.default_project_sprites_pocketcode_name));
+		// XXX: Sprite sprite = new Sprite(context.getString(R.string.default_project_sprites_pocketcode_name));
+		Sprite sprite = new PhysicSprite(context.getString(R.string.default_project_sprites_pocketcode_name));
 		Sprite backgroundSprite = defaultProject.getSpriteList().get(0);
 
 		Script backgroundStartScript = new StartScript(backgroundSprite);
@@ -123,6 +131,18 @@ public class StandardProjectHandler {
 		WaitBrick waitBrick2 = new WaitBrick(sprite, 500);
 
 		startScript.addBrick(setLookBrick);
+		// XXX: BEGIN
+		startScript.addBrick(new SetPhysicObjectTypeBrick(sprite, PhysicObject.Type.DYNAMIC));
+		startScript.addBrick(new SetBounceFactorBrick(sprite, 90.0f));
+
+		ForeverBrick foreverBrick = new ForeverBrick(sprite);
+		LoopEndBrick loopEndBrick = new LoopEndBrick(sprite, foreverBrick);
+		IfOnEdgeBounceBrick ifOnEdgeBounceBrick = new IfOnEdgeBounceBrick(sprite);
+
+		startScript.addBrick(foreverBrick);
+		startScript.addBrick(ifOnEdgeBounceBrick);
+		startScript.addBrick(loopEndBrick);
+		// XXX: END
 
 		whenScript.addBrick(setLookBrick2);
 		whenScript.addBrick(waitBrick1);
@@ -133,7 +153,7 @@ public class StandardProjectHandler {
 
 		defaultProject.addSprite(sprite);
 		sprite.addScript(startScript);
-		sprite.addScript(whenScript);
+		// XXX: sprite.addScript(whenScript);
 		backgroundSprite.addScript(backgroundStartScript);
 
 		StorageHandler.getInstance().saveProject(defaultProject);

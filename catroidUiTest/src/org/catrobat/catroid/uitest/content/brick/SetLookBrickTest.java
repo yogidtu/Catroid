@@ -104,7 +104,7 @@ public class SetLookBrickTest extends ActivityInstrumentationTestCase2<MainMenuA
 
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 		solo.sleep(1000);
-		Look look = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).look;
+		LookData look = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).look;
 		assertEquals("look not set", look.getImagePath(), lookDataList.get(0).getAbsolutePath());
 		solo.goBack();
 		solo.goBack();

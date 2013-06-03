@@ -32,5 +32,6 @@ public class PhysicDebugSettings {
 		public final static boolean RENDER_JOINTS = false;
 		public final static boolean RENDER_AABBs = false;
 		public final static boolean RENDER_INACTIVE_BODIES = true;
+		public final static boolean RENDER_VELOCITIES = false;
 	}
 }

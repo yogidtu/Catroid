@@ -30,8 +30,6 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicObjectBrick;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
@@ -47,10 +45,9 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class TurnLeftSpeedBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
+public class TurnLeftSpeedBrick extends BrickBaseType implements OnClickListener {
 	private static final long serialVersionUID = 1L;
 
-	private PhysicObject physicObject;
 	private Formula degreesPerSecond;
 
 	private transient View prototypeView;
@@ -81,11 +78,6 @@ public class TurnLeftSpeedBrick extends BrickBaseType implements PhysicObjectBri
 	}
 
 	@Override
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
-	}
-
-	@Override
 	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
 		if (animationState) {
 			return view;
@@ -109,7 +101,9 @@ public class TurnLeftSpeedBrick extends BrickBaseType implements PhysicObjectBri
 		TextView text = (TextView) view.findViewById(R.id.brick_turn_left_speed_prototype_text_view);
 		EditText edit = (EditText) view.findViewById(R.id.brick_turn_left_speed_edit_text);
 
-		edit.setText(String.valueOf(degreesPerSecond));
+		degreesPerSecond.setTextFieldId(R.id.brick_turn_left_speed_edit_text);
+		degreesPerSecond.refreshTextField(view);
+
 		text.setVisibility(View.GONE);
 		edit.setVisibility(View.VISIBLE);
 		edit.setOnClickListener(this);
@@ -130,6 +124,13 @@ public class TurnLeftSpeedBrick extends BrickBaseType implements PhysicObjectBri
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_turn_left_speed_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
+
+		TextView textX = (TextView) view.findViewById(R.id.brick_turn_left_speed_text_view);
+		EditText editX = (EditText) view.findViewById(R.id.brick_turn_left_speed_edit_text);
+		textX.setTextColor(textX.getTextColors().withAlpha(alphaValue));
+		editX.setTextColor(editX.getTextColors().withAlpha(alphaValue));
+		editX.getBackground().setAlpha(alphaValue);
+
 		this.alphaValue = (alphaValue);
 		return view;
 	}
@@ -150,7 +151,7 @@ public class TurnLeftSpeedBrick extends BrickBaseType implements PhysicObjectBri
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
 		//		sequence.addAction(ExtendedActions.turnLeftSpeed(sprite, physicObject, degreesPerSecond));
-		sequence.addAction(sprite.getActionFactory().createTurnLeftSpeedAction(sprite, physicObject, degreesPerSecond));
+		sequence.addAction(sprite.getActionFactory().createTurnLeftSpeedAction(sprite, degreesPerSecond));
 		return null;
 	}
 }

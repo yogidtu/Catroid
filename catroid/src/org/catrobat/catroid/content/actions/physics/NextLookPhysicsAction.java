@@ -22,21 +22,51 @@
  */
 package org.catrobat.catroid.content.actions.physics;
 
+import java.util.ArrayList;
+
+import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicWorld;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public class SetBounceFactorAction extends TemporalAction {
+public class NextLookPhysicsAction extends TemporalAction {
 
 	private Sprite sprite;
+	private PhysicWorld physicWorld;
 	private PhysicObject physicObject;
-	private Formula bounceFactor;
 
 	@Override
-	protected void update(float percent) {
-		physicObject.setBounceFactor(bounceFactor.interpretFloat(sprite) / 100.0f);
+	protected void update(float delta) {
+		final ArrayList<LookData> lookDataList = sprite.getLookDataList();
+		int lookDataListSize = lookDataList.size();
+
+		if (lookDataListSize > 0 && sprite.look.getLookData() != null) {
+			LookData currentLookData = sprite.look.getLookData();
+			LookData finalLookData = lookDataList.get(lookDataListSize - 1);
+			boolean executeOnce = true;
+
+			for (LookData lookData : lookDataList) {
+				int currentIndex = lookDataList.indexOf(lookData);
+				int newIndex = currentIndex + 1;
+
+				if (currentLookData.equals(finalLookData) && executeOnce) {
+					executeOnce = false;
+					currentLookData = lookDataList.get(0);
+				}
+
+				else if (currentLookData.equals(lookData) && executeOnce) {
+					executeOnce = false;
+					currentLookData = lookDataList.get(newIndex);
+				}
+
+				sprite.look.setLookData(currentLookData);
+				physicWorld.setLookData(physicObject, sprite.look);
+			}
+		} else {
+			// If there are no looks do nothing
+		}
 	}
 
 	public void setSprite(Sprite sprite) {
@@ -47,7 +77,7 @@ public class SetBounceFactorAction extends TemporalAction {
 		this.physicObject = physicObject;
 	}
 
-	public void setBounceFactor(Formula bounceFactor) {
-		this.bounceFactor = bounceFactor;
+	public void setPhysicWorld(PhysicWorld physicWorld) {
+		this.physicWorld = physicWorld;
 	}
 }

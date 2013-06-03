@@ -158,8 +158,8 @@ public class CategoryBricksFactory {
 		if (isPhysicObject(sprite)) {
 			motionBrickList.add(new SetPhysicObjectTypeBrick(sprite, BrickValues.PHYSIC_TYPE));
 			motionBrickList.add(new SetMassBrick(sprite, BrickValues.PHYSIC_MASS));
-			motionBrickList.add(new SetBounceFactorBrick(sprite, BrickValues.PHYSIC_BOUNCE_FACTOR));
-			motionBrickList.add(new SetFrictionBrick(sprite, BrickValues.PHYSIC_FRICTION));
+			motionBrickList.add(new SetBounceFactorBrick(sprite, BrickValues.PHYSIC_BOUNCE_FACTOR * 100));
+			motionBrickList.add(new SetFrictionBrick(sprite, BrickValues.PHYSIC_FRICTION * 100));
 			motionBrickList.add(new SetGravityBrick(sprite, BrickValues.PHYSIC_GRAVITY));
 			motionBrickList.add(new SetVelocityBrick(sprite, BrickValues.PHYSIC_VELOCITY));
 			motionBrickList.add(new TurnLeftSpeedBrick(sprite, BrickValues.PHYSIC_TURN_DEGREES));

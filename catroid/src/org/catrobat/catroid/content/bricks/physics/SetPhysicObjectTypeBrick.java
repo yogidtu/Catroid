@@ -30,9 +30,9 @@ import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicObject.Type;
-import org.catrobat.catroid.physics.PhysicObjectBrick;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,14 +45,15 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class SetPhysicObjectTypeBrick extends BrickBaseType implements PhysicObjectBrick {
+public class SetPhysicObjectTypeBrick extends BrickBaseType {
 	private static final long serialVersionUID = 1L;
 
-	private PhysicObject physicObject;
 	private Type type;
+	private transient AdapterView<?> adapterView;
 
 	public SetPhysicObjectTypeBrick() {
 	}
@@ -65,11 +66,6 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType implements PhysicObj
 	@Override
 	public int getRequiredResources() {
 		return NO_RESOURCES;
-	}
-
-	@Override
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
 	}
 
 	@Override
@@ -111,17 +107,11 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType implements PhysicObj
 		spinner.setFocusable(true);
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			private boolean start = true;
-
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				if (start) {
-					start = false;
-					return;
-				}
-
 				if (position < PhysicObject.Type.values().length) {
 					type = Type.values()[position];
+					adapterView = parent;
 				}
 			}
 
@@ -137,12 +127,10 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType implements PhysicObj
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item);
 		arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-		for (PhysicObject.Type spinnerItem : PhysicObject.Type.values()) {
-			String spinnerItemText = spinnerItem.toString();
-			spinnerItemText = spinnerItemText.toLowerCase();
-			spinnerItemText = spinnerItemText.substring(0, 1).toUpperCase() + spinnerItemText.substring(1);
-			arrayAdapter.add(spinnerItemText);
+		for (String type : context.getResources().getStringArray(R.array.physic_object_types)) {
+			arrayAdapter.add(type);
 		}
+
 		return arrayAdapter;
 	}
 
@@ -151,6 +139,17 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType implements PhysicObj
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_physic_object_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
+
+		Spinner lookbrickSpinner = (Spinner) view.findViewById(R.id.brick_set_physic_object_type_spinner);
+		TextView lookbrickTextView = (TextView) view.findViewById(R.id.brick_set_physic_object_text_view);
+
+		ColorStateList color = lookbrickTextView.getTextColors().withAlpha(alphaValue);
+		lookbrickTextView.setTextColor(color);
+		lookbrickSpinner.getBackground().setAlpha(alphaValue);
+		if (adapterView != null) {
+			((TextView) adapterView.getChildAt(0)).setTextColor(color);
+		}
+
 		this.alphaValue = (alphaValue);
 		return view;
 	}
@@ -171,7 +170,7 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType implements PhysicObj
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
 		//		sequence.addAction(ExtendedActions.setPhysicObjectType(sprite, physicObject, type));
-		sequence.addAction(sprite.getActionFactory().createSetPhysicObjectTypeAction(sprite, physicObject, type));
+		sequence.addAction(sprite.getActionFactory().createSetPhysicObjectTypeAction(sprite, type));
 		return null;
 	}
 }

@@ -22,21 +22,21 @@
  */
 package org.catrobat.catroid.content.actions.physics;
 
-import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.physics.PhysicObject;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
 public class IfOnEdgeBouncePhysicsAction extends TemporalAction {
 
-	private Sprite sprite;
+	private PhysicObject physicObject;
 
 	@Override
 	protected void update(float percent) {
-		throw new RuntimeException("This action is not implemented yet: " + this.getClass());
+		physicObject.setIfOnEdgeBounce(true);
 	}
 
-	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
+	public void setPhysicObject(PhysicObject physicObject) {
+		this.physicObject = physicObject;
 	}
 
 }

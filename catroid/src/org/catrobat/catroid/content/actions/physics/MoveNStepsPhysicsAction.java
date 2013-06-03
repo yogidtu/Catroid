@@ -28,15 +28,23 @@ import org.catrobat.catroid.physics.PhysicObject;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public class SetBounceFactorAction extends TemporalAction {
+public class MoveNStepsPhysicsAction extends TemporalAction {
 
 	private Sprite sprite;
 	private PhysicObject physicObject;
-	private Formula bounceFactor;
+	private Formula steps;
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setBounceFactor(bounceFactor.interpretFloat(sprite) / 100.0f);
+		float stepsValue = steps.interpretFloat(sprite);
+		double radians = Math.toRadians(sprite.look.getRotation());
+
+		int newXPosition = (int) Math.round(sprite.look.getXInUserInterfaceDimensionUnit() + stepsValue
+				* Math.cos(radians));
+		int newYPosition = (int) Math.round(sprite.look.getYInUserInterfaceDimensionUnit() + stepsValue
+				* Math.sin(radians));
+
+		physicObject.setXYPosition(newXPosition, newYPosition);
 	}
 
 	public void setSprite(Sprite sprite) {
@@ -47,7 +55,8 @@ public class SetBounceFactorAction extends TemporalAction {
 		this.physicObject = physicObject;
 	}
 
-	public void setBounceFactor(Formula bounceFactor) {
-		this.bounceFactor = bounceFactor;
+	public void setSteps(Formula steps) {
+		this.steps = steps;
 	}
+
 }

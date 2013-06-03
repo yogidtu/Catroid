@@ -36,7 +36,6 @@ import org.catrobat.catroid.content.bricks.BroadcastBrick;
 import org.catrobat.catroid.content.bricks.BroadcastReceiverBrick;
 import org.catrobat.catroid.content.bricks.BroadcastWaitBrick;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
-import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicWorld;
 import org.catrobat.catroid.utils.Utils;
 
@@ -189,8 +188,8 @@ public class Project implements Serializable {
 		return physicWorld;
 	}
 
-	public PhysicObject getPhysicObject(PhysicSprite physicSprite) {
-		return physicWorld.getPhysicObject(physicSprite);
+	public PhysicWorld resetPhysicWorld() {
+		return (physicWorld = new PhysicWorld(Values.SCREEN_WIDTH, Values.SCREEN_HEIGHT));
 	}
 
 	public void removeUnusedBroadcastMessages() {

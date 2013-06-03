@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 
 import org.catrobat.catroid.content.Look;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.physics.PhysicObject.Type;
+import org.catrobat.catroid.physics.shapebuilder.PhysicShapeBuilder;
 
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -51,32 +51,22 @@ public class PhysicWorld {
 
 	public final static int STABILIZING_STEPS = 6;
 
-	private final World world;
-	private final Map<Sprite, PhysicObject> physicObjects;
+	private final World world = new World(PhysicWorld.DEFAULT_GRAVITY, PhysicWorld.IGNORE_SLEEPING_OBJECTS);
+	private final Map<Sprite, PhysicObject> physicObjects = new HashMap<Sprite, PhysicObject>();
 	private Box2DDebugRenderer renderer;
 	private int stabilizingStep = 0;
 
+	private PhysicShapeBuilder physicShapeBuilder = new PhysicShapeBuilder();
+
 	public PhysicWorld(int width, int height) {
-		this();
-		PhysicBoundaryBox physicBoundaryBox = new PhysicBoundaryBox(world);
-		physicBoundaryBox.create(width, height);
-	}
-
-	public PhysicWorld() {
-		world = new World(PhysicWorld.DEFAULT_GRAVITY, PhysicWorld.IGNORE_SLEEPING_OBJECTS);
-		physicObjects = new HashMap<Sprite, PhysicObject>();
-
+		new PhysicBoundaryBox(world).create(width, height);
 	}
 
 	public void step(float deltaTime) {
 		if (stabilizingStep < STABILIZING_STEPS) {
 			stabilizingStep++;
 		} else {
-			try {
-				world.step(deltaTime, PhysicWorld.VELOCITY_ITERATIONS, PhysicWorld.POSITION_ITERATIONS);
-			} catch (NullPointerException nullPointerException) {
-				// Ignore all null pointers because they are mainly caused by shape change which is NOT thread-safe.
-			}
+			world.step(deltaTime, PhysicWorld.VELOCITY_ITERATIONS, PhysicWorld.POSITION_ITERATIONS);
 		}
 		updateSprites();
 	}
@@ -86,8 +76,6 @@ public class PhysicWorld {
 		Look look;
 		for (Entry<Sprite, PhysicObject> entry : physicObjects.entrySet()) {
 			physicObject = entry.getValue();
-			if (physicObject.getType() != Type.DYNAMIC) {
-			}
 			physicObject.setIfOnEdgeBounce(false);
 
 			look = entry.getKey().look;
@@ -98,21 +86,24 @@ public class PhysicWorld {
 	}
 
 	public void render(Matrix4 perspectiveMatrix) {
-		//				if (PhysicRenderer.instance.renderer == null) {
-		//					PhysicRenderer.instance.renderer = new ShapeRenderer();
-		//				}
-		//				PhysicRenderer.instance.render(perspectiveMatrix);
-
-		//		if (renderer == null) {
-		//			renderer = new Box2DDebugRenderer(PhysicDebugSettings.Render.RENDER_BODIES,
-		//					PhysicDebugSettings.Render.RENDER_JOINTS, PhysicDebugSettings.Render.RENDER_AABBs,
-		//					PhysicDebugSettings.Render.RENDER_INACTIVE_BODIES);
-		//		}
-		//		renderer.render(world, perspectiveMatrix.scl(PhysicWorld.RATIO));
+		if (renderer == null) {
+			renderer = new Box2DDebugRenderer(PhysicDebugSettings.Render.RENDER_BODIES,
+					PhysicDebugSettings.Render.RENDER_JOINTS, PhysicDebugSettings.Render.RENDER_AABBs,
+					PhysicDebugSettings.Render.RENDER_INACTIVE_BODIES, PhysicDebugSettings.Render.RENDER_VELOCITIES);
+		}
+		renderer.render(world, perspectiveMatrix.scl(PhysicWorld.RATIO));
 	}
 
-	public void setGravity(Vector2 gravity) {
-		world.setGravity(gravity);
+	public void setGravity(float x, float y) {
+		world.setGravity(new Vector2(x, y));
+	}
+
+	public void setLookData(PhysicObject physicObject, Look look) {
+		physicObject.setShape(physicShapeBuilder.getShape(look.getLookData(), look.getSize()));
+	}
+
+	public void setSize(PhysicObject physicObject, Look look, float size) {
+		physicObject.setShape(physicShapeBuilder.getShape(look.getLookData(), look.getSize()));
 	}
 
 	public PhysicObject getPhysicObject(Sprite sprite) {

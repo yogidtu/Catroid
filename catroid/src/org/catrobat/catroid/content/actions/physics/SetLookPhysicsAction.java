@@ -22,32 +22,49 @@
  */
 package org.catrobat.catroid.content.actions.physics;
 
+import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicWorld;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public class SetBounceFactorAction extends TemporalAction {
+public class SetLookPhysicsAction extends TemporalAction {
 
-	private Sprite sprite;
+	private LookData look;
+	private PhysicWorld physicWorld;
 	private PhysicObject physicObject;
-	private Formula bounceFactor;
+	private Sprite sprite;
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setBounceFactor(bounceFactor.interpretFloat(sprite) / 100.0f);
+		if (look != null && sprite != null && sprite.getLookDataList().contains(look)) {
+			sprite.look.setLookData(look);
+			physicWorld.setLookData(physicObject, sprite.look);
+		}
 	}
 
-	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
+	@Override
+	public void reset() {
+		super.reset();
+		sprite = null;
+		look = null;
+	}
+
+	public void setLookData(LookData look) {
+		this.look = look;
+	}
+
+	public void setPhysicWorld(PhysicWorld physicWorld) {
+		this.physicWorld = physicWorld;
 	}
 
 	public void setPhysicObject(PhysicObject physicObject) {
 		this.physicObject = physicObject;
 	}
 
-	public void setBounceFactor(Formula bounceFactor) {
-		this.bounceFactor = bounceFactor;
+	public void setSprite(Sprite sprite) {
+		this.sprite = sprite;
 	}
+
 }

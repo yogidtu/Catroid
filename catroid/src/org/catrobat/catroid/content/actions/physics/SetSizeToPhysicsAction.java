@@ -25,29 +25,36 @@ package org.catrobat.catroid.content.actions.physics;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicWorld;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public class SetBounceFactorAction extends TemporalAction {
+public class SetSizeToPhysicsAction extends TemporalAction {
 
 	private Sprite sprite;
 	private PhysicObject physicObject;
-	private Formula bounceFactor;
+	private PhysicWorld physicWorld;
+	private Formula size;
 
 	@Override
-	protected void update(float percent) {
-		physicObject.setBounceFactor(bounceFactor.interpretFloat(sprite) / 100.0f);
+	protected void update(float delta) {
+		physicWorld.setSize(physicObject, sprite.look, size.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 
+	public void setPhysicWorld(PhysicWorld physicWorld) {
+		this.physicWorld = physicWorld;
+	}
+
 	public void setPhysicObject(PhysicObject physicObject) {
 		this.physicObject = physicObject;
 	}
 
-	public void setBounceFactor(Formula bounceFactor) {
-		this.bounceFactor = bounceFactor;
+	public void setSize(Formula size) {
+		this.size = size;
 	}
+
 }

@@ -28,15 +28,15 @@ import org.catrobat.catroid.physics.PhysicObject;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public class SetBounceFactorAction extends TemporalAction {
+public class TurnLeftPhysicsAction extends TemporalAction {
 
 	private Sprite sprite;
 	private PhysicObject physicObject;
-	private Formula bounceFactor;
+	private Formula degrees;
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setBounceFactor(bounceFactor.interpretFloat(sprite) / 100.0f);
+		physicObject.setAngle((sprite.look.getRotation() % 360) + degrees.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {
@@ -47,7 +47,8 @@ public class SetBounceFactorAction extends TemporalAction {
 		this.physicObject = physicObject;
 	}
 
-	public void setBounceFactor(Formula bounceFactor) {
-		this.bounceFactor = bounceFactor;
+	public void setDegrees(Formula degrees) {
+		this.degrees = degrees;
 	}
+
 }

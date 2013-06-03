@@ -174,7 +174,7 @@ public class Look extends Image {
 		// We use Y-down, libgdx Y-up. This is the fix for accurate y-axis detection
 		y = getHeight() - y;
 
-		if (x >= 0 && x < getWidth() && y >= 0 && y < getHeight()) {
+		if (x >= 0 && x <= getWidth() && y >= 0 && y <= getHeight()) {
 			if (pixmap != null && ((pixmap.getPixel((int) x, (int) y) & 0x000000FF) > 10)) {
 				if (whenParallelAction == null) {
 					sprite.createWhenScriptActionSequence("Tapped");
@@ -258,14 +258,13 @@ public class Look extends Image {
 		}
 	}
 
-	protected boolean checkImageChanged() {
-		boolean hasChanged = imageChanged;
+	protected void checkImageChanged() {
 		if (imageChanged) {
 			if (lookData == null) {
 				setBounds(getX() + getWidth() / 2f, getY() + getHeight() / 2f, 0f, 0f);
 				setDrawable(null);
 				imageChanged = false;
-				return hasChanged;
+				return;
 			}
 
 			pixmap = lookData.getPixmap();
@@ -289,7 +288,6 @@ public class Look extends Image {
 
 			imageChanged = false;
 		}
-		return hasChanged;
 	}
 
 	protected Pixmap adjustBrightness(Pixmap currentPixmap) {

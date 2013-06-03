@@ -33,7 +33,6 @@ import org.catrobat.catroid.common.Values;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.physics.PhysicBrickPreparator;
 import org.catrobat.catroid.physics.PhysicDebugSettings;
 import org.catrobat.catroid.physics.PhysicWorld;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
@@ -159,11 +158,8 @@ public class StageListener implements ApplicationListener {
 		camera = (OrthographicCamera) stage.getCamera();
 		camera.position.set(0, 0, 0);
 
-		// TODO: Find better place to replace motion bricks with corresponding physic bricks
-		// if necessary.
-		physicWorld = new PhysicWorld();
-		PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorld);
-		physicBrickPreparator.prepare(project);
+		// TODO: Reset physic objects.
+		physicWorld = project.resetPhysicWorld();
 
 		sprites = project.getSpriteList();
 		if (sprites.size() > 0) {
@@ -278,11 +274,8 @@ public class StageListener implements ApplicationListener {
 
 			project = ProjectManager.getInstance().getCurrentProject();
 
-			// TODO: Find better place to replace motion bricks with corresponding physic bricks
-			// if necessary.
-			physicWorld = new PhysicWorld();
-			PhysicBrickPreparator physicBrickPreparator = new PhysicBrickPreparator(physicWorld);
-			physicBrickPreparator.prepare(project);
+			// TODO: Reset physic objects.
+			physicWorld = project.resetPhysicWorld();
 
 			sprites = project.getSpriteList();
 			if (spriteSize > 0) {
@@ -359,7 +352,7 @@ public class StageListener implements ApplicationListener {
 				long timeBeforeActionsUpdate = SystemClock.uptimeMillis();
 				while (deltaTime > 0f) {
 					stage.act(optimizedDeltaTime);
-					project.getPhysicWorld().step(optimizedDeltaTime); // XXX: Yeah baby!
+					physicWorld.step(optimizedDeltaTime);
 					deltaTime -= optimizedDeltaTime;
 				}
 				long executionTimeOfActionsUpdate = SystemClock.uptimeMillis() - timeBeforeActionsUpdate;

@@ -40,7 +40,7 @@ public class PhysicShapeBuilder {
 	public PhysicShapeBuilder() {
 	}
 
-	public synchronized Shape[] getShape(LookData lookData, float scaleFactor) {
+	public Shape[] getShape(LookData lookData, float scaleFactor) {
 		if (lookData == null) {
 			return null;
 		}

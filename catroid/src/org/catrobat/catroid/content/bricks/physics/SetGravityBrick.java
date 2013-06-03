@@ -30,8 +30,6 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicWorld;
-import org.catrobat.catroid.physics.PhysicWorldBrick;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
@@ -48,10 +46,9 @@ import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class SetGravityBrick extends BrickBaseType implements PhysicWorldBrick, OnClickListener {
+public class SetGravityBrick extends BrickBaseType implements OnClickListener {
 	private static final long serialVersionUID = 1L;
 
-	private PhysicWorld physicWorld;
 	private Formula gravityX;
 	private Formula gravityY;
 
@@ -82,11 +79,6 @@ public class SetGravityBrick extends BrickBaseType implements PhysicWorldBrick, 
 		SetGravityBrick copyBrick = (SetGravityBrick) clone();
 		copyBrick.sprite = sprite;
 		return copyBrick;
-	}
-
-	@Override
-	public void setPhysicWorld(PhysicWorld physicWorld) {
-		this.physicWorld = physicWorld;
 	}
 
 	@Override
@@ -187,7 +179,7 @@ public class SetGravityBrick extends BrickBaseType implements PhysicWorldBrick, 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
 		//		sequence.addAction(ExtendedActions.setGravity(sprite, physicWorld, gravityX, gravityY));
-		sequence.addAction(sprite.getActionFactory().createSetGravityAction(sprite, physicWorld, gravityX, gravityY));
+		sequence.addAction(sprite.getActionFactory().createSetGravityAction(sprite, gravityX, gravityY));
 		return null;
 	}
 }

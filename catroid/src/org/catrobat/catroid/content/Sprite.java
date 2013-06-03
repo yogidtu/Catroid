@@ -43,7 +43,7 @@ public class Sprite implements Serializable, Cloneable {
 	private ArrayList<LookData> lookList;
 	private ArrayList<SoundInfo> soundList;
 	public transient Look look;
-	protected ActionFactory actionFactory = new ActionFactory();
+	protected transient ActionFactory actionFactory = new ActionFactory();
 
 	public transient boolean isPaused;
 
@@ -68,6 +68,7 @@ public class Sprite implements Serializable, Cloneable {
 	}
 
 	protected void init() {
+		actionFactory = new ActionFactory();
 		look = new Look(this);
 		isPaused = false;
 		if (soundList == null) {
@@ -82,6 +83,7 @@ public class Sprite implements Serializable, Cloneable {
 	}
 
 	public void resetSprite() {
+		actionFactory = new ActionFactory();
 		look = new Look(this);
 		for (LookData lookData : lookList) {
 			lookData.resetLookData();

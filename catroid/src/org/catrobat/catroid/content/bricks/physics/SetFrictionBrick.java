@@ -30,8 +30,6 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicObjectBrick;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
@@ -47,10 +45,9 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
+public class SetFrictionBrick extends BrickBaseType implements OnClickListener {
 	private static final long serialVersionUID = 1L;
 
-	private PhysicObject physicObject;
 	private Formula friction;
 
 	private transient View prototypeView;
@@ -81,11 +78,6 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 	}
 
 	@Override
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
-	}
-
-	@Override
 	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
 		if (animationState) {
 			return view;
@@ -109,7 +101,9 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 		TextView text = (TextView) view.findViewById(R.id.brick_set_friction_prototype_text_view);
 		EditText edit = (EditText) view.findViewById(R.id.brick_set_friction_edit_text);
 
-		edit.setText(String.valueOf(friction));
+		friction.setTextFieldId(R.id.brick_set_friction_edit_text);
+		friction.refreshTextField(view);
+
 		text.setVisibility(View.GONE);
 		edit.setVisibility(View.VISIBLE);
 		edit.setOnClickListener(this);
@@ -130,6 +124,13 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_friction_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
+
+		TextView textView = (TextView) view.findViewById(R.id.brick_set_friction_text_view);
+		EditText editText = (EditText) view.findViewById(R.id.brick_set_friction_edit_text);
+		textView.setTextColor(textView.getTextColors().withAlpha(alphaValue));
+		editText.setTextColor(editText.getTextColors().withAlpha(alphaValue));
+		editText.getBackground().setAlpha(alphaValue);
+
 		this.alphaValue = (alphaValue);
 		return view;
 	}
@@ -150,7 +151,7 @@ public class SetFrictionBrick extends BrickBaseType implements PhysicObjectBrick
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
 		//		sequence.addAction(ExtendedActions.setFriction(sprite, physicObject, friction));
-		sequence.addAction(sprite.getActionFactory().createSetFrictionAction(sprite, physicObject, friction));
+		sequence.addAction(sprite.getActionFactory().createSetFrictionAction(sprite, friction));
 		return null;
 	}
 }

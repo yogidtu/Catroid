@@ -26,7 +26,6 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.physics.PhysicObject;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
 public class SetVelocityAction extends TemporalAction {
@@ -38,7 +37,7 @@ public class SetVelocityAction extends TemporalAction {
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setVelocity(new Vector2(velocityX.interpretFloat(sprite), velocityY.interpretFloat(sprite)));
+		physicObject.setVelocity(velocityX.interpretFloat(sprite), velocityY.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {

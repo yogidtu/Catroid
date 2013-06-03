@@ -30,8 +30,6 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicObjectBrick;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
@@ -48,10 +46,9 @@ import android.widget.TextView;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class SetVelocityBrick extends BrickBaseType implements PhysicObjectBrick, OnClickListener {
+public class SetVelocityBrick extends BrickBaseType implements OnClickListener {
 	private static final long serialVersionUID = 1L;
 
-	private PhysicObject physicObject;
 	private Formula velocityX;
 	private Formula velocityY;
 
@@ -82,11 +79,6 @@ public class SetVelocityBrick extends BrickBaseType implements PhysicObjectBrick
 		SetVelocityBrick copyBrick = (SetVelocityBrick) clone();
 		copyBrick.sprite = sprite;
 		return copyBrick;
-	}
-
-	@Override
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
 	}
 
 	@Override
@@ -187,8 +179,7 @@ public class SetVelocityBrick extends BrickBaseType implements PhysicObjectBrick
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
 		//		sequence.addAction(ExtendedActions.setVelocity(sprite, physicObject, velocityX, velocityY));
-		sequence.addAction(sprite.getActionFactory()
-				.createSetVelocityAction(sprite, physicObject, velocityX, velocityY));
+		sequence.addAction(sprite.getActionFactory().createSetVelocityAction(sprite, velocityX, velocityY));
 		return null;
 	}
 }
