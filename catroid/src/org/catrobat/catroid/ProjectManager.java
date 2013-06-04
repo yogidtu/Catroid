@@ -131,6 +131,9 @@ public class ProjectManager {
 		if (project == null) {
 			return false;
 		}
+
+		project.removeUnusedBroadcastMessages();
+
 		SaveProjectAsynchronousTask saveTask = new SaveProjectAsynchronousTask();
 		saveTask.execute();
 		return true;
@@ -202,7 +205,7 @@ public class ProjectManager {
 
 		if (directoryRenamed) {
 			project.setName(newProjectName);
-			this.saveProject();
+			StorageHandler.getInstance().saveProject(project);
 		}
 
 		if (!directoryRenamed) {

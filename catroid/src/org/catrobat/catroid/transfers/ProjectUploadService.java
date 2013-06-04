@@ -36,23 +36,20 @@ import org.catrobat.catroid.web.WebconnectionException;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.ResultReceiver;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 public class ProjectUploadService extends IntentService {
 
 	private final static String TAG = ProjectUploadService.class.getSimpleName();
-	private static final String UPLOAD_FILE_NAME = "upload" + Constants.CATROID_EXTENTION;
+	private static final String UPLOAD_FILE_NAME = "upload" + Constants.CATROBAT_EXTENTION;
 
 	private String projectPath;
 	private String projectName;
 	private String projectDescription;
 	private String token;
 	private String serverAnswer;
-	private int serverStatusCode;
 	private boolean result;
 	public ResultReceiver receiver;
 	private Integer notificationId;
@@ -131,7 +128,6 @@ public class ProjectUploadService extends IntentService {
 			result = false;
 		} catch (WebconnectionException webException) {
 			serverAnswer = webException.getMessage();
-			serverStatusCode = webException.getStatusCode();
 			Log.e(TAG, serverAnswer);
 			result = false;
 		}
@@ -139,30 +135,16 @@ public class ProjectUploadService extends IntentService {
 
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
 		if (!result) {
-			if (serverStatusCode == Constants.STATUS_CODE_UPLOAD_OLD_CATROBAT_LANGUAGE) {
-				broadcastError();
-			} else {
-				showToast(getString(R.string.error_project_upload));
-			}
+			showToast(getString(R.string.error_project_upload));
 			return;
 		}
 		showToast(getString(R.string.success_project_upload));
+		super.onDestroy();
 	}
 
 	private void showToast(String message) {
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-	}
-
-	private void broadcastError() {
-		Intent intent = new Intent(Constants.UPLOAD_PROJECT_ERROR_INTENT);
-		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putBoolean("show_upload_error_dialog", true);
-		editor.putInt("notificationId", notificationId);
-		editor.commit();
-		sendBroadcast(intent);
 	}
 
 }

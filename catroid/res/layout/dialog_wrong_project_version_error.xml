@@ -52,7 +52,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_upload_project_error_text_view_apk_link"
         android:background="@android:color/transparent"
-        android:drawableTop="@drawable/bottom_separator"
         android:text="@string/ok" />
 
 </RelativeLayout>
