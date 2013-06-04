@@ -31,22 +31,23 @@ public class TooltipInMainMenuTest extends ActivityInstrumentationTestCase2<Main
 		solo = null;
 	}
 
-	public void testHintSystem() {
+	public void testTooltipSystem() {
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 		solo.clickOnActionBarItem(R.id.button_tooltip);
 
 		solo.sleep(200);
 
-		Tooltip hint = Tooltip.getInstance();
-		assertNotNull("The hint is null", hint);
-		//		HintOverlay overlay = hint.getHintOverlay();
-		//		assertNotNull("The overlay is null", overlay);
-		//		assertNotNull("There are no Hints", Tooltip.getHints());
-		//kann ich überprüfen, dass die tooltip buttons angezeigt werden??
+		Tooltip tooltip = Tooltip.getInstance();
+		assertNotNull("The tooltip system is null", tooltip);
+		assertTrue("the tooltip system is active", MainMenuActivity.tooltipActive);
+
+		//check if the tooltip button is shown on all positions
 
 		solo.clickOnScreen(410, 160);
 		solo.sleep(200);
 		//überprüfe ob bubble angezeigt wird
+		//bubble wurde auf tooltiplayer gezeichnet und kann nicht mehr abgerufen werden
+		//wie kann ich dann überprüfen ob die bubble angezeigt wird???????
 
 		solo.clickOnScreen(410, 310);
 		solo.sleep(200);

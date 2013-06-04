@@ -194,7 +194,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			}
 			case R.id.button_tooltip: {
 				Tooltip tooltip = Tooltip.getInstance();
-				Tooltip.setContext(this);
+				tooltip.setContext(this);
 				if (!tooltipActive) {
 					tooltip.startTooltipSystem();
 				} else {

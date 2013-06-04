@@ -34,7 +34,7 @@ public class Tooltip {
 	private static Tooltip tooltip = new Tooltip();
 	private static Context context;
 
-	static TooltipController controller = new TooltipController();
+	TooltipController controller = new TooltipController();
 
 	public static Tooltip getInstance() {
 
@@ -44,7 +44,7 @@ public class Tooltip {
 		return tooltip;
 	}
 
-	public static void setContext(Context con) {
+	public void setContext(Context con) {
 		context = con;
 		controller.setContext(context);
 	}
@@ -62,7 +62,7 @@ public class Tooltip {
 
 	}
 
-	public static TooltipObject getTooltip(int id) {
+	public TooltipObject getTooltip(int id) {
 		return controller.getTooltip(id);
 	}
 
@@ -83,4 +83,7 @@ public class Tooltip {
 		return controller.checkActivity();
 	}
 
+	public TooltipController getController() {
+		return controller;
+	}
 }

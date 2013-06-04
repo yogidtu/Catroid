@@ -74,7 +74,7 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 		super(context);
 		this.context = context;
 		this.setBackgroundColor(Color.BLACK);
-		this.getBackground().setAlpha(100);
+		this.getBackground().setAlpha(0);
 		this.setZOrderOnTop(true); //necessary 
 		getHolder().setFormat(PixelFormat.TRANSPARENT);
 		getHolder().addCallback(this);
@@ -152,7 +152,7 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 
 	private void showTooltipBubble(int stringId) {
 		Tooltip.getInstance().stopTooltipSystem();
-		TooltipObject tooltipObject = Tooltip.getTooltip(stringId);
+		TooltipObject tooltipObject = Tooltip.getInstance().getTooltip(stringId);
 		Tooltip.getInstance().startTooltipSystem();
 		Tooltip.getInstance().setTooltipPosition(tooltipObject.getTextXCoordinate(),
 				tooltipObject.getTextYCoordinate(), tooltipObject.getTooltipText());
@@ -358,6 +358,18 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 		tooltipPositionY = y;
 		tooltipText = text;
 		return true;
+	}
+
+	public int getTooltipPositionX() {
+		return tooltipPositionX;
+	}
+
+	public int getTooltipPositionY() {
+		return tooltipPositionY;
+	}
+
+	public String getTooltipText() {
+		return tooltipText;
 	}
 
 	@Override

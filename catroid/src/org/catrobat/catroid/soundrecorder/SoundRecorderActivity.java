@@ -26,7 +26,6 @@ import java.io.IOException;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.tooltipsystem.Tooltip;
 import org.catrobat.catroid.utils.Utils;
 
 import android.app.Activity;
@@ -61,10 +60,6 @@ public class SoundRecorderActivity extends SherlockFragmentActivity implements O
 		timeRecorderChronometer = (Chronometer) findViewById(R.id.soundrecorder_chronometer_time_recorded);
 		recordButton.setOnClickListener(this);
 		Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this);
-
-		Tooltip hint = Tooltip.getInstance();
-		Tooltip.setContext(this);
-		hint.startTooltipSystem();
 	}
 
 	// Code from Stackoverflow to reduce memory problems

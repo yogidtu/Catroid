@@ -655,4 +655,8 @@ public class TooltipController {
 	public boolean setTooltipPosition(int x, int y, String text) {
 		return tooltipLayer.setPosition(x, y, text);
 	}
+
+	public TooltipLayer getTooltipLayer() {
+		return tooltipLayer;
+	}
 }
