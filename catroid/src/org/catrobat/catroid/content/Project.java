@@ -82,7 +82,7 @@ public class Project implements Serializable {
 			return;
 		}
 
-		physicWorld = new PhysicWorld(Values.SCREEN_WIDTH, Values.SCREEN_HEIGHT);
+		physicWorld = new PhysicWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight);
 		xmlHeader.setApplicationName(context.getString(R.string.app_name));
 		Sprite background = new Sprite(context.getString(R.string.background));
 		background.look.setZIndex(0);
@@ -177,7 +177,7 @@ public class Project implements Serializable {
 
 	// default constructor for XMLParser
 	public Project() {
-		physicWorld = new PhysicWorld(Values.SCREEN_WIDTH, Values.SCREEN_HEIGHT);
+		physicWorld = new PhysicWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight);
 	}
 
 	public UserVariablesContainer getUserVariables() {
@@ -189,7 +189,7 @@ public class Project implements Serializable {
 	}
 
 	public PhysicWorld resetPhysicWorld() {
-		return (physicWorld = new PhysicWorld(Values.SCREEN_WIDTH, Values.SCREEN_HEIGHT));
+		return (physicWorld = new PhysicWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight));
 	}
 
 	public void removeUnusedBroadcastMessages() {

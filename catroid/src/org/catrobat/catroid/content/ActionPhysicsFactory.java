@@ -29,6 +29,7 @@ import org.catrobat.catroid.content.actions.physics.ChangeXByNPhysicsAction;
 import org.catrobat.catroid.content.actions.physics.IfOnEdgeBouncePhysicsAction;
 import org.catrobat.catroid.content.actions.physics.MoveNStepsPhysicsAction;
 import org.catrobat.catroid.content.actions.physics.NextLookPhysicsAction;
+import org.catrobat.catroid.content.actions.physics.PlaceAtPhysicsAction;
 import org.catrobat.catroid.content.actions.physics.PointInDirectionPhysicsAction;
 import org.catrobat.catroid.content.actions.physics.PointToPhysicsAction;
 import org.catrobat.catroid.content.actions.physics.SetBounceFactorAction;
@@ -266,6 +267,16 @@ public class ActionPhysicsFactory extends ActionFactory {
 		action.setSprite(sprite);
 		action.setPhysicObject(getPhysicObject(sprite));
 		action.setSpeed(speed);
+		return action;
+	}
+
+	@Override
+	public Action createPlaceAtAction(Sprite sprite, Formula x, Formula y) {
+		PlaceAtPhysicsAction action = Actions.action(PlaceAtPhysicsAction.class);
+		action.setSprite(sprite);
+		action.setPhysicObject(getPhysicObject(sprite));
+		action.setX(x);
+		action.setY(y);
 		return action;
 	}
 }
