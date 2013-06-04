@@ -20,38 +20,9 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content;
+package org.catrobat.catroid.content.actions;
 
-public class PhysicSprite extends Sprite {
-	private static final long serialVersionUID = 1L;
+public interface PhysicActionExtension {
 
-	public PhysicSprite(String name) {
-		super(name);
-		actionFactory = new ActionPhysicsFactory();
-	}
-
-	public PhysicSprite() {
-		super();
-		actionFactory = new ActionPhysicsFactory();
-	}
-
-	@Override
-	public Sprite clone() {
-		final Sprite cloneSprite = new PhysicSprite();
-		cloneSprite(cloneSprite);
-		return cloneSprite;
-	}
-
-	//	@Override
-	//	protected void init() {
-	//		super.init();
-	//		actionFactory = new ActionPhysicsFactory();
-	//	}
-	//
-	//	@Override
-	//	public void resetSprite() {
-	//		super.resetSprite();
-	//		actionFactory = new ActionPhysicsFactory();
-	//	}
-
+	public void physicUpdateHook();
 }

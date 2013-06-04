@@ -22,32 +22,17 @@
  */
 package org.catrobat.catroid.content.actions.physics;
 
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.content.actions.ChangeSizeByNAction;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicWorld;
 
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
-
-public class ChangeSizeByNPhysicsAction extends TemporalAction {
-
-	private Sprite sprite;
+public class ChangeSizeByNPhysicsAction extends ChangeSizeByNAction {
 	private PhysicWorld physicWorld;
 	private PhysicObject physicObject;
-	private Formula size;
 
 	@Override
-	protected void update(float percent) {
-		float newSize = sprite.look.getSize() + (size.interpretFloat(sprite) / 100.0f);
-		if (newSize < 0f) {
-			newSize = 0f;
-		}
-		sprite.look.setSize(newSize);
-		physicWorld.setSize(physicObject, sprite.look, newSize);
-	}
-
-	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
+	public void physicUpdateHook() {
+		physicWorld.changeLook(physicObject, sprite.look);
 	}
 
 	public void setPhysicObject(PhysicObject physicObject) {
@@ -56,10 +41,6 @@ public class ChangeSizeByNPhysicsAction extends TemporalAction {
 
 	public void setPhysicWorld(PhysicWorld physicWorld) {
 		this.physicWorld = physicWorld;
-	}
-
-	public void setSize(Formula size) {
-		this.size = size;
 	}
 
 }

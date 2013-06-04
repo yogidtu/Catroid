@@ -22,37 +22,17 @@
  */
 package org.catrobat.catroid.content.actions.physics;
 
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.actions.SetLookAction;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicWorld;
 
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
-
-public class SetLookPhysicsAction extends TemporalAction {
-
-	private LookData look;
+public class SetLookPhysicsAction extends SetLookAction {
 	private PhysicWorld physicWorld;
 	private PhysicObject physicObject;
-	private Sprite sprite;
 
 	@Override
-	protected void update(float percent) {
-		if (look != null && sprite != null && sprite.getLookDataList().contains(look)) {
-			sprite.look.setLookData(look);
-			physicWorld.setLookData(physicObject, sprite.look);
-		}
-	}
-
-	@Override
-	public void reset() {
-		super.reset();
-		sprite = null;
-		look = null;
-	}
-
-	public void setLookData(LookData look) {
-		this.look = look;
+	public void physicUpdateHook() {
+		physicWorld.changeLook(physicObject, sprite.look);
 	}
 
 	public void setPhysicWorld(PhysicWorld physicWorld) {
@@ -62,9 +42,4 @@ public class SetLookPhysicsAction extends TemporalAction {
 	public void setPhysicObject(PhysicObject physicObject) {
 		this.physicObject = physicObject;
 	}
-
-	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
-	}
-
 }

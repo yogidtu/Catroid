@@ -66,7 +66,11 @@ public class PhysicWorld {
 		if (stabilizingStep < STABILIZING_STEPS) {
 			stabilizingStep++;
 		} else {
-			world.step(deltaTime, PhysicWorld.VELOCITY_ITERATIONS, PhysicWorld.POSITION_ITERATIONS);
+			try {
+				world.step(deltaTime, PhysicWorld.VELOCITY_ITERATIONS, PhysicWorld.POSITION_ITERATIONS);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
 		}
 		updateSprites();
 	}
@@ -98,11 +102,7 @@ public class PhysicWorld {
 		world.setGravity(new Vector2(x, y));
 	}
 
-	public void setLookData(PhysicObject physicObject, Look look) {
-		physicObject.setShape(physicShapeBuilder.getShape(look.getLookData(), look.getSize()));
-	}
-
-	public void setSize(PhysicObject physicObject, Look look, float size) {
+	public void changeLook(PhysicObject physicObject, Look look) {
 		physicObject.setShape(physicShapeBuilder.getShape(look.getLookData(), look.getSize()));
 	}
 

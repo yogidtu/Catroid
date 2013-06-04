@@ -29,9 +29,9 @@ import org.catrobat.catroid.content.Sprite;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public class NextLookAction extends TemporalAction {
+public class NextLookAction extends TemporalAction implements PhysicActionExtension {
 
-	private Sprite sprite;
+	protected Sprite sprite;
 
 	@Override
 	protected void update(float delta) {
@@ -58,10 +58,15 @@ public class NextLookAction extends TemporalAction {
 				}
 
 				sprite.look.setLookData(currentLookData);
+				physicUpdateHook();
 			}
 		} else {
 			// If there are no looks do nothing
 		}
+	}
+
+	@Override
+	public void physicUpdateHook() {
 	}
 
 	public void setSprite(Sprite sprite) {

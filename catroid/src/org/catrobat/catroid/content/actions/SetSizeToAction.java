@@ -27,14 +27,19 @@ import org.catrobat.catroid.formulaeditor.Formula;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public class SetSizeToAction extends TemporalAction {
+public class SetSizeToAction extends TemporalAction implements PhysicActionExtension {
 
-	private Sprite sprite;
+	protected Sprite sprite;
 	private Formula size;
 
 	@Override
 	protected void update(float delta) {
 		sprite.look.setSize(size.interpretFloat(sprite) / 100f);
+		physicUpdateHook();
+	}
+
+	@Override
+	public void physicUpdateHook() {
 	}
 
 	public void setSprite(Sprite sprite) {

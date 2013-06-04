@@ -22,55 +22,18 @@
  */
 package org.catrobat.catroid.content.actions.physics;
 
-import java.util.ArrayList;
-
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.actions.NextLookAction;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicWorld;
 
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
+public class NextLookPhysicsAction extends NextLookAction {
 
-public class NextLookPhysicsAction extends TemporalAction {
-
-	private Sprite sprite;
 	private PhysicWorld physicWorld;
 	private PhysicObject physicObject;
 
 	@Override
-	protected void update(float delta) {
-		final ArrayList<LookData> lookDataList = sprite.getLookDataList();
-		int lookDataListSize = lookDataList.size();
-
-		if (lookDataListSize > 0 && sprite.look.getLookData() != null) {
-			LookData currentLookData = sprite.look.getLookData();
-			LookData finalLookData = lookDataList.get(lookDataListSize - 1);
-			boolean executeOnce = true;
-
-			for (LookData lookData : lookDataList) {
-				int currentIndex = lookDataList.indexOf(lookData);
-				int newIndex = currentIndex + 1;
-
-				if (currentLookData.equals(finalLookData) && executeOnce) {
-					executeOnce = false;
-					currentLookData = lookDataList.get(0);
-				}
-
-				else if (currentLookData.equals(lookData) && executeOnce) {
-					executeOnce = false;
-					currentLookData = lookDataList.get(newIndex);
-				}
-
-				sprite.look.setLookData(currentLookData);
-				physicWorld.setLookData(physicObject, sprite.look);
-			}
-		} else {
-			// If there are no looks do nothing
-		}
-	}
-
-	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
+	public void physicUpdateHook() {
+		physicWorld.changeLook(physicObject, sprite.look);
 	}
 
 	public void setPhysicObject(PhysicObject physicObject) {

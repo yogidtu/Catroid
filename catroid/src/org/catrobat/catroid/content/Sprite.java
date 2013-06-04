@@ -68,7 +68,6 @@ public class Sprite implements Serializable, Cloneable {
 	}
 
 	protected void init() {
-		actionFactory = new ActionFactory();
 		look = new Look(this);
 		isPaused = false;
 		if (soundList == null) {
@@ -83,7 +82,6 @@ public class Sprite implements Serializable, Cloneable {
 	}
 
 	public void resetSprite() {
-		actionFactory = new ActionFactory();
 		look = new Look(this);
 		for (LookData lookData : lookList) {
 			lookData.resetLookData();
@@ -92,6 +90,7 @@ public class Sprite implements Serializable, Cloneable {
 
 	public Sprite(String name) {
 		this.name = name;
+		actionFactory = new ActionFactory();
 		scriptList = new ArrayList<Script>();
 		lookList = new ArrayList<LookData>();
 		soundList = new ArrayList<SoundInfo>();
@@ -99,7 +98,7 @@ public class Sprite implements Serializable, Cloneable {
 	}
 
 	public Sprite() {
-
+		actionFactory = new ActionFactory();
 	}
 
 	public void createStartScriptActionSequence() {
@@ -119,6 +118,11 @@ public class Sprite implements Serializable, Cloneable {
 	@Override
 	public Sprite clone() {
 		final Sprite cloneSprite = new Sprite();
+		cloneSprite(cloneSprite);
+		return cloneSprite;
+	}
+
+	protected void cloneSprite(final Sprite cloneSprite) {
 		cloneSprite.setName(this.getName());
 
 		ArrayList<LookData> cloneLookList = new ArrayList<LookData>();
@@ -149,8 +153,6 @@ public class Sprite implements Serializable, Cloneable {
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();
 		}
-
-		return cloneSprite;
 
 	}
 
