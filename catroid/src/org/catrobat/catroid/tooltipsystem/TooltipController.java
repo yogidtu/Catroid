@@ -60,8 +60,13 @@ public class TooltipController {
 	private WindowManager windowManager;
 	private TooltipLayer tooltipLayer;
 
-	public TooltipController() {
-
+	public TooltipController(Context context) {
+		this.context = context;
+		int[] defaultCoord = { 0, 0, 0 };
+		String defaultText = "default";
+		tooltip = new TooltipObject(defaultCoord, defaultText);
+		tooltipLayer = new TooltipLayer(context);
+		windowManager = ((Activity) context).getWindowManager();
 	}
 
 	public TooltipObject getTooltip(int id) {

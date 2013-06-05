@@ -157,7 +157,7 @@ public class ProjectActivity extends SherlockFragmentActivity {
 			}
 
 			case R.id.button_tooltip: {
-				Tooltip tooltip = Tooltip.getInstance();
+				Tooltip tooltip = Tooltip.getInstance(this);
 				tooltip.setContext(this);
 				if (!tooltipActive) {
 					tooltip.startTooltipSystem();

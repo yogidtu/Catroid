@@ -102,9 +102,9 @@ public class ScreenParameters {
 		}
 
 		if (isWidth) {
-			value = (int) ((value / 100.0f) * Tooltip.getInstance().getScreenWidth());
+			value = (int) ((value / 100.0f) * Tooltip.getInstance(null).getScreenWidth());
 		} else {
-			value = (int) ((value / 100.0f) * Tooltip.getInstance().getScreenHeight());
+			value = (int) ((value / 100.0f) * Tooltip.getInstance(null).getScreenHeight());
 		}
 		return value;
 	}

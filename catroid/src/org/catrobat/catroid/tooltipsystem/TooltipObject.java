@@ -40,7 +40,6 @@ public class TooltipObject {
 		this.textYCoordinate = coordinates[1];
 		this.maxWidthObject = coordinates[2];
 		this.tooltipText = addingLineBreaks(text);
-
 	}
 
 	private String addingLineBreaks(String text) {

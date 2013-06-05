@@ -31,8 +31,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -91,7 +89,7 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 		boolean returnValue = true;
 
 		if (!collector.isActionBarClicked(ev)) {
-			switch (Tooltip.getInstance().checkActivity()) {
+			switch (Tooltip.getInstance(context).checkActivity()) {
 				case 0:
 					mainMenuTooltipClicked(ev);
 					break;
@@ -102,10 +100,10 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 					programMenuTooltipClicked(ev);
 					break;
 			}
-			returnValue = Tooltip.getInstance().dispatchTouchEvent(ev);
+			returnValue = Tooltip.getInstance(context).dispatchTouchEvent(ev);
 		} else {
 			dispatchMenuButtonActionBarClick(ev);
-			returnValue = Tooltip.getInstance().dispatchTouchEvent(ev);
+			returnValue = Tooltip.getInstance(context).dispatchTouchEvent(ev);
 		}
 		return returnValue;
 	}
@@ -151,16 +149,16 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 	}
 
 	private void showTooltipBubble(int stringId) {
-		Tooltip.getInstance().stopTooltipSystem();
-		TooltipObject tooltipObject = Tooltip.getInstance().getTooltip(stringId);
-		Tooltip.getInstance().startTooltipSystem();
-		Tooltip.getInstance().setTooltipPosition(tooltipObject.getTextXCoordinate(),
+		Tooltip.getInstance(context).stopTooltipSystem();
+		TooltipObject tooltipObject = Tooltip.getInstance(context).getTooltip(stringId);
+		Tooltip.getInstance(context).startTooltipSystem();
+		Tooltip.getInstance(context).setTooltipPosition(tooltipObject.getTextXCoordinate(),
 				tooltipObject.getTextYCoordinate(), tooltipObject.getTooltipText());
 	}
 
 	private boolean dispatchMenuButtonActionBarClick(MotionEvent ev) {
 		if (collector.isMenuButtonActionBarPosition(ev)) {
-			Tooltip.getInstance().stopTooltipSystem();
+			Tooltip.getInstance(context).stopTooltipSystem();
 			Activity activity = (Activity) context;
 			activity.openOptionsMenu();
 			return true;
@@ -169,7 +167,7 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 	}
 
 	public boolean addTooltipButtonsToMainMenuActivity() {
-		Activity activity = (Activity) context;
+		MainMenuActivity activity = (MainMenuActivity) context;
 
 		Button button = (Button) activity.findViewById(R.id.main_menu_button_continue);
 		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_main_menu_continue, 0,
@@ -195,7 +193,7 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 	}
 
 	public boolean addTooltipButtonsToProjectActivity() {
-		Activity activity = (Activity) context;
+		ProjectActivity activity = (ProjectActivity) context;
 
 		LinearLayout currentView = (LinearLayout) activity.findViewById(R.id.spritelist_background_headline);
 		TextView headlineTextView = (TextView) currentView.getChildAt(0);
@@ -247,7 +245,7 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 	}
 
 	public boolean addTooltipButtonToProgramMenuActivity() {
-		Activity activity = (Activity) context;
+		ProgramMenuActivity activity = (ProgramMenuActivity) context;
 
 		Button button = (Button) activity.findViewById(R.id.program_menu_button_scripts);
 		button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_program_menu_scripts, 0,
@@ -354,10 +352,32 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 	}
 
 	public boolean setPosition(int x, int y, String text) {
-		tooltipPositionX = x;
-		tooltipPositionY = y;
-		tooltipText = text;
-		return true;
+		boolean returnValue = false;
+		Tooltip tooltip = Tooltip.getInstance(context);
+		if (x >= 0 && x < tooltip.getScreenWidth()) {
+			tooltipPositionX = x;
+			returnValue = true;
+		} else {
+			tooltipPositionX = 0;
+			returnValue = true;
+		}
+
+		if (y >= 0 && y < tooltip.getScreenHeight()) {
+			tooltipPositionY = y;
+			returnValue = true;
+		} else {
+			tooltipPositionY = 0;
+			returnValue = true;
+		}
+
+		if (text != null) {
+			tooltipText = text;
+			returnValue = true;
+		} else {
+			tooltipText = "";
+			returnValue = true;
+		}
+		return returnValue;
 	}
 
 	public int getTooltipPositionX() {
@@ -397,14 +417,6 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 			canvas.drawText(lines[i], x, y + yoffset, paint);
 			yoffset = yoffset + lineHeight;
 		}
-	}
-
-	public Bitmap createBitmap(int id) {
-		res = context.getResources();
-		BitmapFactory.Options opts = new BitmapFactory.Options();
-		opts.inScaled = false;
-		Bitmap bitmap = BitmapFactory.decodeResource(res, id, opts);
-		return bitmap;
 	}
 
 	@Override

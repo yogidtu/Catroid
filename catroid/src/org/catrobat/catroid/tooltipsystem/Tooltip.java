@@ -31,15 +31,20 @@ import android.view.MotionEvent;
  */
 public class Tooltip {
 
-	private static Tooltip tooltip = new Tooltip();
-	private static Context context;
+	private static Tooltip tooltip;
+	private Context context;
 
-	TooltipController controller = new TooltipController();
+	TooltipController controller;
 
-	public static Tooltip getInstance() {
+	public Tooltip(Context context) {
+		this.context = context;
+		controller = new TooltipController(context);
+	}
+
+	public static Tooltip getInstance(Context context) {
 
 		if (tooltip == null) {
-			tooltip = new Tooltip();
+			tooltip = new Tooltip(context);
 		}
 		return tooltip;
 	}

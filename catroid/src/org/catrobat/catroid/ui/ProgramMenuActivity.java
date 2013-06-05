@@ -106,7 +106,7 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 				startActivity(intent);
 			}
 			case R.id.button_tooltip: {
-				Tooltip tooltip = Tooltip.getInstance();
+				Tooltip tooltip = Tooltip.getInstance(this);
 				tooltip.setContext(this);
 				if (!tooltipActive) {
 					tooltip.startTooltipSystem();

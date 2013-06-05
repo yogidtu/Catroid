@@ -37,7 +37,7 @@ public class TooltipInMainMenuTest extends ActivityInstrumentationTestCase2<Main
 
 		solo.sleep(200);
 
-		Tooltip tooltip = Tooltip.getInstance();
+		Tooltip tooltip = Tooltip.getInstance(getActivity());
 		assertNotNull("The tooltip system is null", tooltip);
 		assertTrue("the tooltip system is active", MainMenuActivity.tooltipActive);
 
