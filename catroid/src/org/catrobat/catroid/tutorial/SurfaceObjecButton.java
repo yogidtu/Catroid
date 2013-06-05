@@ -22,8 +22,6 @@
  */
 package org.catrobat.catroid.tutorial;
 
-import org.catrobat.catroid.R;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -68,7 +66,7 @@ public class SurfaceObjecButton implements SurfaceObject {
 		resources = context.getResources();
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;
-		bitmap = BitmapFactory.decodeResource(resources, R.drawable.formula_green, opts);
+		//bitmap = BitmapFactory.decodeResource(resources, R.drawable.formula_green, opts);
 		canvas.drawBitmap(bitmap, position[0], position[1], paint);
 		canvas.drawText("START", position[0] + 15, position[1] + 25, paint);
 	}
