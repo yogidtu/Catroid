@@ -446,7 +446,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	}
 
 	private void copyInputStreamToOutputStream(InputStream inputStream, OutputStream outputStream) throws IOException {
-		byte[] buffer = new byte[1024 * 4];
+		byte[] buffer = new byte[Constants.BUFFER_8K];
 		int bytesRead;
 		while ((bytesRead = inputStream.read(buffer)) != -1) {
 			outputStream.write(buffer, 0, bytesRead);
