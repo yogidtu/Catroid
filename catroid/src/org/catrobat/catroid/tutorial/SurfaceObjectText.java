@@ -120,7 +120,7 @@ public class SurfaceObjectText implements SurfaceObject {
 
 		BitmapFactory.Options opts = new BitmapFactory.Options();
 		opts.inScaled = false;
-		closeOverlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.cancel_button, opts);
+		closeOverlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_plus, opts);
 		canvas.drawBitmap(closeOverlay, 400, 50, paint);
 		drawMultilineText(this.text, this.position[0], this.position[1], paint, canvas);
 
