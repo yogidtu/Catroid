@@ -28,6 +28,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -65,7 +67,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -114,8 +115,6 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	private static String actionModeTitle;
 	private static String singleItemAppendixActionMode;
 	private static String multipleItemAppendixActionMode;
-
-	private static final String temporaryImageName = Resources.getSystem().getString(R.string.look);
 
 	private LookAdapter adapter;
 	private ArrayList<LookData> lookDataList;
@@ -359,7 +358,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 					"com.google.android.gallery3d"));
 		}
 
-		String selectedImageName = temporaryImageName + ".png";
+		String selectedImageName = getActivity().getResources().getString(R.string.look) + ".png";
 		if (cursor != null) {
 			cursor.moveToFirst();
 
@@ -374,21 +373,33 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 			}
 		}
 
-		if (selectedImageUri != null
-				&& selectedImageUri.toString().startsWith("content://com.google.android.gallery3d")) {
-			copyImageFromPicasa(selectedImageUri, selectedImageName);
-		} else {
-			copyImageToCatroid(selectedImageUri.toString());
+		if (selectedImageUri != null) {
+			if (selectedImageUri.toString().startsWith("content://com.google.android.gallery3d")) {
+				try {
+					copyImageFromInternet(getActivity().getContentResolver().openInputStream(selectedImageUri),
+							selectedImageName);
+				} catch (FileNotFoundException fileNotFoundException) {
+				}
+			} else if (selectedImageUri.toString().startsWith("http")) {
+				try {
+					copyImageFromInternet(new URL(selectedImageUri.toString()).openStream(), selectedImageName);
+				} catch (MalformedURLException malformedURLException) {
+					Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image_from_picasa));
+				} catch (IOException ioException) {
+					Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image_from_internet));
+				}
+			} else {
+				copyImageToCatroid(selectedImageUri.toString());
+			}
 		}
 	}
 
-	private void copyImageFromPicasa(Uri selectedImageUri, String selectedImageName) {
-		final File cachedFile = getCachedFileForPicasa(selectedImageName);
+	private void copyImageFromInternet(final InputStream inputStream, String imageName) {
+		final File cachedFile = getCachedFileForPicasa(imageName);
 		try {
-			final InputStream inputStream = getActivity().getContentResolver().openInputStream(selectedImageUri);
 			final OutputStream outputStream = new FileOutputStream(cachedFile);
 
-			final int DOWNLOAD_CANCELLED = -1;
+			final int DOWNLOAD_CANCELLED = 404;
 			final ProgressDialog progressDialog = showPicasaProgressDialog(inputStream, DOWNLOAD_CANCELLED);
 			new Thread(new Runnable() {
 
@@ -402,13 +413,15 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 							@Override
 							public void run() {
+								progressDialog.dismiss();
 								copyImageToCatroid(cachedFile.getAbsolutePath());
 								cachedFile.delete();
 							}
 						});
 					} catch (IOException ioException) {
 						cachedFile.delete();
-						if (progressDialog.getProgress() != DOWNLOAD_CANCELLED) {
+						progressDialog.dismiss();
+						if (progressDialog.getMax() != DOWNLOAD_CANCELLED) {
 							getActivity().runOnUiThread(new Runnable() {
 
 								@Override
@@ -447,7 +460,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 			@Override
 			public void onCancel(DialogInterface dialog) {
-				progressDialog.setProgress(cancelProgressId);
+				progressDialog.setMax(cancelProgressId);
 				try {
 					inputStream.close();
 				} catch (IOException ioException) {

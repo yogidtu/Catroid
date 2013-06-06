@@ -386,6 +386,7 @@
     <string name="error_load_project">An error occurred while loading the project.</string>
     <string name="error_screenshot_failed">An error occurred while saving the screenshot.</string>
     <string name="error_load_image">An error occurred while loading the image.</string>
+    <string name="error_load_image_from_internet">An error occurred while loading the image from the internet. Check your Internet connection.</string>
     <string name="error_load_image_from_picasa">An error occurred while loading image from picasa.</string>
     <string name="error_load_sound">An error occurred while loading the sound.</string>
     <string name="error_internet_connection">An unknown error occurred. Check your Internet connection.</string>
