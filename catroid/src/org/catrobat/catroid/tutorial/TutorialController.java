@@ -19,7 +19,7 @@
 package org.catrobat.catroid.tutorial;
 
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Values;
+import org.catrobat.catroid.common.ScreenValues;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -146,8 +146,8 @@ public class TutorialController {
 	public WindowManager.LayoutParams createLayoutParameters() {
 		WindowManager.LayoutParams windowParameters = new WindowManager.LayoutParams();
 		windowParameters.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
-		windowParameters.height = Values.SCREEN_HEIGHT;
-		windowParameters.width = Values.SCREEN_WIDTH;
+		windowParameters.height = ScreenValues.SCREEN_HEIGHT;
+		windowParameters.width = ScreenValues.SCREEN_WIDTH;
 		windowParameters.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 				| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 		windowParameters.format = PixelFormat.TRANSLUCENT;
