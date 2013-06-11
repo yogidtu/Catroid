@@ -25,8 +25,8 @@
     style="@style/BrickCategory" >
 
     <TextView
-        style="@style/BrickCategoryText.Variables"
+        style="@style/BrickCategoryText.UserBricks"
         android:text="@string/category_user_bricks" >
-    </TextView>
+    </TextView>import org.catrobat.catroid.content.bricks.WhenStartedBrick;import org.catrobat.catroid.content.bricks.WhenStartedBrick;
 
 </LinearLayout>
