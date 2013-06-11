@@ -335,4 +335,8 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 
 		mainMenuButtonContinue.setText(spannableStringBuilder);
 	}
+
+	public boolean isTooltipActive() {
+		return tooltipActive;
+	}
 }

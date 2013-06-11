@@ -244,7 +244,7 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 		return true;
 	}
 
-	public boolean addTooltipButtonToProgramMenuActivity() {
+	public boolean addTooltipButtonsToProgramMenuActivity() {
 		ProgramMenuActivity activity = (ProgramMenuActivity) context;
 
 		Button button = (Button) activity.findViewById(R.id.program_menu_button_scripts);

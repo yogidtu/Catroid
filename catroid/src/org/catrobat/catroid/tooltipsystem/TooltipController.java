@@ -601,7 +601,7 @@ public class TooltipController {
 				tooltipLayer.addTooltipButtonsToProjectActivity();
 				break;
 			case 3:
-				tooltipLayer.addTooltipButtonToProgramMenuActivity();
+				tooltipLayer.addTooltipButtonsToProgramMenuActivity();
 				break;
 		}
 	}

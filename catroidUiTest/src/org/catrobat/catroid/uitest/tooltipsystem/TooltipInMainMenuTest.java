@@ -69,5 +69,35 @@ public class TooltipInMainMenuTest extends ActivityInstrumentationTestCase2<Main
 		solo.sleep(200);
 		//überprüfe ob bubble angezeigt wird
 
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		solo.sleep(200);
+		//überprüfe ob alles weg ist
+
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		solo.sleep(200);
+
+	}
+
+	public void testAddTooltipButtonsToMainMenuActivity() {
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		solo.sleep(200);
+		Tooltip tooltip = Tooltip.getInstance(solo.getCurrentActivity());
+		MainMenuActivity activity = (MainMenuActivity) solo.getCurrentActivity();
+
+		assertNotNull("Tooltip is not null", tooltip);
+		assertNotNull("Tooltip Controller not null", tooltip.getController());
+		assertNotNull("Tooltip Layer not null", tooltip.getController().getTooltipLayer());
+		assertTrue("Tooltip flag is not set active", activity.isTooltipActive());
+
+	}
+
+	public void testRemoveMainMenuActivityTooltipButtons() {
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		solo.sleep(500);
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		MainMenuActivity activity = (MainMenuActivity) solo.getCurrentActivity();
+
+		assertFalse("Tooltip flag is not set active", activity.isTooltipActive());
+		solo.clickOnActionBarItem(R.id.button_tooltip);
 	}
 }

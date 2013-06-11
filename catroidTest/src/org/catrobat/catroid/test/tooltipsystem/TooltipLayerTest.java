@@ -3,8 +3,6 @@ package org.catrobat.catroid.test.tooltipsystem;
 import org.catrobat.catroid.tooltipsystem.Tooltip;
 import org.catrobat.catroid.tooltipsystem.TooltipLayer;
 import org.catrobat.catroid.ui.MainMenuActivity;
-import org.catrobat.catroid.ui.ProgramMenuActivity;
-import org.catrobat.catroid.ui.ProjectActivity;
 
 import android.content.Context;
 import android.test.ActivityInstrumentationTestCase2;
@@ -84,54 +82,4 @@ public class TooltipLayerTest extends ActivityInstrumentationTestCase2<MainMenuA
 		assertEquals("Text is not correct set", "", layer.getTooltipText());
 
 	}
-
-	@SuppressWarnings("static-access")
-	public void testAddTooltipButtonsToMainMenuActivity() {
-		MainMenuActivity activity = (MainMenuActivity) context;
-		boolean check = tooltip.getController().getTooltipLayer().addTooltipButtonsToMainMenuActivity();
-		assertTrue("Tooltip Buttons not added correctly", check);
-		assertTrue("Tooltip System flag is not active", activity.tooltipActive);
-	}
-
-	@SuppressWarnings("static-access")
-	public void testAddTooltipButtonsToProjectActivity() {
-		ProjectActivity activity = (ProjectActivity) context;
-		boolean check = tooltip.getController().getTooltipLayer().addTooltipButtonsToMainMenuActivity();
-		assertTrue("Tooltip Buttons not added correctly", check);
-		assertTrue("Tooltip System flag is not active", activity.tooltipActive);
-	}
-
-	@SuppressWarnings("static-access")
-	public void testAddTooltipButtonsToProgramMenuActivity() {
-		ProgramMenuActivity activity = (ProgramMenuActivity) context;
-		boolean check = tooltip.getController().getTooltipLayer().addTooltipButtonsToMainMenuActivity();
-		assertTrue("Tooltip Buttons not added correctly", check);
-		assertTrue("Tooltip System flag is not active", activity.tooltipActive);
-	}
-
-	@SuppressWarnings("static-access")
-	public void testRemoveMainMenuActivityTooltipButtons() {
-		MainMenuActivity activity = (MainMenuActivity) context;
-		boolean check = tooltip.getController().getTooltipLayer().removeMainMenuActivityTooltipButtons();
-		assertTrue("Tooltip Buttons not removed correctly", check);
-		assertFalse("Tooltip System flag is still active", activity.tooltipActive);
-	}
-
-	@SuppressWarnings("static-access")
-	public void testRemoveProjectActivityTooltipButtons() {
-		ProjectActivity activity = (ProjectActivity) context;
-		boolean check = tooltip.getController().getTooltipLayer().removeMainMenuActivityTooltipButtons();
-		assertTrue("Tooltip Buttons not removed correctly", check);
-		assertFalse("Tooltip System flag is still active", activity.tooltipActive);
-	}
-
-	@SuppressWarnings("static-access")
-	public void testRemoveProgramMenuActivityTooltipButtons() {
-		ProgramMenuActivity activity = (ProgramMenuActivity) context;
-		boolean check = tooltip.getController().getTooltipLayer().removeMainMenuActivityTooltipButtons();
-		assertTrue("Tooltip Buttons not removed correctly", check);
-		assertFalse("Tooltip System flag is still active", activity.tooltipActive);
-
-	}
-
 }
