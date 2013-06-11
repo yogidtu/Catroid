@@ -525,5 +525,6 @@
         <item quantity="other">variables selected!</item>
     </plurals>
     <!--  -->
+    <string name="category_user_bricks">My Bricks</string>
 
 </resources>
