@@ -22,8 +22,11 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.ui.fragment.LookFragment;
+import org.catrobat.catroid.utils.UtilCamera;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -32,6 +35,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -55,6 +59,16 @@ public class Tutorial {
 
 	private Tutorial() {
 
+	}
+
+	private void selectImageFromCamera() {
+		Object lookFromCameraUri = UtilCamera
+				.getDefaultLookFromCameraUri(context.getString(R.string.default_look_name));
+
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		//intent.putExtra(MediaStore.EXTRA_OUTPUT, lookFromCameraUri);
+		Intent chooser = Intent.createChooser(intent, context.getString(R.string.select_look_from_camera));
+		((Activity) context).startActivityForResult(chooser, LookFragment.REQUEST_TAKE_PICTURE);
 	}
 
 	private void loadPaintroidImageIntoCatroid(Intent intent) {
@@ -175,7 +189,8 @@ public class Tutorial {
 
 	public void pauseButtonTutorial() {
 		//tutorialController.pauseTutorial();
-		sendPaintroidIntent(Constants.NO_POSITION); //start Paintroid
+		//sendPaintroidIntent(Constants.NO_POSITION); //start Paintroid
+		selectImageFromCamera();
 		Log.i("tutorial", "Tutorial.java: started paintdroid");
 	}
 
