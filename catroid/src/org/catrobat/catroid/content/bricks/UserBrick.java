@@ -22,11 +22,13 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.actions.ExtendedActions;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -37,11 +39,13 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
 
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 public class UserBrick extends BrickBaseType implements OnClickListener {
 	private static final long serialVersionUID = 1L;
 
+	private UserScriptDefinitionBrick definitionBrick;
 	private transient View prototypeView;
 
 	public UserBrick() {
@@ -137,7 +141,15 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		//sequence.addAction(ExtendedActions.actionSequence(sprite, ));
-		return null;
+		SequenceAction userSequence = ExtendedActions.sequence();
+		Script userScript = definitionBrick.initScript(sprite); // getScript
+		userScript.run(userSequence);
+
+		LinkedList<SequenceAction> returnActionList = new LinkedList<SequenceAction>();
+		returnActionList.add(userSequence);
+
+		Action action = ExtendedActions.userBrick(sprite, userSequence);
+		sequence.addAction(action);
+		return returnActionList;
 	}
 }

@@ -360,4 +360,10 @@ public class ExtendedActions extends Actions {
 		action.setSprite(sprite);
 		return action;
 	}
+
+	static public UserBrickAction userBrick(Sprite sprite, Action repeatedAction) {
+		UserBrickAction action = action(UserBrickAction.class);
+		action.setAction(repeatedAction);
+		return action;
+	}
 }
