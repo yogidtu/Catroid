@@ -29,6 +29,7 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -38,9 +39,15 @@ import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+
+/**
+ * @author forestjohnson
+ * 
+ */
 
 public class UserBrick extends BrickBaseType implements OnClickListener {
 	private static final long serialVersionUID = 1L;
@@ -48,20 +55,22 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	private UserScriptDefinitionBrick definitionBrick;
 	private transient View prototypeView;
 
-	public UserBrick() {
+	public LinkedList<UserBrickUIComponent> uiComponents;
 
+	public UserBrick() {
+		definitionBrick = new UserScriptDefinitionBrick(sprite);
+		uiComponents = new LinkedList<UserBrickUIComponent>();
 	}
 
-	public UserBrick(Sprite sprite) { //, Formula xMovement) {
+	public UserBrick(Sprite sprite) {
 		this.sprite = sprite;
-
-		//this.xMovement = xMovement;
+		uiComponents = new LinkedList<UserBrickUIComponent>();
 	}
 
 	@Override
 	public int getRequiredResources() {
 
-		// todo aggregate resources required by children
+		// @TODO aggregate resources required by children
 		return NO_RESOURCES;
 	}
 
@@ -100,6 +109,34 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		//editX.setVisibility(View.VISIBLE);
 		//editX.setOnClickListener(this);
 		return view;
+	}
+
+	public void onLayoutChanged() {
+		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_user_layout);
+		if (layout.getChildCount() > 0) {
+			layout.removeAllViews();
+		}
+
+		for (UserBrickUIComponent c : uiComponents) {
+			if (c.isField) {
+
+			} else {
+				TextView textView = new TextView(view.getContext());
+				String text = null;
+
+				if (c.hasLocalizedString) {
+					text = Utils.getStringResourceByName(c.localizedStringKey, view.getContext());
+				} else {
+					text = c.userDefinedName;
+				}
+
+				textView.setText(text);
+				layout.addView(textView);
+				int index = layout.indexOfChild(textView);
+				c.key = index;
+				textView.setTag(c);
+			}
+		}
 	}
 
 	@Override

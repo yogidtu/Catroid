@@ -22,9 +22,6 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
@@ -36,19 +33,18 @@ import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+/**
+ * @author forestjohnson
+ * 
+ */
 
 public class UserScriptDefinitionBrick extends ScriptBrick {
 	protected UserScript userScript;
 	private static final long serialVersionUID = 1L;
 
-	public UserScriptDefinitionBrick(Sprite sprite, UserScript userScript) {
-		this.userScript = userScript;
+	public UserScriptDefinitionBrick(Sprite sprite) {
+		this.userScript = new UserScript(sprite, this);
 		this.sprite = sprite;
-	}
-
-	public UserScriptDefinitionBrick() {
-
 	}
 
 	@Override
@@ -155,7 +151,7 @@ public class UserScriptDefinitionBrick extends ScriptBrick {
 	@Override
 	public Script initScript(Sprite sprite) {
 		if (userScript == null) {
-			userScript = new UserScript(sprite);
+			userScript = new UserScript(sprite, this);
 		}
 
 		return userScript;

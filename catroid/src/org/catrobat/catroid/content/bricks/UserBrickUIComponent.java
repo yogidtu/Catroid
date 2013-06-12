@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+/**
  *  Catroid: An on-device visual programming system for Android devices
  *  Copyright (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
@@ -20,26 +19,17 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+ */
+package org.catrobat.catroid.content.bricks;
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal" >
-
-    <CheckBox
-        android:id="@+id/brick_user_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:visibility="gone" >
-    </CheckBox>
-
-    <LinearLayout
-        android:orientation="horizontal" 
-        android:id="@+id/brick_user_layout"
-        style="@style/BrickContainer.UserBrick.Small" >
-    </LinearLayout>
-
-</LinearLayout>
+/**
+ * @author forestjohnson
+ * 
+ */
+public class UserBrickUIComponent {
+	public int key;
+	public boolean isField;
+	public boolean hasLocalizedString;
+	public String localizedStringKey = "";
+	public String userDefinedName = "";
+}

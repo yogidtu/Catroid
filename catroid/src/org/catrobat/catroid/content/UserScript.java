@@ -24,25 +24,18 @@ package org.catrobat.catroid.content;
 
 import java.util.ArrayList;
 
-import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.IfLogicEndBrick;
 import org.catrobat.catroid.content.bricks.LoopEndBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
-
 public class UserScript extends Script {
 
 	private static final long serialVersionUID = 1L;
 
-	public UserScript(Sprite sprite) {
-		super(sprite);
-	}
-
 	public UserScript(Sprite sprite, UserScriptDefinitionBrick brick) {
-		this(sprite);
+		super(sprite);
 		this.brick = brick;
 	}
 
@@ -54,10 +47,6 @@ public class UserScript extends Script {
 
 	@Override
 	public ScriptBrick getScriptBrick() {
-		if (brick == null) {
-			brick = new UserScriptDefinitionBrick(object, this);
-		}
-
 		return brick;
 	}
 

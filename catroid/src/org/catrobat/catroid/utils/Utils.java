@@ -120,6 +120,12 @@ public class Utils {
 		ScreenValues.SCREEN_HEIGHT = display.getHeight();
 	}
 
+	public static String getStringResourceByName(String key, Context context) {
+		String packageName = context.getPackageName();
+		int resId = context.getResources().getIdentifier(key, "string", packageName);
+		return context.getString(resId);
+	}
+
 	public static boolean isNetworkAvailable(Context context) {
 		ConnectivityManager connectivityManager = (ConnectivityManager) context
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
