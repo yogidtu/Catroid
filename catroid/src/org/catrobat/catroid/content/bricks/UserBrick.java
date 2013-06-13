@@ -29,6 +29,8 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
@@ -38,6 +40,7 @@ import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -81,6 +84,29 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		return copyBrick;
 	}
 
+	public void addUILocalizedStringByName(String key) {
+		UserBrickUIComponent comp = new UserBrickUIComponent();
+		comp.isField = false;
+		comp.hasLocalizedString = true;
+		comp.localizedStringKey = key;
+		uiComponents.add(comp);
+	}
+
+	public void addUIText(String text) {
+		UserBrickUIComponent comp = new UserBrickUIComponent();
+		comp.isField = false;
+		comp.hasLocalizedString = false;
+		comp.userDefinedName = text;
+		uiComponents.add(comp);
+	}
+
+	public void addUIField() {
+		UserBrickUIComponent comp = new UserBrickUIComponent();
+		comp.isField = true;
+		comp.fieldFormula = new Formula(0);
+		uiComponents.add(comp);
+	}
+
 	@Override
 	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
 		if (animationState) {
@@ -100,56 +126,19 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 				adapter.handleCheck(brickInstance, isChecked);
 			}
 		});
-		//TextView textX = (TextView) view.findViewById(R.id.brick_change_x_prototype_text_view);
-		//EditText editX = (EditText) view.findViewById(R.id.brick_change_x_edit_text);
-		//xMovement.setTextFieldId(R.id.brick_change_x_edit_text);
-		//xMovement.refreshTextField(view);
 
-		//textX.setVisibility(View.GONE);
-		//editX.setVisibility(View.VISIBLE);
-		//editX.setOnClickListener(this);
+		onLayoutChanged(view);
+
 		return view;
-	}
-
-	public void onLayoutChanged() {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_user_layout);
-		if (layout.getChildCount() > 0) {
-			layout.removeAllViews();
-		}
-
-		for (UserBrickUIComponent c : uiComponents) {
-			if (c.isField) {
-
-			} else {
-				TextView textView = new TextView(view.getContext());
-				String text = null;
-
-				if (c.hasLocalizedString) {
-					text = Utils.getStringResourceByName(c.localizedStringKey, view.getContext());
-				} else {
-					text = c.userDefinedName;
-				}
-
-				textView.setText(text);
-				layout.addView(textView);
-				int index = layout.indexOfChild(textView);
-				c.key = index;
-				textView.setTag(c);
-			}
-		}
 	}
 
 	@Override
 	public View getPrototypeView(Context context) {
 		prototypeView = View.inflate(context, R.layout.brick_user, null);
-		//TextView textXMovement = (TextView) prototypeView.findViewById(R.id.brick_change_x_prototype_text_view);
-		//textXMovement.setText(String.valueOf(xMovement.interpretInteger(sprite)));
-		return prototypeView;
-	}
 
-	@Override
-	public Brick clone() {
-		return new UserBrick(getSprite());
+		onLayoutChanged(prototypeView);
+
+		return prototypeView;
 	}
 
 	@Override
@@ -158,22 +147,84 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
 
-		//TextView changeXByLabel = (TextView) view.findViewById(R.id.brick_user_label);
-		//EditText editChangeSize = (EditText) view.findViewById(R.id.brick_change_x_edit_text);
-		//changeXByLabel.setTextColor(changeXByLabel.getTextColors().withAlpha(alphaValue));
-		//editChangeSize.setTextColor(editChangeSize.getTextColors().withAlpha(alphaValue));
-		//editChangeSize.getBackground().setAlpha(alphaValue);
+		for (UserBrickUIComponent c : uiComponents) {
+			c.textView.setTextColor(c.textView.getTextColors().withAlpha(alphaValue));
+			if (c.isField) {
+				c.textView.getBackground().setAlpha(alphaValue);
+			}
+		}
 
 		this.alphaValue = (alphaValue);
 		return view;
 	}
 
+	public void onLayoutChanged(View currentView) {
+
+		boolean prototype = (currentView == prototypeView);
+
+		Context context = currentView.getContext();
+
+		LinearLayout layout = (LinearLayout) currentView.findViewById(R.id.brick_user_layout);
+		if (layout.getChildCount() > 0) {
+			layout.removeAllViews();
+		}
+
+		for (UserBrickUIComponent c : uiComponents) {
+			TextView currentTextView = null;
+			if (c.isField) {
+				currentTextView = new EditText(context);
+
+				if (prototype) {
+					currentTextView.setTextAppearance(context, R.style.BrickPrototypeTextView);
+					currentTextView.setText(String.valueOf(c.fieldFormula.interpretInteger(sprite)));
+				} else {
+					currentTextView.setTextAppearance(context, R.style.BrickEditText);
+					c.fieldFormula.setTextFieldId(currentTextView.getId());
+					c.fieldFormula.refreshTextField(view);
+
+					currentTextView.setOnClickListener(this);
+				}
+				currentTextView.setVisibility(View.VISIBLE);
+			} else {
+				currentTextView = new TextView(context);
+				currentTextView.setTextAppearance(context, R.style.BrickText_Multiple);
+
+				String text = null;
+				if (c.hasLocalizedString) {
+					text = Utils.getStringResourceByName(c.localizedStringKey, context);
+				} else {
+					text = c.userDefinedName;
+				}
+				currentTextView.setText(text);
+			}
+
+			layout.addView(currentTextView);
+			c.key = layout.indexOfChild(currentTextView);
+
+			if (prototype) {
+				c.prototypeView = currentTextView;
+			} else {
+				c.textView = currentTextView;
+			}
+		}
+	}
+
 	@Override
-	public void onClick(View view) {
+	public Brick clone() {
+		return new UserBrick(getSprite());
+	}
+
+	@Override
+	public void onClick(View eventOrigin) {
 		if (checkbox.getVisibility() == View.VISIBLE) {
 			return;
 		}
-		//FormulaEditorFragment.showFragment(view, this, xMovement);
+
+		for (UserBrickUIComponent c : uiComponents) {
+			if (c.isField && c.textView.getId() == eventOrigin.getId()) {
+				FormulaEditorFragment.showFragment(view, this, c.fieldFormula);
+			}
+		}
 	}
 
 	@Override

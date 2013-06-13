@@ -196,7 +196,17 @@ public class CategoryBricksFactory {
 
 	private List<Brick> setupUserBricksCategoryList(Sprite sprite) {
 		List<Brick> userBricksBrickList = new ArrayList<Brick>();
-		userBricksBrickList.add(new UserBrick(sprite));
+
+		UserBrick firstUserBrick = new UserBrick(sprite);
+		firstUserBrick.addUIText("This is a UserBrick.");
+		firstUserBrick.addUIField();
+		userBricksBrickList.add(firstUserBrick);
+
+		UserBrick secondUserBrick = new UserBrick(sprite);
+		secondUserBrick.addUILocalizedStringByName("brick_change_x_by");
+		secondUserBrick.addUIField();
+		userBricksBrickList.add(secondUserBrick);
+
 		return userBricksBrickList;
 	}
 
