@@ -36,6 +36,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +81,7 @@ public class AddBrickFragment extends SherlockListFragment {
 		Context context = getActivity();
 		Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
 		String selectedCategory = getArguments().getString(BUNDLE_ARGUMENTS_SELECTED_CATEGORY);
+		Log.d("a", "setupSelectedBrickCategory(): selectedCategory = " + selectedCategory);
 
 		List<Brick> brickList = categoryBricksFactory.getBricks(selectedCategory, sprite, context);
 		adapter = new PrototypeBrickAdapter(context, brickList);
@@ -135,9 +137,13 @@ public class AddBrickFragment extends SherlockListFragment {
 	public void onStart() {
 		super.onStart();
 
+		Log.d("a", "onStart()");
+
 		getListView().setOnItemClickListener(new ListView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Log.d("a", "onItemClick(): " + adapter.getItem(position).toString());
+
 				Brick brickToBeAdded = adapter.getItem(position).clone();
 				scriptFragment.updateAdapterAfterAddNewBrick(brickToBeAdded);
 

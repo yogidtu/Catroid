@@ -60,14 +60,16 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	public LinkedList<UserBrickUIComponent> uiComponents;
 
-	public UserBrick() {
-		definitionBrick = new UserScriptDefinitionBrick(sprite);
-		uiComponents = new LinkedList<UserBrickUIComponent>();
-	}
-
 	public UserBrick(Sprite sprite) {
 		this.sprite = sprite;
 		uiComponents = new LinkedList<UserBrickUIComponent>();
+	}
+
+	public UserBrick(Sprite sprite, LinkedList<UserBrickUIComponent> uiComponents,
+			UserScriptDefinitionBrick definitionBrick) {
+		this.sprite = sprite;
+		this.uiComponents = uiComponents;
+		this.definitionBrick = definitionBrick;
 	}
 
 	@Override
@@ -143,6 +145,17 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
+
+		boolean needsRefresh = false;
+		for (UserBrickUIComponent c : uiComponents) {
+			if (c.textView == null) {
+				needsRefresh = true;
+			}
+		}
+		if (needsRefresh) {
+			onLayoutChanged(view);
+		}
+
 		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_user_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
@@ -198,6 +211,13 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 				currentTextView.setText(text);
 			}
 
+			// This stuff isn't being included by the style when I use setTextAppearance.
+			if (prototype) {
+				currentTextView.setFocusable(false);
+				currentTextView.setFocusableInTouchMode(false);
+				currentTextView.setClickable(false);
+			}
+
 			layout.addView(currentTextView);
 			c.key = layout.indexOfChild(currentTextView);
 
@@ -211,7 +231,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public Brick clone() {
-		return new UserBrick(getSprite());
+		return new UserBrick(getSprite(), uiComponents, definitionBrick);
 	}
 
 	@Override

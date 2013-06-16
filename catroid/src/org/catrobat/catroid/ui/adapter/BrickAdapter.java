@@ -37,6 +37,7 @@ import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.DeadEndBrick;
 import org.catrobat.catroid.content.bricks.NestingBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
+import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.ui.ViewSwitchLock;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListView;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListener;
@@ -793,6 +794,9 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		if (!(brickList.get(itemPosition) instanceof DeadEndBrick)) {
 			items.add(context.getText(R.string.brick_context_dialog_move_brick));
 		}
+		if ((brickList.get(itemPosition) instanceof UserBrick)) {
+			items.add(context.getText(R.string.brick_context_dialog_edit_brick));
+		}
 		if (brickList.get(itemPosition) instanceof NestingBrick) {
 			items.add(context.getText(R.string.brick_context_dialog_animate_bricks));
 		}
@@ -819,6 +823,8 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				CharSequence clickedItemText = items.get(item);
 				if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_move_brick))) {
 					view.performLongClick();
+				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
+					launchBrickScriptActivityOnBrickAt(itemPosition);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_delete_brick))) {
 					removeFromBrickListAndProject(itemPosition, false);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_animate_bricks))) {
@@ -838,6 +844,15 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 		if ((selectMode == ListView.CHOICE_MODE_NONE)) {
 			alertDialog.show();
+		}
+	}
+
+	public void launchBrickScriptActivityOnBrickAt(int index) {
+		int temp[] = getScriptAndBrickIndexFromProject(index);
+		Script script = ProjectManager.INSTANCE.getCurrentSprite().getScript(temp[0]);
+		if (script != null) {
+			Brick brick = script.getBrick(temp[1]);
+			//brick
 		}
 	}
 
