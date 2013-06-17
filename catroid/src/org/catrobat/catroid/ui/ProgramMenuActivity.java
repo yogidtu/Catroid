@@ -67,6 +67,9 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if (tooltipActive) {
+			Tooltip.getInstance(this).stopTooltipSystem();
+		}
 		if (ProjectManager.INSTANCE.getCurrentSpritePosition() == 0) {
 			((Button) findViewById(R.id.program_menu_button_looks)).setText(R.string.backgrounds);
 		} else {
@@ -107,7 +110,6 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 			}
 			case R.id.button_tooltip: {
 				Tooltip tooltip = Tooltip.getInstance(this);
-				tooltip.setContext(this);
 				if (!tooltipActive) {
 					tooltip.startTooltipSystem();
 				} else {

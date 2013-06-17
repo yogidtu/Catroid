@@ -63,7 +63,6 @@ public class ProjectActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-
 		final ActionBar actionBar = getSupportActionBar();
 		String title = ProjectManager.getInstance().getCurrentProject().getName();
 		actionBar.setTitle(title);
@@ -158,7 +157,6 @@ public class ProjectActivity extends SherlockFragmentActivity {
 
 			case R.id.button_tooltip: {
 				Tooltip tooltip = Tooltip.getInstance(this);
-				tooltip.setContext(this);
 				if (!tooltipActive) {
 					tooltip.startTooltipSystem();
 				} else {
@@ -185,6 +183,9 @@ public class ProjectActivity extends SherlockFragmentActivity {
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
+		if (tooltipActive) {
+			Tooltip.getInstance(this).stopTooltipSystem();
+		}
 		if (hasFocus) {
 			sendBroadcast(new Intent(ScriptActivity.ACTION_SPRITES_LIST_INIT));
 		}

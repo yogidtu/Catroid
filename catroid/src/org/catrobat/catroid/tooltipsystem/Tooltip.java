@@ -34,7 +34,7 @@ public class Tooltip {
 	private static Tooltip tooltip;
 	private Context context;
 
-	TooltipController controller;
+	static TooltipController controller;
 
 	public Tooltip(Context context) {
 		this.context = context;
@@ -42,16 +42,11 @@ public class Tooltip {
 	}
 
 	public static Tooltip getInstance(Context context) {
-
 		if (tooltip == null) {
 			tooltip = new Tooltip(context);
+			controller.setContext(context);
 		}
 		return tooltip;
-	}
-
-	public void setContext(Context con) {
-		context = con;
-		controller.setContext(context);
 	}
 
 	public void startTooltipSystem() {
@@ -60,6 +55,8 @@ public class Tooltip {
 
 	public void stopTooltipSystem() {
 		controller.stopTooltipSystem();
+		controller = null;
+		tooltip = null;
 	}
 
 	public boolean setTooltipPosition(int x, int y, String text) {
@@ -67,7 +64,7 @@ public class Tooltip {
 
 	}
 
-	public TooltipObject getTooltip(int id) {
+	public TooltipObject getTooltipObjectForScreenObject(int id) {
 		return controller.getTooltip(id);
 	}
 

@@ -150,7 +150,7 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 
 	private void showTooltipBubble(int stringId) {
 		Tooltip.getInstance(context).stopTooltipSystem();
-		TooltipObject tooltipObject = Tooltip.getInstance(context).getTooltip(stringId);
+		TooltipObject tooltipObject = Tooltip.getInstance(context).getTooltipObjectForScreenObject(stringId);
 		Tooltip.getInstance(context).startTooltipSystem();
 		Tooltip.getInstance(context).setTooltipPosition(tooltipObject.getTextXCoordinate(),
 				tooltipObject.getTextYCoordinate(), tooltipObject.getTooltipText());

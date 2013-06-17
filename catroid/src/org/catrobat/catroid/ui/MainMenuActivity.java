@@ -146,6 +146,9 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	@Override
 	public void onPause() {
 		super.onPause();
+		if (tooltipActive) {
+			Tooltip.getInstance(this).stopTooltipSystem();
+		}
 		if (!Utils.externalStorageAvailable()) {
 			return;
 		}
@@ -194,7 +197,6 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			}
 			case R.id.button_tooltip: {
 				Tooltip tooltip = Tooltip.getInstance(this);
-				tooltip.setContext(this);
 				if (!tooltipActive) {
 					tooltip.startTooltipSystem();
 				} else {
@@ -334,9 +336,5 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 				spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 		mainMenuButtonContinue.setText(spannableStringBuilder);
-	}
-
-	public boolean isTooltipActive() {
-		return tooltipActive;
 	}
 }

@@ -1,6 +1,8 @@
 package org.catrobat.catroid.uitest.tooltipsystem;
 
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.ActivityInstrumentationTestCase2;
@@ -19,6 +21,7 @@ public class TooltipInProgramMenuActivityTest extends ActivityInstrumentationTes
 	public void setUp() throws Exception {
 		super.setUp();
 		solo = new Solo(getInstrumentation(), getActivity());
+		UiTestUtils.getIntoProgramMenuFromMainMenu(solo, 0);
 	}
 
 	@Override
@@ -29,4 +32,50 @@ public class TooltipInProgramMenuActivityTest extends ActivityInstrumentationTes
 		solo = null;
 	}
 
+	public void testTooltipSystemInProgramMenuActivity() {
+		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+
+		solo.sleep(200);
+		assertTrue("the tooltip system is active", ProgramMenuActivity.tooltipActive);
+
+		//check if the tooltip button is shown on all positions
+
+		solo.clickOnScreen(400, 160);
+		solo.sleep(200);
+		//überprüfe ob bubble angezeigt wird
+		//bubble wurde auf tooltiplayer gezeichnet und kann nicht mehr abgerufen werden
+		//wie kann ich dann überprüfen ob die bubble angezeigt wird???????
+
+		solo.clickOnScreen(400, 310);
+		solo.sleep(200);
+		//überprüfe ob bubble angezeigt wird
+
+		solo.clickOnScreen(400, 410);
+		solo.sleep(200);
+		//überprüfe ob bubble angezeigt wird
+
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		solo.sleep(200);
+		//überprüfe ob alles weg ist
+
+		assertFalse("Tooltip flag is not set inactive", ProgramMenuActivity.tooltipActive);
+	}
+
+	public void testAddTooltipButtonsToProgramMenuActivity() {
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		solo.sleep(200);
+		assertTrue("Tooltip flag is not set active", ProgramMenuActivity.tooltipActive);
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		assertFalse("Tooltip flag is not set inactive", ProgramMenuActivity.tooltipActive);
+	}
+
+	public void testRemoveProgramMenuActivityTooltipButtons() {
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		solo.sleep(500);
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		assertFalse("Tooltip flag is not set inactive", ProgramMenuActivity.tooltipActive);
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		assertTrue("Tooltip flag is not set active", ProgramMenuActivity.tooltipActive);
+	}
 }

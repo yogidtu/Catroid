@@ -31,7 +31,7 @@ public class TooltipInMainMenuTest extends ActivityInstrumentationTestCase2<Main
 		solo = null;
 	}
 
-	public void testTooltipSystem() {
+	public void testTooltipSystemInMainMenu() {
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 		solo.clickOnActionBarItem(R.id.button_tooltip);
 
@@ -39,6 +39,8 @@ public class TooltipInMainMenuTest extends ActivityInstrumentationTestCase2<Main
 
 		Tooltip tooltip = Tooltip.getInstance(getActivity());
 		assertNotNull("The tooltip system is null", tooltip);
+		assertNotNull("Tooltip Controller not null", tooltip.getController());
+		assertNotNull("Tooltip Layer not null", tooltip.getController().getTooltipLayer());
 		assertTrue("the tooltip system is active", MainMenuActivity.tooltipActive);
 
 		//check if the tooltip button is shown on all positions
@@ -75,29 +77,24 @@ public class TooltipInMainMenuTest extends ActivityInstrumentationTestCase2<Main
 
 		solo.clickOnActionBarItem(R.id.button_tooltip);
 		solo.sleep(200);
+		assertTrue("Tooltip flag is not set inactive", MainMenuActivity.tooltipActive);
 
 	}
 
 	public void testAddTooltipButtonsToMainMenuActivity() {
 		solo.clickOnActionBarItem(R.id.button_tooltip);
 		solo.sleep(200);
-		Tooltip tooltip = Tooltip.getInstance(solo.getCurrentActivity());
-		MainMenuActivity activity = (MainMenuActivity) solo.getCurrentActivity();
-
-		assertNotNull("Tooltip is not null", tooltip);
-		assertNotNull("Tooltip Controller not null", tooltip.getController());
-		assertNotNull("Tooltip Layer not null", tooltip.getController().getTooltipLayer());
-		assertTrue("Tooltip flag is not set active", activity.isTooltipActive());
-
+		assertTrue("Tooltip flag is not set active", MainMenuActivity.tooltipActive);
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		assertFalse("Tooltip flag is not set inactive", MainMenuActivity.tooltipActive);
 	}
 
 	public void testRemoveMainMenuActivityTooltipButtons() {
 		solo.clickOnActionBarItem(R.id.button_tooltip);
 		solo.sleep(500);
 		solo.clickOnActionBarItem(R.id.button_tooltip);
-		MainMenuActivity activity = (MainMenuActivity) solo.getCurrentActivity();
-
-		assertFalse("Tooltip flag is not set active", activity.isTooltipActive());
+		assertFalse("Tooltip flag is not set inactive", MainMenuActivity.tooltipActive);
 		solo.clickOnActionBarItem(R.id.button_tooltip);
+		assertTrue("Tooltip flag is not set active", MainMenuActivity.tooltipActive);
 	}
 }

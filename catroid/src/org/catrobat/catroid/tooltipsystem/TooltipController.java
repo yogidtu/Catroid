@@ -611,6 +611,7 @@ public class TooltipController {
 		windowManager = ((Activity) context).getWindowManager();
 		windowManager.removeViewImmediate(tooltipLayer);
 		tooltipLayer = null;
+
 		System.gc();
 		System.runFinalization();
 

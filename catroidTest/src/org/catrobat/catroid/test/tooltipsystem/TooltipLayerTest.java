@@ -21,7 +21,7 @@ public class TooltipLayerTest extends ActivityInstrumentationTestCase2<MainMenuA
 		super.setUp();
 		context = this.getActivity();
 		tooltip = Tooltip.getInstance(context);
-		tooltip.setContext(context);
+
 	}
 
 	@Override
