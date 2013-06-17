@@ -103,7 +103,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		Log.d("ScriptActivity", "ScriptActivityOnResume");
+		Log.d("Forest", "ScriptActivity.onResume");
 	}
 
 	@Override
@@ -127,6 +127,15 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		updateCurrentFragment(currentFragmentPosition, fragmentTransaction);
 		fragmentTransaction.commit();
 
+		setupActionBar();
+
+		btn_add = (LinearLayout) findViewById(R.id.button_add);
+		updateHandleAddButtonClickListener();
+
+		Log.d("FOREST", "ScriptActivity.onCreate: " + this.toString());
+	}
+
+	private void setupActionBar() {
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -140,7 +149,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 				if (isHoveringActive()) {
-					scriptFragment.getListView().animateHoveringBrick();
+					getScriptFragment().getListView().animateHoveringBrick();
 					return true;
 				}
 				if (itemPosition != currentFragmentPosition) {
@@ -170,8 +179,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 			}
 		});
 		actionBar.setSelectedNavigationItem(currentFragmentPosition);
-		btn_add = (LinearLayout) findViewById(R.id.button_add);
-		updateHandleAddButtonClickListener();
 	}
 
 	public void updateHandleAddButtonClickListener() {
@@ -193,12 +200,12 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		Log.d("CatroidFragmentTag", "ScriptActivity updateCurrentFragment");
 		switch (currentFragmentPosition) {
 			case FRAGMENT_SCRIPTS:
-				if (scriptFragment == null) {
-					scriptFragment = new ScriptFragment();
+				if (getScriptFragment() == null) {
+					setScriptFragment(new ScriptFragment());
 					fragmentExists = false;
 					currentFragmentTag = ScriptFragment.TAG;
 				}
-				currentFragment = scriptFragment;
+				currentFragment = getScriptFragment();
 				break;
 			case FRAGMENT_LOOKS:
 				if (lookFragment == null) {
@@ -267,7 +274,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (isHoveringActive()) {
-			scriptFragment.getListView().animateHoveringBrick();
+			getScriptFragment().getListView().animateHoveringBrick();
 			return super.onOptionsItemSelected(item);
 		}
 
@@ -372,7 +379,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		if (formulaEditor != null) {
 			if (formulaEditor.isVisible()) {
-				scriptFragment.getAdapter().updateProjectBrickList();
+				getScriptFragment().getAdapter().updateBrickList();
 				return formulaEditor.onKey(null, keyCode, event);
 			}
 		}
@@ -406,11 +413,11 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (currentFragmentPosition == FRAGMENT_SCRIPTS) {
-				DragAndDropListView listView = scriptFragment.getListView();
+				DragAndDropListView listView = getScriptFragment().getListView();
 				if (listView.isCurrentlyDragging()) {
 					listView.resetDraggingScreen();
 
-					BrickAdapter adapter = scriptFragment.getAdapter();
+					BrickAdapter adapter = getScriptFragment().getAdapter();
 					adapter.removeDraggedBrick();
 					return true;
 				}
@@ -429,7 +436,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	public void handlePlayButton(View view) {
 		updateHandleAddButtonClickListener();
 		if (isHoveringActive()) {
-			scriptFragment.getListView().animateHoveringBrick();
+			getScriptFragment().getListView().animateHoveringBrick();
 		} else {
 			if (!viewSwitchLock.tryLock()) {
 				return;
@@ -471,7 +478,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	}
 
 	public boolean isHoveringActive() {
-		if (currentFragmentPosition == FRAGMENT_SCRIPTS && scriptFragment.getListView().isCurrentlyDragging()) {
+		if (currentFragmentPosition == FRAGMENT_SCRIPTS && getScriptFragment().getListView().isCurrentlyDragging()) {
 			return true;
 		}
 		return false;
@@ -494,7 +501,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		switch (fragmentPosition) {
 			case FRAGMENT_SCRIPTS:
-				fragment = scriptFragment;
+				fragment = getScriptFragment();
 				break;
 			case FRAGMENT_LOOKS:
 				fragment = lookFragment;
@@ -509,7 +516,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	public void setCurrentFragment(int fragmentPosition) {
 		switch (fragmentPosition) {
 			case FRAGMENT_SCRIPTS:
-				currentFragment = scriptFragment;
+				currentFragment = getScriptFragment();
 				currentFragmentPosition = FRAGMENT_SCRIPTS;
 				currentFragmentTag = ScriptFragment.TAG;
 				break;
@@ -556,6 +563,14 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 	public void setIsLookFragmentHandleAddButtonHandled(boolean isLookFragmentHandleAddButtonHandled) {
 		this.isLookFragmentHandleAddButtonHandled = isLookFragmentHandleAddButtonHandled;
+	}
+
+	public ScriptFragment getScriptFragment() {
+		return scriptFragment;
+	}
+
+	public void setScriptFragment(ScriptFragment scriptFragment) {
+		this.scriptFragment = scriptFragment;
 	}
 
 	public void switchToFragmentFromScriptFragment(int fragmentPosition) {

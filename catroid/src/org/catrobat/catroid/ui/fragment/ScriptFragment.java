@@ -274,8 +274,16 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			}
 		});
 
-		adapter = new BrickAdapter(getActivity(), sprite, listView);
-		adapter.setOnBrickEditListener(this);
+		Log.d("FOREST", this.toString() + " initListeners() adapter = "
+				+ (adapter != null ? adapter.toString() : "null"));
+
+		Log.d("FOREST", "getActivity() = " + (getActivity() != null ? getActivity().toString() : "null"));
+		Log.d("FOREST", "getSherlockActivity() = " + getSherlockActivity().toString());
+
+		if (adapter == null) {
+			adapter = new BrickAdapter(getActivity(), sprite, listView);
+			adapter.setOnBrickEditListener(this);
+		}
 
 		if (ProjectManager.INSTANCE.getCurrentSprite().getNumberOfScripts() > 0) {
 			ProjectManager.INSTANCE.setCurrentScript(((ScriptBrick) adapter.getItem(0)).initScript(sprite));
@@ -408,7 +416,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(ScriptActivity.ACTION_BRICK_LIST_CHANGED)) {
-				adapter.updateProjectBrickList();
+				adapter.updateBrickList();
 			}
 		}
 	}

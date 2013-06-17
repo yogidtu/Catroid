@@ -39,11 +39,11 @@ import android.widget.LinearLayout;
  */
 
 public class UserScriptDefinitionBrick extends ScriptBrick {
-	protected UserScript userScript;
+	private UserScript userScript;
 	private static final long serialVersionUID = 1L;
 
 	public UserScriptDefinitionBrick(Sprite sprite) {
-		this.userScript = new UserScript(sprite, this);
+		this.setUserScript(new UserScript(sprite, this));
 		this.sprite = sprite;
 	}
 
@@ -56,7 +56,7 @@ public class UserScriptDefinitionBrick extends ScriptBrick {
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
 		UserScriptDefinitionBrick copyBrick = (UserScriptDefinitionBrick) clone();
 		copyBrick.sprite = sprite;
-		copyBrick.userScript = (UserScript) script;
+		copyBrick.setUserScript((UserScript) script);
 		return copyBrick;
 	}
 
@@ -150,10 +150,18 @@ public class UserScriptDefinitionBrick extends ScriptBrick {
 
 	@Override
 	public Script initScript(Sprite sprite) {
-		if (userScript == null) {
-			userScript = new UserScript(sprite, this);
+		if (getUserScript() == null) {
+			setUserScript(new UserScript(sprite, this));
 		}
 
+		return getUserScript();
+	}
+
+	public UserScript getUserScript() {
 		return userScript;
+	}
+
+	public void setUserScript(UserScript userScript) {
+		this.userScript = userScript;
 	}
 }

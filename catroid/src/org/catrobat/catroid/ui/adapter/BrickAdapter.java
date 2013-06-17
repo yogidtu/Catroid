@@ -32,12 +32,15 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
+import org.catrobat.catroid.content.UserScript;
 import org.catrobat.catroid.content.bricks.AllowedAfterDeadEndBrick;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.DeadEndBrick;
 import org.catrobat.catroid.content.bricks.NestingBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.UserBrick;
+import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
+import org.catrobat.catroid.ui.UserBrickScriptActivity;
 import org.catrobat.catroid.ui.ViewSwitchLock;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListView;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListener;
@@ -45,6 +48,7 @@ import org.catrobat.catroid.ui.dragndrop.DragAndDropListener;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
@@ -74,6 +78,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	private Sprite sprite;
+	private UserBrick userBrick;
 	private int dragTargetPosition;
 	private Brick draggedBrick;
 	private DragAndDropListView dragAndDropListView;
@@ -111,10 +116,17 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		retryScriptDragging = false;
 		animatedBricks = new ArrayList<Brick>();
 		this.selectMode = ListView.CHOICE_MODE_NONE;
+
+		Log.d("FOREST", "BrickAdapter() " + this.toString());
 		initBrickList();
 	}
 
-	private void initBrickList() {
+	public void initBrickList() {
+		if (userBrick != null) {
+			initBrickListUserBrick();
+			return;
+		}
+
 		brickList = new ArrayList<Brick>();
 
 		Sprite sprite = ProjectManager.INSTANCE.getCurrentSprite();
@@ -129,6 +141,24 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				brick.setBrickAdapter(this);
 			}
 		}
+		Log.d("FOREST",
+				"initBrickList()\n" + (userBrick != null ? userBrick.toString() : "null") + "\n" + this.toString());
+	}
+
+	private void initBrickListUserBrick() {
+		UserScriptDefinitionBrick defBrick = getUserBrick().getDefinitionBrick();
+		UserScript script = defBrick.getUserScript();
+
+		brickList = new ArrayList<Brick>();
+
+		brickList.add(script.getScriptBrick());
+		script.getScriptBrick().setBrickAdapter(this);
+		for (Brick brick : script.getBrickList()) {
+			brickList.add(brick);
+			brick.setBrickAdapter(this);
+		}
+
+		Log.d("FOREST", "initBrickListUserBrick()");
 	}
 
 	public boolean isActionMode() {
@@ -322,6 +352,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		draggedBrick = null;
 		firstDrag = true;
 
+		Log.d("FOREST", "drop() " + this.toString());
 		initBrickList();
 		notifyDataSetChanged();
 
@@ -519,6 +550,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		int scriptCount = currentSprite.getNumberOfScripts();
 		if (scriptCount == 0 && brickToBeAdded instanceof ScriptBrick) {
 			currentSprite.addScript(((ScriptBrick) brickToBeAdded).initScript(currentSprite));
+			Log.d("FOREST", "addNewBrick() " + this.toString());
 			initBrickList();
 			notifyDataSetChanged();
 			return;
@@ -625,6 +657,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		draggedBrick = null;
 		addingNewBrick = false;
 
+		Log.d("FOREST", "removeFromBrickListAndProject() " + this.toString());
 		initBrickList();
 		notifyDataSetChanged();
 	}
@@ -644,6 +677,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		draggedBrick = null;
 		addingNewBrick = false;
 
+		Log.d("FOREST", "removeDraggedBrick() " + this.toString());
 		initBrickList();
 		notifyDataSetChanged();
 	}
@@ -740,9 +774,11 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		return wrapper;
 	}
 
-	public void updateProjectBrickList() {
+	public void updateBrickList() {
+		Log.d("FOREST", "updateBrickList() " + this.toString());
 		initBrickList();
 		notifyDataSetChanged();
+		Log.d("FOREST", "updateBrickList() notifyDataSetChanged()");
 	}
 
 	@Override
@@ -824,7 +860,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_move_brick))) {
 					view.performLongClick();
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
-					launchBrickScriptActivityOnBrickAt(itemPosition);
+					launchBrickScriptActivityOnBrickAt(context, itemPosition);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_delete_brick))) {
 					removeFromBrickListAndProject(itemPosition, false);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_animate_bricks))) {
@@ -847,12 +883,21 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 	}
 
-	public void launchBrickScriptActivityOnBrickAt(int index) {
+	public void launchBrickScriptActivityOnBrickAt(Context context, int index) {
 		int temp[] = getScriptAndBrickIndexFromProject(index);
 		Script script = ProjectManager.INSTANCE.getCurrentSprite().getScript(temp[0]);
 		if (script != null) {
 			Brick brick = script.getBrick(temp[1]);
-			//brick
+
+			if (!viewSwitchLock.tryLock()) {
+				return;
+			}
+
+			Intent intent = new Intent(context, UserBrickScriptActivity.class);
+			UserBrickScriptActivity.setUserBrick(brick);
+			context.startActivity(intent);
+
+			//UserBrickScriptActivity.
 		}
 	}
 
@@ -1111,12 +1156,12 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		spriteToEdit.removeScript(scriptToDelete);
 		if (spriteToEdit.getNumberOfScripts() == 0) {
 			ProjectManager.INSTANCE.setCurrentScript(null);
-			updateProjectBrickList();
+			updateBrickList();
 		} else {
 			int lastScriptIndex = spriteToEdit.getNumberOfScripts() - 1;
 			Script lastScript = spriteToEdit.getScript(lastScriptIndex);
 			ProjectManager.INSTANCE.setCurrentScript(lastScript);
-			updateProjectBrickList();
+			updateBrickList();
 		}
 	}
 
@@ -1143,5 +1188,13 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			reverseCheckedList.add(checkedBricks.get(counter));
 		}
 		return reverseCheckedList;
+	}
+
+	public UserBrick getUserBrick() {
+		return userBrick;
+	}
+
+	public void setUserBrick(UserBrick userBrick) {
+		this.userBrick = userBrick;
 	}
 }

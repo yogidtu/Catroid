@@ -63,13 +63,14 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	public UserBrick(Sprite sprite) {
 		this.sprite = sprite;
 		uiComponents = new LinkedList<UserBrickUIComponent>();
+		this.setDefinitionBrick(new UserScriptDefinitionBrick(sprite));
 	}
 
 	public UserBrick(Sprite sprite, LinkedList<UserBrickUIComponent> uiComponents,
 			UserScriptDefinitionBrick definitionBrick) {
 		this.sprite = sprite;
 		this.uiComponents = uiComponents;
-		this.definitionBrick = definitionBrick;
+		this.setDefinitionBrick(definitionBrick);
 	}
 
 	@Override
@@ -231,7 +232,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public Brick clone() {
-		return new UserBrick(getSprite(), uiComponents, definitionBrick);
+		return new UserBrick(getSprite(), uiComponents, getDefinitionBrick());
 	}
 
 	@Override
@@ -250,7 +251,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
 		SequenceAction userSequence = ExtendedActions.sequence();
-		Script userScript = definitionBrick.initScript(sprite); // getScript
+		Script userScript = getDefinitionBrick().initScript(sprite); // getScript
 		userScript.run(userSequence);
 
 		LinkedList<SequenceAction> returnActionList = new LinkedList<SequenceAction>();
@@ -259,5 +260,13 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		Action action = ExtendedActions.userBrick(sprite, userSequence);
 		sequence.addAction(action);
 		return returnActionList;
+	}
+
+	public UserScriptDefinitionBrick getDefinitionBrick() {
+		return definitionBrick;
+	}
+
+	public void setDefinitionBrick(UserScriptDefinitionBrick definitionBrick) {
+		this.definitionBrick = definitionBrick;
 	}
 }

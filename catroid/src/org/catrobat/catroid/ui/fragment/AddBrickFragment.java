@@ -137,12 +137,9 @@ public class AddBrickFragment extends SherlockListFragment {
 	public void onStart() {
 		super.onStart();
 
-		Log.d("a", "onStart()");
-
 		getListView().setOnItemClickListener(new ListView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Log.d("a", "onItemClick(): " + adapter.getItem(position).toString());
 
 				Brick brickToBeAdded = adapter.getItem(position).clone();
 				scriptFragment.updateAdapterAfterAddNewBrick(brickToBeAdded);
