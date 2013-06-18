@@ -55,6 +55,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -183,7 +184,8 @@ public class StageListener implements ApplicationListener {
 			Gdx.input.setInputProcessor(multiplexer);
 			fpsLogger = new FPSLogger();
 		} else {
-			Gdx.input.setInputProcessor(stage);
+			//Gdx.input.setInputProcessor(stage);
+			Gdx.input.setInputProcessor(new GestureDetector(createPreStageGestureListener()));
 		}
 
 		axes = new Texture(Gdx.files.internal("stage/red_pixel.bmp"));
@@ -563,4 +565,12 @@ public class StageListener implements ApplicationListener {
 			e.printStackTrace();
 		}
 	}
+
+	private PreStageGestureListener createPreStageGestureListener() {
+		PreStageGestureListener gestureListener = new PreStageGestureListener();
+		//gestureListener.setActorToChange(spriteToChange.costume);
+		//gestureListener.setMode(preStageMode);
+		return gestureListener;
+	}
+
 }
