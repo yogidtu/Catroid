@@ -124,7 +124,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 	public void initBrickList() {
 		if (userBrick != null) {
-			initBrickListUserBrick();
+			initBrickListUserScript();
 			return;
 		}
 
@@ -144,14 +144,17 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 		Log.d("FOREST",
 				"initBrickList()\n" + (userBrick != null ? userBrick.toString() : "null") + "\n" + this.toString());
+
 	}
 
-	private void initBrickListUserBrick() {
+	private void initBrickListUserScript() {
 		userScript = getUserScript();
 
 		brickList = new ArrayList<Brick>();
 
 		brickList.add(userScript.getScriptBrick());
+		Log.d("FOREST", (userScript != null ? userScript.toString() : "null")
+				+ (userScript.getScriptBrick() != null ? userScript.getScriptBrick().toString() : "null"));
 		userScript.getScriptBrick().setBrickAdapter(this);
 		for (Brick brick : userScript.getBrickList()) {
 			brickList.add(brick);
@@ -159,6 +162,13 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 
 		Log.d("FOREST", "initBrickListUserBrick()");
+	}
+
+	public void resetAlphas() {
+		for (Brick brick : brickList) {
+			brick.setAlpha(ALPHA_FULL);
+		}
+		notifyDataSetChanged();
 	}
 
 	private UserScript getUserScript() {

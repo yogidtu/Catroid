@@ -22,18 +22,15 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import org.catrobat.catroid.formulaeditor.Formula;
-
-import android.widget.TextView;
 
 /**
  * @author forestjohnson
  * 
  */
-public class UserBrickUIComponent {
-	public UserBrickUIData data;
-
-	public Formula fieldFormula;
-	public transient TextView textView;
-	public transient TextView prototypeView;
+public class UserBrickUIData {
+	public int key;
+	public boolean isField;
+	public boolean hasLocalizedString;
+	public String localizedStringKey = "";
+	public String userDefinedName = "";
 }

@@ -25,7 +25,7 @@ package org.catrobat.catroid.ui;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.UserBrick;
-import org.catrobat.catroid.content.bricks.UserBrickUIComponent;
+import org.catrobat.catroid.content.bricks.UserBrickUIData;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.utils.Utils;
 
@@ -87,12 +87,12 @@ public class UserBrickScriptActivity extends ScriptActivity {
 		items[0] = getResources().getString(R.string.scripts);
 
 		String name = "";
-		for (UserBrickUIComponent c : userBrick.uiComponents) {
-			if (!c.isField) {
-				if (c.hasLocalizedString) {
-					name = Utils.getStringResourceByName(c.localizedStringKey, this);
+		for (UserBrickUIData d : userBrick.uiData) {
+			if (!d.isField) {
+				if (d.hasLocalizedString) {
+					name = Utils.getStringResourceByName(d.localizedStringKey, this);
 				} else {
-					name = c.userDefinedName;
+					name = d.userDefinedName;
 				}
 				break;
 			}

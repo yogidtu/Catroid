@@ -35,6 +35,7 @@ import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -58,19 +59,24 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	private UserScriptDefinitionBrick definitionBrick;
 	private transient View prototypeView;
 
-	public LinkedList<UserBrickUIComponent> uiComponents;
+	// belonging to brick instance
+	private LinkedList<UserBrickUIComponent> uiComponents;
+
+	// belonging to stored brick
+	public LinkedList<UserBrickUIData> uiData;
 
 	public UserBrick(Sprite sprite) {
 		this.sprite = sprite;
-		uiComponents = new LinkedList<UserBrickUIComponent>();
-		this.setDefinitionBrick(new UserScriptDefinitionBrick(sprite));
+		uiData = new LinkedList<UserBrickUIData>();
+		this.definitionBrick = new UserScriptDefinitionBrick(sprite);
+		updateUIComponents();
 	}
 
-	public UserBrick(Sprite sprite, LinkedList<UserBrickUIComponent> uiComponents,
-			UserScriptDefinitionBrick definitionBrick) {
+	public UserBrick(Sprite sprite, LinkedList<UserBrickUIData> uiData, UserScriptDefinitionBrick definitionBrick) {
 		this.sprite = sprite;
-		this.uiComponents = uiComponents;
-		this.setDefinitionBrick(definitionBrick);
+		this.uiData = uiData;
+		this.definitionBrick = definitionBrick;
+		updateUIComponents();
 	}
 
 	@Override
@@ -88,26 +94,40 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	public void addUILocalizedStringByName(String key) {
-		UserBrickUIComponent comp = new UserBrickUIComponent();
+		UserBrickUIData comp = new UserBrickUIData();
 		comp.isField = false;
 		comp.hasLocalizedString = true;
 		comp.localizedStringKey = key;
-		uiComponents.add(comp);
+		uiData.add(comp);
+		updateUIComponents();
 	}
 
 	public void addUIText(String text) {
-		UserBrickUIComponent comp = new UserBrickUIComponent();
+		UserBrickUIData comp = new UserBrickUIData();
 		comp.isField = false;
 		comp.hasLocalizedString = false;
 		comp.userDefinedName = text;
-		uiComponents.add(comp);
+		uiData.add(comp);
+		updateUIComponents();
 	}
 
 	public void addUIField() {
-		UserBrickUIComponent comp = new UserBrickUIComponent();
+		UserBrickUIData comp = new UserBrickUIData();
 		comp.isField = true;
-		comp.fieldFormula = new Formula(0);
-		uiComponents.add(comp);
+		uiData.add(comp);
+		updateUIComponents();
+	}
+
+	private void updateUIComponents() {
+		uiComponents = new LinkedList<UserBrickUIComponent>();
+		for (UserBrickUIData d : uiData) {
+			UserBrickUIComponent c = new UserBrickUIComponent();
+			c.data = d;
+			if (c.data.isField) {
+				c.fieldFormula = new Formula(0);
+			}
+			uiComponents.add(c);
+		}
 	}
 
 	public void appendBrickToScript(Brick brick) {
@@ -119,6 +139,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		if (animationState) {
 			return view;
 		}
+
+		Log.d("FOREST", "GET VIEW!!" + alphaValue);
 
 		view = View.inflate(context, R.layout.brick_user, null);
 		view = getViewWithAlpha(alphaValue);
@@ -167,7 +189,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 		for (UserBrickUIComponent c : uiComponents) {
 			c.textView.setTextColor(c.textView.getTextColors().withAlpha(alphaValue));
-			if (c.isField) {
+			if (c.data.isField) {
 				c.textView.getBackground().setAlpha(alphaValue);
 			}
 		}
@@ -189,7 +211,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 		for (UserBrickUIComponent c : uiComponents) {
 			TextView currentTextView = null;
-			if (c.isField) {
+			if (c.data.isField) {
 				currentTextView = new EditText(context);
 
 				if (prototype) {
@@ -208,10 +230,10 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 				currentTextView.setTextAppearance(context, R.style.BrickText_Multiple);
 
 				String text = null;
-				if (c.hasLocalizedString) {
-					text = Utils.getStringResourceByName(c.localizedStringKey, context);
+				if (c.data.hasLocalizedString) {
+					text = Utils.getStringResourceByName(c.data.localizedStringKey, context);
 				} else {
-					text = c.userDefinedName;
+					text = c.data.userDefinedName;
 				}
 				currentTextView.setText(text);
 			}
@@ -224,7 +246,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			}
 
 			layout.addView(currentTextView);
-			c.key = layout.indexOfChild(currentTextView);
 
 			if (prototype) {
 				c.prototypeView = currentTextView;
@@ -236,7 +257,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public Brick clone() {
-		return new UserBrick(getSprite(), uiComponents, definitionBrick);
+		return new UserBrick(getSprite(), uiData, definitionBrick);
 	}
 
 	@Override
@@ -246,7 +267,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		}
 
 		for (UserBrickUIComponent c : uiComponents) {
-			if (c.isField && c.textView.getId() == eventOrigin.getId()) {
+			if (c.data.isField && c.textView.getId() == eventOrigin.getId()) {
 				FormulaEditorFragment.showFragment(view, this, c.fieldFormula);
 			}
 		}

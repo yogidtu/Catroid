@@ -140,4 +140,9 @@ public class BrickBaseType implements Brick {
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
 		return null;
 	}
+
+	@Override
+	public void setAlpha(int a) {
+		alphaValue = a;
+	}
 }

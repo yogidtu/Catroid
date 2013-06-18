@@ -169,6 +169,8 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		getActivity().registerReceiver(brickListChangedReceiver, filterBrickListChanged);
 
 		initListeners();
+
+		adapter.resetAlphas();
 	}
 
 	@Override

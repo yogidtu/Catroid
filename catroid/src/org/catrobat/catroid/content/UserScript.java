@@ -34,9 +34,11 @@ public class UserScript extends Script {
 
 	private static final long serialVersionUID = 1L;
 
+	private UserScriptDefinitionBrick definitionBrick;
+
 	public UserScript(Sprite sprite, UserScriptDefinitionBrick brick) {
 		super(sprite);
-		this.brick = brick;
+		this.brick = definitionBrick = brick;
 	}
 
 	@Override
@@ -47,6 +49,9 @@ public class UserScript extends Script {
 
 	@Override
 	public ScriptBrick getScriptBrick() {
+		if (brick == null) {
+			brick = definitionBrick;
+		}
 		return brick;
 	}
 
