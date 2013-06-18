@@ -38,7 +38,9 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.WhenScript;
+import org.catrobat.catroid.content.bricks.ChangeXByNBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
+import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.ImageEditing;
@@ -72,6 +74,15 @@ public class StandardProjectHandler {
 		Script backgroundStartScript = new StartScript(backgroundSprite);
 		Script startScript = new StartScript(sprite);
 		Script whenScript = new WhenScript(sprite);
+
+		UserBrick firstUserBrick = sprite.newUserBrick();
+		firstUserBrick.addUIText("This is a UserBrick.");
+		firstUserBrick.addUIField();
+
+		UserBrick secondUserBrick = sprite.newUserBrick();
+		secondUserBrick.addUILocalizedStringByName("brick_change_x_by");
+		secondUserBrick.addUIField();
+		secondUserBrick.appendBrickToScript(new ChangeXByNBrick(sprite, BrickValues.CHANGE_X_BY));
 
 		File backgroundFile = createBackgroundImage(projectName, backgroundName,
 				context.getString(R.color.default_project_backgroundcolor));

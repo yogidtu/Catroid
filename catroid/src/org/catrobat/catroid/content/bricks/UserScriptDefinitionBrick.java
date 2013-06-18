@@ -52,6 +52,10 @@ public class UserScriptDefinitionBrick extends ScriptBrick {
 		return NO_RESOURCES;
 	}
 
+	public void appendBrickToScript(Brick brick) {
+		userScript.addBrick(brick);
+	}
+
 	@Override
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
 		UserScriptDefinitionBrick copyBrick = (UserScriptDefinitionBrick) clone();
@@ -66,72 +70,16 @@ public class UserScriptDefinitionBrick extends ScriptBrick {
 			return view;
 		}
 
-		view = View.inflate(context, R.layout.brick_user, null);
+		view = View.inflate(context, R.layout.brick_user_definition, null);
 
-		setCheckboxView(R.id.brick_user_checkbox);
+		setCheckboxView(R.id.brick_user_definition_checkbox);
 
-		//method moved to to DragAndDropListView since it is not working on 2.x
-		/*
-		 * checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		 * 
-		 * @Override
-		 * public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		 * 
-		 * checked = isChecked;
-		 * if (!checked) {
-		 * for (Brick currentBrick : adapter.getCheckedBricks()) {
-		 * currentBrick.setCheckedBoolean(false);
-		 * }
-		 * }
-		 * adapter.handleCheck(brickInstance, checked);
-		 * }
-		 * });
-		 */
-
-		// inactive until spinner has more than one element
-		//		final Spinner spinner = (Spinner) view.findViewById(R.id.brick_when_spinner);
-		//		spinner.setFocusable(false);
-		//		spinner.setClickable(true);
-		//		ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<CharSequence>(context,
-		//				android.R.layout.simple_spinner_item);
-		//		spinnerAdapter.add(context.getString(R.string.action_tapped));
-
-		//		TODO: not working with OpenGL yet, uncomment this when it does
-		//		spinnerAdapter.add(context.getString(R.string.action_doubleTapped));
-		//		spinnerAdapter.add(context.getString(R.string.action_longPressed));
-		//		spinnerAdapter.add(context.getString(R.string.action_swipeUp));
-		//		spinnerAdapter.add(context.getString(R.string.action_swipeDown));
-		//		spinnerAdapter.add(context.getString(R.string.action_swipeLeft));
-		//		spinnerAdapter.add(context.getString(R.string.action_swipeRight));
-
-		//		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		//		spinner.setAdapter(spinnerAdapter);
-		//
-		//		if (whenScript.getAction() != null) {
-		//			spinner.setSelection(whenScript.getPosition(), true);
-		//		}
-		//
-		//		if (spinner.getSelectedItem() == null) {
-		//			spinner.setSelection(0);
-		//		}
-		//
-		//		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-		//			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		//				spinner.setSelected(true);
-		//				whenScript.setAction(position);
-		//				spinner.setSelection(position);
-		//				adapter.notifyDataSetChanged();
-		//			}
-		//
-		//			public void onNothingSelected(AdapterView<?> parent) {
-		//			}
-		//		});
 		return view;
 	}
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_user_layout);
+		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_user_definition_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
 		this.alphaValue = (alphaValue);
@@ -145,7 +93,7 @@ public class UserScriptDefinitionBrick extends ScriptBrick {
 
 	@Override
 	public Brick clone() {
-		return new WhenBrick(getSprite(), null);
+		return new UserScriptDefinitionBrick(getSprite());
 	}
 
 	@Override

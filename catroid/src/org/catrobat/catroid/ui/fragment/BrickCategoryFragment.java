@@ -51,7 +51,7 @@ public class BrickCategoryFragment extends SherlockListFragment {
 	private int previousActionBarNavigationMode;
 	private CharSequence previousActionBarTitle;
 	private OnCategorySelectedListener onCategorySelectedListener;
-	BrickCategoryAdapter adapter;
+	private BrickCategoryAdapter adapter;
 
 	private Lock viewSwitchLock = new ViewSwitchLock();
 
@@ -135,6 +135,7 @@ public class BrickCategoryFragment extends SherlockListFragment {
 	private void setupBrickCategories() {
 		LayoutInflater inflater = getSherlockActivity().getLayoutInflater();
 		List<View> categories = new ArrayList<View>();
+
 		categories.add(inflater.inflate(R.layout.brick_category_control, null));
 		categories.add(inflater.inflate(R.layout.brick_category_motion, null));
 		categories.add(inflater.inflate(R.layout.brick_category_sound, null));

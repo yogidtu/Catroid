@@ -110,6 +110,10 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		uiComponents.add(comp);
 	}
 
+	public void appendBrickToScript(Brick brick) {
+		definitionBrick.appendBrickToScript(brick);
+	}
+
 	@Override
 	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
 		if (animationState) {
@@ -232,7 +236,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public Brick clone() {
-		return new UserBrick(getSprite(), uiComponents, getDefinitionBrick());
+		return new UserBrick(getSprite(), uiComponents, definitionBrick);
 	}
 
 	@Override

@@ -62,6 +62,7 @@ import org.catrobat.catroid.content.bricks.PointInDirectionBrick;
 import org.catrobat.catroid.content.bricks.PointInDirectionBrick.Direction;
 import org.catrobat.catroid.content.bricks.PointToBrick;
 import org.catrobat.catroid.content.bricks.RepeatBrick;
+import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.SetBrightnessBrick;
 import org.catrobat.catroid.content.bricks.SetGhostEffectBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
@@ -75,7 +76,6 @@ import org.catrobat.catroid.content.bricks.SpeakBrick;
 import org.catrobat.catroid.content.bricks.StopAllSoundsBrick;
 import org.catrobat.catroid.content.bricks.TurnLeftBrick;
 import org.catrobat.catroid.content.bricks.TurnRightBrick;
-import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.content.bricks.WhenBrick;
 import org.catrobat.catroid.content.bricks.WhenStartedBrick;
@@ -83,29 +83,54 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.formulaeditor.Operators;
+import org.catrobat.catroid.ui.UserBrickScriptActivity;
 
 import android.content.Context;
 
 public class CategoryBricksFactory {
 
 	public List<Brick> getBricks(String category, Sprite sprite, Context context) {
-		if (category.equals(context.getString(R.string.category_control))) {
-			return setupControlCategoryList(sprite, context);
-		} else if (category.equals(context.getString(R.string.category_motion))) {
-			return setupMotionCategoryList(sprite);
-		} else if (category.equals(context.getString(R.string.category_sound))) {
-			return setupSoundCategoryList(sprite, context);
-		} else if (category.equals(context.getString(R.string.category_looks))) {
-			return setupLooksCategoryList(sprite);
-		} else if (category.equals(context.getString(R.string.category_variables))) {
-			return setupVariablesCategoryList(sprite);
-		} else if (category.equals(context.getString(R.string.category_user_bricks))) {
-			return setupUserBricksCategoryList(sprite);
-		} else if (category.equals(context.getString(R.string.category_lego_nxt))) {
-			return setupLegoNxtCategoryList(sprite);
+
+		UserBrickScriptActivity activity;
+		try {
+			activity = (UserBrickScriptActivity) context;
+		} catch (ClassCastException e) {
+			activity = null;
 		}
 
-		return new ArrayList<Brick>();
+		boolean isUserScriptMode = activity != null;
+		List<Brick> tempList = null;
+		List<Brick> toReturn = new ArrayList<Brick>();
+
+		if (category.equals(context.getString(R.string.category_control))) {
+			tempList = setupControlCategoryList(sprite, context);
+		} else if (category.equals(context.getString(R.string.category_motion))) {
+			tempList = setupMotionCategoryList(sprite);
+		} else if (category.equals(context.getString(R.string.category_sound))) {
+			tempList = setupSoundCategoryList(sprite, context);
+		} else if (category.equals(context.getString(R.string.category_looks))) {
+			tempList = setupLooksCategoryList(sprite);
+		} else if (category.equals(context.getString(R.string.category_variables))) {
+			tempList = setupVariablesCategoryList(sprite);
+		} else if (category.equals(context.getString(R.string.category_user_bricks))) {
+			tempList = setupUserBricksCategoryList(sprite);
+		} else if (category.equals(context.getString(R.string.category_lego_nxt))) {
+			tempList = setupLegoNxtCategoryList(sprite);
+		}
+
+		for (Brick b : tempList) {
+			ScriptBrick brickAsScriptBrick;
+			try {
+				brickAsScriptBrick = (ScriptBrick) b;
+			} catch (ClassCastException e) {
+				brickAsScriptBrick = null;
+			}
+			if (!isUserScriptMode || brickAsScriptBrick == null) {
+				toReturn.add(b);
+			}
+		}
+
+		return toReturn;
 	}
 
 	private List<Brick> setupControlCategoryList(Sprite sprite, Context context) {
@@ -195,19 +220,7 @@ public class CategoryBricksFactory {
 	}
 
 	private List<Brick> setupUserBricksCategoryList(Sprite sprite) {
-		List<Brick> userBricksBrickList = new ArrayList<Brick>();
-
-		UserBrick firstUserBrick = new UserBrick(sprite);
-		firstUserBrick.addUIText("This is a UserBrick.");
-		firstUserBrick.addUIField();
-		userBricksBrickList.add(firstUserBrick);
-
-		UserBrick secondUserBrick = new UserBrick(sprite);
-		secondUserBrick.addUILocalizedStringByName("brick_change_x_by");
-		secondUserBrick.addUIField();
-		userBricksBrickList.add(secondUserBrick);
-
-		return userBricksBrickList;
+		return ProjectManager.INSTANCE.getCurrentSprite().getUserBrickList();
 	}
 
 	private List<Brick> setupLegoNxtCategoryList(Sprite sprite) {

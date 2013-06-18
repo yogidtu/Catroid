@@ -79,6 +79,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 	private Sprite sprite;
 	private UserBrick userBrick;
+	private UserScript userScript;
 	private int dragTargetPosition;
 	private Brick draggedBrick;
 	private DragAndDropListView dragAndDropListView;
@@ -146,19 +147,23 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	private void initBrickListUserBrick() {
-		UserScriptDefinitionBrick defBrick = getUserBrick().getDefinitionBrick();
-		UserScript script = defBrick.getUserScript();
+		userScript = getUserScript();
 
 		brickList = new ArrayList<Brick>();
 
-		brickList.add(script.getScriptBrick());
-		script.getScriptBrick().setBrickAdapter(this);
-		for (Brick brick : script.getBrickList()) {
+		brickList.add(userScript.getScriptBrick());
+		userScript.getScriptBrick().setBrickAdapter(this);
+		for (Brick brick : userScript.getBrickList()) {
 			brickList.add(brick);
 			brick.setBrickAdapter(this);
 		}
 
 		Log.d("FOREST", "initBrickListUserBrick()");
+	}
+
+	private UserScript getUserScript() {
+		UserScriptDefinitionBrick defBrick = userBrick.getDefinitionBrick();
+		return defBrick.getUserScript();
 	}
 
 	public boolean isActionMode() {
@@ -341,18 +346,18 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			if (draggedBrick instanceof ScriptBrick) {
 				addScriptToProject(to, (ScriptBrick) draggedBrick);
 			} else {
+				Log.d("FOREST", "drop() addBrickToPosition() " + this.toString());
 				addBrickToPosition(to, draggedBrick);
 			}
 
 			addingNewBrick = false;
 		} else {
-			moveExistingProjectBrick(fromBeginDrag, toEndDrag);
+			moveExistingBrick(fromBeginDrag, toEndDrag);
 		}
 
 		draggedBrick = null;
 		firstDrag = true;
 
-		Log.d("FOREST", "drop() " + this.toString());
 		initBrickList();
 		notifyDataSetChanged();
 
@@ -364,6 +369,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	private void addScriptToProject(int position, ScriptBrick scriptBrick) {
+
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 
 		int[] temp = getScriptAndBrickIndexFromProject(position);
@@ -392,7 +398,14 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		ProjectManager.getInstance().setCurrentScript(newScript);
 	}
 
-	private void moveExistingProjectBrick(int from, int to) {
+	private void moveExistingBrick(int from, int to) {
+		if (userScript != null) {
+			Brick brick = userScript.getBrick(getPositionInUserScript(from));
+			userScript.removeBrick(brick);
+			userScript.addBrick(getPositionInUserScript(to), brick);
+			return;
+		}
+
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 
 		int[] tempFrom = getScriptAndBrickIndexFromProject(from);
@@ -418,6 +431,12 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	private void addBrickToPosition(int position, Brick brick) {
+
+		if (userScript != null) {
+			addBrickToPositionInUserScript(position, brick);
+			return;
+		}
+
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 
 		int[] temp = getScriptAndBrickIndexFromProject(position);
@@ -447,6 +466,27 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 	}
 
+	private void addBrickToPositionInUserScript(int position, Brick brick) {
+		position = getPositionInUserScript(position);
+		if (brick instanceof NestingBrick) {
+			((NestingBrick) draggedBrick).initialize();
+			List<NestingBrick> nestingBrickList = ((NestingBrick) draggedBrick).getAllNestingBrickParts(true);
+			for (int i = 0; i < nestingBrickList.size(); i++) {
+				if (nestingBrickList.get(i) instanceof DeadEndBrick) {
+					if (i < nestingBrickList.size() - 1) {
+						Log.w(TAG, "Adding a DeadEndBrick in the middle of the NestingBricks");
+					}
+					position = getPositionForDeadEndBrick(position);
+					userScript.addBrick(position, nestingBrickList.get(i));
+				} else {
+					userScript.addBrick(position + i, nestingBrickList.get(i));
+				}
+			}
+		} else {
+			userScript.addBrick(position, brick);
+		}
+	}
+
 	private int getPositionForDeadEndBrick(int position) {
 		for (int i = position + 1; i < brickList.size(); i++) {
 			if (brickList.get(i) instanceof AllowedAfterDeadEndBrick || brickList.get(i) instanceof DeadEndBrick) {
@@ -470,6 +510,31 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 
 		return brickList.size();
+	}
+
+	private int getPositionInUserScript(int position) {
+		position--;
+		if (position < 0) {
+			position = 0;
+		}
+		if (position >= brickList.size()) {
+			return brickList.size() - 1;
+		}
+
+		List<Brick> brickListFromScript = userScript.getBrickList();
+
+		Brick scriptBrick;
+		if (brickListFromScript.size() != 0 && position < brickListFromScript.size()) {
+			scriptBrick = brickListFromScript.get(position);
+		} else {
+			scriptBrick = null;
+		}
+
+		int returnValue = userScript.getBrickList().indexOf(scriptBrick);
+		if (returnValue < 0) {
+			returnValue = userScript.getBrickList().size();
+		}
+		return returnValue;
 	}
 
 	private int[] getScriptAndBrickIndexFromProject(int position) {
@@ -634,7 +699,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	public void removeFromBrickListAndProject(int index, boolean removeScript) {
 		if (addingNewBrick) {
 			brickList.remove(draggedBrick);
-		} else {
+		} else if (userScript == null) {
 			int temp[] = getScriptAndBrickIndexFromProject(index);
 			Script script = ProjectManager.INSTANCE.getCurrentSprite().getScript(temp[0]);
 			if (script != null) {
@@ -650,6 +715,15 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				if (removeScript) {
 					brickList.remove(script);
 				}
+			}
+		} else {
+			Brick brick = userScript.getBrick(getPositionInUserScript(index));
+			if (brick instanceof NestingBrick) {
+				for (Brick tempBrick : ((NestingBrick) brick).getAllNestingBrickParts(true)) {
+					userScript.removeBrick(tempBrick);
+				}
+			} else {
+				userScript.removeBrick(brick);
 			}
 		}
 

@@ -32,6 +32,7 @@ import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.UserBrick;
 
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
@@ -43,6 +44,7 @@ public class Sprite implements Serializable, Cloneable {
 	private ArrayList<LookData> lookList;
 	private ArrayList<SoundInfo> soundList;
 	public transient Look look;
+	private ArrayList<Brick> userBricks;
 
 	public transient boolean isPaused;
 
@@ -69,6 +71,9 @@ public class Sprite implements Serializable, Cloneable {
 	private void init() {
 		look = new Look(this);
 		isPaused = false;
+		if (userBricks == null) {
+			userBricks = new ArrayList<Brick>();
+		}
 		if (soundList == null) {
 			soundList = new ArrayList<SoundInfo>();
 		}
@@ -97,6 +102,19 @@ public class Sprite implements Serializable, Cloneable {
 
 	public Sprite() {
 
+	}
+
+	public UserBrick newUserBrick() {
+		if (userBricks == null) {
+			userBricks = new ArrayList<Brick>();
+		}
+		UserBrick b = new UserBrick(this);
+		userBricks.add(b);
+		return b;
+	}
+
+	public List<Brick> getUserBrickList() {
+		return userBricks;
 	}
 
 	public void createStartScriptActionSequence() {

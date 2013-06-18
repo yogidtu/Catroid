@@ -149,7 +149,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 				if (isHoveringActive()) {
-					getScriptFragment().getListView().animateHoveringBrick();
+					scriptFragment.getListView().animateHoveringBrick();
 					return true;
 				}
 				if (itemPosition != currentFragmentPosition) {
@@ -200,12 +200,12 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		Log.d("CatroidFragmentTag", "ScriptActivity updateCurrentFragment");
 		switch (currentFragmentPosition) {
 			case FRAGMENT_SCRIPTS:
-				if (getScriptFragment() == null) {
-					setScriptFragment(new ScriptFragment());
+				if (scriptFragment == null) {
+					scriptFragment = new ScriptFragment();
 					fragmentExists = false;
-					currentFragmentTag = ScriptFragment.TAG;
+					currentFragmentTag = scriptFragment.TAG;
 				}
-				currentFragment = getScriptFragment();
+				currentFragment = scriptFragment;
 				break;
 			case FRAGMENT_LOOKS:
 				if (lookFragment == null) {
@@ -274,7 +274,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (isHoveringActive()) {
-			getScriptFragment().getListView().animateHoveringBrick();
+			scriptFragment.getListView().animateHoveringBrick();
 			return super.onOptionsItemSelected(item);
 		}
 
@@ -379,7 +379,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		if (formulaEditor != null) {
 			if (formulaEditor.isVisible()) {
-				getScriptFragment().getAdapter().updateBrickList();
+				scriptFragment.getAdapter().updateBrickList();
 				return formulaEditor.onKey(null, keyCode, event);
 			}
 		}
@@ -413,11 +413,11 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (currentFragmentPosition == FRAGMENT_SCRIPTS) {
-				DragAndDropListView listView = getScriptFragment().getListView();
+				DragAndDropListView listView = scriptFragment.getListView();
 				if (listView.isCurrentlyDragging()) {
 					listView.resetDraggingScreen();
 
-					BrickAdapter adapter = getScriptFragment().getAdapter();
+					BrickAdapter adapter = scriptFragment.getAdapter();
 					adapter.removeDraggedBrick();
 					return true;
 				}
@@ -436,7 +436,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	public void handlePlayButton(View view) {
 		updateHandleAddButtonClickListener();
 		if (isHoveringActive()) {
-			getScriptFragment().getListView().animateHoveringBrick();
+			scriptFragment.getListView().animateHoveringBrick();
 		} else {
 			if (!viewSwitchLock.tryLock()) {
 				return;
@@ -478,7 +478,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	}
 
 	public boolean isHoveringActive() {
-		if (currentFragmentPosition == FRAGMENT_SCRIPTS && getScriptFragment().getListView().isCurrentlyDragging()) {
+		if (currentFragmentPosition == FRAGMENT_SCRIPTS && scriptFragment.getListView().isCurrentlyDragging()) {
 			return true;
 		}
 		return false;
@@ -501,7 +501,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		switch (fragmentPosition) {
 			case FRAGMENT_SCRIPTS:
-				fragment = getScriptFragment();
+				fragment = scriptFragment;
 				break;
 			case FRAGMENT_LOOKS:
 				fragment = lookFragment;
@@ -516,7 +516,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	public void setCurrentFragment(int fragmentPosition) {
 		switch (fragmentPosition) {
 			case FRAGMENT_SCRIPTS:
-				currentFragment = getScriptFragment();
+				currentFragment = scriptFragment;
 				currentFragmentPosition = FRAGMENT_SCRIPTS;
 				currentFragmentTag = ScriptFragment.TAG;
 				break;
