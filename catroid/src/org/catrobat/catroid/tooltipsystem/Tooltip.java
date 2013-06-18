@@ -32,12 +32,10 @@ import android.view.MotionEvent;
 public class Tooltip {
 
 	private static Tooltip tooltip;
-	private Context context;
 
 	static TooltipController controller;
 
 	public Tooltip(Context context) {
-		this.context = context;
 		controller = new TooltipController(context);
 	}
 
@@ -49,14 +47,15 @@ public class Tooltip {
 		return tooltip;
 	}
 
-	public void startTooltipSystem() {
-		controller.startTooltipSystem();
+	public boolean startTooltipSystem() {
+		return controller.startTooltipSystem();
 	}
 
-	public void stopTooltipSystem() {
-		controller.stopTooltipSystem();
+	public boolean stopTooltipSystem() {
+		boolean stopped = controller.stopTooltipSystem();
 		controller = null;
 		tooltip = null;
+		return stopped;
 	}
 
 	public boolean setTooltipPosition(int x, int y, String text) {

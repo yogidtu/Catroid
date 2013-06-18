@@ -1,6 +1,7 @@
 package org.catrobat.catroid.uitest.tooltipsystem;
 
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.tooltipsystem.Tooltip;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
@@ -83,4 +84,13 @@ public class TooltipInProjectActivityTest extends ActivityInstrumentationTestCas
 		solo.clickOnActionBarItem(R.id.button_tooltip);
 		assertTrue("Tooltip flag is not set active", ProjectActivity.tooltipActive);
 	}
+
+	public void testCheckActivity() {
+		solo.waitForActivity(ProjectActivity.class.getName());
+		Tooltip tooltip = Tooltip.getInstance(solo.getCurrentActivity());
+		int value = tooltip.checkActivity();
+		assertEquals("The Activity Value is not correct", value, 1);
+
+	}
+
 }

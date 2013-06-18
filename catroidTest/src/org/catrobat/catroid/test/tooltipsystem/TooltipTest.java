@@ -3,6 +3,7 @@ package org.catrobat.catroid.test.tooltipsystem;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.tooltipsystem.Tooltip;
 import org.catrobat.catroid.tooltipsystem.TooltipController;
+import org.catrobat.catroid.tooltipsystem.TooltipLayer;
 import org.catrobat.catroid.tooltipsystem.TooltipObject;
 import org.catrobat.catroid.ui.MainMenuActivity;
 
@@ -36,19 +37,12 @@ public class TooltipTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 	}
 
 	public void testGetInstance() {
-
-	}
-
-	public void testStopTooltipSystem() {
-
-	}
-
-	public void testStartTooltipSystem() {
-
-	}
-
-	public void testSetTooltipPosition() {
-
+		tooltip = Tooltip.getInstance(context);
+		TooltipController controller = tooltip.getController();
+		assertNotNull("Tooltip must not be null", tooltip);
+		assertNotNull("Controller must not be null", controller);
+		assertNotNull("TooltipLayer must not be null", controller.getTooltipLayer());
+		assertNotNull("TooltipObject must not be null", controller.getTooltip(0));
 	}
 
 	public void testGetTooltip() {
@@ -76,14 +70,62 @@ public class TooltipTest extends ActivityInstrumentationTestCase2<MainMenuActivi
 		assertEquals("Screen Width is not correct", screenWidth, width);
 	}
 
-	//check in UI Test for all activities
-	public void testCheckActivity() {
-		int value = tooltip.checkActivity();
-		assertEquals("The Activity Value is not correct", value, 0);
-	}
-
 	public void testGetController() {
 		TooltipController controller = tooltip.getController();
 		assertNotNull("Tooltip Controller is not null", controller);
 	}
+
+	public void testSetPositions() {
+
+		boolean check = tooltip.setTooltipPosition(100, 100, "TestString");
+		assertTrue("Incorrect setting hint positions", check);
+		TooltipLayer layer = tooltip.getController().getTooltipLayer();
+		assertEquals("X value is not correct set", 100, layer.getTooltipPositionX());
+		assertEquals("Y value is not correct set", 100, layer.getTooltipPositionY());
+		assertEquals("Text is not correct set", "TestString", layer.getTooltipText());
+
+		check = tooltip.setTooltipPosition(-10, 0, "TestString");
+		assertTrue("Incorrect setting hint positions", check);
+		layer = tooltip.getController().getTooltipLayer();
+		assertEquals("X value is not correct set", 0, layer.getTooltipPositionX());
+		assertEquals("Y value is not correct set", 0, layer.getTooltipPositionY());
+		assertEquals("Text is not correct set", "TestString", layer.getTooltipText());
+
+		check = tooltip.setTooltipPosition(0, -10, "TestString");
+		assertTrue("Incorrect setting hint positions", check);
+		layer = tooltip.getController().getTooltipLayer();
+		assertEquals("X value is not correct set", 0, layer.getTooltipPositionX());
+		assertEquals("Y value is not correct set", 0, layer.getTooltipPositionY());
+		assertEquals("Text is not correct set", "TestString", layer.getTooltipText());
+
+		check = tooltip.setTooltipPosition(0, 0, null);
+		assertTrue("Incorrect setting hint positions", check);
+		layer = tooltip.getController().getTooltipLayer();
+		assertEquals("X value is not correct set", 0, layer.getTooltipPositionX());
+		assertEquals("Y value is not correct set", 0, layer.getTooltipPositionY());
+		assertEquals("Text is not correct set", "", layer.getTooltipText());
+
+		check = tooltip.setTooltipPosition(-10, -10, null);
+		assertTrue("Incorrect setting hint positions", check);
+		layer = tooltip.getController().getTooltipLayer();
+		assertEquals("X value is not correct set", 0, layer.getTooltipPositionX());
+		assertEquals("Y value is not correct set", 0, layer.getTooltipPositionY());
+		assertEquals("Text is not correct set", "", layer.getTooltipText());
+
+		check = tooltip.setTooltipPosition(Integer.MAX_VALUE, Integer.MAX_VALUE, null);
+		assertTrue("Incorrect setting hint positions", check);
+		layer = tooltip.getController().getTooltipLayer();
+		assertEquals("X value is not correct set", 0, layer.getTooltipPositionX());
+		assertEquals("Y value is not correct set", 0, layer.getTooltipPositionY());
+		assertEquals("Text is not correct set", "", layer.getTooltipText());
+
+		check = tooltip.setTooltipPosition(1000, 1000, null);
+		assertTrue("Incorrect setting hint positions", check);
+		layer = tooltip.getController().getTooltipLayer();
+		assertEquals("X value is not correct set", 0, layer.getTooltipPositionX());
+		assertEquals("Y value is not correct set", 0, layer.getTooltipPositionY());
+		assertEquals("Text is not correct set", "", layer.getTooltipText());
+
+	}
+
 }

@@ -97,4 +97,20 @@ public class TooltipInMainMenuTest extends ActivityInstrumentationTestCase2<Main
 		solo.clickOnActionBarItem(R.id.button_tooltip);
 		assertTrue("Tooltip flag is not set active", MainMenuActivity.tooltipActive);
 	}
+
+	public void testCheckActivity() {
+		solo.waitForActivity(MainMenuActivity.class.getName());
+		solo.clickOnActionBarItem(R.id.button_tooltip);
+		Tooltip tooltip = Tooltip.getInstance(solo.getCurrentActivity());
+		int value = tooltip.checkActivity();
+		assertEquals("The Activity Value is not correct", value, 0);
+	}
+
+	public void testStartTooltipSystem() {
+		solo.waitForActivity(MainMenuActivity.class.getName());
+		Tooltip tooltip = Tooltip.getInstance(solo.getCurrentActivity());
+		boolean testValue = tooltip.startTooltipSystem();
+		assertTrue("Tooltip System was not started", testValue);
+	}
+
 }

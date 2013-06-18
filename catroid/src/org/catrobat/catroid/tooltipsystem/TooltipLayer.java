@@ -30,7 +30,6 @@ import org.catrobat.catroid.ui.ProjectActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -59,7 +58,6 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 	private Context context;
 	private Paint paint = new Paint();
 	int alpha = 255;
-	private Resources res;
 	private NinePatchDrawable bubble;
 
 	private int tooltipPositionX;

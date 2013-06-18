@@ -22,7 +22,6 @@
  */
 package org.catrobat.catroid.tooltipsystem;
 
-import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.ui.MainMenuActivity;
@@ -38,9 +37,7 @@ import org.catrobat.catroid.ui.fragment.SoundFragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.PixelFormat;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -455,29 +452,29 @@ public class TooltipController {
 	//
 	//	}
 
-	private int checkCategory() {
-		ScriptActivity activity = (ScriptActivity) context;
-		AddBrickFragment fragment = (AddBrickFragment) activity.getSupportFragmentManager().findFragmentByTag(
-				AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
-		Resources resources = fragment.getActivity().getResources();
-		Bundle arg = fragment.getArguments();
-		String selectedCategory = arg.getString("selected_category");
-
-		if (selectedCategory.equals(resources.getString(R.string.category_control))) {
-			return 0;
-		} else if (selectedCategory.equals(resources.getString(R.string.category_motion))) {
-			return 1;
-		} else if (selectedCategory.equals(resources.getString(R.string.category_sound))) {
-			return 2;
-		} else if (selectedCategory.equals(resources.getString(R.string.category_looks))) {
-			return 3;
-		} else if (selectedCategory.equals(resources.getString(R.string.category_variables))) {
-			return 4;
-		} else if (selectedCategory.equals(resources.getString(R.string.category_lego_nxt))) {
-			return 5;
-		}
-		return -1;
-	}
+	//	private int checkCategory() {
+	//		ScriptActivity activity = (ScriptActivity) context;
+	//		AddBrickFragment fragment = (AddBrickFragment) activity.getSupportFragmentManager().findFragmentByTag(
+	//				AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
+	//		Resources resources = fragment.getActivity().getResources();
+	//		Bundle arg = fragment.getArguments();
+	//		String selectedCategory = arg.getString("selected_category");
+	//
+	//		if (selectedCategory.equals(resources.getString(R.string.category_control))) {
+	//			return 0;
+	//		} else if (selectedCategory.equals(resources.getString(R.string.category_motion))) {
+	//			return 1;
+	//		} else if (selectedCategory.equals(resources.getString(R.string.category_sound))) {
+	//			return 2;
+	//		} else if (selectedCategory.equals(resources.getString(R.string.category_looks))) {
+	//			return 3;
+	//		} else if (selectedCategory.equals(resources.getString(R.string.category_variables))) {
+	//			return 4;
+	//		} else if (selectedCategory.equals(resources.getString(R.string.category_lego_nxt))) {
+	//			return 5;
+	//		}
+	//		return -1;
+	//	}
 
 	public int checkActivity() {
 		Activity activity = (Activity) context;
@@ -533,28 +530,28 @@ public class TooltipController {
 
 	}
 
-	private int[] examineStageCoordinates() {
-		int[] coordinates = { 0, 0, 0 };
-		coordinates[0] = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenWidth / 2;
-		coordinates[1] = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenHeight / 2;
-		coordinates[2] = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenWidth;
+	//	private int[] examineStageCoordinates() {
+	//		int[] coordinates = { 0, 0, 0 };
+	//		coordinates[0] = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenWidth / 2;
+	//		coordinates[1] = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenHeight / 2;
+	//		coordinates[2] = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenWidth;
+	//
+	//		return coordinates;
+	//	}
 
-		return coordinates;
-	}
-
-	private int[] examineListCoordinates(View view) {
-		int[] coordinates = { 0, 0, 0 };
-		view.getLocationInWindow(coordinates);
-
-		int viewWidth = view.getWidth();
-		int viewHeight = view.getHeight();
-		coordinates[0] = (coordinates[0] + viewWidth / 3) - 25;
-		coordinates[1] = (coordinates[1] + viewHeight / 2) - 25;
-		coordinates[2] = viewWidth;
-
-		return coordinates;
-
-	}
+	//	private int[] examineListCoordinates(View view) {
+	//		int[] coordinates = { 0, 0, 0 };
+	//		view.getLocationInWindow(coordinates);
+	//
+	//		int viewWidth = view.getWidth();
+	//		int viewHeight = view.getHeight();
+	//		coordinates[0] = (coordinates[0] + viewWidth / 3) - 25;
+	//		coordinates[1] = (coordinates[1] + viewHeight / 2) - 25;
+	//		coordinates[2] = viewWidth;
+	//
+	//		return coordinates;
+	//
+	//	}
 
 	private int[] examineCoordinates(View view) {
 		int[] coordinates = { 0, 0, 0 };
@@ -580,7 +577,8 @@ public class TooltipController {
 
 	}
 
-	public void startTooltipSystem() {
+	public boolean startTooltipSystem() {
+		boolean tooltipsAdded = false;
 		float density = context.getResources().getDisplayMetrics().density;
 		ScreenParameters screenparameters = ScreenParameters.getInstance();
 		screenparameters.setDensityParameter(density);
@@ -589,25 +587,29 @@ public class TooltipController {
 		windowManager = ((Activity) context).getWindowManager();
 		tooltipLayer = new TooltipLayer(context);
 		windowManager.addView(tooltipLayer, windowParameters);
-		addTooltipButtons();
+		tooltipsAdded = addTooltipButtons();
+
+		return tooltipsAdded;
 	}
 
-	private void addTooltipButtons() {
+	private boolean addTooltipButtons() {
+		boolean buttonsAdded = false;
 		switch (checkActivity()) {
 			case 0:
-				tooltipLayer.addTooltipButtonsToMainMenuActivity();
+				buttonsAdded = tooltipLayer.addTooltipButtonsToMainMenuActivity();
 				break;
 			case 1:
-				tooltipLayer.addTooltipButtonsToProjectActivity();
+				buttonsAdded = tooltipLayer.addTooltipButtonsToProjectActivity();
 				break;
 			case 3:
-				tooltipLayer.addTooltipButtonsToProgramMenuActivity();
+				buttonsAdded = tooltipLayer.addTooltipButtonsToProgramMenuActivity();
 				break;
 		}
+		return buttonsAdded;
 	}
 
-	public void stopTooltipSystem() {
-		removeTooltipButtons();
+	public boolean stopTooltipSystem() {
+		boolean removedButtons = removeTooltipButtons();
 		windowManager = ((Activity) context).getWindowManager();
 		windowManager.removeViewImmediate(tooltipLayer);
 		tooltipLayer = null;
@@ -615,20 +617,25 @@ public class TooltipController {
 		System.gc();
 		System.runFinalization();
 
+		return removedButtons;
+
 	}
 
-	public void removeTooltipButtons() {
+	public boolean removeTooltipButtons() {
+		boolean removed = false;
 		switch (checkActivity()) {
 			case 0:
-				tooltipLayer.removeMainMenuActivityTooltipButtons();
+				removed = tooltipLayer.removeMainMenuActivityTooltipButtons();
 				break;
 			case 1:
-				tooltipLayer.removeProjectActivityTooltipButtons();
+				removed = tooltipLayer.removeProjectActivityTooltipButtons();
 				break;
 			case 3:
-				tooltipLayer.removeProgramMenuActivityTooltipButtons();
+				removed = tooltipLayer.removeProgramMenuActivityTooltipButtons();
 				break;
 		}
+
+		return removed;
 	}
 
 	public WindowManager.LayoutParams createLayoutParameters() {
