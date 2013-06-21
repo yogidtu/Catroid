@@ -107,7 +107,7 @@ public class SetVariableTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		assertTrue("ScriptFragment not visible", solo.waitForText(solo.getString(R.string.brick_set_variable)));
 		assertTrue("Created ProjectVariable not set on first position in spinner", solo.searchText(userVariableName));
 
-		UserVariable userVariable = (UserVariable) Reflection.getPrivateField(setVariableBrick, "userVariable");
+		UserVariable userVariable = (UserVariable) Reflection.getField(setVariableBrick, "userVariable");
 		assertNotNull("UserVariable is null", userVariable);
 
 		solo.clickOnView(solo.getView(R.id.set_variable_spinner));
@@ -127,7 +127,7 @@ public class SetVariableTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		assertTrue("Created SrpiteVariable not set on first position in spinner",
 				solo.searchText(secondUserVariableName));
 
-		userVariable = (UserVariable) Reflection.getPrivateField(setVariableBrick, "userVariable");
+		userVariable = (UserVariable) Reflection.getField(setVariableBrick, "userVariable");
 		assertNotNull("UserVariable is null", userVariable);
 		assertTrue("UserVariable Name not as expected", userVariable.getName().equals(secondUserVariableName));
 
@@ -153,7 +153,7 @@ public class SetVariableTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		assertTrue("Variable not set in spinner after deletion", solo.searchText(userVariableName));
 		userVariableSpinner = (Spinner) solo.getView(R.id.set_variable_spinner);
 		assertEquals("UserVariable count not as expected in spinner", 2, userVariableSpinner.getAdapter().getCount());
-		userVariable = (UserVariable) Reflection.getPrivateField(setVariableBrick, "userVariable");
+		userVariable = (UserVariable) Reflection.getField(setVariableBrick, "userVariable");
 		assertNotNull("UserVariable is null", userVariable);
 		assertTrue("UserVariable Name not as expected", userVariable.getName().equals(userVariableName));
 	}
@@ -189,7 +189,7 @@ public class SetVariableTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		assertTrue("Variable not set in spinner after deletion", solo.searchText(userVariableName));
 		userVariableSpinner = (Spinner) solo.getView(R.id.set_variable_spinner);
 		assertEquals("UserVariable count not as expected in spinner", 2, userVariableSpinner.getAdapter().getCount());
-		UserVariable userVariable = (UserVariable) Reflection.getPrivateField(setVariableBrick, "userVariable");
+		UserVariable userVariable = (UserVariable) Reflection.getField(setVariableBrick, "userVariable");
 		assertNotNull("UserVariable is null", userVariable);
 		assertTrue("UserVariable Name not as expected", userVariable.getName().equals(userVariableName));
 	}

@@ -35,8 +35,20 @@ public class Reflection {
 		return Reflection.getPrivateField(object.getClass(), object, fieldName);
 	}
 
+	public static Object getField(Object object, String fieldName) {
+		if (object == null) {
+			throw new IllegalArgumentException("Object is null");
+		}
+
+		return Reflection.getField(object.getClass(), object, fieldName);
+	}
+
 	public static Object getPrivateField(Class<?> clazz, String fieldName) {
 		return Reflection.getPrivateField(clazz, null, fieldName);
+	}
+
+	public static Object getField(Class<?> clazz, String fieldName) {
+		return Reflection.getField(clazz, null, fieldName);
 	}
 
 	public static Object getPrivateField(Class<?> clazz, Object object, String fieldName) {
@@ -46,6 +58,21 @@ public class Reflection {
 			return field.get(object);
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
+		}
+	}
+
+	public static Object getField(Class<?> clazz, Object object, String fieldName) {
+
+		if (clazz == null) {
+			throw new RuntimeException("No such field with name: " + fieldName);
+		}
+
+		try {
+			Field field = clazz.getDeclaredField(fieldName);
+			field.setAccessible(true);
+			return field.get(object);
+		} catch (Exception exception) {
+			return getField(clazz.getSuperclass(), object, fieldName);
 		}
 	}
 

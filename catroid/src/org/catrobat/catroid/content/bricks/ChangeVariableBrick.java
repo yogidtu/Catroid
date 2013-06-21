@@ -57,11 +57,8 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class ChangeVariableBrick extends BrickBaseType implements OnClickListener, NewVariableDialogListener {
+public class ChangeVariableBrick extends UserVariableBrick implements OnClickListener, NewVariableDialogListener {
 	private static final long serialVersionUID = 1L;
-	private UserVariable userVariable;
-	private Formula variableFormula;
-	private transient AdapterView<?> adapterView;
 
 	public ChangeVariableBrick(Sprite sprite, Formula variableFormula) {
 		this.sprite = sprite;
@@ -77,11 +74,6 @@ public class ChangeVariableBrick extends BrickBaseType implements OnClickListene
 	public ChangeVariableBrick(Sprite sprite, double value) {
 		this.sprite = sprite;
 		this.variableFormula = new Formula(value);
-	}
-
-	@Override
-	public int getRequiredResources() {
-		return NO_RESOURCES;
 	}
 
 	public ChangeVariableBrick() {
@@ -245,36 +237,4 @@ public class ChangeVariableBrick extends BrickBaseType implements OnClickListene
 		return copyBrick;
 	}
 
-	private void updateUserVariableIfDeleted(UserVariableAdapterWrapper userVariableAdapterWrapper) {
-		if (userVariable != null) {
-			if (userVariableAdapterWrapper.getPositionOfItem(userVariable) == 0) {
-				userVariable = null;
-			}
-		}
-	}
-
-	private void setSpinnerSelection(Spinner variableSpinner, UserVariable newUserVariable) {
-		UserVariableAdapterWrapper userVariableAdapterWrapper = (UserVariableAdapterWrapper) variableSpinner
-				.getAdapter();
-
-		updateUserVariableIfDeleted(userVariableAdapterWrapper);
-
-		if (userVariable != null) {
-			variableSpinner.setSelection(userVariableAdapterWrapper.getPositionOfItem(userVariable), true);
-		} else if (newUserVariable != null) {
-			variableSpinner.setSelection(userVariableAdapterWrapper.getPositionOfItem(newUserVariable), true);
-			userVariable = newUserVariable;
-		} else {
-			variableSpinner.setSelection(userVariableAdapterWrapper.getCount() - 1, true);
-			userVariable = userVariableAdapterWrapper.getItem(userVariableAdapterWrapper.getCount() - 1);
-		}
-	}
-
-	@Override
-	public void onFinishNewVariableDialog(Spinner spinnerToUpdate, UserVariable newUserVariable) {
-		UserVariableAdapterWrapper userVariableAdapterWrapper = ((UserVariableAdapterWrapper) spinnerToUpdate
-				.getAdapter());
-		userVariableAdapterWrapper.notifyDataSetChanged();
-		setSpinnerSelection(spinnerToUpdate, newUserVariable);
-	}
 }
