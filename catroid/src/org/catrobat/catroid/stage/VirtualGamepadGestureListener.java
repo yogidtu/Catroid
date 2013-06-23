@@ -22,33 +22,16 @@
  */
 package org.catrobat.catroid.stage;
 
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.WhenVirtualPadBrick.Direction;
+
 import android.util.Log;
 
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 
-public class PreStageGestureListener implements GestureListener {
-
-	//	public boolean onTouchEvent(MotionEvent event) {
-	//
-	//		Log.d("onTouchEvent", "action: " + event.getAction());
-	//		Log.d("onTouchEvent", "actionMask: " + event.getActionMasked());
-	//
-	//		switch (event.getAction()) {
-	//			case MotionEvent.ACTION_DOWN:
-	//				Log.d("onTouchEvent", "ACTION_DOWN");
-	//				return true;
-	//			case MotionEvent.ACTION_MOVE:
-	//				Log.d("onTouchEvent", "ACTION_MOVE");
-	//				break;
-	//			case MotionEvent.ACTION_UP:
-	//				Log.d("onTouchEvent", "ACTION_UP");
-	//				break;
-	//			default:
-	//				return false;
-	//		}
-	//		return true;
-	//	}
+public class VirtualGamepadGestureListener implements GestureListener {
 
 	/*
 	 * (non-Javadoc)
@@ -59,7 +42,18 @@ public class PreStageGestureListener implements GestureListener {
 	public boolean touchDown(float x, float y, int pointer, int button) {
 		// TODO Auto-generated method stub
 
+		Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
+		if (sprite == null) {
+			Log.e("PreStageGestureListener<touchDown>", "sprite is null");
+			return false;
+		} else if (sprite.isPaused) {
+			return false;
+		}
+
+		sprite.createWhenVirtualPadScriptActionSequence(Direction.UP.getId());
+
 		Log.d("touchDown", "x: " + x + " - y: " + y);
+		Log.d("touchDown - POINTER", "pointer: " + pointer + " - button: " + button);
 
 		return false;
 	}
@@ -86,6 +80,9 @@ public class PreStageGestureListener implements GestureListener {
 	@Override
 	public boolean longPress(float x, float y) {
 		// TODO Auto-generated method stub
+
+		Log.d("longPress", "x: " + x + " - y: " + y);
+
 		return false;
 	}
 

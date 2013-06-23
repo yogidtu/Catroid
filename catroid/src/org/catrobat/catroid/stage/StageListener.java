@@ -32,6 +32,8 @@ import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.Values;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.WhenVirtualButtonScript;
+import org.catrobat.catroid.content.WhenVirtualPadScript;
 import org.catrobat.catroid.io.SoundManager;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
 import org.catrobat.catroid.utils.Utils;
@@ -41,6 +43,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -127,6 +130,8 @@ public class StageListener implements ApplicationListener {
 
 	public boolean axesOn = false;
 
+	private boolean virtualGamepadSelected = false;
+
 	StageListener() {
 	}
 
@@ -175,6 +180,15 @@ public class StageListener implements ApplicationListener {
 		sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
 		for (int sprite = 0; sprite < sprites.size(); sprite++) {
 			stage.addActor(sprites.get(sprite).look);
+
+			for (int script = 0; script < sprites.get(sprite).getNumberOfScripts(); script++) {
+				if (sprites.get(sprite).getScript(script) instanceof WhenVirtualPadScript
+						|| sprites.get(sprite).getScript(script) instanceof WhenVirtualButtonScript) {
+					virtualGamepadSelected = true;
+					break;
+				}
+			}
+
 		}
 		if (DEBUG) {
 			OrthoCamController camController = new OrthoCamController(camera);
@@ -184,8 +198,12 @@ public class StageListener implements ApplicationListener {
 			Gdx.input.setInputProcessor(multiplexer);
 			fpsLogger = new FPSLogger();
 		} else {
-			//Gdx.input.setInputProcessor(stage);
-			Gdx.input.setInputProcessor(new GestureDetector(createPreStageGestureListener()));
+			Log.i("GamepadSelected", "selected: " + virtualGamepadSelected);
+			if (virtualGamepadSelected) {
+				Gdx.input.setInputProcessor(new GestureDetector(createPreStageGestureListener()));
+			} else {
+				Gdx.input.setInputProcessor(stage);
+			}
 		}
 
 		axes = new Texture(Gdx.files.internal("stage/red_pixel.bmp"));
@@ -566,8 +584,8 @@ public class StageListener implements ApplicationListener {
 		}
 	}
 
-	private PreStageGestureListener createPreStageGestureListener() {
-		PreStageGestureListener gestureListener = new PreStageGestureListener();
+	private VirtualGamepadGestureListener createPreStageGestureListener() {
+		VirtualGamepadGestureListener gestureListener = new VirtualGamepadGestureListener();
 		return gestureListener;
 	}
 
