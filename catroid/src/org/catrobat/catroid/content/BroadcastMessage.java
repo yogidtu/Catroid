@@ -20,16 +20,8 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.test.code;
+package org.catrobat.catroid.content;
 
-import junit.framework.TestCase;
-
-import org.catrobat.catroid.common.Constants;
-
-public class ImportantValuesTest extends TestCase {
-
-	public void testPaintroidDownloadLink() {
-		assertEquals("wrong paintroid download link", "market://details?id=org.catrobat.paintroid.pocketpaint",
-				Constants.POCKET_PAINT_DOWNLOAD_LINK);
-	}
+public interface BroadcastMessage {
+	public String getBroadcastMessage();
 }
