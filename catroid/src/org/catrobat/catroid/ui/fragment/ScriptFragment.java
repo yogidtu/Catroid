@@ -186,7 +186,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		}
 		if (projectManager.getCurrentProject() != null) {
 			projectManager.saveProject();
-			projectManager.getCurrentProject().removeUnusedBroadcastMessages();
+			projectManager.getCurrentProject().removeUnusedBroadcastMessages(); // TODO: Find better place
 		}
 	}
 
