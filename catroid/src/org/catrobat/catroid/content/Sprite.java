@@ -104,11 +104,10 @@ public class Sprite implements Serializable, Cloneable {
 
 	}
 
-	public UserBrick newUserBrick() {
+	public UserBrick addUserBrick(UserBrick b) {
 		if (userBricks == null) {
 			userBricks = new ArrayList<Brick>();
 		}
-		UserBrick b = new UserBrick(this);
 		userBricks.add(b);
 		return b;
 	}

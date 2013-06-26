@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.io.Serializable;
+
 import org.catrobat.catroid.formulaeditor.Formula;
 
 import android.widget.TextView;
@@ -30,7 +32,10 @@ import android.widget.TextView;
  * @author forestjohnson
  * 
  */
-public class UserBrickUIComponent {
+public class UserBrickUIComponent implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	public UserBrickUIData data;
 
 	public Formula fieldFormula;

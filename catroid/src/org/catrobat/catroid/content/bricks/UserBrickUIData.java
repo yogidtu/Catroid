@@ -22,12 +22,16 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.io.Serializable;
 
 /**
  * @author forestjohnson
  * 
  */
-public class UserBrickUIData {
+public class UserBrickUIData implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	public int key;
 	public boolean isField;
 	public boolean hasLocalizedString;

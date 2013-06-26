@@ -67,6 +67,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	public UserBrick(Sprite sprite) {
 		this.sprite = sprite;
+		sprite.addUserBrick(this);
 		uiData = new LinkedList<UserBrickUIData>();
 		this.definitionBrick = new UserScriptDefinitionBrick(sprite);
 		updateUIComponents();

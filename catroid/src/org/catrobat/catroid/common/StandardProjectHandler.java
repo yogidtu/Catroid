@@ -44,10 +44,10 @@ import org.catrobat.catroid.content.bricks.LoopEndlessBrick;
 import org.catrobat.catroid.content.bricks.PlaceAtBrick;
 import org.catrobat.catroid.content.bricks.PlaySoundBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
-import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.SetVariableBrick;
 import org.catrobat.catroid.content.bricks.ShowBrick;
+import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
@@ -107,24 +107,6 @@ public class StandardProjectHandler {
 				R.raw.default_project_sound_mole_4, context);
 		File backgroundFile = copyFromResourceInProject(projectName, Constants.IMAGE_DIRECTORY, backgroundName,
 				R.drawable.default_project_background, context);
-
-		UserBrick firstUserBrick = spimport org.catrobat.catroid.content.bricks.ForeverBrick;
-		import org.catrobat.catroid.content.bricks.GlideToBrick;
-		import org.catrobat.catroid.content.bricks.HideBrick;
-		import org.catrobat.catroid.content.bricks.LoopEndlessBrick;
-		import org.catrobat.catroid.content.bricks.PlaceAtBrick;
-		import org.catrobat.catroid.content.bricks.PlaySoundBrick;
-		import org.catrobat.catroid.content.bricks.SetLookBrick;
-		import org.catrobat.catroid.content.bricks.SetSizeToBrick;
-		import org.catrobat.catroid.content.bricks.SetVariableBrick;
-		import org.catrobat.catroid.content.bricks.ShowBrick;rite.newUserBrick();
-		firstUserBrick.addUIText("This is a UserBrick.");
-		firstUserBrick.addUIField();
-
-		UserBrick secondUserBrick = sprite.newUserBrick();
-		secondUserBrick.addUILocalizedStringByName("brick_change_x_by");
-		secondUserBrick.addUIField();
-		secondUserBrick.appendBrickToScript(new ChangeXByNBrick(sprite, BrickValues.CHANGE_X_BY));
 
 		copyFromResourceInProject(projectName, ".", StageListener.SCREENSHOT_MANUAL_FILE_NAME,
 				R.drawable.default_project_screenshot, context, false);
@@ -189,6 +171,15 @@ public class StandardProjectHandler {
 
 		Script mole1StartScript = new StartScript(mole1Sprite);
 		Script mole1WhenScript = new WhenScript(mole1Sprite);
+
+		UserBrick firstUserBrick = new UserBrick(mole1Sprite);
+		firstUserBrick.addUIText("This is a UserBrick.");
+		firstUserBrick.addUIField();
+
+		UserBrick secondUserBrick = new UserBrick(mole1Sprite);
+		secondUserBrick.addUILocalizedStringByName("brick_change_x_by");
+		secondUserBrick.addUIField();
+		secondUserBrick.appendBrickToScript(new ChangeXByNBrick(mole1Sprite, BrickValues.CHANGE_X_BY));
 
 		// start script
 		SetSizeToBrick setSizeToBrick = new SetSizeToBrick(mole1Sprite, new Formula(30));
