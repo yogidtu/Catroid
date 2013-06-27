@@ -24,7 +24,9 @@ package org.catrobat.catroid.physics.shapebuilder;
 
 import org.catrobat.catroid.common.LookData;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.vividsolutions.jts.util.GeometricShapeFactory;
 
 public class PhysicShapeBuilderJTS implements PhysicShapeBuilderStrategy {
 
@@ -37,6 +39,14 @@ public class PhysicShapeBuilderJTS implements PhysicShapeBuilderStrategy {
 	@Override
 	public Shape[] build(LookData lookData) {
 		// TODO Auto-generated method stub
+		Pixmap pixmap = lookData.getPixmap();
+		int width = pixmap.getWidth();
+		int height = pixmap.getHeight();
+		GeometricShapeFactory gf = new GeometricShapeFactory();
+
+		//Shape s = new Shape();
+
+		gf.setNumPoints(4);
 
 		return null;
 	}
