@@ -25,9 +25,7 @@ package org.catrobat.catroid.ui;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.UserBrick;
-import org.catrobat.catroid.content.bricks.UserBrickUIData;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
-import org.catrobat.catroid.utils.Utils;
 
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -86,19 +84,7 @@ public class UserBrickScriptActivity extends ScriptActivity {
 		String[] items = new String[2];
 		items[0] = getResources().getString(R.string.scripts);
 
-		String name = "";
-		for (UserBrickUIData d : userBrick.uiData) {
-			if (!d.isField) {
-				if (d.hasLocalizedString) {
-					name = Utils.getStringResourceByName(d.localizedStringKey, this);
-				} else {
-					name = d.userDefinedName;
-				}
-				break;
-			}
-		}
-
-		items[1] = name;
+		items[1] = userBrick.getName();
 
 		final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
 				R.layout.activity_script_spinner_item, items);

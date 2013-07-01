@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		this.sprite = sprite;
 		sprite.addUserBrick(this);
 		uiData = new LinkedList<UserBrickUIData>();
-		this.definitionBrick = new UserScriptDefinitionBrick(sprite);
+		this.definitionBrick = new UserScriptDefinitionBrick(sprite, this);
 		updateUIComponents();
 	}
 
@@ -117,6 +118,10 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		comp.isField = true;
 		uiData.add(comp);
 		updateUIComponents();
+	}
+
+	public Iterator<UserBrickUIComponent> getUIComponentIterator() {
+		return uiComponents.iterator();
 	}
 
 	private void updateUIComponents() {
@@ -254,6 +259,21 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 				c.textView = currentTextView;
 			}
 		}
+	}
+
+	public String getName() {
+		String name = "";
+		for (UserBrickUIData d : uiData) {
+			if (!d.isField) {
+				if (d.hasLocalizedString) {
+					name = Utils.getStringResourceByName(d.localizedStringKey, view.getContext());
+				} else {
+					name = d.userDefinedName;
+				}
+				break;
+			}
+		}
+		return name;
 	}
 
 	@Override
