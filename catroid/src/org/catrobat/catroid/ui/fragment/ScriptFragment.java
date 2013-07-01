@@ -32,6 +32,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
+import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.ViewSwitchLock;
@@ -195,9 +196,9 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		if (view.getId() == R.id.brick_list_view) {
 			menu.setHeaderTitle(R.string.script_context_menu_title);
 
-			if (adapter.getItem(listView.getTouchedListPosition()) instanceof ScriptBrick) {
-				scriptToEdit = ((ScriptBrick) adapter.getItem(listView.getTouchedListPosition()))
-						.initScript(ProjectManager.INSTANCE.getCurrentSprite());
+			Object item = adapter.getItem(listView.getTouchedListPosition());
+			if (item instanceof ScriptBrick && !(item instanceof UserScriptDefinitionBrick)) {
+				scriptToEdit = ((ScriptBrick) item).initScript(ProjectManager.INSTANCE.getCurrentSprite());
 				MenuInflater inflater = getActivity().getMenuInflater();
 				inflater.inflate(R.menu.menu_script, menu);
 			}

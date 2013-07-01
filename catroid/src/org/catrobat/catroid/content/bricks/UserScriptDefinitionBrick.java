@@ -27,6 +27,7 @@ import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.UserScript;
+import org.catrobat.catroid.ui.fragment.UserBrickDataEditorFragment;
 import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
@@ -35,6 +36,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -174,11 +176,12 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 
 	@Override
 	public void onClick(View eventOrigin) {
+		Log.d("FOREST", "USDB onClick");
 		if (checkbox.getVisibility() == View.VISIBLE) {
 			return;
 		}
 
-		// open dialog
+		UserBrickDataEditorFragment.showFragment(view, brick);
 	}
 
 	@Override

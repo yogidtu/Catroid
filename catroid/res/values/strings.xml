@@ -257,6 +257,7 @@
     <string name="category_sound">Sound</string>
     <string name="category_control">Control</string>
     <string name="category_variables">Variables</string>
+    <string name="category_user_bricks">My Bricks</string>
     <string name="category_lego_nxt">Lego NXT</string>
     <!--  -->
 
@@ -526,6 +527,11 @@
         <item quantity="other">Variables selected!</item>
     </plurals>
     <!--  -->
-    <string name="category_user_bricks">My Bricks</string>
+    
+    <!-- Brick Data Editor Strings -->
+    <string name="brick_data_editor_title">Brick Editor</string>
+    <!--  -->
+    
+
 
 </resources>

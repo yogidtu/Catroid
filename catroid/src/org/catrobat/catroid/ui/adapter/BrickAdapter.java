@@ -903,6 +903,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 	@Override
 	public void onClick(final View view) {
+
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
