@@ -153,9 +153,8 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			layout.removeAllViews();
 		}
 
-		for (UserBrickUIData c : currentBrick.uiData) {
-			//c
-
+		for (UserBrickUIData d : currentBrick.uiData) {
+			//d
 		}
 
 		editorBrickSpace = (LinearLayout) fragmentView.findViewById(R.id.brick_data_editor_brick_space);
