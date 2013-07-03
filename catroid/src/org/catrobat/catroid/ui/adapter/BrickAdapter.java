@@ -120,7 +120,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		animatedBricks = new ArrayList<Brick>();
 		this.selectMode = ListView.CHOICE_MODE_NONE;
 
-		Log.d("FOREST", "BrickAdapter() " + this.toString());
 		initBrickList();
 	}
 
@@ -144,8 +143,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				brick.setBrickAdapter(this);
 			}
 		}
-		Log.d("FOREST",
-				"initBrickList()\n" + (userBrick != null ? userBrick.toString() : "null") + "\n" + this.toString());
 
 	}
 
@@ -155,15 +152,13 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		brickList = new ArrayList<Brick>();
 
 		brickList.add(userScript.getScriptBrick());
-		Log.d("FOREST", (userScript != null ? userScript.toString() : "null")
-				+ (userScript.getScriptBrick() != null ? userScript.getScriptBrick().toString() : "null"));
+
 		userScript.getScriptBrick().setBrickAdapter(this);
 		for (Brick brick : userScript.getBrickList()) {
 			brickList.add(brick);
 			brick.setBrickAdapter(this);
 		}
 
-		Log.d("FOREST", "initBrickListUserBrick()");
 	}
 
 	public void resetAlphas() {
@@ -358,7 +353,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			if (draggedBrick instanceof ScriptBrick) {
 				addScriptToProject(to, (ScriptBrick) draggedBrick);
 			} else {
-				Log.d("FOREST", "drop() addBrickToPosition() " + this.toString());
 				addBrickToPosition(to, draggedBrick);
 			}
 
@@ -627,7 +621,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		int scriptCount = currentSprite.getNumberOfScripts();
 		if (scriptCount == 0 && brickToBeAdded instanceof ScriptBrick) {
 			currentSprite.addScript(((ScriptBrick) brickToBeAdded).initScript(currentSprite));
-			Log.d("FOREST", "addNewBrick() " + this.toString());
 			initBrickList();
 			notifyDataSetChanged();
 			return;
@@ -743,7 +736,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		draggedBrick = null;
 		addingNewBrick = false;
 
-		Log.d("FOREST", "removeFromBrickListAndProject() " + this.toString());
 		initBrickList();
 		notifyDataSetChanged();
 	}
@@ -763,7 +755,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		draggedBrick = null;
 		addingNewBrick = false;
 
-		Log.d("FOREST", "removeDraggedBrick() " + this.toString());
 		initBrickList();
 		notifyDataSetChanged();
 	}
@@ -861,10 +852,8 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	public void updateBrickList() {
-		Log.d("FOREST", "updateBrickList() " + this.toString());
 		initBrickList();
 		notifyDataSetChanged();
-		Log.d("FOREST", "updateBrickList() notifyDataSetChanged()");
 	}
 
 	@Override

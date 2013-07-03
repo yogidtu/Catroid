@@ -33,11 +33,9 @@ import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.ui.FlowLayout;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
-import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -113,9 +111,11 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		updateUIComponents();
 	}
 
-	public void addUIField() {
+	public void addUIField(String id) {
 		UserBrickUIData comp = new UserBrickUIData();
 		comp.isField = true;
+		comp.userDefinedName = id;
+		comp.hasLocalizedString = false;
 		uiData.add(comp);
 		updateUIComponents();
 	}
@@ -145,8 +145,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		if (animationState) {
 			return view;
 		}
-
-		Log.d("FOREST", "GET VIEW!!" + alphaValue);
 
 		view = View.inflate(context, R.layout.brick_user, null);
 		view = getViewWithAlpha(alphaValue);
@@ -239,13 +237,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 				currentTextView = new TextView(context);
 				currentTextView.setTextAppearance(context, R.style.BrickText_Multiple);
 
-				String text = null;
-				if (c.data.hasLocalizedString) {
-					text = Utils.getStringResourceByName(c.data.localizedStringKey, context);
-				} else {
-					text = c.data.userDefinedName;
-				}
-				currentTextView.setText(text);
+				currentTextView.setText(c.data.getString(context));
 			}
 
 			// This stuff isn't being included by the style when I use setTextAppearance.
@@ -265,15 +257,11 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		}
 	}
 
-	public String getName() {
+	public String getName(Context context) {
 		String name = "";
 		for (UserBrickUIData d : uiData) {
 			if (!d.isField) {
-				if (d.hasLocalizedString) {
-					name = Utils.getStringResourceByName(d.localizedStringKey, view.getContext());
-				} else {
-					name = d.userDefinedName;
-				}
+				name = d.getString(context);
 				break;
 			}
 		}

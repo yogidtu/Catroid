@@ -285,12 +285,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			}
 		});
 
-		Log.d("FOREST", this.toString() + " initListeners() adapter = "
-				+ (adapter != null ? adapter.toString() : "null"));
-
-		Log.d("FOREST", "getActivity() = " + (getActivity() != null ? getActivity().toString() : "null"));
-		Log.d("FOREST", "getSherlockActivity() = " + getSherlockActivity().toString());
-
 		if (adapter == null) {
 			adapter = new BrickAdapter(getActivity(), sprite, listView);
 			adapter.setOnBrickEditListener(this);

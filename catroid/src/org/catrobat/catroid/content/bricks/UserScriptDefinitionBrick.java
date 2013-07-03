@@ -36,7 +36,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -176,7 +175,6 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 
 	@Override
 	public void onClick(View eventOrigin) {
-		Log.d("FOREST", "USDB onClick");
 		if (checkbox.getVisibility() == View.VISIBLE) {
 			return;
 		}

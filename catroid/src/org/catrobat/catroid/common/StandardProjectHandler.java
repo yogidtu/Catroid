@@ -174,11 +174,11 @@ public class StandardProjectHandler {
 
 		UserBrick firstUserBrick = new UserBrick(mole1Sprite);
 		firstUserBrick.addUIText("This is a UserBrick.");
-		firstUserBrick.addUIField();
+		firstUserBrick.addUIField("test");
 
 		UserBrick secondUserBrick = new UserBrick(mole1Sprite);
 		secondUserBrick.addUILocalizedStringByName("brick_change_x_by");
-		secondUserBrick.addUIField();
+		secondUserBrick.addUIField("amount");
 		secondUserBrick.appendBrickToScript(new ChangeXByNBrick(mole1Sprite, BrickValues.CHANGE_X_BY));
 
 		// start script
@@ -291,14 +291,14 @@ public class StandardProjectHandler {
 		return defaultProject;
 	}
 
-    public static Project createAndSaveEmptyProject(String projectName, Context context) {
-        Project emptyProject = new Project(context, projectName);
-        emptyProject.setDeviceData(context);
-        StorageHandler.getInstance().saveProject(emptyProject);
-        ProjectManager.getInstance().setProject(emptyProject);
+	public static Project createAndSaveEmptyProject(String projectName, Context context) {
+		Project emptyProject = new Project(context, projectName);
+		emptyProject.setDeviceData(context);
+		StorageHandler.getInstance().saveProject(emptyProject);
+		ProjectManager.getInstance().setProject(emptyProject);
 
-        return emptyProject;
-    }
+		return emptyProject;
+	}
 
 	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
 			int fileId, Context context) throws IOException {

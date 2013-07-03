@@ -103,7 +103,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		Log.d("Forest", "ScriptActivity.onResume");
 	}
 
 	@Override
@@ -131,8 +130,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		btn_add = (LinearLayout) findViewById(R.id.button_add);
 		updateHandleAddButtonClickListener();
-
-		Log.d("FOREST", "ScriptActivity.onCreate: " + this.toString());
 	}
 
 	private void setupActionBar() {

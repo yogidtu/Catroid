@@ -9,7 +9,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -55,8 +54,6 @@ public class FlowLayout extends ViewGroup {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		Log.d("FOREST", "how often is this called? is it a memory issue?");
-
 		int sizeWidth = MeasureSpec.getSize(widthMeasureSpec) - this.getPaddingRight() - this.getPaddingLeft();
 		int sizeHeight = MeasureSpec.getSize(heightMeasureSpec) - this.getPaddingTop() - this.getPaddingBottom();
 
@@ -122,7 +119,6 @@ public class FlowLayout extends ViewGroup {
 			int posY = getPaddingTop() + prevLinePosition;
 
 			ElementData ed = new ElementData(child, posX, posY, childHeight);
-			Log.d("FOREST", "height:" + childHeight);
 			currentLine.elements.add(ed);
 
 			controlMaxLength = Math.max(controlMaxLength, lineLength);
@@ -145,8 +141,6 @@ public class FlowLayout extends ViewGroup {
 				if (ed.childHeight < d.height) {
 					yAdjust2 = Math.round((d.height - ed.childHeight) * 0.5f);
 				}
-
-				Log.d("FOREST", "h: " + d.height + " ch:" + ed.childHeight);
 
 				LayoutParams lp = (LayoutParams) ed.view.getLayoutParams();
 				lp.setPosition(ed.posX, ed.posY + yAdjust + yAdjust2);

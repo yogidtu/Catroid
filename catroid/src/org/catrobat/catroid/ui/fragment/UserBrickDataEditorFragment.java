@@ -32,7 +32,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,7 +68,6 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.brick_data_editor_title));
 
 		currentBrick = (UserBrick) getArguments().getSerializable(BRICK_BUNDLE_ARGUMENT);
-		Log.d("FOREST", "USDB onCreate + " + currentBrick.toString());
 	}
 
 	public static void showFragment(View view, UserBrick brick) {
@@ -93,8 +91,6 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(dataEditorFragment);
 			activity.findViewById(R.id.bottom_bar).setVisibility(View.GONE);
-
-			Log.d("FOREST", "USDB onClick 11");
 
 		} else if (dataEditorFragment.isHidden()) {
 			dataEditorFragment.updateBrickView(brick);
@@ -164,6 +160,8 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 				dataView = View.inflate(context, R.layout.brick_user_data_text, null);
 			}
 			TextView textView = (TextView) dataView.findViewById(R.id.text_view);
+
+			textView.setText(d.getString(context));
 			Button button = (Button) dataView.findViewById(R.id.button);
 
 			layout.addView(dataView);

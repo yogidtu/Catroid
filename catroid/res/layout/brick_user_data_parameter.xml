@@ -27,8 +27,10 @@
     android:layout_height="wrap_content"
     android:background="@drawable/brick_data_round_rect"
     android:orientation="horizontal"
-    android:paddingTop="0dp"
-    android:paddingBottom="2dp"
+                android:paddingTop="6dp"
+                android:paddingLeft="9dp"
+                android:paddingRight="12dp"
+                android:paddingBottom="9dp"
  >
 
       <TextView
@@ -40,9 +42,8 @@
           android:gravity="center"
           android:paddingBottom="0dp"
           android:paddingLeft="4dp"
-          android:paddingRight="4dp"
+          android:paddingRight="6dp"
           android:paddingTop="0dp"
-          android:text="test234"
           android:textColor="@color/solid_white"
           android:textStyle="bold" 
           >
@@ -52,7 +53,7 @@
     android:id="@+id/button"
     android:layout_width="28dp"
     android:layout_height="21dp"
-    android:layout_marginTop="3dp"
+    android:layout_marginTop="4dp"
     android:layout_marginLeft="6dp"
     android:background="@drawable/brick_data_close"
  />

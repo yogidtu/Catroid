@@ -49,8 +49,6 @@ public class UserBrickScriptActivity extends ScriptActivity {
 	protected void onResume() {
 		super.onResume();
 
-		Log.d("FOREST", "UserBrickScriptActivity.onResume: " + this.toString());
-
 		if (userBrick != null) {
 			setupBrickAdapter();
 
@@ -62,11 +60,6 @@ public class UserBrickScriptActivity extends ScriptActivity {
 	}
 
 	private void setupBrickAdapter() {
-		Log.d("FOREST", "UserBrickScriptActivity.setupBrickAdapter(): " + getScriptFragment().toString());
-
-		Log.d("FOREST", "UserBrickScriptActivity.setupBrickAdapter(): " + getScriptFragment().getAdapter().toString());
-
-		Log.d("FOREST", "UserBrickScriptActivity.setupBrickAdapter(): " + userBrick.toString());
 
 		BrickAdapter adapter = getScriptFragment().getAdapter();
 
@@ -84,7 +77,7 @@ public class UserBrickScriptActivity extends ScriptActivity {
 		String[] items = new String[2];
 		items[0] = getResources().getString(R.string.scripts);
 
-		items[1] = userBrick.getName();
+		items[1] = userBrick.getName(this);
 
 		final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
 				R.layout.activity_script_spinner_item, items);
