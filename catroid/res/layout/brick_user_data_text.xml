@@ -21,41 +21,35 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal" >
+            android:id="@+id/brick_data_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/brick_data_round_rect"
+            android:orientation="horizontal"
+            android:paddingTop="0dp"
+            android:paddingBottom="2dp"
+            >
 
-    <CheckBox
-        android:id="@+id/brick_change_x_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:visibility="gone" >
-    </CheckBox>
+            <TextView
+                android:id="@+id/text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="0dp"
+                android:paddingBottom="3dp"
+                android:text="@string/brick_change_x_by"
+                android:textColor="@color/solid_white"
+                android:textStyle="bold" >
 
-    <LinearLayout
-        android:id="@+id/brick_change_x_layout"
-        style="@style/BrickContainer.Motion.Small" >
+            </TextView>
 
-        <TextView
-            android:id="@+id/brick_change_x_label"
-            style="@style/BrickText.SingleLine"
-            android:text="@string/brick_change_x_by" >
-        </TextView>
-
-        <TextView
-            android:id="@+id/brick_change_x_prototype_text_view"
-            style="@style/BrickPrototypeTextView" >
-        </TextView>
-
-        <EditText
-            android:id="@+id/brick_change_x_edit_text"
-            style="@style/BrickEditText"
-            android:inputType="number|numberDecimal|numberSigned" >
-        </EditText>
-    </LinearLayout>
+   			<Button
+   			    android:id="@+id/button"
+   			    android:layout_width="28dp"
+   			    android:layout_height="21dp"
+   			    android:layout_marginTop="3dp"
+   			    android:layout_marginLeft="6dp"
+   			    android:background="@drawable/brick_data_close"
+   			 />
 
 </LinearLayout>

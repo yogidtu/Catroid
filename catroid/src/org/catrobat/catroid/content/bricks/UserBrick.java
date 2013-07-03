@@ -31,6 +31,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.ui.FlowLayout;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 import org.catrobat.catroid.utils.Utils;
 
@@ -43,7 +44,6 @@ import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -189,7 +189,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			onLayoutChanged(view);
 		}
 
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_user_layout);
+		FlowLayout layout = (FlowLayout) view.findViewById(R.id.brick_user_flow_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
 
@@ -210,10 +210,14 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 		Context context = currentView.getContext();
 
-		LinearLayout layout = (LinearLayout) currentView.findViewById(R.id.brick_user_layout);
-		if (layout.getChildCount() > 0) {
-			layout.removeAllViews();
+		FlowLayout layout2 = (FlowLayout) currentView.findViewById(R.id.brick_user_flow_layout);
+		if (layout2.getChildCount() > 0) {
+			layout2.removeAllViews();
 		}
+
+		//FlowLayout layout2 = (FlowLayout) View.inflate(context, R.layout.brick_user_flow_layout_template, null);
+
+		//((LinearLayout) currentView).addView(layout2);
 
 		for (UserBrickUIComponent c : uiComponents) {
 			TextView currentTextView = null;
@@ -251,7 +255,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 				currentTextView.setClickable(false);
 			}
 
-			layout.addView(currentTextView);
+			layout2.addView(currentTextView);
 
 			if (prototype) {
 				c.prototypeView = currentTextView;

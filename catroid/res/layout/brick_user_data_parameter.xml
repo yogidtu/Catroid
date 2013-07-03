@@ -22,25 +22,39 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:id="@+id/brick_data_parameter"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal" >
+    android:background="@drawable/brick_data_round_rect"
+    android:orientation="horizontal"
+    android:paddingTop="0dp"
+    android:paddingBottom="2dp"
+ >
 
-    <CheckBox
-        android:id="@+id/brick_user_definition_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:visibility="gone" />
+      <TextView
+          android:id="@+id/text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_margin="0dp"
+          android:background="@drawable/brick_data_param"
+          android:gravity="center"
+          android:paddingBottom="0dp"
+          android:paddingLeft="4dp"
+          android:paddingRight="4dp"
+          android:paddingTop="0dp"
+          android:text="test234"
+          android:textColor="@color/solid_white"
+          android:textStyle="bold" 
+          >
+      </TextView>
 
-    <LinearLayout
-        android:id="@+id/brick_user_definition_layout"
-        style="@style/BrickContainer.Script.Medium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/brick_control_user_2h"
-        android:orientation="horizontal" >
-    </LinearLayout>
+<Button
+    android:id="@+id/button"
+    android:layout_width="28dp"
+    android:layout_height="21dp"
+    android:layout_marginTop="3dp"
+    android:layout_marginLeft="6dp"
+    android:background="@drawable/brick_data_close"
+ />
 
 </LinearLayout>

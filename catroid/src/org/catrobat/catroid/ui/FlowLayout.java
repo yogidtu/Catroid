@@ -1,5 +1,7 @@
 package org.catrobat.catroid.ui;
 
+import java.util.LinkedList;
+
 import org.catrobat.catroid.R;
 
 import android.content.Context;
@@ -7,6 +9,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -52,22 +55,13 @@ public class FlowLayout extends ViewGroup {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		Log.d("FOREST", "how often is this called? is it a memory issue?");
+
 		int sizeWidth = MeasureSpec.getSize(widthMeasureSpec) - this.getPaddingRight() - this.getPaddingLeft();
-		int sizeHeight = MeasureSpec.getSize(heightMeasureSpec) - this.getPaddingRight() - this.getPaddingLeft();
+		int sizeHeight = MeasureSpec.getSize(heightMeasureSpec) - this.getPaddingTop() - this.getPaddingBottom();
 
 		int modeWidth = MeasureSpec.getMode(widthMeasureSpec);
 		int modeHeight = MeasureSpec.getMode(heightMeasureSpec);
-
-		int size;
-		int mode;
-
-		if (orientation == HORIZONTAL) {
-			size = sizeWidth;
-			mode = modeWidth;
-		} else {
-			size = sizeHeight;
-			mode = modeHeight;
-		}
 
 		int lineThicknessWithSpacing = 0;
 		int lineThickness = 0;
@@ -78,6 +72,9 @@ public class FlowLayout extends ViewGroup {
 
 		int controlMaxLength = 0;
 		int controlMaxThickness = 0;
+
+		LinkedList<LineData> lines = new LinkedList<LineData>();
+		LineData currentLine = newLine(lines);
 
 		final int count = getChildCount();
 		for (int i = 0; i < count; i++) {
@@ -98,61 +95,74 @@ public class FlowLayout extends ViewGroup {
 			int childWidth = child.getMeasuredWidth();
 			int childHeight = child.getMeasuredHeight();
 
-			int childLength;
-			int childThickness;
-			int spacingLength;
-			int spacingThickness;
+			boolean updateSmallestHeight = currentLine.minHeight == 0 || currentLine.minHeight > childHeight;
+			currentLine.minHeight = (updateSmallestHeight ? childHeight : currentLine.minHeight);
 
-			if (orientation == HORIZONTAL) {
-				childLength = childWidth;
-				childThickness = childHeight;
-				spacingLength = hSpacing;
-				spacingThickness = vSpacing;
-			} else {
-				childLength = childHeight;
-				childThickness = childWidth;
-				spacingLength = vSpacing;
-				spacingThickness = hSpacing;
-			}
+			lineLength = lineLengthWithSpacing + childWidth;
+			lineLengthWithSpacing = lineLength + hSpacing;
 
-			lineLength = lineLengthWithSpacing + childLength;
-			lineLengthWithSpacing = lineLength + spacingLength;
-
-			boolean newLine = lp.newLine || (mode != MeasureSpec.UNSPECIFIED && lineLength > size);
+			boolean newLine = lp.newLine || (modeWidth != MeasureSpec.UNSPECIFIED && lineLength > sizeWidth);
 			if (newLine) {
 				prevLinePosition = prevLinePosition + lineThicknessWithSpacing;
 
-				lineThickness = childThickness;
-				lineLength = childLength;
-				lineThicknessWithSpacing = childThickness + spacingThickness;
-				lineLengthWithSpacing = lineLength + spacingLength;
+				currentLine = newLine(lines);
+
+				lineThickness = childHeight;
+				lineLength = childWidth;
+				lineThicknessWithSpacing = childHeight + vSpacing;
+				lineLengthWithSpacing = lineLength + hSpacing;
 			}
 
-			lineThicknessWithSpacing = Math.max(lineThicknessWithSpacing, childThickness + spacingThickness);
-			lineThickness = Math.max(lineThickness, childThickness);
+			lineThicknessWithSpacing = Math.max(lineThicknessWithSpacing, childHeight + vSpacing);
+			lineThickness = Math.max(lineThickness, childHeight);
 
-			int posX;
-			int posY;
-			if (orientation == HORIZONTAL) {
-				posX = getPaddingLeft() + lineLength - childLength;
-				posY = getPaddingTop() + prevLinePosition;
-			} else {
-				posX = getPaddingLeft() + prevLinePosition;
-				posY = getPaddingTop() + lineLength - childHeight;
-			}
-			lp.setPosition(posX, posY);
+			currentLine.height = lineThickness;
+
+			int posX = getPaddingLeft() + lineLength - childWidth;
+			int posY = getPaddingTop() + prevLinePosition;
+
+			ElementData ed = new ElementData(child, posX, posY, childHeight);
+			Log.d("FOREST", "height:" + childHeight);
+			currentLine.elements.add(ed);
 
 			controlMaxLength = Math.max(controlMaxLength, lineLength);
 			controlMaxThickness = prevLinePosition + lineThickness;
 		}
 
-		if (orientation == HORIZONTAL) {
-			this.setMeasuredDimension(resolveSize(controlMaxLength, widthMeasureSpec),
-					resolveSize(controlMaxThickness, heightMeasureSpec));
-		} else {
-			this.setMeasuredDimension(resolveSize(controlMaxThickness, widthMeasureSpec),
-					resolveSize(controlMaxLength, heightMeasureSpec));
+		int x = controlMaxLength;
+		int y = controlMaxThickness;
+
+		y = Math.max(y, getMinimumHeight());
+
+		int yAdjust = 0;
+
+		if (controlMaxThickness < y) {
+			yAdjust = Math.round((y - controlMaxThickness) * 0.5f);
 		}
+		for (LineData d : lines) {
+			for (ElementData ed : d.elements) {
+				int yAdjust2 = 0;
+				if (ed.childHeight < d.height) {
+					yAdjust2 = Math.round((d.height - ed.childHeight) * 0.5f);
+				}
+
+				Log.d("FOREST", "h: " + d.height + " ch:" + ed.childHeight);
+
+				LayoutParams lp = (LayoutParams) ed.view.getLayoutParams();
+				lp.setPosition(ed.posX, ed.posY + yAdjust + yAdjust2);
+			}
+
+			d.elements = null;
+		}
+		lines = null;
+
+		this.setMeasuredDimension(resolveSize(x, widthMeasureSpec), resolveSize(y, heightMeasureSpec));
+	}
+
+	private LineData newLine(LinkedList<LineData> lines) {
+		LineData toAdd = new LineData();
+		lines.add(toAdd);
+		return toAdd;
 	}
 
 	private int getVerticalSpacing(LayoutParams lp) {
@@ -282,6 +292,30 @@ public class FlowLayout extends ViewGroup {
 		paint.setColor(color);
 		paint.setStrokeWidth(2.0f);
 		return paint;
+	}
+
+	private class LineData {
+		public int minHeight;
+		public int height;
+		public LinkedList<ElementData> elements;
+
+		public LineData() {
+			elements = new LinkedList<ElementData>();
+		}
+	}
+
+	private class ElementData {
+		public int posX;
+		public int posY;
+		public int childHeight;
+		public View view;
+
+		public ElementData(View view, int posX, int posY, int childHeight) {
+			this.posX = posX;
+			this.posY = posY;
+			this.childHeight = childHeight;
+			this.view = view;
+		}
 	}
 
 	public static class LayoutParams extends ViewGroup.LayoutParams {

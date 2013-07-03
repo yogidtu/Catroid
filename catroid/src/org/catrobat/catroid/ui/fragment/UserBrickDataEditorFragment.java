@@ -26,6 +26,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIData;
+import org.catrobat.catroid.ui.FlowLayout;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -37,7 +38,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -148,13 +151,22 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 		Context context = brickView.getContext();
 
-		LinearLayout layout = (LinearLayout) brickView.findViewById(R.id.brick_user_layout);
+		FlowLayout layout = (FlowLayout) brickView.findViewById(R.id.brick_user_flow_layout);
 		if (layout.getChildCount() > 0) {
 			layout.removeAllViews();
 		}
 
 		for (UserBrickUIData d : currentBrick.uiData) {
-			//d
+			View dataView = null;
+			if (d.isField) {
+				dataView = View.inflate(context, R.layout.brick_user_data_parameter, null);
+			} else {
+				dataView = View.inflate(context, R.layout.brick_user_data_text, null);
+			}
+			TextView textView = (TextView) dataView.findViewById(R.id.text_view);
+			Button button = (Button) dataView.findViewById(R.id.button);
+
+			layout.addView(dataView);
 		}
 
 		editorBrickSpace = (LinearLayout) fragmentView.findViewById(R.id.brick_data_editor_brick_space);

@@ -172,15 +172,17 @@
         <item name="android:focusableInTouchMode">false</item>
         <item name="android:clickable">false</item>
         <item name="android:minWidth">@dimen/brick_edit_text_and_prototype_text_view_minimum_width</item>
-        <item name="android:gravity">right</item>
-        <item name="android:minEms">3</item>
-        <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        
     </style>
 
     <style name="BrickEditText" parent="@style/BrickPrototypeTextView">
         <item name="android:maxLines">1</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:clickable">true</item>
         <item name="android:visibility">gone</item>
     </style>
     
