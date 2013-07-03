@@ -33,6 +33,7 @@ import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.transfers.CheckTokenTask;
 import org.catrobat.catroid.transfers.CheckTokenTask.OnCheckTokenCompleteListener;
 import org.catrobat.catroid.transfers.ProjectDownloadService;
+import org.catrobat.catroid.tutorial.Tutorial;
 import org.catrobat.catroid.ui.dialogs.AboutDialogFragment;
 import org.catrobat.catroid.ui.dialogs.LoginRegisterDialog;
 import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
@@ -179,7 +180,11 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_settings: {
+			case R.id.menu_tutorial: {
+				Tutorial.getInstance(this).startTutorial();
+				return true;
+			}
+			case R.id.settings: {
 				Intent intent = new Intent(MainMenuActivity.this, SettingsActivity.class);
 				startActivity(intent);
 				return true;
