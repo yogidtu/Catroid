@@ -108,7 +108,7 @@ public class StandardProjectHandler {
 		File backgroundFile = copyFromResourceInProject(projectName, Constants.IMAGE_DIRECTORY, backgroundName,
 				R.drawable.default_project_background, context);
 
-		copyFromResourceInProject(projectName, ".", StageListener.SCREENSHOT_MANUAL_FILE_NAME,
+		copyFromResourceInProject(projectName, ".", StageListener.SCREENSHOT_AUTOMATIC_FILE_NAME,
 				R.drawable.default_project_screenshot, context, false);
 
 		LookData moleLookData1 = new LookData();
@@ -291,6 +291,15 @@ public class StandardProjectHandler {
 		return defaultProject;
 	}
 
+    public static Project createAndSaveEmptyProject(String projectName, Context context) {
+        Project emptyProject = new Project(context, projectName);
+        emptyProject.setDeviceData(context);
+        StorageHandler.getInstance().saveProject(emptyProject);
+        ProjectManager.getInstance().setProject(emptyProject);
+
+        return emptyProject;
+    }
+
 	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
 			int fileId, Context context) throws IOException {
 		return copyFromResourceInProject(projectName, directoryName, outputName, fileId, context, true);
@@ -327,5 +336,4 @@ public class StandardProjectHandler {
 
 		return copiedFileWithMd5;
 	}
-
 }
