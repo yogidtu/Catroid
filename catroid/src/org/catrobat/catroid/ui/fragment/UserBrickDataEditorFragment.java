@@ -25,7 +25,7 @@ package org.catrobat.catroid.ui.fragment;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIData;
-import org.catrobat.catroid.ui.FlowLayout;
+import org.catrobat.catroid.ui.BrickLayout;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -143,7 +143,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 		Context context = brickView.getContext();
 
-		FlowLayout layout = (FlowLayout) brickView.findViewById(R.id.brick_user_flow_layout);
+		BrickLayout layout = (BrickLayout) brickView.findViewById(R.id.brick_user_flow_layout);
 		if (layout.getChildCount() > 0) {
 			layout.removeAllViews();
 		}

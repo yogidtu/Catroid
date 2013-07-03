@@ -36,11 +36,13 @@
         android:visibility="gone" >
     </CheckBox>
 
- 	<org.catrobat.catroid.ui.FlowLayout
+ 	<org.catrobat.catroid.ui.BrickLayout
  	    android:id="@+id/brick_user_flow_layout"
  	    style="@style/BrickContainer.UserBrick.Small"
  	    android:orientation="horizontal"
+ 	    android:paddingBottom="0dp"
  	    android:paddingTop="0dp"
+ 	    app:customPadding="@dimen/brick_flow_layout_padding"
  	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
  	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
  	    
@@ -65,6 +67,6 @@
 		</EditText>
 		 -->
  	    
-	</org.catrobat.catroid.ui.FlowLayout>
+	</org.catrobat.catroid.ui.BrickLayout>
  	
 </LinearLayout>

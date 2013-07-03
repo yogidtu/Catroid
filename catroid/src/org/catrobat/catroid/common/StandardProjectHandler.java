@@ -175,6 +175,14 @@ public class StandardProjectHandler {
 		UserBrick firstUserBrick = new UserBrick(mole1Sprite);
 		firstUserBrick.addUIText("This is a UserBrick.");
 		firstUserBrick.addUIField("test");
+		firstUserBrick.addUIText("multiline test!!!");
+		firstUserBrick.addUIField("test2");
+		firstUserBrick.addUIText("multiline test!!!");
+		firstUserBrick.addUIField("test3");
+		firstUserBrick.addUIText("multiline test!!!");
+		firstUserBrick.addUIField("test4");
+		firstUserBrick.addUIText("multiline test!!!");
+		firstUserBrick.addUIField("test5");
 
 		UserBrick secondUserBrick = new UserBrick(mole1Sprite);
 		secondUserBrick.addUILocalizedStringByName("brick_change_x_by");

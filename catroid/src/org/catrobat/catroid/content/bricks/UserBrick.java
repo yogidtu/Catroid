@@ -31,7 +31,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.ui.FlowLayout;
+import org.catrobat.catroid.ui.BrickLayout;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
@@ -187,7 +187,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			onLayoutChanged(view);
 		}
 
-		FlowLayout layout = (FlowLayout) view.findViewById(R.id.brick_user_flow_layout);
+		BrickLayout layout = (BrickLayout) view.findViewById(R.id.brick_user_flow_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
 
@@ -208,7 +208,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 		Context context = currentView.getContext();
 
-		FlowLayout layout2 = (FlowLayout) currentView.findViewById(R.id.brick_user_flow_layout);
+		BrickLayout layout2 = (BrickLayout) currentView.findViewById(R.id.brick_user_flow_layout);
 		if (layout2.getChildCount() > 0) {
 			layout2.removeAllViews();
 		}

@@ -25,28 +25,29 @@ import android.view.ViewGroup;
  * <p/>
  * </com.example.android.layout.FlowLayout>
  */
-public class FlowLayout extends ViewGroup {
+public class BrickLayout extends ViewGroup {
 	public static final int HORIZONTAL = 0;
 	public static final int VERTICAL = 1;
 
+	private int customPadding = 0;
 	private int horizontalSpacing = 0;
 	private int verticalSpacing = 0;
 	private int orientation = 0;
 	private boolean debugDraw = false;
 
-	public FlowLayout(Context context) {
+	public BrickLayout(Context context) {
 		super(context);
 
 		this.readStyleParameters(context, null);
 	}
 
-	public FlowLayout(Context context, AttributeSet attributeSet) {
+	public BrickLayout(Context context, AttributeSet attributeSet) {
 		super(context, attributeSet);
 
 		this.readStyleParameters(context, attributeSet);
 	}
 
-	public FlowLayout(Context context, AttributeSet attributeSet, int defStyle) {
+	public BrickLayout(Context context, AttributeSet attributeSet, int defStyle) {
 		super(context, attributeSet, defStyle);
 
 		this.readStyleParameters(context, attributeSet);
@@ -128,13 +129,16 @@ public class FlowLayout extends ViewGroup {
 		int x = controlMaxLength;
 		int y = controlMaxThickness;
 
+		y += customPadding * 2;
+
 		y = Math.max(y, getMinimumHeight());
 
-		int yAdjust = 0;
+		int yAdjust = Math.round((y - controlMaxThickness) * 0.5f);
 
-		if (controlMaxThickness < y) {
-			yAdjust = Math.round((y - controlMaxThickness) * 0.5f);
+		if (y > getMinimumHeight()) {
+			yAdjust += Math.round(lines.get(0).minHeight * -0.15f);
 		}
+
 		for (LineData d : lines) {
 			for (ElementData ed : d.elements) {
 				int yAdjust2 = 0;
@@ -217,12 +221,13 @@ public class FlowLayout extends ViewGroup {
 	}
 
 	private void readStyleParameters(Context context, AttributeSet attributeSet) {
-		TypedArray a = context.obtainStyledAttributes(attributeSet, R.styleable.FlowLayout);
+		TypedArray a = context.obtainStyledAttributes(attributeSet, R.styleable.BrickLayout);
 		try {
-			horizontalSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_horizontalSpacing, 0);
-			verticalSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_verticalSpacing, 0);
-			orientation = a.getInteger(R.styleable.FlowLayout_orientation, HORIZONTAL);
-			debugDraw = a.getBoolean(R.styleable.FlowLayout_debugDraw, false);
+			customPadding = a.getDimensionPixelSize(R.styleable.BrickLayout_customPadding, 0);
+			horizontalSpacing = a.getDimensionPixelSize(R.styleable.BrickLayout_horizontalSpacing, 0);
+			verticalSpacing = a.getDimensionPixelSize(R.styleable.BrickLayout_verticalSpacing, 0);
+			orientation = a.getInteger(R.styleable.BrickLayout_orientation, HORIZONTAL);
+			debugDraw = a.getBoolean(R.styleable.BrickLayout_debugDraw, false);
 		} finally {
 			a.recycle();
 		}
