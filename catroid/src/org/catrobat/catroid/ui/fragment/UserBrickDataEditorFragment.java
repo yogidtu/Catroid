@@ -22,7 +22,6 @@
  */
 package org.catrobat.catroid.ui.fragment;
 
-import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIData;
@@ -32,6 +31,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,11 +81,19 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		FragmentManager fragmentManager = activity.getSupportFragmentManager();
 		FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
 
+		fragTransaction.addToBackStack(null);
+
 		if (dataEditorFragment == null) {
 			dataEditorFragment = new UserBrickDataEditorFragment();
 			Bundle bundle = new Bundle();
 			bundle.putSerializable(BRICK_BUNDLE_ARGUMENT, brick);
 			dataEditorFragment.setArguments(bundle);
+
+			Log.d("FOREST", activity.toString());
+
+			//caller = activity.getSupportFragmentManager().findFragmentByTag(BRICK_DATA_EDITOR_FRAGMENT_TAG);
+			//dataEditorFragment.setCaller(activity
+			//.getSupportFragmentManager().findFragmentByTag(BRICK_DATA_EDITOR_FRAGMENT_TAG);)
 
 			fragTransaction.add(R.id.script_fragment_container, dataEditorFragment, BRICK_DATA_EDITOR_FRAGMENT_TAG);
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
@@ -120,19 +128,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	private void onUserDismiss() {
 		SherlockFragmentActivity activity = getSherlockActivity();
 		FragmentManager fragmentManager = activity.getSupportFragmentManager();
-		FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
-		fragTransaction.hide(this);
-		fragTransaction.show(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
-		fragTransaction.commit();
-		activity.getSupportActionBar().setTitle(ProjectManager.getInstance().getCurrentSprite().getName());
-
-		getSherlockActivity().getSupportActionBar().setDisplayShowTitleEnabled(false);
-		getSherlockActivity().getSupportActionBar().setNavigationMode(
-				com.actionbarsherlock.app.ActionBar.NAVIGATION_MODE_LIST);
-
-		activity.findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
-		activity.findViewById(R.id.bottom_bar_separator).setVisibility(View.VISIBLE);
-		activity.findViewById(R.id.button_play).setVisibility(View.VISIBLE);
+		fragmentManager.popBackStack();
 	}
 
 	@Override

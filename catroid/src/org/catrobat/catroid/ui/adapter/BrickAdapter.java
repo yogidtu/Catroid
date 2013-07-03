@@ -99,7 +99,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	private List<Brick> checkedBricks = new ArrayList<Brick>();
 
 	private int selectMode;
-	private OnBrickEditListener onBrickEditListener;
+	private OnBrickEditListener scriptFragment;
 	private boolean actionMode = false;
 
 	private Lock viewSwitchLock = new ViewSwitchLock();
@@ -969,11 +969,13 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				return;
 			}
 
+			Log.d("FOREST", context.toString());
+
 			Intent intent = new Intent(context, UserBrickScriptActivity.class);
-			UserBrickScriptActivity.setUserBrick(brick);
+			UserBrickScriptActivity.setUserBrick(brick); // TODO USE BUNDLE INSTEAD!!?
+
 			context.startActivity(intent);
 
-			//UserBrickScriptActivity.
 		}
 	}
 
@@ -1073,7 +1075,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	public void setOnBrickEditListener(OnBrickEditListener listener) {
-		onBrickEditListener = listener;
+		scriptFragment = listener;
 	}
 
 	public void handleCheck(Brick brick, boolean isChecked) {
@@ -1096,8 +1098,8 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 		notifyDataSetChanged();
 
-		if (onBrickEditListener != null) {
-			onBrickEditListener.onBrickChecked();
+		if (scriptFragment != null) {
+			scriptFragment.onBrickChecked();
 		}
 	}
 
@@ -1156,8 +1158,8 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 			animateSelectedBricks();
 
-			if (onBrickEditListener != null) {
-				onBrickEditListener.onBrickChecked();
+			if (scriptFragment != null) {
+				scriptFragment.onBrickChecked();
 			}
 			notifyDataSetChanged();
 			return true;
@@ -1204,8 +1206,8 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 			animateSelectedBricks();
 
-			if (onBrickEditListener != null) {
-				onBrickEditListener.onBrickChecked();
+			if (scriptFragment != null) {
+				scriptFragment.onBrickChecked();
 			}
 			notifyDataSetChanged();
 			return true;

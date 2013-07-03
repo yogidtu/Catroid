@@ -179,7 +179,7 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 			return;
 		}
 
-		UserBrickDataEditorFragment.showFragment(view, brick);
+		UserBrickDataEditorFragment.showFragment(view, brick); //, adapter.scriptFragment
 	}
 
 	@Override
