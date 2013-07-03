@@ -969,8 +969,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				return;
 			}
 
-			Log.d("FOREST", context.toString());
-
 			Intent intent = new Intent(context, UserBrickScriptActivity.class);
 			UserBrickScriptActivity.setUserBrick(brick); // TODO USE BUNDLE INSTEAD!!?
 

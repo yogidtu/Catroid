@@ -46,7 +46,6 @@ import android.graphics.Paint.Style;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -110,7 +109,7 @@ public class DragAndDropListView extends ListView implements OnLongClickListener
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent event) {
-		Log.d("FOREST", "onInterceptTouchEvent ddlv" + event.getAction() + ", " + MotionEvent.ACTION_UP);
+		//Log.d("FOREST", "onInterceptTouchEvent ddlv" + event.getAction() + ", " + MotionEvent.ACTION_UP);
 
 		//hack: on Android 2.x getView() is not always called when checkbox is checked.
 		//Therefore the action is catched here and does exactly the same as otherwise the
@@ -167,8 +166,6 @@ public class DragAndDropListView extends ListView implements OnLongClickListener
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		Log.d("FOREST", "onTouchEvent ddlv");
-
 		int x = (int) event.getX();
 		int y = (int) event.getY();
 
@@ -184,8 +181,7 @@ public class DragAndDropListView extends ListView implements OnLongClickListener
 		if (event.getAction() == MotionEvent.ACTION_UP) {
 			BrickAdapter adapter = ((BrickAdapter) dragAndDropListener);
 			final Brick brick = (Brick) adapter.getItem(itemPosition);
-			Log.d("FOREST", "onTouchEvent ddlv" + brick.toString()
-					+ ((brick instanceof UserScriptDefinitionBrick) ? "true" : "false"));
+
 			if (brick instanceof UserScriptDefinitionBrick) {
 				((UserScriptDefinitionBrick) brick).onClick(null);
 				return true;
