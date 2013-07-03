@@ -26,13 +26,16 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIData;
 import org.catrobat.catroid.ui.BrickLayout;
+import org.catrobat.catroid.ui.UserBrickScriptActivity;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
@@ -47,7 +50,7 @@ import com.actionbarsherlock.view.Menu;
 
 public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener {
 
-	private static final String BRICK_DATA_EDITOR_FRAGMENT_TAG = "brick_data_editor_fragment";
+	public static final String BRICK_DATA_EDITOR_FRAGMENT_TAG = "brick_data_editor_fragment";
 	private static final String BRICK_BUNDLE_ARGUMENT = "current_brick";
 	private Context context;
 	private UserBrick currentBrick;
@@ -70,7 +73,6 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	}
 
 	public static void showFragment(View view, UserBrick brick) {
-
 		SherlockFragmentActivity activity = null;
 		activity = (SherlockFragmentActivity) view.getContext();
 
@@ -94,7 +96,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			activity.findViewById(R.id.bottom_bar).setVisibility(View.GONE);
 
 		} else if (dataEditorFragment.isHidden()) {
-			dataEditorFragment.updateBrickView(brick);
+			dataEditorFragment.updateBrickView();
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(dataEditorFragment);
 			activity.findViewById(R.id.bottom_bar).setVisibility(View.GONE);
@@ -104,24 +106,23 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		fragTransaction.commit();
 	}
 
-	public void updateBrickView() {
-		updateBrickView(currentBrick);
-	}
-
-	private void updateBrickView(UserBrick newBrick) {
-		currentBrick = newBrick;
-		editorBrickSpace.removeAllViews();
-		View newBrickView = newBrick.getView(context, 0, null);
-		editorBrickSpace.addView(newBrickView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-				LinearLayout.LayoutParams.MATCH_PARENT));
-		brickView = newBrickView;
-
-	}
-
 	private void onUserDismiss() {
 		SherlockFragmentActivity activity = getSherlockActivity();
+
 		FragmentManager fragmentManager = activity.getSupportFragmentManager();
 		fragmentManager.popBackStack();
+
+		if (activity instanceof UserBrickScriptActivity) {
+			((UserBrickScriptActivity) activity).setupActionBar();
+		} else {
+			Log.e("userbricks",
+					"UserBrickDataEditor.onUserDismiss() called when the parent activity is not a UserBrickScriptActivity!\n"
+							+ "This should never happen, afaik. I don't know how to correctly reset the action bar...");
+		}
+
+		activity.findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
+		activity.findViewById(R.id.bottom_bar_separator).setVisibility(View.VISIBLE);
+		activity.findViewById(R.id.button_play).setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -134,6 +135,16 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		context = getActivity();
 		brickView = View.inflate(context, R.layout.brick_user, null);
 
+		updateBrickView();
+
+		editorBrickSpace = (LinearLayout) fragmentView.findViewById(R.id.brick_data_editor_brick_space);
+
+		editorBrickSpace.addView(brickView);
+
+		return fragmentView;
+	}
+
+	public void updateBrickView() {
 		Context context = brickView.getContext();
 
 		BrickLayout layout = (BrickLayout) brickView.findViewById(R.id.brick_user_flow_layout);
@@ -155,39 +166,25 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 			layout.addView(dataView);
 		}
-
-		editorBrickSpace = (LinearLayout) fragmentView.findViewById(R.id.brick_data_editor_brick_space);
-
-		editorBrickSpace.addView(brickView);
-
-		return fragmentView;
+		Log.d("FOREST", "ONE");
 	}
 
 	@Override
 	public void onStart() {
 
 		getView().requestFocus();
-		/*
-		 * View.OnTouchListener touchListener = new View.OnTouchListener() {
-		 * 
-		 * @Override
-		 * public boolean onTouch(View view, MotionEvent event) {
-		 * 
-		 * 
-		 * return false;
-		 * }
-		 * };
-		 * 
-		 * for (int index = 0; index < formulaEditorKeyboard.getChildCount(); index++) {
-		 * LinearLayout child = (LinearLayout) formulaEditorKeyboard.getChildAt(index);
-		 * for (int nestedIndex = 0; nestedIndex < child.getChildCount(); nestedIndex++) {
-		 * View view = child.getChildAt(nestedIndex);
-		 * view.setOnTouchListener(touchListener);
-		 * }
-		 * }
-		 * 
-		 * updateButtonViewOnKeyboard();
-		 */
+
+		View.OnTouchListener touchListener = new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+
+				return false;
+			}
+		};
+
+		Log.d("FOREST", "TWO");
+
+		//view.setOnTouchListener(touchListener);
 
 		super.onStart();
 	}

@@ -67,7 +67,7 @@ public class UserBrickScriptActivity extends ScriptActivity {
 		adapter.updateBrickList();
 	}
 
-	private void setupActionBar() {
+	public void setupActionBar() {
 
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setHomeButtonEnabled(true);

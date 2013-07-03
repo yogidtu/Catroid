@@ -39,6 +39,7 @@ import org.catrobat.catroid.ui.fragment.LookFragment;
 import org.catrobat.catroid.ui.fragment.ScriptActivityFragment;
 import org.catrobat.catroid.ui.fragment.ScriptFragment;
 import org.catrobat.catroid.ui.fragment.SoundFragment;
+import org.catrobat.catroid.ui.fragment.UserBrickDataEditorFragment;
 
 import android.content.Intent;
 import android.media.AudioManager;
@@ -359,6 +360,14 @@ public class ScriptActivity extends SherlockFragmentActivity {
 				if (fragment.isVisible()) {
 					return fragment.onKey(null, keyCode, event);
 				}
+			}
+		}
+
+		String tag1 = UserBrickDataEditorFragment.BRICK_DATA_EDITOR_FRAGMENT_TAG;
+		UserBrickDataEditorFragment fragment = (UserBrickDataEditorFragment) fragmentManager.findFragmentByTag(tag1);
+		if (fragment != null) {
+			if (fragment.isVisible()) {
+				return fragment.onKey(null, keyCode, event);
 			}
 		}
 
