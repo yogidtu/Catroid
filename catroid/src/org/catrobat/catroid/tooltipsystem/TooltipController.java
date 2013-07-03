@@ -586,8 +586,8 @@ public class TooltipController {
 		WindowManager.LayoutParams windowParameters = createLayoutParameters();
 		windowManager = ((Activity) context).getWindowManager();
 		tooltipLayer = new TooltipLayer(context);
-		windowManager.addView(tooltipLayer, windowParameters);
 		tooltipsAdded = addTooltipButtons();
+		windowManager.addView(tooltipLayer, windowParameters);
 
 		return tooltipsAdded;
 	}

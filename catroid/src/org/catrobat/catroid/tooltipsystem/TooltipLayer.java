@@ -69,7 +69,7 @@ public class TooltipLayer extends SurfaceView implements SurfaceHolder.Callback 
 	public TooltipLayer(Context context) {
 		super(context);
 		this.context = context;
-		this.setBackgroundColor(Color.BLACK);
+		this.setBackgroundColor(Color.CYAN);
 		this.getBackground().setAlpha(0);
 		this.setZOrderOnTop(true); //necessary 
 		getHolder().setFormat(PixelFormat.TRANSPARENT);
