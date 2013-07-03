@@ -6,10 +6,12 @@
 *.metadata
 
 #IntelliJ IDEA
-.idea
-*.iml
-*.ipr
-*.iws
+#.idea
+#*.iml
+#*.ipr
+#*.iws
+.idea/workspace.xml
+.idea/tasks.xml
 out
 
 # files for the dex VM
