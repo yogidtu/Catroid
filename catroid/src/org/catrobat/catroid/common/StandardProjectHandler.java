@@ -87,7 +87,7 @@ public class StandardProjectHandler {
 		return createAndSaveStandardProject(projectName, context);
 	}
 
-	public static Project createAndSaveStandardProject(String projectName, Context context) throws IOException {
+	public static Project createAndSaveStandardProjectMole(String projectName, Context context) throws IOException {
 		String mole1Name = context.getString(R.string.default_project_sprites_mole_name) + " 1";
 		String mole2Name = context.getString(R.string.default_project_sprites_mole_name) + " 2";
 		String mole3Name = context.getString(R.string.default_project_sprites_mole_name) + " 3";
@@ -303,7 +303,7 @@ public class StandardProjectHandler {
 	private static String projectName;
 	private static Context context;
 
-	public static Project createAndSavePinballProject(String projectName, Context context) throws IOException {
+	public static Project createAndSaveStandardProject(String projectName, Context context) throws IOException {
 		StandardProjectHandler.context = context;
 		StandardProjectHandler.projectName = projectName;
 
