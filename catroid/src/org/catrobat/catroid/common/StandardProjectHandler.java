@@ -24,12 +24,10 @@ package org.catrobat.catroid.common;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -45,12 +43,17 @@ import org.catrobat.catroid.content.WhenScript;
 import org.catrobat.catroid.content.bricks.BroadcastBrick;
 import org.catrobat.catroid.content.bricks.ChangeSizeByNBrick;
 import org.catrobat.catroid.content.bricks.ForeverBrick;
-import org.catrobat.catroid.content.bricks.IfOnEdgeBounceBrick;
-import org.catrobat.catroid.content.bricks.LoopEndBrick;
+import org.catrobat.catroid.content.bricks.GlideToBrick;
+import org.catrobat.catroid.content.bricks.HideBrick;
+import org.catrobat.catroid.content.bricks.LoopEndlessBrick;
 import org.catrobat.catroid.content.bricks.PlaceAtBrick;
+import org.catrobat.catroid.content.bricks.PlaySoundBrick;
 import org.catrobat.catroid.content.bricks.PointInDirectionBrick;
 import org.catrobat.catroid.content.bricks.PointInDirectionBrick.Direction;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
+import org.catrobat.catroid.content.bricks.SetSizeToBrick;
+import org.catrobat.catroid.content.bricks.SetVariableBrick;
+import org.catrobat.catroid.content.bricks.ShowBrick;
 import org.catrobat.catroid.content.bricks.TurnLeftBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.content.bricks.physics.SetBounceFactorBrick;
@@ -59,15 +62,19 @@ import org.catrobat.catroid.content.bricks.physics.SetGravityBrick;
 import org.catrobat.catroid.content.bricks.physics.SetPhysicObjectTypeBrick;
 import org.catrobat.catroid.content.bricks.physics.SetVelocityBrick;
 import org.catrobat.catroid.content.bricks.physics.TurnLeftSpeedBrick;
+import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.FormulaElement;
+import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
+import org.catrobat.catroid.formulaeditor.Functions;
+import org.catrobat.catroid.formulaeditor.UserVariable;
+import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.physics.PhysicObject;
 import org.catrobat.catroid.physics.PhysicWorld;
-import org.catrobat.catroid.utils.ImageEditing;
+import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -80,18 +87,232 @@ public class StandardProjectHandler {
 		return createAndSaveStandardProject(projectName, context);
 	}
 
-	private static Context context;
-	private static String projectName;
-
 	public static Project createAndSaveStandardProject(String projectName, Context context) throws IOException {
+		String mole1Name = context.getString(R.string.default_project_sprites_mole_name) + " 1";
+		String mole2Name = context.getString(R.string.default_project_sprites_mole_name) + " 2";
+		String mole3Name = context.getString(R.string.default_project_sprites_mole_name) + " 3";
+		String mole4Name = context.getString(R.string.default_project_sprites_mole_name) + " 4";
+		String whackedMoleName = context.getString(R.string.default_project_sprites_mole_whacked);
+		String soundName = context.getString(R.string.default_project_sprites_mole_sound);
+		String backgroundName = context.getString(R.string.default_project_backgroundname);
+
+		String varRandomFrom = context.getString(R.string.default_project_var_random_from);
+		String varRandomTo = context.getString(R.string.default_project_var_random_to);
+
+		Project defaultProject = new Project(context, projectName);
+		defaultProject.setDeviceData(context); // density anywhere here
+		StorageHandler.getInstance().saveProject(defaultProject);
+		ProjectManager.getInstance().setProject(defaultProject);
+
+		UserVariablesContainer userVariables = defaultProject.getUserVariables();
+
+		Sprite backgroundSprite = defaultProject.getSpriteList().get(0);
+
+		File mole1File = copyFromResourceInProject(projectName, Constants.IMAGE_DIRECTORY, mole1Name,
+				R.drawable.default_project_mole_1, context);
+		File mole2File = copyFromResourceInProject(projectName, Constants.IMAGE_DIRECTORY, mole2Name,
+				R.drawable.default_project_mole_2, context);
+		File whackedMoleFile = copyFromResourceInProject(projectName, Constants.IMAGE_DIRECTORY, whackedMoleName,
+				R.drawable.default_project_mole_whacked, context);
+		File soundFile1 = copyFromResourceInProject(projectName, Constants.SOUND_DIRECTORY, soundName,
+				R.raw.default_project_sound_mole_1, context);
+		File soundFile2 = copyFromResourceInProject(projectName, Constants.SOUND_DIRECTORY, soundName,
+				R.raw.default_project_sound_mole_2, context);
+		File soundFile3 = copyFromResourceInProject(projectName, Constants.SOUND_DIRECTORY, soundName,
+				R.raw.default_project_sound_mole_3, context);
+		File soundFile4 = copyFromResourceInProject(projectName, Constants.SOUND_DIRECTORY, soundName,
+				R.raw.default_project_sound_mole_4, context);
+		File backgroundFile = copyFromResourceInProject(projectName, Constants.IMAGE_DIRECTORY, backgroundName,
+				R.drawable.default_project_background, context);
+
+		copyFromResourceInProject(projectName, ".", StageListener.SCREENSHOT_AUTOMATIC_FILE_NAME,
+				R.drawable.default_project_screenshot, context, false);
+
+		LookData moleLookData1 = new LookData();
+		moleLookData1.setLookName(mole1Name);
+		moleLookData1.setLookFilename(mole1File.getName());
+
+		LookData moleLookData2 = new LookData();
+		moleLookData2.setLookName(mole2Name);
+		moleLookData2.setLookFilename(mole2File.getName());
+
+		LookData moleLookDataWhacked = new LookData();
+		moleLookDataWhacked.setLookName(whackedMoleName);
+		moleLookDataWhacked.setLookFilename(whackedMoleFile.getName());
+
+		LookData backgroundLookData = new LookData();
+		backgroundLookData.setLookName(backgroundName);
+		backgroundLookData.setLookFilename(backgroundFile.getName());
+
+		SoundInfo soundInfo = new SoundInfo();
+		soundInfo.setTitle(soundName);
+		soundInfo.setSoundFileName(soundFile1.getName());
+
+		userVariables.addProjectUserVariable(varRandomFrom);
+		UserVariable randomFrom = userVariables.getUserVariable(varRandomFrom, backgroundSprite);
+
+		userVariables.addProjectUserVariable(varRandomTo);
+		UserVariable randomTo = userVariables.getUserVariable(varRandomTo, backgroundSprite);
+
+		// Background sprite
+		backgroundSprite.getLookDataList().add(backgroundLookData);
+		Script backgroundStartScript = new StartScript(backgroundSprite);
+
+		SetLookBrick setLookBrick = new SetLookBrick(backgroundSprite);
+		setLookBrick.setLook(backgroundLookData);
+		backgroundStartScript.addBrick(setLookBrick);
+
+		SetVariableBrick setVariableBrick = new SetVariableBrick(backgroundSprite, new Formula(1), randomFrom);
+		backgroundStartScript.addBrick(setVariableBrick);
+
+		setVariableBrick = new SetVariableBrick(backgroundSprite, new Formula(5), randomTo);
+		backgroundStartScript.addBrick(setVariableBrick);
+
+		backgroundSprite.addScript(backgroundStartScript);
+
+		FormulaElement randomElement = new FormulaElement(ElementType.FUNCTION, Functions.RAND.toString(), null);
+		randomElement.setLeftChild(new FormulaElement(ElementType.USER_VARIABLE, varRandomFrom, randomElement));
+		randomElement.setRightChild(new FormulaElement(ElementType.USER_VARIABLE, varRandomTo, randomElement));
+		Formula randomWait = new Formula(randomElement);
+
+		FormulaElement waitOneOrTwoSeconds = new FormulaElement(ElementType.FUNCTION, Functions.RAND.toString(), null);
+		waitOneOrTwoSeconds.setLeftChild(new FormulaElement(ElementType.NUMBER, "1", waitOneOrTwoSeconds));
+		waitOneOrTwoSeconds.setRightChild(new FormulaElement(ElementType.NUMBER, "2", waitOneOrTwoSeconds));
+
+		// Mole 1 sprite
+		Sprite mole1Sprite = new Sprite(context.getString(R.string.default_project_sprites_mole_name) + " 1");
+		mole1Sprite.getLookDataList().add(moleLookData1);
+		mole1Sprite.getLookDataList().add(moleLookData2);
+		mole1Sprite.getLookDataList().add(moleLookDataWhacked);
+		mole1Sprite.getSoundList().add(soundInfo);
+
+		Script mole1StartScript = new StartScript(mole1Sprite);
+		Script mole1WhenScript = new WhenScript(mole1Sprite);
+
+		// start script
+		SetSizeToBrick setSizeToBrick = new SetSizeToBrick(mole1Sprite, new Formula(30));
+		mole1StartScript.addBrick(setSizeToBrick);
+
+		ForeverBrick foreverBrick = new ForeverBrick(mole1Sprite);
+		mole1StartScript.addBrick(foreverBrick);
+
+		PlaceAtBrick placeAtBrick = new PlaceAtBrick(mole1Sprite, -160, -110);
+		mole1StartScript.addBrick(placeAtBrick);
+
+		WaitBrick waitBrick = new WaitBrick(mole1Sprite, new Formula(waitOneOrTwoSeconds));
+		mole1StartScript.addBrick(waitBrick);
+
+		ShowBrick showBrick = new ShowBrick(mole1Sprite);
+		mole1StartScript.addBrick(showBrick);
+
+		setLookBrick = new SetLookBrick(mole1Sprite);
+		setLookBrick.setLook(moleLookData1);
+		mole1StartScript.addBrick(setLookBrick);
+
+		GlideToBrick glideToBrick = new GlideToBrick(mole1Sprite, -160, -95, 100);
+		mole1StartScript.addBrick(glideToBrick);
+
+		setLookBrick = new SetLookBrick(mole1Sprite);
+		setLookBrick.setLook(moleLookData2);
+		mole1StartScript.addBrick(setLookBrick);
+
+		waitBrick = new WaitBrick(mole1Sprite, randomWait.clone());
+		mole1StartScript.addBrick(waitBrick);
+
+		HideBrick hideBrick = new HideBrick(mole1Sprite);
+		mole1StartScript.addBrick(hideBrick);
+
+		waitBrick = new WaitBrick(mole1Sprite, randomWait.clone());
+		mole1StartScript.addBrick(waitBrick);
+
+		LoopEndlessBrick loopEndlessBrick = new LoopEndlessBrick(mole1Sprite, foreverBrick);
+		mole1StartScript.addBrick(loopEndlessBrick);
+
+		// when script		
+		PlaySoundBrick playSoundBrick = new PlaySoundBrick(mole1Sprite);
+		playSoundBrick.setSoundInfo(soundInfo);
+		mole1WhenScript.addBrick(playSoundBrick);
+
+		setLookBrick = new SetLookBrick(mole1Sprite);
+		setLookBrick.setLook(moleLookDataWhacked);
+		mole1WhenScript.addBrick(setLookBrick);
+
+		waitBrick = new WaitBrick(mole1Sprite, 1500);
+		mole1WhenScript.addBrick(waitBrick);
+
+		hideBrick = new HideBrick(mole1Sprite);
+		mole1WhenScript.addBrick(hideBrick);
+
+		mole1Sprite.addScript(mole1StartScript);
+		mole1Sprite.addScript(mole1WhenScript);
+		defaultProject.addSprite(mole1Sprite);
+
+		StorageHandler.getInstance().fillChecksumContainer();
+
+		// Mole 2 sprite
+		Sprite mole2Sprite = mole1Sprite.clone();
+		mole2Sprite.getSoundList().get(0).setSoundFileName(soundFile2.getName());
+		mole2Sprite.setName(mole2Name);
+		defaultProject.addSprite(mole2Sprite);
+
+		Script tempScript = mole2Sprite.getScript(0);
+		placeAtBrick = (PlaceAtBrick) tempScript.getBrick(2);
+		placeAtBrick.setXPosition(new Formula(160));
+		placeAtBrick.setYPosition(new Formula(-110));
+
+		glideToBrick = (GlideToBrick) tempScript.getBrick(6);
+		glideToBrick.setXDestination(new Formula(160));
+		glideToBrick.setYDestination(new Formula(-95));
+
+		// Mole 3 sprite
+		Sprite mole3Sprite = mole1Sprite.clone();
+		mole3Sprite.getSoundList().get(0).setSoundFileName(soundFile3.getName());
+		mole3Sprite.setName(mole3Name);
+		defaultProject.addSprite(mole3Sprite);
+
+		tempScript = mole3Sprite.getScript(0);
+		placeAtBrick = (PlaceAtBrick) tempScript.getBrick(2);
+		placeAtBrick.setXPosition(new Formula(-160));
+		placeAtBrick.setYPosition(new Formula(-290));
+
+		glideToBrick = (GlideToBrick) tempScript.getBrick(6);
+		glideToBrick.setXDestination(new Formula(-160));
+		glideToBrick.setYDestination(new Formula(-275));
+
+		// Mole 4 sprite
+		Sprite mole4Sprite = mole1Sprite.clone();
+		mole4Sprite.getSoundList().get(0).setSoundFileName(soundFile4.getName());
+		mole4Sprite.setName(mole4Name);
+		defaultProject.addSprite(mole4Sprite);
+
+		tempScript = mole4Sprite.getScript(0);
+		placeAtBrick = (PlaceAtBrick) tempScript.getBrick(2);
+		placeAtBrick.setXPosition(new Formula(160));
+		placeAtBrick.setYPosition(new Formula(-290));
+
+		glideToBrick = (GlideToBrick) tempScript.getBrick(6);
+		glideToBrick.setXDestination(new Formula(160));
+		glideToBrick.setYDestination(new Formula(-275));
+
+		StorageHandler.getInstance().saveProject(defaultProject);
+
+		return defaultProject;
+	}
+
+	// XXX: Only needed for pinball game and demonstration purposes. 
+	private static String projectName;
+	private static Context context;
+
+	public static Project createAndSavePinballProject(String projectName, Context context) throws IOException {
+		StandardProjectHandler.context = context;
+		StandardProjectHandler.projectName = projectName;
+
 		Project defaultProject = new Project(context, projectName);
 		defaultProject.getXmlHeader().virtualScreenWidth = 480;
 		defaultProject.getXmlHeader().virtualScreenHeight = 800;
 		StorageHandler.getInstance().saveProject(defaultProject);
 		ProjectManager.getInstance().setProject(defaultProject);
 
-		StandardProjectHandler.context = context;
-		StandardProjectHandler.projectName = defaultProject.getName();
 		PhysicWorld physicWorld = defaultProject.getPhysicWorld();
 
 		Sprite background = defaultProject.getSpriteList().get(0);
@@ -141,13 +362,11 @@ public class StandardProjectHandler {
 
 		// Ball v2
 		String ballBroadcastMessage = "restart ball";
-		BroadcastBrick ballBroadcastBrick = new BroadcastBrick(ball);
-		ballBroadcastBrick.setSelectedMessage(ballBroadcastMessage);
+		BroadcastBrick ballBroadcastBrick = new BroadcastBrick(ball, ballBroadcastMessage);
 		ballStartScript.addBrick(ballBroadcastBrick);
 		ball.addScript(ballStartScript);
 
-		BroadcastScript ballBroadcastScript = new BroadcastScript(ball);
-		ballBroadcastScript.setBroadcastMessage(ballBroadcastMessage);
+		BroadcastScript ballBroadcastScript = new BroadcastScript(ball, ballBroadcastMessage);
 		ballBroadcastScript.addBrick(new PlaceAtBrick(ball, -200, 300));
 		ballBroadcastScript.addBrick(new SetVelocityBrick(ball, new Vector2()));
 		SetLookBrick ballSetLookBrick = new SetLookBrick(ball);
@@ -228,8 +447,7 @@ public class StandardProjectHandler {
 		WhenScript whenPressedScript = new WhenScript(middleBouncer);
 		whenPressedScript.setAction(0);
 
-		BroadcastBrick bb = new BroadcastBrick(middleBouncer);
-		bb.setSelectedMessage(ballBroadcastMessage);
+		BroadcastBrick bb = new BroadcastBrick(middleBouncer, ballBroadcastMessage);
 		whenPressedScript.addBrick(bb);
 		whenPressedScript.addBrick(new ChangeSizeByNBrick(middleBouncer, 20));
 		middleBouncer.addScript(whenPressedScript);
@@ -290,7 +508,7 @@ public class StandardProjectHandler {
 
 	private static Script createElement(Sprite sprite, PhysicWorld physicWorld, String fileName, int fileId,
 			Vector2 position, float angle) throws IOException {
-		File file = savePictureFromResourceInProject(projectName, fileName, fileId, context);
+		File file = copyFromResourceInProject(projectName, Constants.IMAGE_DIRECTORY, fileName, fileId, context);
 		LookData lookData = new LookData();
 		lookData.setLookName(fileName);
 		lookData.setLookFilename(file.getName());
@@ -340,11 +558,11 @@ public class StandardProjectHandler {
 		WhenScript whenPressedScript = new WhenScript(sprite);
 		whenPressedScript.setAction(0);
 
-		BroadcastBrick leftButtonBroadcastBrick = new BroadcastBrick(sprite);
-		leftButtonBroadcastBrick.setSelectedMessage(broadcastMessage);
+		BroadcastBrick leftButtonBroadcastBrick = new BroadcastBrick(sprite, broadcastMessage);
 
 		String filename = "button_pressed";
-		File file = savePictureFromResourceInProject(projectName, filename, R.drawable.button_pressed, context);
+		File file = copyFromResourceInProject(projectName, Constants.IMAGE_DIRECTORY, filename,
+				R.drawable.button_pressed, context);
 		LookData lookData = new LookData();
 		lookData.setLookName(filename);
 		lookData.setLookFilename(file.getName());
@@ -369,8 +587,7 @@ public class StandardProjectHandler {
 
 	private static void createMovingArm(Sprite sprite, String broadcastMessage, PhysicWorld physicWorld,
 			float degreeSpeed) {
-		BroadcastScript broadcastScript = new BroadcastScript(sprite);
-		broadcastScript.setBroadcastMessage(broadcastMessage);
+		BroadcastScript broadcastScript = new BroadcastScript(sprite, broadcastMessage);
 
 		int waitInMillis = 110;
 
@@ -385,150 +602,29 @@ public class StandardProjectHandler {
 		sprite.addScript(broadcastScript);
 	}
 
-	public static Project createAndSaveStandardProjectDefault(String projectName, Context context) throws IOException {
-		String normalCatName = context.getString(R.string.default_project_sprites_pocketcode_normalcat);
-		String banzaiCatName = context.getString(R.string.default_project_sprites_pocketcode_banzaicat);
-		String cheshireCatName = context.getString(R.string.default_project_sprites_pocketcode_cheshirecat);
-		String backgroundName = context.getString(R.string.default_project_backgroundname);
+	public static Project createAndSaveEmptyProject(String projectName, Context context) {
+		Project emptyProject = new Project(context, projectName);
+		emptyProject.setDeviceData(context);
+		StorageHandler.getInstance().saveProject(emptyProject);
+		ProjectManager.getInstance().setProject(emptyProject);
 
-		Project defaultProject = new Project(context, projectName);
-		StorageHandler.getInstance().saveProject(defaultProject);
-		ProjectManager.getInstance().setProject(defaultProject);
-		// XXX: Sprite sprite = new PhysicSprite(context.getString(R.string.default_project_sprites_pocketcode_name));
-		Sprite sprite = new PhysicSprite(context.getString(R.string.default_project_sprites_pocketcode_name));
-		Sprite backgroundSprite = defaultProject.getSpriteList().get(0);
-
-		Script backgroundStartScript = new StartScript(backgroundSprite);
-		Script startScript = new StartScript(sprite);
-		Script whenScript = new WhenScript(sprite);
-
-		File backgroundFile = createBackgroundImage(projectName, backgroundName,
-				context.getString(R.string.default_project_backgroundcolor));
-
-		File normalCat = copyAndScaleImageToProject(projectName, context, normalCatName, R.drawable.catroid);
-		File banzaiCat = copyAndScaleImageToProject(projectName, context, banzaiCatName, R.drawable.catroid_banzai);
-		File cheshireCat = copyAndScaleImageToProject(projectName, context, cheshireCatName,
-				R.drawable.catroid_cheshire);
-
-		LookData normalCatLookData = new LookData();
-		normalCatLookData.setLookName(normalCatName);
-		normalCatLookData.setLookFilename(normalCat.getName());
-
-		LookData banzaiCatLookData = new LookData();
-		banzaiCatLookData.setLookName(banzaiCatName);
-		banzaiCatLookData.setLookFilename(banzaiCat.getName());
-
-		LookData cheshireCatLookData = new LookData();
-		cheshireCatLookData.setLookName(cheshireCatName);
-		cheshireCatLookData.setLookFilename(cheshireCat.getName());
-
-		LookData backgroundLookData = new LookData();
-		backgroundLookData.setLookName(backgroundName);
-		backgroundLookData.setLookFilename(backgroundFile.getName());
-
-		ArrayList<LookData> lookDataList = sprite.getLookDataList();
-		lookDataList.add(normalCatLookData);
-		lookDataList.add(banzaiCatLookData);
-		lookDataList.add(cheshireCatLookData);
-		ArrayList<LookData> lookDataList2 = backgroundSprite.getLookDataList();
-		lookDataList2.add(backgroundLookData);
-
-		SetLookBrick setLookBrick = new SetLookBrick(sprite);
-		setLookBrick.setLook(normalCatLookData);
-
-		SetLookBrick setLookBrick1 = new SetLookBrick(sprite);
-		setLookBrick1.setLook(normalCatLookData);
-
-		SetLookBrick setLookBrick2 = new SetLookBrick(sprite);
-		setLookBrick2.setLook(banzaiCatLookData);
-
-		SetLookBrick setLookBrick3 = new SetLookBrick(sprite);
-		setLookBrick3.setLook(cheshireCatLookData);
-
-		SetLookBrick backgroundBrick = new SetLookBrick(backgroundSprite);
-		backgroundBrick.setLook(backgroundLookData);
-
-		WaitBrick waitBrick1 = new WaitBrick(sprite, 500);
-		WaitBrick waitBrick2 = new WaitBrick(sprite, 500);
-
-		startScript.addBrick(setLookBrick);
-		// XXX: BEGIN
-		startScript.addBrick(new SetPhysicObjectTypeBrick(sprite, PhysicObject.Type.DYNAMIC));
-		startScript.addBrick(new SetBounceFactorBrick(sprite, 90.0f));
-
-		ForeverBrick foreverBrick = new ForeverBrick(sprite);
-		LoopEndBrick loopEndBrick = new LoopEndBrick(sprite, foreverBrick);
-		IfOnEdgeBounceBrick ifOnEdgeBounceBrick = new IfOnEdgeBounceBrick(sprite);
-
-		startScript.addBrick(foreverBrick);
-		startScript.addBrick(ifOnEdgeBounceBrick);
-		startScript.addBrick(loopEndBrick);
-		// XXX: END
-
-		whenScript.addBrick(setLookBrick2);
-		whenScript.addBrick(waitBrick1);
-		whenScript.addBrick(setLookBrick3);
-		whenScript.addBrick(waitBrick2);
-		whenScript.addBrick(setLookBrick1);
-		backgroundStartScript.addBrick(backgroundBrick);
-
-		defaultProject.addSprite(sprite);
-		sprite.addScript(startScript);
-		// XXX: sprite.addScript(whenScript);
-		backgroundSprite.addScript(backgroundStartScript);
-
-		StorageHandler.getInstance().saveProject(defaultProject);
-
-		return defaultProject;
+		return emptyProject;
 	}
 
-	private static File createBackgroundImage(String projectName, String backgroundName, String backgroundColor)
-			throws FileNotFoundException {
-		String directoryName = Utils.buildPath(Utils.buildProjectPath(projectName), Constants.IMAGE_DIRECTORY);
-		File backgroundTemp = new File(Utils.buildPath(directoryName, backgroundName));
-		Bitmap backgroundBitmap = ImageEditing.createSingleColorBitmap(Values.SCREEN_WIDTH, Values.SCREEN_HEIGHT,
-				Color.parseColor(backgroundColor));
-		StorageHandler.saveBitmapToImageFile(backgroundTemp, backgroundBitmap);
-		File backgroundFile = new File(directoryName, Utils.md5Checksum(backgroundTemp) + FILENAME_SEPARATOR
-				+ backgroundTemp.getName());
-		backgroundTemp.renameTo(backgroundFile);
-		return backgroundFile;
+	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
+			int fileId, Context context) throws IOException {
+		return copyFromResourceInProject(projectName, directoryName, outputName, fileId, context, true);
 	}
 
-	private static File copyAndScaleImageToProject(String projectName, Context context, String imageName, int imageId)
-			throws IOException {
-		String directoryName = Utils.buildPath(Utils.buildProjectPath(projectName), Constants.IMAGE_DIRECTORY);
-		File tempImageFile = savePictureFromResourceInProject(projectName, imageName, imageId, context);
-
-		int[] dimensions = ImageEditing.getImageDimensions(tempImageFile.getAbsolutePath());
-		int originalWidth = dimensions[0];
-		int originalHeight = dimensions[1];
-		double ratio = (double) originalHeight / (double) originalWidth;
-
-		// scale the cat, that its always 1/3 of the screen width
-		Bitmap tempBitmap = ImageEditing.getScaledBitmapFromPath(tempImageFile.getAbsolutePath(),
-				Values.SCREEN_WIDTH / 3, (int) (Values.SCREEN_WIDTH / 3 * ratio), false);
-		StorageHandler.saveBitmapToImageFile(tempImageFile, tempBitmap);
-
-		String finalImageFileString = Utils.buildPath(directoryName, Utils.md5Checksum(tempImageFile)
-				+ FILENAME_SEPARATOR + tempImageFile.getName());
-		File finalImageFile = new File(finalImageFileString);
-		tempImageFile.renameTo(finalImageFile);
-
-		return finalImageFile;
-	}
-
-	private static File savePictureFromResourceInProject(String project, String outputName, int fileId, Context context)
-			throws IOException {
-
-		final String imagePath = Utils
-				.buildPath(Utils.buildProjectPath(project), Constants.IMAGE_DIRECTORY, outputName);
-		File testImage = new File(imagePath);
-		if (!testImage.exists()) {
-			testImage.createNewFile();
+	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
+			int fileId, Context context, boolean prependMd5) throws IOException {
+		final String filePath = Utils.buildPath(Utils.buildProjectPath(projectName), directoryName, outputName);
+		File copiedFile = new File(filePath);
+		if (!copiedFile.exists()) {
+			copiedFile.createNewFile();
 		}
 		InputStream in = context.getResources().openRawResource(fileId);
-		OutputStream out = new BufferedOutputStream(new FileOutputStream(testImage), Constants.BUFFER_8K);
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(copiedFile), Constants.BUFFER_8K);
 		byte[] buffer = new byte[Constants.BUFFER_8K];
 		int length = 0;
 		while ((length = in.read(buffer)) > 0) {
@@ -539,7 +635,16 @@ public class StandardProjectHandler {
 		out.flush();
 		out.close();
 
-		return testImage;
-	}
+		if (!prependMd5) {
+			return copiedFile;
+		}
 
+		String directoryPath = Utils.buildPath(Utils.buildProjectPath(projectName), directoryName);
+		String finalImageFileString = Utils.buildPath(directoryPath, Utils.md5Checksum(copiedFile) + FILENAME_SEPARATOR
+				+ copiedFile.getName());
+		File copiedFileWithMd5 = new File(finalImageFileString);
+		copiedFile.renameTo(copiedFileWithMd5);
+
+		return copiedFileWithMd5;
+	}
 }
