@@ -51,4 +51,14 @@ public class UserBrickUIData implements Serializable {
 		}
 		return text;
 	}
+
+	public String debugString() {
+		String text = null;
+		if (hasLocalizedString) {
+			text = localizedStringKey;
+		} else {
+			text = userDefinedName;
+		}
+		return text;
+	}
 }

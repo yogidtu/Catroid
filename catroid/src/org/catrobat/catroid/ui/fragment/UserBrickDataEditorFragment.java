@@ -25,7 +25,8 @@ package org.catrobat.catroid.ui.fragment;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIData;
-import org.catrobat.catroid.ui.BrickLayout;
+import org.catrobat.catroid.ui.DragNDropBrickLayout;
+import org.catrobat.catroid.ui.ReorderListener;
 import org.catrobat.catroid.ui.UserBrickScriptActivity;
 
 import android.content.Context;
@@ -35,7 +36,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
@@ -48,7 +48,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
-public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener {
+public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener, ReorderListener {
 
 	public static final String BRICK_DATA_EDITOR_FRAGMENT_TAG = "brick_data_editor_fragment";
 	private static final String BRICK_BUNDLE_ARGUMENT = "current_brick";
@@ -133,7 +133,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		fragmentView.requestFocus();
 
 		context = getActivity();
-		brickView = View.inflate(context, R.layout.brick_user, null);
+		brickView = View.inflate(context, R.layout.brick_user_editable, null);
 
 		updateBrickView();
 
@@ -144,10 +144,19 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		return fragmentView;
 	}
 
+	@Override
+	public void reorder(int from, int to) {
+		currentBrick.reorderUIData(from, to);
+		updateBrickView();
+	}
+
 	public void updateBrickView() {
+		Log.d("FOREST", "updateBrickView");
 		Context context = brickView.getContext();
 
-		BrickLayout layout = (BrickLayout) brickView.findViewById(R.id.brick_user_flow_layout);
+		DragNDropBrickLayout layout = (DragNDropBrickLayout) brickView.findViewById(R.id.brick_user_flow_layout);
+		layout.setListener(this);
+
 		if (layout.getChildCount() > 0) {
 			layout.removeAllViews();
 		}
@@ -166,27 +175,8 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 			layout.addView(dataView);
 		}
-		Log.d("FOREST", "ONE");
-	}
 
-	@Override
-	public void onStart() {
-
-		getView().requestFocus();
-
-		View.OnTouchListener touchListener = new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View view, MotionEvent event) {
-
-				return false;
-			}
-		};
-
-		Log.d("FOREST", "TWO");
-
-		//view.setOnTouchListener(touchListener);
-
-		super.onStart();
+		//if(onTouchListener)
 	}
 
 	@Override

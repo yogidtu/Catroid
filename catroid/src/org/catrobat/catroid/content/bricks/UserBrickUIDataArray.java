@@ -23,22 +23,15 @@
 package org.catrobat.catroid.content.bricks;
 
 import java.io.Serializable;
-
-import org.catrobat.catroid.formulaeditor.Formula;
-
-import android.widget.TextView;
+import java.util.ArrayList;
 
 /**
  * @author forestjohnson
  * 
  */
-public class UserBrickUIComponent implements Serializable {
+public class UserBrickUIDataArray extends ArrayList<UserBrickUIData> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public int dataIndex;
-
-	public Formula fieldFormula;
-	public transient TextView textView;
-	public transient TextView prototypeView;
+	public int version = 0;
 }

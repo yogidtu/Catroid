@@ -22,8 +22,8 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.catrobat.catroid.R;
@@ -36,6 +36,7 @@ import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -59,20 +60,21 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	private transient View prototypeView;
 
 	// belonging to brick instance
-	private LinkedList<UserBrickUIComponent> uiComponents;
+	private transient ArrayList<UserBrickUIComponent> uiComponents;
 
 	// belonging to stored brick
-	public LinkedList<UserBrickUIData> uiData;
+	public UserBrickUIDataArray uiData;
+	private int lastDataVersion = 0;
 
 	public UserBrick(Sprite sprite) {
 		this.sprite = sprite;
 		sprite.addUserBrick(this);
-		uiData = new LinkedList<UserBrickUIData>();
+		uiData = new UserBrickUIDataArray();
 		this.definitionBrick = new UserScriptDefinitionBrick(sprite, this);
 		updateUIComponents();
 	}
 
-	public UserBrick(Sprite sprite, LinkedList<UserBrickUIData> uiData, UserScriptDefinitionBrick definitionBrick) {
+	public UserBrick(Sprite sprite, UserBrickUIDataArray uiData, UserScriptDefinitionBrick definitionBrick) {
 		this.sprite = sprite;
 		this.uiData = uiData;
 		this.definitionBrick = definitionBrick;
@@ -99,6 +101,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		comp.hasLocalizedString = true;
 		comp.localizedStringKey = key;
 		uiData.add(comp);
+		uiData.version++;
 		updateUIComponents();
 	}
 
@@ -108,6 +111,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		comp.hasLocalizedString = false;
 		comp.userDefinedName = text;
 		uiData.add(comp);
+		uiData.version++;
 		updateUIComponents();
 	}
 
@@ -117,6 +121,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		comp.userDefinedName = id;
 		comp.hasLocalizedString = false;
 		uiData.add(comp);
+		uiData.version++;
 		updateUIComponents();
 	}
 
@@ -125,15 +130,35 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	private void updateUIComponents() {
-		uiComponents = new LinkedList<UserBrickUIComponent>();
-		for (UserBrickUIData d : uiData) {
+		uiComponents = new ArrayList<UserBrickUIComponent>();
+
+		for (int i = 0; i < uiData.size(); i++) {
 			UserBrickUIComponent c = new UserBrickUIComponent();
-			c.data = d;
-			if (c.data.isField) {
+			c.dataIndex = i;
+			if (uiData.get(i).isField) {
 				c.fieldFormula = new Formula(0);
 			}
 			uiComponents.add(c);
 		}
+	}
+
+	/**
+	 * Removes element at <b>from</b> and adds it after element at <b>to</b>
+	 */
+	public void reorderUIData(int from, int to) {
+
+		if (to == -1) {
+			UserBrickUIData d = uiData.remove(from);
+			uiData.add(0, d);
+		} else if (from < to) {
+			UserBrickUIData d = uiData.remove(from);
+			uiData.add(to, d);
+		} else {
+			// from > to
+			UserBrickUIData d = uiData.remove(from);
+			uiData.add(to + 1, d);
+		}
+		uiData.version++;
 	}
 
 	public void appendBrickToScript(Brick brick) {
@@ -142,6 +167,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
+		Log.d("FOREST", "UB get view");
+
 		if (animationState) {
 			return view;
 		}
@@ -176,14 +203,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-
-		boolean needsRefresh = false;
-		for (UserBrickUIComponent c : uiComponents) {
-			if (c.textView == null) {
-				needsRefresh = true;
-			}
-		}
-		if (needsRefresh) {
+		if (lastDataVersion < uiData.version) {
+			updateUIComponents();
 			onLayoutChanged(view);
 		}
 
@@ -192,9 +213,12 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		background.setAlpha(alphaValue);
 
 		for (UserBrickUIComponent c : uiComponents) {
-			c.textView.setTextColor(c.textView.getTextColors().withAlpha(alphaValue));
-			if (c.data.isField) {
-				c.textView.getBackground().setAlpha(alphaValue);
+			if (c != null && c.textView != null) {
+				UserBrickUIData d = uiData.get(c.dataIndex);
+				c.textView.setTextColor(c.textView.getTextColors().withAlpha(alphaValue));
+				if (d.isField) {
+					c.textView.getBackground().setAlpha(alphaValue);
+				}
 			}
 		}
 
@@ -203,6 +227,9 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	public void onLayoutChanged(View currentView) {
+		if (lastDataVersion < uiData.version) {
+			updateUIComponents();
+		}
 
 		boolean prototype = (currentView == prototypeView);
 
@@ -219,7 +246,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 		for (UserBrickUIComponent c : uiComponents) {
 			TextView currentTextView = null;
-			if (c.data.isField) {
+			UserBrickUIData d = uiData.get(c.dataIndex);
+			if (d.isField) {
 				currentTextView = new EditText(context);
 
 				if (prototype) {
@@ -237,7 +265,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 				currentTextView = new TextView(context);
 				currentTextView.setTextAppearance(context, R.style.BrickText_Multiple);
 
-				currentTextView.setText(c.data.getString(context));
+				currentTextView.setText(d.getString(context));
 			}
 
 			// This stuff isn't being included by the style when I use setTextAppearance.
@@ -280,7 +308,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		}
 
 		for (UserBrickUIComponent c : uiComponents) {
-			if (c.data.isField && c.textView.getId() == eventOrigin.getId()) {
+			UserBrickUIData d = uiData.get(c.dataIndex);
+			if (d.isField && c.textView.getId() == eventOrigin.getId()) {
 				FormulaEditorFragment.showFragment(view, this, c.fieldFormula);
 			}
 		}
@@ -292,7 +321,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		Script userScript = getDefinitionBrick().initScript(sprite); // getScript
 		userScript.run(userSequence);
 
-		LinkedList<SequenceAction> returnActionList = new LinkedList<SequenceAction>();
+		ArrayList<SequenceAction> returnActionList = new ArrayList<SequenceAction>();
 		returnActionList.add(userSequence);
 
 		Action action = ExtendedActions.userBrick(sprite, userSequence);

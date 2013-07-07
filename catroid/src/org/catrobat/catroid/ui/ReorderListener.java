@@ -20,25 +20,13 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.bricks;
+package org.catrobat.catroid.ui;
 
-import java.io.Serializable;
+public interface ReorderListener {
 
-import org.catrobat.catroid.formulaeditor.Formula;
-
-import android.widget.TextView;
-
-/**
- * @author forestjohnson
- * 
- */
-public class UserBrickUIComponent implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
-	public int dataIndex;
-
-	public Formula fieldFormula;
-	public transient TextView textView;
-	public transient TextView prototypeView;
+	/**
+	 * Re-orders elements in a list.
+	 * Removes element at <b>from</b> and adds it after element at <b>to</b>
+	 */
+	void reorder(int from, int to);
 }

@@ -33,7 +33,9 @@ public class BrickLayout extends ViewGroup {
 	private int horizontalSpacing = 0;
 	private int verticalSpacing = 0;
 	private int orientation = 0;
-	private boolean debugDraw = false;
+	protected boolean debugDraw = false;
+
+	protected LinkedList<LineData> lines;
 
 	public BrickLayout(Context context) {
 		super(context);
@@ -71,7 +73,7 @@ public class BrickLayout extends ViewGroup {
 		int controlMaxLength = 0;
 		int controlMaxThickness = 0;
 
-		LinkedList<LineData> lines = new LinkedList<LineData>();
+		lines = new LinkedList<LineData>();
 		LineData currentLine = newLine(lines);
 
 		final int count = getChildCount();
@@ -119,7 +121,7 @@ public class BrickLayout extends ViewGroup {
 			int posX = getPaddingLeft() + lineLength - childWidth;
 			int posY = getPaddingTop() + prevLinePosition;
 
-			ElementData ed = new ElementData(child, posX, posY, childHeight);
+			ElementData ed = new ElementData(child, posX, posY, childWidth, childHeight);
 			currentLine.elements.add(ed);
 
 			controlMaxLength = Math.max(controlMaxLength, lineLength);
@@ -142,17 +144,15 @@ public class BrickLayout extends ViewGroup {
 		for (LineData d : lines) {
 			for (ElementData ed : d.elements) {
 				int yAdjust2 = 0;
-				if (ed.childHeight < d.height) {
-					yAdjust2 = Math.round((d.height - ed.childHeight) * 0.5f);
+				if (ed.height < d.height) {
+					yAdjust2 = Math.round((d.height - ed.height) * 0.5f);
 				}
 
+				ed.posY += yAdjust + yAdjust2;
 				LayoutParams lp = (LayoutParams) ed.view.getLayoutParams();
-				lp.setPosition(ed.posX, ed.posY + yAdjust + yAdjust2);
+				lp.setPosition(ed.posX, ed.posY);
 			}
-
-			d.elements = null;
 		}
-		lines = null;
 
 		this.setMeasuredDimension(resolveSize(x, widthMeasureSpec), resolveSize(y, heightMeasureSpec));
 	}
@@ -233,7 +233,7 @@ public class BrickLayout extends ViewGroup {
 		}
 	}
 
-	private void drawDebugInfo(Canvas canvas, View child) {
+	public void drawDebugInfo(Canvas canvas, View child) {
 		if (!debugDraw) {
 			return;
 		}
@@ -285,7 +285,7 @@ public class BrickLayout extends ViewGroup {
 		}
 	}
 
-	private Paint createPaint(int color) {
+	protected Paint createPaint(int color) {
 		Paint paint = new Paint();
 		paint.setAntiAlias(true);
 		paint.setColor(color);
@@ -293,7 +293,7 @@ public class BrickLayout extends ViewGroup {
 		return paint;
 	}
 
-	private class LineData {
+	protected class LineData {
 		public int minHeight;
 		public int height;
 		public LinkedList<ElementData> elements;
@@ -303,16 +303,18 @@ public class BrickLayout extends ViewGroup {
 		}
 	}
 
-	private class ElementData {
+	protected class ElementData {
 		public int posX;
 		public int posY;
-		public int childHeight;
+		public int height;
+		public int width;
 		public View view;
 
-		public ElementData(View view, int posX, int posY, int childHeight) {
+		public ElementData(View view, int posX, int posY, int childWidth, int childHeight) {
 			this.posX = posX;
 			this.posY = posY;
-			this.childHeight = childHeight;
+			this.height = childHeight;
+			this.width = childWidth;
 			this.view = view;
 		}
 	}

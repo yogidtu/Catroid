@@ -173,16 +173,17 @@ public class StandardProjectHandler {
 		Script mole1WhenScript = new WhenScript(mole1Sprite);
 
 		UserBrick firstUserBrick = new UserBrick(mole1Sprite);
-		firstUserBrick.addUIText("This is a UserBrick.");
-		firstUserBrick.addUIField("test");
-		firstUserBrick.addUIText("multiline test!!!");
-		firstUserBrick.addUIField("test2");
-		firstUserBrick.addUIText("multiline test!!!");
+		firstUserBrick.addUIText("test0");
+		firstUserBrick.addUIField("test1");
+		firstUserBrick.addUIText("test2");
 		firstUserBrick.addUIField("test3");
-		firstUserBrick.addUIText("multiline test!!!");
-		firstUserBrick.addUIField("test4");
-		firstUserBrick.addUIText("multiline test!!!");
+		firstUserBrick.addUIText("test4");
 		firstUserBrick.addUIField("test5");
+		firstUserBrick.addUIText("test6");
+		firstUserBrick.addUIField("test7");
+		firstUserBrick.addUIText("test8");
+		firstUserBrick.addUIField("test9");
+		firstUserBrick.appendBrickToScript(new ChangeXByNBrick(mole1Sprite, BrickValues.CHANGE_X_BY));
 
 		UserBrick secondUserBrick = new UserBrick(mole1Sprite);
 		secondUserBrick.addUILocalizedStringByName("brick_change_x_by");
