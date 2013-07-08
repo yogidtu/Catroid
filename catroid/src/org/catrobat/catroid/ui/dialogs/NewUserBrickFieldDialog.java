@@ -25,9 +25,7 @@ package org.catrobat.catroid.ui.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.formulaeditor.UserVariable;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,23 +34,17 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnShowListener;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
 
 public class NewUserBrickFieldDialog extends SherlockDialogFragment {
 
-	public static final String DIALOG_FRAGMENT_TAG = "dialog_new_field_catroid";
-	Spinner spinnerToUpdate;
+	public static final String DIALOG_FRAGMENT_TAG = "dialog_new_text_catroid";
 
 	public NewUserBrickFieldDialog() {
 		super();
@@ -62,20 +54,21 @@ public class NewUserBrickFieldDialog extends SherlockDialogFragment {
 		void onFinishAddFieldDialog(String text);
 	}
 
-	private List<NewUserBrickFieldDialogListener> newVariableDialogListenerList = new ArrayList<NewUserBrickFieldDialog.NewUserBrickFieldDialogListener>();
+	private List<NewUserBrickFieldDialogListener> listenerList = new ArrayList<NewUserBrickFieldDialog.NewUserBrickFieldDialogListener>();
 
 	@Override
 	public void onCancel(DialogInterface dialog) {
 		super.onCancel(dialog);
-		variableDialogListenerListFinishNewVariableDialog(null);
+		finishDialog(null);
 	}
 
 	@Override
 	public Dialog onCreateDialog(Bundle bundle) {
-		final View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_brick_editor_add_text, null);
+		final View dialogView = LayoutInflater.from(getActivity())
+				.inflate(R.layout.dialog_brick_editor_add_field, null);
 
 		final Dialog dialogNewVariable = new AlertDialog.Builder(getActivity()).setView(dialogView)
-				.setTitle(R.string.add_text).setNegativeButton(R.string.cancel_button, new OnClickListener() {
+				.setTitle(R.string.add_field).setNegativeButton(R.string.cancel_button, new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.cancel();
@@ -100,81 +93,33 @@ public class NewUserBrickFieldDialog extends SherlockDialogFragment {
 	}
 
 	public void addNewUserBrickFieldDialogListener(NewUserBrickFieldDialogListener newVariableDialogListener) {
-		newVariableDialogListenerList.add(newVariableDialogListener);
+		listenerList.add(newVariableDialogListener);
 	}
 
-	private void variableDialogListenerListFinishNewVariableDialog(UserVariable newUserVariable) {
-		for (NewUserBrickFieldDialogListener newVariableDialogListener : newVariableDialogListenerList) {
-			newVariableDialogListener.onFinishAddFieldDialog("CHANGEME");
+	private void finishDialog(String text) {
+		for (NewUserBrickFieldDialogListener newVariableDialogListener : listenerList) {
+			newVariableDialogListener.onFinishAddFieldDialog(text);
 		}
 	}
 
 	private void handleOkButton(View dialogView) {
-		EditText variableNameEditText = (EditText) dialogView.findViewById(R.id.dialog_brick_editor_add_text_edit_text);
-		RadioButton localVariable = (RadioButton) dialogView
-				.findViewById(R.id.dialog_formula_editor_variable_name_local_variable_radio_button);
-		RadioButton globalVariable = (RadioButton) dialogView
-				.findViewById(R.id.dialog_formula_editor_variable_name_global_variable_radio_button);
+		EditText variableNameEditText = (EditText) dialogView
+				.findViewById(R.id.dialog_brick_editor_add_field_edit_text);
 
 		String variableName = variableNameEditText.getText().toString();
-		UserVariable newUserVariable = null;
-		if (globalVariable.isChecked()) {
-			if (ProjectManager.getInstance().getCurrentProject().getUserVariables()
-					.getUserVariable(variableName, ProjectManager.getInstance().getCurrentSprite()) != null) {
-
-				Toast.makeText(getActivity(), R.string.formula_editor_existing_variable, Toast.LENGTH_LONG).show();
-
-			} else {
-				newUserVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
-						.addProjectUserVariable(variableName);
-			}
-		} else if (localVariable.isChecked()) {
-			newUserVariable = ProjectManager.getInstance().getCurrentProject().getUserVariables()
-					.addSpriteUserVariable(variableName);
-		}
-		variableDialogListenerListFinishNewVariableDialog(newUserVariable);
+		finishDialog(variableName);
 	}
 
 	private void handleOnShow(final Dialog dialogNewVariable) {
 		final Button positiveButton = ((AlertDialog) dialogNewVariable).getButton(AlertDialog.BUTTON_POSITIVE);
-		positiveButton.setEnabled(false);
 
 		EditText dialogEditText = (EditText) dialogNewVariable
-				.findViewById(R.id.dialog_formula_editor_variable_name_edit_text);
+				.findViewById(R.id.dialog_brick_editor_add_field_edit_text);
 
 		InputMethodManager inputMethodManager = (InputMethodManager) getSherlockActivity().getSystemService(
 				Context.INPUT_METHOD_SERVICE);
 		inputMethodManager.showSoftInput(dialogEditText, InputMethodManager.SHOW_IMPLICIT);
 
-		dialogEditText.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			}
-
-			@Override
-			public void afterTextChanged(Editable editable) {
-
-				String variableName = editable.toString();
-				if (ProjectManager.getInstance().getCurrentProject().getUserVariables()
-						.getUserVariable(variableName, ProjectManager.getInstance().getCurrentSprite()) != null) {
-
-					Toast.makeText(getActivity(), R.string.formula_editor_existing_variable, Toast.LENGTH_SHORT).show();
-
-					positiveButton.setEnabled(false);
-				} else {
-					positiveButton.setEnabled(true);
-				}
-
-				if (editable.length() == 0) {
-					positiveButton.setEnabled(false);
-				}
-			}
-		});
 	}
 
 }

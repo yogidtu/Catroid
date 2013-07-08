@@ -189,18 +189,36 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	@Override
 	public void onFinishAddTextDialog(String text) {
-
+		currentBrick.addUIText(text);
+		updateBrickView();
 	}
 
 	@Override
 	public void onFinishAddFieldDialog(String text) {
-
+		currentBrick.addUIField(text);
+		updateBrickView();
 	}
 
 	@Override
 	public void reorder(int from, int to) {
 		currentBrick.reorderUIData(from, to);
 		updateBrickView();
+	}
+
+	private void deleteButtonClicked(View theView) {
+		DragNDropBrickLayout layout = (DragNDropBrickLayout) brickView.findViewById(R.id.brick_user_flow_layout);
+		int found = -1;
+		for (int i = 0; i < layout.getChildCount(); i++) {
+			if (layout.getChildAt(i) == theView) {
+				found = i;
+			}
+		}
+		if (found > -1) {
+			currentBrick.removeDataAt(found);
+			updateBrickView();
+		} else {
+			Log.d("FOREST", "UserBrickDataEditorFragment.deleteButtonClicked() Unable to find view to remove!! ");
+		}
 	}
 
 	public void updateBrickView() {
@@ -224,6 +242,12 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 			textView.setText(d.getString(context));
 			Button button = (Button) dataView.findViewById(R.id.button);
+			button.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					deleteButtonClicked((View) view.getParent());
+				}
+			});
 
 			layout.addView(dataView);
 		}

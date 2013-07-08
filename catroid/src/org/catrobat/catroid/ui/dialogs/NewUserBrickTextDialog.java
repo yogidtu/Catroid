@@ -39,14 +39,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
 
 public class NewUserBrickTextDialog extends SherlockDialogFragment {
 
 	public static final String DIALOG_FRAGMENT_TAG = "dialog_new_text_catroid";
-	Spinner spinnerToUpdate;
 
 	public NewUserBrickTextDialog() {
 		super();
@@ -56,12 +54,11 @@ public class NewUserBrickTextDialog extends SherlockDialogFragment {
 		void onFinishAddTextDialog(String text);
 	}
 
-	private List<NewUserBrickTextDialogListener> newVariableDialogListenerList = new ArrayList<NewUserBrickTextDialog.NewUserBrickTextDialogListener>();
+	private List<NewUserBrickTextDialogListener> listenerList = new ArrayList<NewUserBrickTextDialog.NewUserBrickTextDialogListener>();
 
 	@Override
 	public void onCancel(DialogInterface dialog) {
 		super.onCancel(dialog);
-		variableDialogListenerListFinishNewVariableDialog(null);
 	}
 
 	@Override
@@ -94,11 +91,11 @@ public class NewUserBrickTextDialog extends SherlockDialogFragment {
 	}
 
 	public void addNewUserBrickTextDialogListener(NewUserBrickTextDialogListener newVariableDialogListener) {
-		newVariableDialogListenerList.add(newVariableDialogListener);
+		listenerList.add(newVariableDialogListener);
 	}
 
-	private void variableDialogListenerListFinishNewVariableDialog(String text) {
-		for (NewUserBrickTextDialogListener newVariableDialogListener : newVariableDialogListenerList) {
+	private void finishDialog(String text) {
+		for (NewUserBrickTextDialogListener newVariableDialogListener : listenerList) {
 			newVariableDialogListener.onFinishAddTextDialog(text);
 		}
 	}
@@ -107,12 +104,11 @@ public class NewUserBrickTextDialog extends SherlockDialogFragment {
 		EditText variableNameEditText = (EditText) dialogView.findViewById(R.id.dialog_brick_editor_add_text_edit_text);
 
 		String variableName = variableNameEditText.getText().toString();
-		variableDialogListenerListFinishNewVariableDialog(variableName);
+		finishDialog(variableName);
 	}
 
 	private void handleOnShow(final Dialog dialogNewVariable) {
 		final Button positiveButton = ((AlertDialog) dialogNewVariable).getButton(AlertDialog.BUTTON_POSITIVE);
-		positiveButton.setEnabled(false);
 
 		EditText dialogEditText = (EditText) dialogNewVariable
 				.findViewById(R.id.dialog_brick_editor_add_text_edit_text);

@@ -102,7 +102,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		comp.localizedStringKey = key;
 		uiData.add(comp);
 		uiData.version++;
-		updateUIComponents();
 	}
 
 	public void addUIText(String text) {
@@ -112,7 +111,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		comp.userDefinedName = text;
 		uiData.add(comp);
 		uiData.version++;
-		updateUIComponents();
 	}
 
 	public void addUIField(String id) {
@@ -122,7 +120,11 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		comp.hasLocalizedString = false;
 		uiData.add(comp);
 		uiData.version++;
-		updateUIComponents();
+	}
+
+	public void removeDataAt(int id) {
+		uiData.remove(id);
+		uiData.version++;
 	}
 
 	public Iterator<UserBrickUIComponent> getUIComponentIterator() {
