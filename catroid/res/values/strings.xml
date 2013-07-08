@@ -548,6 +548,8 @@
     
     <!-- Brick Data Editor Strings -->
     <string name="brick_data_editor_title">Brick Editor</string>
+    <string name="add_text">Add Text</string>
+    <string name="add_field">Add Field</string>
     <!--  -->
     
 

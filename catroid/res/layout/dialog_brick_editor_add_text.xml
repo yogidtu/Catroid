@@ -23,25 +23,14 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:focusable="false"
-    android:gravity="center_vertical"
-    android:orientation="horizontal" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <CheckBox
-        android:id="@+id/brick_user_definition_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/brick_user_definition_layout"
-        style="@style/BrickContainer.Script.Medium"
+    <EditText
+        android:id="@+id/dialog_brick_editor_add_text_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/brick_control_user_2h"
-        android:orientation="horizontal" >
-    </LinearLayout>
+        android:ems="10"
+        android:inputType="text" />
 
 </LinearLayout>

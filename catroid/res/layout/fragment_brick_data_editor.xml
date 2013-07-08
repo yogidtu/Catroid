@@ -34,4 +34,16 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical" />
 
+    <ListView
+        android:id="@+id/button_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/brick_data_editor_brick_space"
+        android:clickable="true"
+        android:entries="@array/data_editor_buttons"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true" >
+
+    </ListView>
+
 </RelativeLayout>

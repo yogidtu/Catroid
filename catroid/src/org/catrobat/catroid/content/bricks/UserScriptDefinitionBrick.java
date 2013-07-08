@@ -97,6 +97,8 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 		Context context = currentView.getContext();
 
 		LinearLayout layout = (LinearLayout) currentView.findViewById(R.id.brick_user_definition_layout);
+		layout.setFocusable(false);
+		layout.setFocusableInTouchMode(false);
 		if (layout.getChildCount() > 0) {
 			layout.removeAllViews();
 		}

@@ -28,8 +28,11 @@ import org.catrobat.catroid.content.bricks.UserBrickUIData;
 import org.catrobat.catroid.ui.DragNDropBrickLayout;
 import org.catrobat.catroid.ui.ReorderListener;
 import org.catrobat.catroid.ui.UserBrickScriptActivity;
+import org.catrobat.catroid.ui.dialogs.NewUserBrickFieldDialog;
+import org.catrobat.catroid.ui.dialogs.NewUserBrickTextDialog;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -39,8 +42,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +53,8 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
-public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener, ReorderListener {
+public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener, ReorderListener,
+		NewUserBrickTextDialog.NewUserBrickTextDialogListener, NewUserBrickFieldDialog.NewUserBrickFieldDialogListener {
 
 	public static final String BRICK_DATA_EDITOR_FRAGMENT_TAG = "brick_data_editor_fragment";
 	private static final String BRICK_BUNDLE_ARGUMENT = "current_brick";
@@ -141,7 +147,54 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 		editorBrickSpace.addView(brickView);
 
+		ListView buttonList = (ListView) fragmentView.findViewById(R.id.button_list);
+
+		buttonList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Resources res = getResources();
+
+				String[] actions = res.getStringArray(R.array.data_editor_buttons);
+
+				String action = actions[position];
+				if (action.equals(res.getString(R.string.add_text))) {
+					addTextDialog();
+				}
+				if (action.equals(res.getString(R.string.add_field))) {
+					addFieldDialog();
+				}
+				if (action.equals(res.getString(R.string.close))) {
+					onUserDismiss();
+				}
+
+			}
+		});
+
 		return fragmentView;
+	}
+
+	public void addTextDialog() {
+		NewUserBrickTextDialog dialog = new NewUserBrickTextDialog();
+		dialog.addNewUserBrickTextDialogListener(this);
+		dialog.show(((SherlockFragmentActivity) getActivity()).getSupportFragmentManager(),
+				NewUserBrickTextDialog.DIALOG_FRAGMENT_TAG);
+	}
+
+	public void addFieldDialog() {
+		NewUserBrickFieldDialog dialog = new NewUserBrickFieldDialog();
+		dialog.addNewUserBrickFieldDialogListener(this);
+		dialog.show(((SherlockFragmentActivity) getActivity()).getSupportFragmentManager(),
+				NewUserBrickFieldDialog.DIALOG_FRAGMENT_TAG);
+	}
+
+	@Override
+	public void onFinishAddTextDialog(String text) {
+
+	}
+
+	@Override
+	public void onFinishAddFieldDialog(String text) {
+
 	}
 
 	@Override
@@ -151,7 +204,6 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	}
 
 	public void updateBrickView() {
-		Log.d("FOREST", "updateBrickView");
 		Context context = brickView.getContext();
 
 		DragNDropBrickLayout layout = (DragNDropBrickLayout) brickView.findViewById(R.id.brick_user_flow_layout);
