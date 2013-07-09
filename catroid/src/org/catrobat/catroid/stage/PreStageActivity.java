@@ -82,20 +82,31 @@ public class PreStageActivity extends Activity {
 			startActivityForResult(checkIntent, REQUEST_TEXT_TO_SPEECH);
 		}
 		if ((requiredResources & Brick.BLUETOOTH_LEGO_NXT) > 0) {
-			BluetoothManager bluetoothManager = new BluetoothManager(this);
+				&& (required_resources & Brick.BLUETOOTH_LEGO_NXT) > 0) {
+			Toast.makeText(PreStageActivity.this, R.string.notification_bluetooth_error_nxt_and_shared_variables_both,
+					Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		} else {
 
-			int bluetoothState = bluetoothManager.activateBluetooth();
-			if (bluetoothState == BluetoothManager.BLUETOOTH_NOT_SUPPORTED) {
+			if ((required_resources & Brick.BLUETOOTH_MULTIPLAYER) > 0) {
+				// TODO: handle bluetooth connection  
+			} else if ((required_resources & Brick.BLUETOOTH_LEGO_NXT) > 0) {
+				BluetoothManager bluetoothManager = new BluetoothManager(this);
 
-				Toast.makeText(PreStageActivity.this, R.string.notification_blueth_err, Toast.LENGTH_LONG).show();
-				resourceFailed();
-			} else if (bluetoothState == BluetoothManager.BLUETOOTH_ALREADY_ON) {
-				if (legoNXT == null) {
-					startBluetoothCommunication(true);
-				} else {
-					resourceInitialized();
+				int bluetoothState = bluetoothManager.activateBluetooth();
+				if (bluetoothState == BluetoothManager.BLUETOOTH_NOT_SUPPORTED) {
+
+					Toast.makeText(PreStageActivity.this, R.string.notification_blueth_err, Toast.LENGTH_LONG).show();
+					resourceFailed();
+				} else if (bluetoothState == BluetoothManager.BLUETOOTH_ALREADY_ON) {
+					if (legoNXT == null) {
+						startBluetoothCommunication(true);
+					} else {
+						resourceInitialized();
+					}
+
 				}
-
 			}
 		}
 		if (requiredResourceCounter == Brick.NO_RESOURCES) {
@@ -172,6 +183,10 @@ public class PreStageActivity extends Activity {
 				.getSpriteList();
 
 		int ressources = Brick.NO_RESOURCES;
+		if (ProjectManager.getInstance().getCurrentProject().getUserVariables().getSharedVariables().size() > 0) {
+			ressources |= Brick.BLUETOOTH_MULTIPLAYER;
+		}
+
 		for (Sprite sprite : spriteList) {
 			ressources |= sprite.getRequiredResources();
 		}
