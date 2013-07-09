@@ -45,6 +45,7 @@ import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 import org.catrobat.catroid.ui.fragment.FormulaEditorVariableListFragment;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
+import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -53,8 +54,7 @@ import android.widget.ListView;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class FormulaEditorUserVariableFragmentTest extends
-		android.test.ActivityInstrumentationTestCase2<MainMenuActivity> {
+public class FormulaEditorUserVariableFragmentTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
 
 	private static final double SET_USERVARIABLE_TO_BRICK_VALUE = 10d;
 	private static final String USER_VARIABLE_NAME_UNDERLINE_PREFIX = "_userVar1";

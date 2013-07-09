@@ -36,12 +36,13 @@ import org.catrobat.catroid.content.bricks.GlideToBrick;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
+import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
 import android.widget.EditText;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class FormulaEditorKeyboardTest extends android.test.ActivityInstrumentationTestCase2<MainMenuActivity> {
+public class FormulaEditorKeyboardTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
 
 	private Project project;
 	private Solo solo;

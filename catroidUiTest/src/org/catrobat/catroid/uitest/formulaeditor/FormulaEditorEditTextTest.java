@@ -47,6 +47,7 @@ import org.catrobat.catroid.uitest.util.SimulatedSensorManager;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.graphics.Rect;
+import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
 import android.text.style.BackgroundColorSpan;
 import android.util.Log;
@@ -56,7 +57,7 @@ import android.widget.TextView;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentationTestCase2<MainMenuActivity> {
+public class FormulaEditorEditTextTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
 
 	private Project project;
 	private Solo solo;

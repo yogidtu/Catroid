@@ -52,7 +52,6 @@ public class ProjectScreenshotLoader {
 		}
 	}
 
-	private static final int POOL_SIZE = 5;
 	private static final int CACHE_MAX_SIZE = 25;
 	private static final float LOAD_FACTOR = .75f;
 	private static final int INITIAL_VALUE = 13; // (N / LOAD_FACTOR) + 1
@@ -73,7 +72,7 @@ public class ProjectScreenshotLoader {
 	});
 
 	public ProjectScreenshotLoader(Context context) {
-		executorService = Executors.newFixedThreadPool(POOL_SIZE);
+		executorService = Executors.newCachedThreadPool();
 		this.context = context;
 	}
 
