@@ -69,6 +69,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/formula_editor_variable_dialog_for_this_sprite_only"
                 android:textColor="@color/spritelist_details_text_color" />
+
+            <RadioButton
+                android:id="@+id/dialog_formula_editor_variable_name_global_broadcast_variable_radio_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/formula_editor_variable_dialog_for_all_sprites_broadcast"
+                android:textColor="@color/spritelist_details_text_color" />
         </RadioGroup>
     </LinearLayout>
 
