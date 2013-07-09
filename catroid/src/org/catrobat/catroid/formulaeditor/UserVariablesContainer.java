@@ -162,7 +162,7 @@ public class UserVariablesContainer implements Serializable {
 		}
 	}
 
-	public List<UserVariableShared> getSharedVariables() {
+	public List<UserVariable> getSharedVariables() {
 		return sharedVariables;
 	}
 }
