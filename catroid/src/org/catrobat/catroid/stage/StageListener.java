@@ -249,7 +249,7 @@ public class StageListener implements ApplicationListener {
 		finished = true;
 		SoundManager.getInstance().clear();
 		if (thumbnail != null) {
-			prepareAutomaticScreenshotAndNoMeadiaFile();
+			prepareAutomaticScreenshotAndNoMediaFile();
 			saveScreenshot(thumbnail, SCREENSHOT_AUTOMATIC_FILE_NAME);
 		}
 
@@ -540,7 +540,7 @@ public class StageListener implements ApplicationListener {
 		return this.makeAutomaticScreenshot;
 	}
 
-	private void prepareAutomaticScreenshotAndNoMeadiaFile() {
+	private void prepareAutomaticScreenshotAndNoMediaFile() {
 		File noMediaFile = new File(pathForScreenshot + Constants.NO_MEDIA_FILE);
 		File screenshotAutomaticFile = new File(pathForScreenshot + SCREENSHOT_AUTOMATIC_FILE_NAME);
 		try {

@@ -180,7 +180,7 @@ public class BroadcastBrick extends BrickBaseType implements BroadcastMessage {
 		spinner.setSelection(position, true);
 	}
 
-	// TODO: BroadcastBrick, BroadcastReceiverBrick and BroadcastWaitBrick contain this identical method.
+	// TODO: BroadcastBrick, BroadcastReceiverBrick and BroadcastWaitBrick contain this identical method and Constructor of the Dialog have to be public!
 	private void showNewMessageDialog(final Spinner spinner) {
 		final Context context = spinner.getContext();
 		BrickTextDialog editDialog = new BrickTextDialog() {
