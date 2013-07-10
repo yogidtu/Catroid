@@ -60,6 +60,8 @@ public class PreStageActivity extends Activity {
 	private static final int REQUEST_CONNECT_DEVICE = 1000;
 	public static final int REQUEST_RESOURCES_INIT = 101;
 	public static final int REQUEST_TEXT_TO_SPEECH = 10;
+	private String bluetoothDeviceName;
+	private String bluetoothDeviceWaitingText;
 
 	private int requiredResourceCounter;
 	private static LegoNXT legoNXT;
@@ -94,26 +96,30 @@ public class PreStageActivity extends Activity {
 				BluetoothManager bluetoothManager = new BluetoothManager(this);
 				int bluetoothState = bluetoothManager.activateBluetooth();
 
+				bluetoothDeviceWaitingText = getResources().getString(R.string.connecting_please_wait_mulitplayer);
+				bluetoothDeviceName = getResources().getString(R.string.select_device_multiplayer);
 				if (bluetoothState == BluetoothManager.BLUETOOTH_NOT_SUPPORTED) {
 
 					Toast.makeText(PreStageActivity.this, R.string.notification_blueth_err, Toast.LENGTH_LONG).show();
 					resourceFailed();
 				} else if (bluetoothState == BluetoothManager.BLUETOOTH_ALREADY_ON) {
 					//start to create bluetoothconnection 
-					startBluetoothCommunication(true);
+					startBluetoothCommunication(false, bluetoothDeviceName, bluetoothDeviceWaitingText);
 				}
 
 			} else if ((required_resources & Brick.BLUETOOTH_LEGO_NXT) > 0) {
 				BluetoothManager bluetoothManager = new BluetoothManager(this);
 
 				int bluetoothState = bluetoothManager.activateBluetooth();
+				bluetoothDeviceWaitingText = getResources().getString(R.string.connecting_please_wait);
+				bluetoothDeviceName = getResources().getString(R.string.select_device);
 				if (bluetoothState == BluetoothManager.BLUETOOTH_NOT_SUPPORTED) {
 
 					Toast.makeText(PreStageActivity.this, R.string.notification_blueth_err, Toast.LENGTH_LONG).show();
 					resourceFailed();
 				} else if (bluetoothState == BluetoothManager.BLUETOOTH_ALREADY_ON) {
 					if (legoNXT == null) {
-						startBluetoothCommunication(true);
+						startBluetoothCommunication(true, bluetoothDeviceName, bluetoothDeviceWaitingText);
 					} else {
 						resourceInitialized();
 					}
@@ -182,11 +188,12 @@ public class PreStageActivity extends Activity {
 		finish();
 	}
 
-	private void startBluetoothCommunication(boolean autoConnect) {
-		connectingProgressDialog = ProgressDialog.show(this, "",
-				getResources().getString(R.string.connecting_please_wait), true);
+	private void startBluetoothCommunication(boolean autoConnect, String title, String waiting_text) {
+		Log.d("PreStageActivity", "startBluetoothCommunication with custom Title");
+		connectingProgressDialog = ProgressDialog.show(this, "", waiting_text, true);
 		Intent serverIntent = new Intent(this, DeviceListActivity.class);
 		serverIntent.putExtra(DeviceListActivity.AUTO_CONNECT, autoConnect);
+		serverIntent.putExtra(DeviceListActivity.OTHER_DEVICE_TITLE, title);
 		this.startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
 	}
 
@@ -213,7 +220,7 @@ public class PreStageActivity extends Activity {
 			case REQUEST_ENABLE_BLUETOOTH:
 				switch (resultCode) {
 					case Activity.RESULT_OK:
-						startBluetoothCommunication(true);
+						startBluetoothCommunication(true, bluetoothDeviceName, bluetoothDeviceWaitingText);
 						break;
 					case Activity.RESULT_CANCELED:
 						Toast.makeText(PreStageActivity.this, R.string.notification_blueth_err, Toast.LENGTH_LONG)
@@ -325,7 +332,7 @@ public class PreStageActivity extends Activity {
 					legoNXT.destroyCommunicator();
 					legoNXT = null;
 					if (autoConnect) {
-						startBluetoothCommunication(false);
+						startBluetoothCommunication(false, bluetoothDeviceName, bluetoothDeviceWaitingText);
 					} else {
 						resourceFailed();
 					}

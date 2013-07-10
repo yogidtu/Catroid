@@ -42,6 +42,8 @@
  */
 package org.catrobat.catroid.bluetooth;
 
+import org.catrobat.catroid.R;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -60,7 +62,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.catrobat.catroid.R;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -70,12 +71,14 @@ public class DeviceListActivity extends Activity {
 	public static final String AUTO_CONNECT = "auto_connect";
 	public static final String DEVICE_NAME_AND_ADDRESS = "device_infos";
 	public static final String EXTRA_DEVICE_ADDRESS = "device_address";
+	public static final String OTHER_DEVICE_TITLE = "other_device_title";
 
 	private BluetoothAdapter btAdapter;
 	private ArrayAdapter<String> pairedDevicesArrayAdapter;
 	private ArrayAdapter<String> newDevicesArrayAdapter;
 	private boolean autoConnect = true;
 	private static ArrayList<String> autoConnectIDs = new ArrayList<String>();
+	private String deviceTitle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +95,8 @@ public class DeviceListActivity extends Activity {
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.device_list);
-		setTitle(R.string.select_device);
+		deviceTitle = this.getIntent().getExtras().getString(OTHER_DEVICE_TITLE);
+		setTitle(deviceTitle);
 
 		setResult(Activity.RESULT_CANCELED);
 
@@ -232,7 +236,7 @@ public class DeviceListActivity extends Activity {
 				}
 			} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
 				setProgressBarIndeterminateVisibility(false);
-				setTitle(R.string.select_device);
+				setTitle(deviceTitle);
 				if (newDevicesArrayAdapter.getCount() == 0) {
 					String noDevices = getResources().getText(R.string.none_found).toString();
 					newDevicesArrayAdapter.add(noDevices);
