@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.utils;
 
+<<<<<<< HEAD
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

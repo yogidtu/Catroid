@@ -30,6 +30,7 @@ import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
+import org.catrobat.catroid.utils.UtilSpeechRecognition;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -57,6 +58,7 @@ public class StageActivity extends AndroidApplication {
 	private SparseArray<RecognizerCallback> askerList = new SparseArray<RecognizerCallback>();
 
 	public static final int STAGE_ACTIVITY_FINISH = 7777;
+	private static final int SPEECH_REQUEST_CODE = 3120;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class StageActivity extends AndroidApplication {
 		stageListener = new StageListener();
 		stageDialog = new StageDialog(this, stageListener, R.style.stage_dialog);
 		calculateScreenSizes();
+		UtilSpeechRecognition.getInstance().setStage(this);
 		initialize(stageListener, true);
 	}
 
@@ -148,7 +151,6 @@ public class StageActivity extends AndroidApplication {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
 		if ((requestCode & SPEECH_RECOGNITION_FLAG) > 0) {
 			ArrayList<String> matches = null;
 			Bundle resultBundle = new Bundle();
