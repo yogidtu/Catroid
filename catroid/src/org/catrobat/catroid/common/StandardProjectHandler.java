@@ -439,7 +439,7 @@ public class StandardProjectHandler {
 		}
 
 		// Middle bouncer
-		Script middleBouncerStartScript = createElement(middleBouncer, physicWorld, "lego", R.drawable.cat_bouncer,
+		Script middleBouncerStartScript = createElement(middleBouncer, physicWorld, "lego", R.drawable.lego,
 				new Vector2(0.0f, 75.0f + doodlydoo), Float.NaN);
 		setPhysicProperties(middleBouncer, physicWorld, middleBouncerStartScript, PhysicObject.Type.FIXED, 40.0f, 80.0f);
 		middleBouncerStartScript.addBrick(new TurnLeftSpeedBrick(middleBouncer, 145));
@@ -462,21 +462,6 @@ public class StandardProjectHandler {
 					106.0f, -1.0f);
 		}
 
-		Sprite leftWall = new PhysicSprite("Left wall");
-		Sprite rightWall = new PhysicSprite("Right wall");
-		Sprite topWall = new PhysicSprite("Top wall");
-
-		Script leftWallStartScript = createElement(leftWall, physicWorld, "wall", R.drawable.wall_bottom_left,
-				new Vector2(-260, 110), 0);
-		setPhysicProperties(leftWall, physicWorld, leftWallStartScript, PhysicObject.Type.FIXED, -1, -1);
-		Script rightWallStartScript = createElement(rightWall, physicWorld, "wall", R.drawable.wall_bottom_rigth,
-				new Vector2(260, 110), 0);
-		setPhysicProperties(rightWall, physicWorld, rightWallStartScript, PhysicObject.Type.FIXED, -1, -1);
-
-		Script topWallStartScript = createElement(topWall, physicWorld, "wall", R.drawable.wall_bottom, new Vector2(0,
-				415), 90);
-		setPhysicProperties(topWall, physicWorld, topWallStartScript, PhysicObject.Type.FIXED, -1, -1);
-
 		defaultProject.addSprite(leftButton);
 		defaultProject.addSprite(rightButton);
 		defaultProject.addSprite(ball);
@@ -491,9 +476,6 @@ public class StandardProjectHandler {
 		defaultProject.addSprite(leftBottomWall);
 		defaultProject.addSprite(rightVerticalWall);
 		defaultProject.addSprite(rightBottomWall);
-		defaultProject.addSprite(topWall);
-		defaultProject.addSprite(leftWall);
-		defaultProject.addSprite(rightWall);
 
 		for (Sprite sprite : upperBouncers) {
 			defaultProject.addSprite(sprite);
@@ -595,9 +577,7 @@ public class StandardProjectHandler {
 		broadcastScript.addBrick(new WaitBrick(sprite, waitInMillis));
 
 		broadcastScript.addBrick(new TurnLeftSpeedBrick(sprite, 0));
-		broadcastScript.addBrick(new PointInDirectionBrick(sprite, Direction.RIGHT));
-		broadcastScript.addBrick(new WaitBrick(sprite, 25));
-		broadcastScript.addBrick(new PointInDirectionBrick(sprite, Direction.RIGHT));
+		broadcastScript.addBrick(new PointInDirectionBrick(sprite, Direction.UP));
 
 		sprite.addScript(broadcastScript);
 	}
