@@ -34,7 +34,7 @@ public class SetSizeToAction extends TemporalAction implements PhysicActionExten
 
 	@Override
 	protected void update(float delta) {
-		sprite.look.setSize(size.interpretFloat(sprite) / 100f);
+		sprite.look.setSizeInUserInterfaceDimensionUnit(size.interpretFloat(sprite));
 		physicUpdateHook();
 	}
 

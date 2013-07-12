@@ -103,7 +103,8 @@ public class PhysicWorld {
 	}
 
 	public void changeLook(PhysicObject physicObject, Look look) {
-		physicObject.setShape(physicShapeBuilder.getShape(look.getLookData(), look.getSize()));
+		physicObject.setShape(physicShapeBuilder.getShape(look.getLookData(),
+				look.getSizeInUserInterfaceDimensionUnit()));
 	}
 
 	public PhysicObject getPhysicObject(Sprite sprite) {

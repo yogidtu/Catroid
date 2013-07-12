@@ -595,9 +595,9 @@ public class StandardProjectHandler {
 		broadcastScript.addBrick(new WaitBrick(sprite, waitInMillis));
 
 		broadcastScript.addBrick(new TurnLeftSpeedBrick(sprite, 0));
-		broadcastScript.addBrick(new PointInDirectionBrick(sprite, Direction.DIRECTION_RIGHT));
+		broadcastScript.addBrick(new PointInDirectionBrick(sprite, Direction.RIGHT));
 		broadcastScript.addBrick(new WaitBrick(sprite, 25));
-		broadcastScript.addBrick(new PointInDirectionBrick(sprite, Direction.DIRECTION_RIGHT));
+		broadcastScript.addBrick(new PointInDirectionBrick(sprite, Direction.RIGHT));
 
 		sprite.addScript(broadcastScript);
 	}
