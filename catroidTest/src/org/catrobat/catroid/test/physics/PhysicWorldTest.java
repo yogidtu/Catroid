@@ -151,13 +151,13 @@ public class PhysicWorldTest extends AndroidTestCase {
 		physicObject.setRotationSpeed(rotationSpeed);
 
 		physicWorld.step(1.0f);
-		assertEquals("Wrong x position", velocity.x, physicObject.getXPosition(), 1e-8);
-		assertEquals("Wrong y position", velocity.y, physicObject.getYPosition(), 1e-8);
-		assertEquals("Wrong angle", rotationSpeed, physicObject.getAngle(), 1e-8);
+		assertEquals("Wrong x position", velocity.x, physicObject.getX(), 1e-8);
+		assertEquals("Wrong y position", velocity.y, physicObject.getY(), 1e-8);
+		assertEquals("Wrong angle", rotationSpeed, physicObject.getDirection(), 1e-8);
 
 		physicWorld.step(1.0f);
-		assertEquals("Wrong x position", 2 * velocity.x, physicObject.getXPosition(), 1e-8);
-		assertEquals("Wrong y position", 2 * velocity.y, physicObject.getYPosition(), 1e-8);
-		assertEquals("Wrong angle", 2 * rotationSpeed, physicObject.getAngle(), 1e-8);
+		assertEquals("Wrong x position", 2 * velocity.x, physicObject.getX(), 1e-8);
+		assertEquals("Wrong y position", 2 * velocity.y, physicObject.getY(), 1e-8);
+		assertEquals("Wrong angle", 2 * rotationSpeed, physicObject.getDirection(), 1e-8);
 	}
 }

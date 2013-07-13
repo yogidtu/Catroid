@@ -41,7 +41,7 @@ public class PlaceAtPhysicsAction extends TemporalAction {
 
 	@Override
 	protected void update(float delta) {
-		physicObject.setXYPosition(x.interpretFloat(sprite), y.interpretFloat(sprite));
+		physicObject.setPosition(x.interpretFloat(sprite), y.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {

@@ -36,7 +36,8 @@ public class TurnRightPhysicsAction extends TemporalAction {
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setAngle((sprite.look.getRotation() % 360) - degrees.interpretFloat(sprite));
+		physicObject.setDirection(sprite.look.getDirectionInUserInterfaceDimensionUnit()
+				+ degrees.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {

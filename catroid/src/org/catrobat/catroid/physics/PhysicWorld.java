@@ -83,9 +83,9 @@ public class PhysicWorld {
 			physicObject.setIfOnEdgeBounce(false);
 
 			look = entry.getKey().look;
-			look.setXInUserInterfaceDimensionUnit(physicObject.getXPosition());
-			look.setYInUserInterfaceDimensionUnit(physicObject.getYPosition());
-			look.setRotation(physicObject.getAngle());
+			look.setXInUserInterfaceDimensionUnit(physicObject.getX());
+			look.setYInUserInterfaceDimensionUnit(physicObject.getY());
+			look.setDirectionInUserInterfaceDimensionUnit(physicObject.getDirection());
 		}
 	}
 

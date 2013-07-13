@@ -167,8 +167,7 @@ public class ActionPhysicsFactory extends ActionFactory {
 		action.setSprite(sprite);
 		action.setX(x);
 		//		action.setPhysicObject(getPhysicObject(sprite));
-		action.setPhysicObject(ProjectManager.getInstance().getCurrentProject().getPhysicWorld()
-				.getPhysicObject(sprite));
+		action.setPhysicObject(getPhysicObject(sprite));
 		return action;
 	}
 

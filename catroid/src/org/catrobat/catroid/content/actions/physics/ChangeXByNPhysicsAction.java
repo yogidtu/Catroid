@@ -47,7 +47,7 @@ public class ChangeXByNPhysicsAction extends TemporalAction {
 			xPosition += xMovementValue;
 		}
 
-		physicObject.setXPosition(xPosition);
+		physicObject.setX(xPosition);
 	}
 
 	public void setSprite(Sprite sprite) {

@@ -36,7 +36,7 @@ public class PointInDirectionPhysicsAction extends TemporalAction {
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setAngle(degrees.interpretFloat(sprite));
+		physicObject.setDirection(degrees.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {

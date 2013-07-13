@@ -44,7 +44,7 @@ public class MoveNStepsPhysicsAction extends TemporalAction {
 		int newYPosition = (int) Math.round(sprite.look.getYInUserInterfaceDimensionUnit() + stepsValue
 				* Math.sin(radians));
 
-		physicObject.setXYPosition(newXPosition, newYPosition);
+		physicObject.setPosition(newXPosition, newYPosition);
 	}
 
 	public void setSprite(Sprite sprite) {

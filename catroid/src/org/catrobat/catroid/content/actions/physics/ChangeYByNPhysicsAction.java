@@ -47,7 +47,7 @@ public class ChangeYByNPhysicsAction extends TemporalAction {
 			yPosition += yMovementValue;
 		}
 
-		physicObject.setYPosition(yPosition);
+		physicObject.setY(yPosition);
 	}
 
 	public void setSprite(Sprite sprite) {

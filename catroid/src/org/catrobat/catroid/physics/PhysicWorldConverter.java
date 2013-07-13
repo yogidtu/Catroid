@@ -22,16 +22,24 @@
  */
 package org.catrobat.catroid.physics;
 
+import org.catrobat.catroid.content.Look;
+
 import com.badlogic.gdx.math.Vector2;
 
 public final class PhysicWorldConverter {
 
 	public static float angleBox2dToCat(float angle) {
-		return (float) Math.toDegrees(angle);
+		float direction = (float) (Math.toDegrees(angle) + Look.DEGREE_UI_OFFSET) % 360;
+		if (direction < 0) {
+			direction += 360f;
+		}
+		direction = 180f - direction;
+
+		return direction;
 	}
 
 	public static float angleCatToBox2d(float angle) {
-		return (float) Math.toRadians(angle);
+		return (float) Math.toRadians((-angle + Look.DEGREE_UI_OFFSET) % 360);
 	}
 
 	public static float lengthCatToBox2d(float length) {

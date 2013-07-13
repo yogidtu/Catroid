@@ -36,7 +36,7 @@ public class SetXPhysicsAction extends TemporalAction {
 
 	@Override
 	protected void update(float delta) {
-		physicObject.setXPosition(x.interpretFloat(sprite));
+		physicObject.setX(x.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {

@@ -81,7 +81,7 @@ public class PhysicCostumeTest extends AndroidTestCase {
 		Vector2 position = new Vector2(1.2f, 3.4f);
 		float rotation = 3.14f;
 
-		physicCostume.setXYPosition(position.x, position.y);
+		physicCostume.setPosition(position.x, position.y);
 		physicCostume.setRotation(rotation);
 
 		assertNotSame("Wrong position", position, physicCostume.getCostumePosition());
@@ -99,24 +99,24 @@ public class PhysicCostumeTest extends AndroidTestCase {
 		PhysicLook physicCostume = new PhysicLook(null, null, physicObject);
 
 		float x = 1.2f;
-		physicCostume.setXPosition(x);
-		assertEquals("Wrong x position", x, physicObject.getXPosition());
+		physicCostume.setX(x);
+		assertEquals("Wrong x position", x, physicObject.getX());
 
 		float y = -3.4f;
-		physicCostume.setYPosition(y);
-		assertEquals("Wrong y position", y, physicObject.getYPosition());
+		physicCostume.setY(y);
+		assertEquals("Wrong y position", y, physicObject.getY());
 
 		x = 5.6f;
 		y = 7.8f;
-		physicCostume.setXYPosition(x, y);
+		physicCostume.setPosition(x, y);
 		assertEquals("Wrong position", new Vector2(x, y), physicObject.getPosition());
 
 		float rotation = 9.0f;
 		physicCostume.setRotation(rotation);
-		assertEquals("Wrong physic object angle", rotation, physicObject.getAngle());
+		assertEquals("Wrong physic object angle", rotation, physicObject.getDirection());
 
-		assertEquals("X position has changed", x, physicCostume.getXPosition());
-		assertEquals("Y position has changed", y, physicCostume.getYPosition());
+		assertEquals("X position has changed", x, physicCostume.getX());
+		assertEquals("Y position has changed", y, physicCostume.getY());
 		assertEquals("Wrong rotation", rotation, physicCostume.getRotation());
 	}
 
@@ -146,8 +146,8 @@ public class PhysicCostumeTest extends AndroidTestCase {
 		}
 
 		public Vector2 getCostumePosition() {
-			float x = super.getXPosition();
-			float y = super.getYPosition();
+			float x = super.getX();
+			float y = super.getY();
 
 			return new Vector2(x, y);
 		}

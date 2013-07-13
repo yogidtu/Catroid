@@ -149,50 +149,50 @@ public class PhysicObject {
 		}
 	}
 
-	public float getAngle() {
+	public float getDirection() {
 		return PhysicWorldConverter.angleBox2dToCat(body.getAngle());
 	}
 
-	public void setAngle(float angle) {
-		body.setTransform(body.getPosition(), PhysicWorldConverter.angleCatToBox2d(angle));
+	public void setDirection(float degrees) {
+		body.setTransform(body.getPosition(), PhysicWorldConverter.angleCatToBox2d(degrees));
+	}
+
+	public float getX() {
+		return PhysicWorldConverter.lengthBox2dToCat(body.getPosition().x);
+	}
+
+	public float getY() {
+		return PhysicWorldConverter.lengthBox2dToCat(body.getPosition().y);
 	}
 
 	public Vector2 getPosition() {
 		return PhysicWorldConverter.vecBox2dToCat(body.getPosition());
 	}
 
-	public float getXPosition() {
-		return PhysicWorldConverter.lengthBox2dToCat(body.getPosition().x);
-	}
-
-	public float getYPosition() {
-		return PhysicWorldConverter.lengthBox2dToCat(body.getPosition().y);
-	}
-
-	public void setXPosition(float x) {
+	public void setX(float x) {
 		body.setTransform(PhysicWorldConverter.lengthCatToBox2d(x), body.getPosition().y, body.getAngle());
 	}
 
-	public void setYPosition(float y) {
+	public void setY(float y) {
 		body.setTransform(body.getPosition().x, PhysicWorldConverter.lengthCatToBox2d(y), body.getAngle());
 	}
 
-	public void setXYPosition(float x, float y) {
+	public void setPosition(float x, float y) {
 		x = PhysicWorldConverter.lengthCatToBox2d(x);
 		y = PhysicWorldConverter.lengthCatToBox2d(y);
 		body.setTransform(x, y, body.getAngle());
 	}
 
-	public void setXYPosition(Vector2 position) {
-		setXYPosition(position.x, position.y);
+	public void setPosition(Vector2 position) {
+		setPosition(position.x, position.y);
 	}
 
 	public float getRotationSpeed() {
-		return PhysicWorldConverter.angleBox2dToCat(body.getAngularVelocity());
+		return (float) Math.toDegrees(body.getAngularVelocity());
 	}
 
 	public void setRotationSpeed(float degreesPerSecond) {
-		body.setAngularVelocity(PhysicWorldConverter.angleCatToBox2d(degreesPerSecond));
+		body.setAngularVelocity((float) Math.toRadians(degreesPerSecond));
 	}
 
 	public Vector2 getVelocity() {
