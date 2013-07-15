@@ -37,7 +37,7 @@ import org.catrobat.catroid.content.actions.physics.SetFrictionAction;
 import org.catrobat.catroid.content.actions.physics.SetGravityAction;
 import org.catrobat.catroid.content.actions.physics.SetLookPhysicsAction;
 import org.catrobat.catroid.content.actions.physics.SetMassAction;
-import org.catrobat.catroid.content.actions.physics.SetPhysicObjectTypeAction;
+import org.catrobat.catroid.content.actions.physics.SetPhysicsObjectTypeAction;
 import org.catrobat.catroid.content.actions.physics.SetSizeToPhysicsAction;
 import org.catrobat.catroid.content.actions.physics.SetVelocityAction;
 import org.catrobat.catroid.content.actions.physics.SetXPhysicsAction;
@@ -47,20 +47,20 @@ import org.catrobat.catroid.content.actions.physics.TurnLeftSpeedAction;
 import org.catrobat.catroid.content.actions.physics.TurnRightPhysicsAction;
 import org.catrobat.catroid.content.actions.physics.TurnRightSpeedAction;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicObject.Type;
-import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.PhysicsObject;
+import org.catrobat.catroid.physics.PhysicsObject.Type;
+import org.catrobat.catroid.physics.PhysicsWorld;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 public class ActionPhysicsFactory extends ActionFactory {
 
-	private PhysicObject getPhysicObject(Sprite sprite) {
+	private PhysicsObject getPhysicObject(Sprite sprite) {
 		return getPhysicWorld().getPhysicObject(sprite);
 	}
 
-	private PhysicWorld getPhysicWorld() {
+	private PhysicsWorld getPhysicWorld() {
 		return ProjectManager.getInstance().getCurrentProject().getPhysicWorld();
 	}
 
@@ -167,8 +167,7 @@ public class ActionPhysicsFactory extends ActionFactory {
 		action.setSprite(sprite);
 		action.setX(x);
 		//		action.setPhysicObject(getPhysicObject(sprite));
-		action.setPhysicObject(ProjectManager.getInstance().getCurrentProject().getPhysicWorld()
-				.getPhysicObject(sprite));
+		action.setPhysicObject(getPhysicObject(sprite));
 		return action;
 	}
 
@@ -237,7 +236,7 @@ public class ActionPhysicsFactory extends ActionFactory {
 
 	@Override
 	public Action createSetPhysicObjectTypeAction(Sprite sprite, Type type) {
-		SetPhysicObjectTypeAction action = Actions.action(SetPhysicObjectTypeAction.class);
+		SetPhysicsObjectTypeAction action = Actions.action(SetPhysicsObjectTypeAction.class);
 		action.setPhysicObject(getPhysicObject(sprite));
 		action.setType(type);
 		return action;

@@ -24,5 +24,5 @@ package org.catrobat.catroid.content.actions;
 
 public interface PhysicActionExtension {
 
-	public void physicUpdateHook();
+	public void physicsUpdateHook();
 }

@@ -31,7 +31,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.physics.SetMassBrick;
-import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicsObject;
 import org.catrobat.catroid.ui.ScriptTabActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.ui.fragment.ScriptFragment;
@@ -87,7 +87,7 @@ public class SetMassTest extends ActivityInstrumentationTestCase2<ScriptTabActiv
 	public void testSetInvalidMassValues() {
 		this.checkSetup();
 
-		float masses[] = { -1.0f, 0.0f, PhysicObject.MIN_MASS / 10.0f };
+		float masses[] = { -1.0f, 0.0f, PhysicsObject.MIN_MASS / 10.0f };
 
 		for (float mass : masses) {
 			solo.clickOnEditText(0);

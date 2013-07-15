@@ -151,7 +151,7 @@ public class SetBounceFactorBrick extends BrickBaseType implements OnClickListen
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		//		sequence.addAction(ExtendedActions.setBounceFactor(sprite, physicObject, bounceFactor));
+		//		sequence.addAction(ExtendedActions.setBounceFactor(sprite, physicsObject, bounceFactor));
 		sequence.addAction(sprite.getActionFactory().createSetBounceFactorAction(sprite, bounceFactor));
 		return null;
 	}

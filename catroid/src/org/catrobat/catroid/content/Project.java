@@ -24,19 +24,15 @@ package org.catrobat.catroid.content;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.MessageContainer;
-import org.catrobat.catroid.common.Values;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.BroadcastBrick;
-import org.catrobat.catroid.content.bricks.BroadcastReceiverBrick;
-import org.catrobat.catroid.content.bricks.BroadcastWaitBrick;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
-import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.PhysicsWorld;
 import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
@@ -56,7 +52,7 @@ public class Project implements Serializable {
 	@XStreamAlias("variables")
 	private UserVariablesContainer userVariables = null;
 
-	private transient PhysicWorld physicWorld;
+	private transient PhysicsWorld physicsWorld;
 
 	public Project(Context context, String name) {
 		xmlHeader.setProgramName(name);
@@ -68,10 +64,8 @@ public class Project implements Serializable {
 
 		ifLandscapeSwitchWidthAndHeight();
 		// XXX: Physic
-		//		virtualScreenWidth = Values.SCREEN_WIDTH;
-		//		virtualScreenHeight = Values.SCREEN_HEIGHT;
-		xmlHeader.virtualScreenWidth = Values.SCREEN_WIDTH;
-		xmlHeader.virtualScreenHeight = Values.SCREEN_HEIGHT;
+		xmlHeader.virtualScreenWidth = ScreenValues.SCREEN_WIDTH;
+		xmlHeader.virtualScreenHeight = ScreenValues.SCREEN_HEIGHT;
 		setDeviceData(context);
 
 		MessageContainer.clear();
@@ -82,7 +76,7 @@ public class Project implements Serializable {
 			return;
 		}
 
-		physicWorld = new PhysicWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight);
+		physicsWorld = new PhysicsWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight);
 		xmlHeader.setApplicationName(context.getString(R.string.app_name));
 		Sprite background = new Sprite(context.getString(R.string.background));
 		background.look.setZIndex(0);
@@ -90,10 +84,10 @@ public class Project implements Serializable {
 	}
 
 	private void ifLandscapeSwitchWidthAndHeight() {
-		if (Values.SCREEN_WIDTH > Values.SCREEN_HEIGHT) {
-			int tmp = Values.SCREEN_HEIGHT;
-			Values.SCREEN_HEIGHT = Values.SCREEN_WIDTH;
-			Values.SCREEN_WIDTH = tmp;
+		if (ScreenValues.SCREEN_WIDTH > ScreenValues.SCREEN_HEIGHT) {
+			int tmp = ScreenValues.SCREEN_HEIGHT;
+			ScreenValues.SCREEN_HEIGHT = ScreenValues.SCREEN_WIDTH;
+			ScreenValues.SCREEN_WIDTH = tmp;
 		}
 
 	}
@@ -153,14 +147,6 @@ public class Project implements Serializable {
 		xmlHeader.setCatrobatLanguageVersion(catrobatLanguageVersion);
 	}
 
-	public boolean isManualScreenshot() {
-		return xmlHeader.isProgramScreenshotManuallyTaken();
-	}
-
-	public void setManualScreenshot(boolean manualScreenshot) {
-		xmlHeader.setProgramScreenshotManuallyTaken(manualScreenshot);
-	}
-
 	public void setDeviceData(Context context) {
 		// TODO add other header values
 		xmlHeader.setDeviceName(Build.MODEL);
@@ -177,53 +163,45 @@ public class Project implements Serializable {
 
 	// default constructor for XMLParser
 	public Project() {
-		physicWorld = new PhysicWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight);
+		physicsWorld = new PhysicsWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight);
 	}
 
 	public UserVariablesContainer getUserVariables() {
 		return userVariables;
 	}
 
-	public PhysicWorld getPhysicWorld() {
-		return physicWorld;
+	public PhysicsWorld getPhysicWorld() {
+		return physicsWorld;
 	}
 
-	public PhysicWorld resetPhysicWorld() {
-		return (physicWorld = new PhysicWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight));
+	public PhysicsWorld resetPhysicWorld() {
+		return (physicsWorld = new PhysicsWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight));
 	}
 
 	public void removeUnusedBroadcastMessages() {
-		List<String> usedMessages = new LinkedList<String>();
-		List<Sprite> spriteList = getSpriteList();
-		if (spriteList != null) {
-			for (Sprite currentSprite : spriteList) {
-				for (int scriptIndex = 0; scriptIndex < currentSprite.getNumberOfScripts(); ++scriptIndex) {
-					Script currentScript = currentSprite.getScript(scriptIndex);
-					if (currentScript.getClass().getSimpleName().equals(BroadcastScript.class.getSimpleName())) {
-						addMessageToList(
-								((BroadcastReceiverBrick) currentScript.getScriptBrick()).getSelectedMessage(),
-								usedMessages);
-					}
-					List<Brick> brickList = currentScript.getBrickList();
-					if (brickList != null) {
-						for (Brick currentBrick : brickList) {
-							if (currentBrick.getClass().getSimpleName().equals(BroadcastBrick.class.getSimpleName())) {
-								addMessageToList(((BroadcastBrick) currentBrick).getSelectedMessage(), usedMessages);
-							} else if (currentBrick.getClass().getSimpleName()
-									.equals(BroadcastWaitBrick.class.getSimpleName())) {
-								addMessageToList(((BroadcastWaitBrick) currentBrick).getSelectedMessage(), usedMessages);
-							}
-						}
+		List<String> usedMessages = new ArrayList<String>();
+		for (Sprite currentSprite : spriteList) {
+			for (int scriptIndex = 0; scriptIndex < currentSprite.getNumberOfScripts(); scriptIndex++) {
+				Script currentScript = currentSprite.getScript(scriptIndex);
+				if (currentScript instanceof BroadcastMessage) {
+					addBroadcastMessage(((BroadcastMessage) currentScript).getBroadcastMessage(), usedMessages);
+				}
+
+				for (int brickIndex = 0; brickIndex < currentScript.getBrickList().size(); brickIndex++) {
+					Brick currentBrick = currentScript.getBrick(brickIndex);
+					if (currentBrick instanceof BroadcastMessage) {
+						addBroadcastMessage(((BroadcastMessage) currentBrick).getBroadcastMessage(), usedMessages);
 					}
 				}
 			}
 		}
-		MessageContainer.removeOtherMessages(usedMessages);
+		MessageContainer.removeUnusedMessages(usedMessages);
 	}
 
-	private void addMessageToList(String message, List<String> list) {
-		if (message != null && !message.equals("") && !list.contains(message)) {
-			list.add(message);
+	private void addBroadcastMessage(String broadcastMessageToAdd, List<String> broadcastMessages) {
+		if (broadcastMessageToAdd != null && !broadcastMessageToAdd.isEmpty()
+				&& !broadcastMessages.contains(broadcastMessageToAdd)) {
+			broadcastMessages.add(broadcastMessageToAdd);
 		}
 	}
 }

@@ -178,7 +178,7 @@ public class SetGravityBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		//		sequence.addAction(ExtendedActions.setGravity(sprite, physicWorld, gravityX, gravityY));
+		//		sequence.addAction(ExtendedActions.setGravity(sprite, physicsWorld, gravityX, gravityY));
 		sequence.addAction(sprite.getActionFactory().createSetGravityAction(sprite, gravityX, gravityY));
 		return null;
 	}

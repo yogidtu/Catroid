@@ -26,6 +26,6 @@ import org.catrobat.catroid.common.LookData;
 
 import com.badlogic.gdx.physics.box2d.Shape;
 
-public interface PhysicShapeBuilderStrategy {
+public interface PhysicsShapeBuilderStrategy {
 	public Shape[] build(LookData lookData);
 }

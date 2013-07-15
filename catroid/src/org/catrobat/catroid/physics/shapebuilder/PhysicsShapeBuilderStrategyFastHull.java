@@ -27,14 +27,14 @@ import java.util.List;
 import java.util.Stack;
 
 import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.physics.PhysicWorldConverter;
+import org.catrobat.catroid.physics.PhysicsWorldConverter;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 
-public final class PhysicShapeBuilderStrategyFastHull implements PhysicShapeBuilderStrategy {
+public final class PhysicsShapeBuilderStrategyFastHull implements PhysicsShapeBuilderStrategy {
 
 	private final Stack<Vector2> convexHull = new Stack<Vector2>();
 
@@ -129,7 +129,7 @@ public final class PhysicShapeBuilderStrategyFastHull implements PhysicShapeBuil
 			Vector2 point = convexpoints[index];
 			point.x -= width / 2;
 			point.y = height - point.y - height / 2;
-			convexpoints[index] = PhysicWorldConverter.vecCatToBox2d(point);
+			convexpoints[index] = PhysicsWorldConverter.vecCatToBox2d(point);
 		}
 
 		if (convexpoints.length < 9) {

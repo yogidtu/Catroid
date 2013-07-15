@@ -28,7 +28,7 @@ import java.util.List;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.BrickValues;
-import org.catrobat.catroid.content.BroadcastScript;
+import org.catrobat.catroid.common.MessageContainer;
 import org.catrobat.catroid.content.PhysicSprite;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
@@ -83,7 +83,7 @@ import org.catrobat.catroid.content.bricks.physics.SetBounceFactorBrick;
 import org.catrobat.catroid.content.bricks.physics.SetFrictionBrick;
 import org.catrobat.catroid.content.bricks.physics.SetGravityBrick;
 import org.catrobat.catroid.content.bricks.physics.SetMassBrick;
-import org.catrobat.catroid.content.bricks.physics.SetPhysicObjectTypeBrick;
+import org.catrobat.catroid.content.bricks.physics.SetPhysicsObjectTypeBrick;
 import org.catrobat.catroid.content.bricks.physics.SetVelocityBrick;
 import org.catrobat.catroid.content.bricks.physics.TurnLeftSpeedBrick;
 import org.catrobat.catroid.content.bricks.physics.TurnRightSpeedBrick;
@@ -119,9 +119,12 @@ public class CategoryBricksFactory {
 		controlBrickList.add(new WhenStartedBrick(sprite, null));
 		controlBrickList.add(new WhenBrick(sprite, null));
 		controlBrickList.add(new WaitBrick(sprite, BrickValues.WAIT));
-		controlBrickList.add(new BroadcastReceiverBrick(sprite, new BroadcastScript(sprite)));
-		controlBrickList.add(new BroadcastBrick(sprite));
-		controlBrickList.add(new BroadcastWaitBrick(sprite));
+
+		final String broadcastMessage = MessageContainer.getFirst(context);
+		controlBrickList.add(new BroadcastReceiverBrick(sprite, broadcastMessage));
+		controlBrickList.add(new BroadcastBrick(sprite, broadcastMessage));
+		controlBrickList.add(new BroadcastWaitBrick(sprite, broadcastMessage));
+
 		controlBrickList.add(new NoteBrick(sprite, context.getString(R.string.brick_note_default_value)));
 		controlBrickList.add(new ForeverBrick(sprite));
 		controlBrickList.add(new IfLogicBeginBrick(sprite, 0));
@@ -145,7 +148,7 @@ public class CategoryBricksFactory {
 		motionBrickList.add(new MoveNStepsBrick(sprite, BrickValues.MOVE_STEPS));
 		motionBrickList.add(new TurnLeftBrick(sprite, BrickValues.TURN_DEGREES));
 		motionBrickList.add(new TurnRightBrick(sprite, BrickValues.TURN_DEGREES));
-		motionBrickList.add(new PointInDirectionBrick(sprite, Direction.DIRECTION_RIGHT));
+		motionBrickList.add(new PointInDirectionBrick(sprite, Direction.RIGHT));
 		motionBrickList.add(new PointToBrick(sprite, null));
 		motionBrickList.add(new GlideToBrick(sprite, BrickValues.X_POSITION, BrickValues.Y_POSITION,
 				BrickValues.GLIDE_SECONDS));
@@ -156,7 +159,7 @@ public class CategoryBricksFactory {
 		}
 
 		if (isPhysicObject(sprite)) {
-			motionBrickList.add(new SetPhysicObjectTypeBrick(sprite, BrickValues.PHYSIC_TYPE));
+			motionBrickList.add(new SetPhysicsObjectTypeBrick(sprite, BrickValues.PHYSIC_TYPE));
 			motionBrickList.add(new SetMassBrick(sprite, BrickValues.PHYSIC_MASS));
 			motionBrickList.add(new SetBounceFactorBrick(sprite, BrickValues.PHYSIC_BOUNCE_FACTOR * 100));
 			motionBrickList.add(new SetFrictionBrick(sprite, BrickValues.PHYSIC_FRICTION * 100));

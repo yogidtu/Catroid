@@ -24,7 +24,7 @@ package org.catrobat.catroid.content.actions.physics;
 
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicsObject;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
@@ -35,21 +35,21 @@ import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 public class PlaceAtPhysicsAction extends TemporalAction {
 
 	private Sprite sprite;
-	private PhysicObject physicObject;
+	private PhysicsObject physicsObject;
 	private Formula x;
 	private Formula y;
 
 	@Override
 	protected void update(float delta) {
-		physicObject.setXYPosition(x.interpretFloat(sprite), y.interpretFloat(sprite));
+		physicsObject.setPosition(x.interpretFloat(sprite), y.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
+	public void setPhysicObject(PhysicsObject physicsObject) {
+		this.physicsObject = physicsObject;
 	}
 
 	public void setX(Formula x) {

@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0" encoding="utf-8"?>
+<!--
  *  Catroid: An on-device visual programming system for Android devices
  *  Copyright (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
@@ -19,29 +20,15 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.catrobat.catroid.content.actions.physics;
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true"
+          android:drawable="@drawable/stage_dialog_button_restart_pressed" /> <!-- pressed -->
+    <item android:state_focused="true"
+          android:drawable="@drawable/stage_dialog_button_restart" /> <!-- focused -->
+    <item android:state_hovered="true"
+          android:drawable="@drawable/stage_dialog_button_restart" /> <!-- hovered -->
+    <item android:drawable="@drawable/stage_dialog_button_restart" /> <!-- default -->
+</selector>
 
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicObject.Type;
 
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
-
-public class SetPhysicObjectTypeAction extends TemporalAction {
-
-	private PhysicObject physicObject;
-	private Type type;
-
-	@Override
-	protected void update(float percent) {
-		physicObject.setType(type);
-	}
-
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-}

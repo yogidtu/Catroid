@@ -22,22 +22,22 @@
  */
 package org.catrobat.catroid.test.physics;
 
-import org.catrobat.catroid.physics.PhysicDebugSettings;
+import org.catrobat.catroid.physics.PhysicsDebugSettings;
 
 import android.test.AndroidTestCase;
 
 public class PhysicDebugSettingsTest extends AndroidTestCase {
 
 	/*
-	 * Tests if all physic debug settings are configured correctly for the release.
+	 * Tests if all physics debug settings are configured correctly for the release.
 	 * Therefore there is no problem if it fails during programming or debugging.
 	 */
 	public void testDefaultSettingsForRelease() {
 		assertFalse(
-				"Tests if all physic debug settings are configured correctly for the release. Therefore there is no problem if it fails during programming or debugging",
-				PhysicDebugSettings.DEBUGFLAG);
+				"Tests if all physics debug settings are configured correctly for the release. Therefore there is no problem if it fails during programming or debugging",
+				PhysicsDebugSettings.BOUNCE_ON_EDGES);
 		assertFalse(
-				"Tests if all physic debug settings are configured correctly for the release. Therefore there is no problem if it fails during programming or debugging.",
-				PhysicDebugSettings.Render.RENDER_COLLISION_FRAMES);
+				"Tests if all physics debug settings are configured correctly for the release. Therefore there is no problem if it fails during programming or debugging.",
+				PhysicsDebugSettings.Render.RENDER_COLLISION_FRAMES);
 	}
 }

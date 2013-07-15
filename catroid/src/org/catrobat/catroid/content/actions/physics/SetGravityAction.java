@@ -24,28 +24,28 @@ package org.catrobat.catroid.content.actions.physics;
 
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.PhysicsWorld;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
 public class SetGravityAction extends TemporalAction {
 
 	private Sprite sprite;
-	private PhysicWorld physicWorld;
+	private PhysicsWorld physicsWorld;
 	private Formula gravityX;
 	private Formula gravityY;
 
 	@Override
 	protected void update(float percent) {
-		physicWorld.setGravity(gravityX.interpretFloat(sprite), gravityY.interpretFloat(sprite));
+		physicsWorld.setGravity(gravityX.interpretFloat(sprite), gravityY.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 
-	public void setPhysicWorld(PhysicWorld physicWorld) {
-		this.physicWorld = physicWorld;
+	public void setPhysicWorld(PhysicsWorld physicsWorld) {
+		this.physicsWorld = physicsWorld;
 	}
 
 	public void setGravity(Formula gravityX, Formula gravityY) {

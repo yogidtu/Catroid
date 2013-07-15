@@ -22,9 +22,9 @@
  */
 package org.catrobat.catroid.common;
 
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicObject.Type;
-import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.PhysicsObject;
+import org.catrobat.catroid.physics.PhysicsObject.Type;
+import org.catrobat.catroid.physics.PhysicsWorld;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -42,11 +42,11 @@ public class BrickValues {
 	public static final int GO_BACK = 1;
 
 	//constants Physics
-	public static final PhysicObject.Type PHYSIC_TYPE = Type.DYNAMIC;
-	public static final Float PHYSIC_MASS = PhysicObject.DEFAULT_MASS;
-	public static final Float PHYSIC_BOUNCE_FACTOR = PhysicObject.DEFAULT_BOUNCE_FACTOR;
-	public static final Float PHYSIC_FRICTION = PhysicObject.DEFAULT_FRICTION;
-	public static final Vector2 PHYSIC_GRAVITY = PhysicWorld.DEFAULT_GRAVITY;
+	public static final PhysicsObject.Type PHYSIC_TYPE = Type.DYNAMIC;
+	public static final Float PHYSIC_MASS = PhysicsObject.DEFAULT_MASS;
+	public static final Float PHYSIC_BOUNCE_FACTOR = PhysicsObject.DEFAULT_BOUNCE_FACTOR;
+	public static final Float PHYSIC_FRICTION = PhysicsObject.DEFAULT_FRICTION;
+	public static final Vector2 PHYSIC_GRAVITY = PhysicsWorld.DEFAULT_GRAVITY;
 	public static final Vector2 PHYSIC_VELOCITY = new Vector2();
 	public static final Float PHYSIC_TURN_DEGREES = TURN_DEGREES;
 

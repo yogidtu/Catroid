@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0" encoding="utf-8"?>
+<!--
  *  Catroid: An on-device visual programming system for Android devices
  *  Copyright (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
@@ -19,19 +20,15 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.catrobat.catroid.physics;
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true"
+          android:drawable="@drawable/stage_dialog_button_back_pressed" /> <!-- pressed -->
+    <item android:state_focused="true"
+          android:drawable="@drawable/stage_dialog_button_back" /> <!-- focused -->
+    <item android:state_hovered="true"
+          android:drawable="@drawable/stage_dialog_button_back" /> <!-- hovered -->
+    <item android:drawable="@drawable/stage_dialog_button_back" /> <!-- default -->
+</selector>
 
-public class PhysicDebugSettings {
 
-	public final static boolean DEBUGFLAG = true;
-
-	public static class Render {
-		public final static boolean RENDER_COLLISION_FRAMES = true;
-		public final static boolean RENDER_BODIES = true;
-		public final static boolean RENDER_JOINTS = false;
-		public final static boolean RENDER_AABBs = false;
-		public final static boolean RENDER_INACTIVE_BODIES = true;
-		public final static boolean RENDER_VELOCITIES = false;
-	}
-}

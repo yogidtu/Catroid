@@ -26,7 +26,7 @@ import java.io.File;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.Values;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.BroadcastScript;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
@@ -83,13 +83,14 @@ public class SingleExecutionWhenBrickTest extends ActivityInstrumentationTestCas
 		solo.sleep(500);
 		for (int i = 1; i <= 10; ++i) {
 			solo.sleep(100);
-			assertEquals("Look has wrong AlphaValue.", (float) 1.0, yellowSprite.look.getAlphaValue());
+			assertEquals("Look has wrong AlphaValue.", 0f,
+					yellowSprite.look.getTransparencyInUserInterfaceDimensionUnit());
 			solo.clickOnScreen((SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2));
 		}
 		solo.sleep(100);
-		assertEquals("Look has wrong AlphaValue.", (float) 1.0, yellowSprite.look.getAlphaValue());
+		assertEquals("Look has wrong AlphaValue.", 0f, yellowSprite.look.getTransparencyInUserInterfaceDimensionUnit());
 		solo.sleep(2000);
-		assertEquals("Look has wrong AlphaValue.", (float) 0.5, yellowSprite.look.getAlphaValue());
+		assertEquals("Look has wrong AlphaValue.", 50f, yellowSprite.look.getTransparencyInUserInterfaceDimensionUnit());
 	}
 
 	public void testWaitBrickBroadcast() {
@@ -97,18 +98,19 @@ public class SingleExecutionWhenBrickTest extends ActivityInstrumentationTestCas
 		solo.sleep(500);
 		for (int i = 1; i <= 10; ++i) {
 			solo.sleep(1000);
-			assertEquals("Look has wrong AlphaValue.", (float) 1.0, greenSprite.look.getAlphaValue());
+			assertEquals("Look has wrong AlphaValue.", 0f,
+					greenSprite.look.getTransparencyInUserInterfaceDimensionUnit());
 			solo.clickOnScreen((SCREEN_WIDTH / 2) + 100, (SCREEN_HEIGHT / 2));
 		}
 		solo.sleep(1000);
-		assertEquals("Look has wrong AlphaValue.", (float) 1.0, greenSprite.look.getAlphaValue());
+		assertEquals("Look has wrong AlphaValue.", 0f, greenSprite.look.getTransparencyInUserInterfaceDimensionUnit());
 		solo.sleep(2000);
-		assertEquals("Look has wrong AlphaValue.", (float) 0, greenSprite.look.getAlphaValue());
+		assertEquals("Look has wrong AlphaValue.", 100f, greenSprite.look.getTransparencyInUserInterfaceDimensionUnit());
 	}
 
 	private void createProjectWhenBrick() {
-		Values.SCREEN_HEIGHT = SCREEN_HEIGHT;
-		Values.SCREEN_WIDTH = SCREEN_WIDTH;
+		ScreenValues.SCREEN_HEIGHT = SCREEN_HEIGHT;
+		ScreenValues.SCREEN_WIDTH = SCREEN_WIDTH;
 
 		projectWhenBrick = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 
@@ -139,8 +141,7 @@ public class SingleExecutionWhenBrickTest extends ActivityInstrumentationTestCas
 		StartScript blueStartScript = new StartScript(blueSprite);
 		SetLookBrick blueLookBrick = new SetLookBrick(blueSprite);
 		SetSizeToBrick blueSetSizeToBrick = new SetSizeToBrick(blueSprite, 200d);
-		BroadcastWaitBrick broadcastWaitBrick = new BroadcastWaitBrick(blueSprite);
-		broadcastWaitBrick.setSelectedMessage(broadcastMessage);
+		BroadcastWaitBrick broadcastWaitBrick = new BroadcastWaitBrick(blueSprite, broadcastMessage);
 		LookData blueLookData = new LookData();
 		String blueImageName = "blue_image.bmp";
 
@@ -178,11 +179,10 @@ public class SingleExecutionWhenBrickTest extends ActivityInstrumentationTestCas
 
 		greenSprite.addScript(greenStartScript);
 
-		greenBroadcastScript = new BroadcastScript(greenSprite);
+		greenBroadcastScript = new BroadcastScript(greenSprite, broadcastMessage);
 		WaitBrick waitBrick = new WaitBrick(greenSprite, 2000);
 
 		SetGhostEffectBrick greenSetGhostEffectBrick2 = new SetGhostEffectBrick(greenSprite, 100d);
-		greenBroadcastScript.setBroadcastMessage(broadcastMessage);
 		greenBroadcastScript.addBrick(waitBrick);
 		greenBroadcastScript.addBrick(greenSetGhostEffectBrick2);
 		greenSprite.addScript(greenBroadcastScript);

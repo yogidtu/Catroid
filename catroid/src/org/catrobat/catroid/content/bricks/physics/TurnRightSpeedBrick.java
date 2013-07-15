@@ -150,7 +150,7 @@ public class TurnRightSpeedBrick extends BrickBaseType implements OnClickListene
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		//		sequence.addAction(ExtendedActions.turnRightSpeed(sprite, physicObject, degreesPerSecond));
+		//		sequence.addAction(ExtendedActions.turnRightSpeed(sprite, physicsObject, degreesPerSecond));
 		sequence.addAction(sprite.getActionFactory().createTurnRightSpeedAction(sprite, degreesPerSecond));
 		return null;
 	}

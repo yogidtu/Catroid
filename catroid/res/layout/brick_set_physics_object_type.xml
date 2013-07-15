@@ -28,18 +28,18 @@
     android:orientation="horizontal" >
 
     <CheckBox
-        android:id="@+id/brick_set_physic_object_checkbox"
+        android:id="@+id/brick_set_physics_object_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/brick_set_physic_object_layout"
+        android:id="@+id/brick_set_physics_object_layout"
         style="@style/BrickContainer.Motion.Small" >
 
     <Spinner
-        android:id="@+id/brick_set_physic_object_type_spinner"
+        android:id="@+id/brick_set_physics_object_type_spinner"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_weight="5"
@@ -47,9 +47,9 @@
         android:focusable="false" />
     
     <TextView
-        android:id="@+id/brick_set_physic_object_text_view"
+        android:id="@+id/brick_set_physics_object_text_view"
         style="@style/BrickText.SingleLine"
-        android:text="@string/brick_set_physic_object_type" >
+        android:text="@string/brick_set_physics_object_type" >
     </TextView>
     </LinearLayout>
 </LinearLayout>

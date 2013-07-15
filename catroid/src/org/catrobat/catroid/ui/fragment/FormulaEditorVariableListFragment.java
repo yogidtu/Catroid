@@ -224,7 +224,7 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 	}
 
 	@Override
-	public void onFinishNewVariableDialog(Spinner spinnerToUpdate) {
+	public void onFinishNewVariableDialog(Spinner spinnerToUpdate, UserVariable userVariable) {
 		adapter.notifyDataSetChanged();
 	}
 
@@ -265,6 +265,7 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
 				getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+				((ScriptActivity) getSherlockActivity()).updateHandleAddButtonClickListener();
 
 				FragmentTransaction fragmentTransaction = getSherlockActivity().getSupportFragmentManager()
 						.beginTransaction();
@@ -323,5 +324,4 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 			getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
 		}
 	};
-
 }

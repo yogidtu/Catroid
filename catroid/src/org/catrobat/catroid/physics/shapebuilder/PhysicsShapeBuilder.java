@@ -33,11 +33,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 
-public class PhysicShapeBuilder {
+public class PhysicsShapeBuilder {
 	private final Map<String, Shape[]> shapeMap = new HashMap<String, Shape[]>();
-	private PhysicShapeBuilderStrategy strategy = new PhysicShapeBuilderStrategyFastHull();
+	private PhysicsShapeBuilderStrategy strategy = new PhysicsShapeBuilderStrategyFastHull();
 
-	public PhysicShapeBuilder() {
+	public PhysicsShapeBuilder() {
 	}
 
 	public Shape[] getShape(LookData lookData, float scaleFactor) {

@@ -33,7 +33,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Shape;
 
-public class PhysicObject {
+public class PhysicsObject {
 	public enum Type {
 		DYNAMIC, FIXED, NONE;
 	}
@@ -52,13 +52,13 @@ public class PhysicObject {
 	private float mass;
 	private boolean ifOnEdgeBounce = false;
 
-	public PhysicObject(Body body) {
+	public PhysicsObject(Body body) {
 		this.body = body;
 
-		mass = PhysicObject.DEFAULT_MASS;
-		fixtureDef.density = PhysicObject.DEFAULT_DENSITY;
-		fixtureDef.friction = PhysicObject.DEFAULT_FRICTION;
-		fixtureDef.restitution = PhysicObject.DEFAULT_BOUNCE_FACTOR;
+		mass = PhysicsObject.DEFAULT_MASS;
+		fixtureDef.density = PhysicsObject.DEFAULT_DENSITY;
+		fixtureDef.friction = PhysicsObject.DEFAULT_FRICTION;
+		fixtureDef.restitution = PhysicsObject.DEFAULT_BOUNCE_FACTOR;
 
 		short collisionBits = 0;
 		setCollisionBits(collisionBits, collisionBits);
@@ -95,9 +95,9 @@ public class PhysicObject {
 
 		short maskBits;
 		if (bounce) {
-			maskBits = PhysicObject.COLLISION_MASK | PhysicBoundaryBox.COLLISION_MASK;
+			maskBits = PhysicsObject.COLLISION_MASK | PhysicsBoundaryBox.COLLISION_MASK;
 		} else {
-			maskBits = PhysicObject.COLLISION_MASK;
+			maskBits = PhysicsObject.COLLISION_MASK;
 		}
 
 		setCollisionBits(fixtureDef.filter.categoryBits, maskBits);
@@ -119,11 +119,11 @@ public class PhysicObject {
 				body.setType(BodyType.DynamicBody);
 				body.setGravityScale(1.0f);
 				setMass(mass);
-				collisionMask = PhysicObject.COLLISION_MASK;
+				collisionMask = PhysicsObject.COLLISION_MASK;
 				break;
 			case FIXED:
 				body.setType(BodyType.KinematicBody);
-				collisionMask = PhysicObject.COLLISION_MASK;
+				collisionMask = PhysicsObject.COLLISION_MASK;
 				break;
 			case NONE:
 				body.setType(BodyType.KinematicBody);
@@ -149,58 +149,58 @@ public class PhysicObject {
 		}
 	}
 
-	public float getAngle() {
-		return PhysicWorldConverter.angleBox2dToCat(body.getAngle());
+	public float getDirection() {
+		return PhysicsWorldConverter.angleBox2dToCat(body.getAngle());
 	}
 
-	public void setAngle(float angle) {
-		body.setTransform(body.getPosition(), PhysicWorldConverter.angleCatToBox2d(angle));
+	public void setDirection(float degrees) {
+		body.setTransform(body.getPosition(), PhysicsWorldConverter.angleCatToBox2d(degrees));
+	}
+
+	public float getX() {
+		return PhysicsWorldConverter.lengthBox2dToCat(body.getPosition().x);
+	}
+
+	public float getY() {
+		return PhysicsWorldConverter.lengthBox2dToCat(body.getPosition().y);
 	}
 
 	public Vector2 getPosition() {
-		return PhysicWorldConverter.vecBox2dToCat(body.getPosition());
+		return PhysicsWorldConverter.vecBox2dToCat(body.getPosition());
 	}
 
-	public float getXPosition() {
-		return PhysicWorldConverter.lengthBox2dToCat(body.getPosition().x);
+	public void setX(float x) {
+		body.setTransform(PhysicsWorldConverter.lengthCatToBox2d(x), body.getPosition().y, body.getAngle());
 	}
 
-	public float getYPosition() {
-		return PhysicWorldConverter.lengthBox2dToCat(body.getPosition().y);
+	public void setY(float y) {
+		body.setTransform(body.getPosition().x, PhysicsWorldConverter.lengthCatToBox2d(y), body.getAngle());
 	}
 
-	public void setXPosition(float x) {
-		body.setTransform(PhysicWorldConverter.lengthCatToBox2d(x), body.getPosition().y, body.getAngle());
-	}
-
-	public void setYPosition(float y) {
-		body.setTransform(body.getPosition().x, PhysicWorldConverter.lengthCatToBox2d(y), body.getAngle());
-	}
-
-	public void setXYPosition(float x, float y) {
-		x = PhysicWorldConverter.lengthCatToBox2d(x);
-		y = PhysicWorldConverter.lengthCatToBox2d(y);
+	public void setPosition(float x, float y) {
+		x = PhysicsWorldConverter.lengthCatToBox2d(x);
+		y = PhysicsWorldConverter.lengthCatToBox2d(y);
 		body.setTransform(x, y, body.getAngle());
 	}
 
-	public void setXYPosition(Vector2 position) {
-		setXYPosition(position.x, position.y);
+	public void setPosition(Vector2 position) {
+		setPosition(position.x, position.y);
 	}
 
 	public float getRotationSpeed() {
-		return PhysicWorldConverter.angleBox2dToCat(body.getAngularVelocity());
+		return (float) Math.toDegrees(body.getAngularVelocity());
 	}
 
 	public void setRotationSpeed(float degreesPerSecond) {
-		body.setAngularVelocity(PhysicWorldConverter.angleCatToBox2d(degreesPerSecond));
+		body.setAngularVelocity((float) Math.toRadians(degreesPerSecond));
 	}
 
 	public Vector2 getVelocity() {
-		return PhysicWorldConverter.vecBox2dToCat(body.getLinearVelocity());
+		return PhysicsWorldConverter.vecBox2dToCat(body.getLinearVelocity());
 	}
 
 	public void setVelocity(float x, float y) {
-		body.setLinearVelocity(PhysicWorldConverter.lengthCatToBox2d(x), PhysicWorldConverter.lengthCatToBox2d(y));
+		body.setLinearVelocity(PhysicsWorldConverter.lengthCatToBox2d(x), PhysicsWorldConverter.lengthCatToBox2d(y));
 	}
 
 	public float getMass() {
@@ -208,8 +208,8 @@ public class PhysicObject {
 	}
 
 	public void setMass(float mass) {
-		if (mass < PhysicObject.MIN_MASS) {
-			mass = PhysicObject.MIN_MASS;
+		if (mass < PhysicsObject.MIN_MASS) {
+			mass = PhysicsObject.MIN_MASS;
 		}
 
 		//		if (mass != Integer.MAX_VALUE) {

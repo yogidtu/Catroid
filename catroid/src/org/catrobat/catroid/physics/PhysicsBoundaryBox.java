@@ -30,14 +30,14 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class PhysicBoundaryBox {
+public class PhysicsBoundaryBox {
 
 	public final static int FRAME_SIZE = 5;
 	public final static short COLLISION_MASK = 0x0002;
 
 	private final World world;
 
-	public PhysicBoundaryBox(World world) {
+	public PhysicsBoundaryBox(World world) {
 		this.world = world;
 	}
 
@@ -49,9 +49,9 @@ public class PhysicBoundaryBox {
 	 */
 	public void create(int width, int height) {
 		//		Project currentProject = ProjectManager.getInstance().getCurrentProject();
-		float boxWidth = PhysicWorldConverter.lengthCatToBox2d(width);
-		float boxHeight = PhysicWorldConverter.lengthCatToBox2d(height);
-		float boxElementSize = PhysicWorldConverter.lengthCatToBox2d(PhysicBoundaryBox.FRAME_SIZE);
+		float boxWidth = PhysicsWorldConverter.lengthCatToBox2d(width);
+		float boxHeight = PhysicsWorldConverter.lengthCatToBox2d(height);
+		float boxElementSize = PhysicsWorldConverter.lengthCatToBox2d(PhysicsBoundaryBox.FRAME_SIZE);
 		float halfBoxElementSize = boxElementSize / 2.0f;
 
 		// Top
@@ -74,12 +74,12 @@ public class PhysicBoundaryBox {
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
-		fixtureDef.filter.maskBits = PhysicObject.COLLISION_MASK;
+		fixtureDef.filter.maskBits = PhysicsObject.COLLISION_MASK;
 
-		if (PhysicDebugSettings.DEBUGFLAG) {
-			fixtureDef.filter.categoryBits = PhysicObject.COLLISION_MASK;
+		if (PhysicsDebugSettings.BOUNCE_ON_EDGES) {
+			fixtureDef.filter.categoryBits = PhysicsObject.COLLISION_MASK;
 		} else {
-			fixtureDef.filter.categoryBits = PhysicBoundaryBox.COLLISION_MASK;
+			fixtureDef.filter.categoryBits = PhysicsBoundaryBox.COLLISION_MASK;
 		}
 
 		Body body = world.createBody(bodyDef);
