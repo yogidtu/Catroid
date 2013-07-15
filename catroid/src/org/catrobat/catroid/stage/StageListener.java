@@ -130,7 +130,8 @@ public class StageListener implements ApplicationListener {
 
 	private byte[] thumbnail;
 
-	StageListener() {
+	//needed for live wallpaper
+	public StageListener() {
 	}
 
 	@Override
