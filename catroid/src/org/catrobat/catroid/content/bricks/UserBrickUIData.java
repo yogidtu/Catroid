@@ -24,8 +24,6 @@ package org.catrobat.catroid.content.bricks;
 
 import java.io.Serializable;
 
-import org.catrobat.catroid.utils.Utils;
-
 import android.content.Context;
 
 /**
@@ -39,13 +37,13 @@ public class UserBrickUIData implements Serializable {
 	public int key;
 	public boolean isField;
 	public boolean hasLocalizedString;
-	public String localizedStringKey = "";
+	public int localizedStringId;
 	public String userDefinedName = "";
 
 	public String getString(Context context) {
 		String text = null;
 		if (hasLocalizedString) {
-			text = Utils.getStringResourceByName(localizedStringKey, context);
+			text = context.getString(localizedStringId);
 		} else {
 			text = userDefinedName;
 		}
@@ -55,7 +53,7 @@ public class UserBrickUIData implements Serializable {
 	public String debugString() {
 		String text = null;
 		if (hasLocalizedString) {
-			text = localizedStringKey;
+			text = "" + localizedStringId;
 		} else {
 			text = userDefinedName;
 		}

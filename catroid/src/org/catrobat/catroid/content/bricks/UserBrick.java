@@ -36,7 +36,6 @@ import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -90,16 +89,16 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public UserBrick copyBrickForSprite(Sprite sprite, Script script) {
-		UserBrick copyBrick = (UserBrick) clone();
+		UserBrick copyBrick = clone();
 		copyBrick.sprite = sprite;
 		return copyBrick;
 	}
 
-	public void addUILocalizedStringByName(String key) {
+	public void addUILocalizedString(int id) {
 		UserBrickUIData comp = new UserBrickUIData();
 		comp.isField = false;
 		comp.hasLocalizedString = true;
-		comp.localizedStringKey = key;
+		comp.localizedStringId = id;
 		uiData.add(comp);
 		uiData.version++;
 	}
@@ -169,7 +168,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
-		Log.d("FOREST", "UB get view");
 
 		if (animationState) {
 			return view;
@@ -299,7 +297,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	@Override
-	public Brick clone() {
+	public UserBrick clone() {
 		return new UserBrick(getSprite(), uiData, definitionBrick);
 	}
 

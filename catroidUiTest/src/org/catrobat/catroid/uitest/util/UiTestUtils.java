@@ -40,6 +40,7 @@ import junit.framework.AssertionFailedError;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.BrickValues;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.FileChecksumContainer;
 import org.catrobat.catroid.content.BroadcastScript;
@@ -91,6 +92,7 @@ import org.catrobat.catroid.content.bricks.SpeakBrick;
 import org.catrobat.catroid.content.bricks.StopAllSoundsBrick;
 import org.catrobat.catroid.content.bricks.TurnLeftBrick;
 import org.catrobat.catroid.content.bricks.TurnRightBrick;
+import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
@@ -102,6 +104,7 @@ import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.fragment.AddBrickFragment;
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 import org.catrobat.catroid.web.ServerCalls;
@@ -125,6 +128,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewParent;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -155,6 +159,8 @@ public class UiTestUtils {
 	public static final String COPIED_PROJECT_NAME = "copiedProject";
 	public static final String JAPANESE_PROJECT_NAME = "これは例の説明です。";
 
+	public static final String TEST_USER_BRICK_NAME = "Test User Brick";
+
 	private static final int ACTION_BAR_SPINNER_INDEX = 0;
 	private static final int ACTION_MODE_ACCEPT_IMAGE_BUTTON_INDEX = 0;
 
@@ -164,6 +170,10 @@ public class UiTestUtils {
 
 	private UiTestUtils() {
 	};
+
+	public static ProjectManager getProjectManager() {
+		return projectManager;
+	}
 
 	public static void enterText(Solo solo, int editTextIndex, String text) {
 		solo.sleep(50);
@@ -381,25 +391,49 @@ public class UiTestUtils {
 	}
 
 	public static void addNewBrick(Solo solo, int categoryStringId, int brickStringId, int nThElement) {
+		String brickName = solo.getCurrentActivity().getString(brickStringId);
+		addNewBrick(solo, categoryStringId, brickName, nThElement);
+	}
+
+	public static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
+		Log.d("FOREST", "click bottom bar");
 		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 5000)) {
 			fail("Text not shown in 5 secs!");
 		}
+		Log.d("FOREST", "saw_text_category");
 
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
-		solo.searchText(solo.getCurrentActivity().getString(categoryStringId));
+		boolean fragmentAppeared = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 1000);
+		if (!fragmentAppeared) {
+			fail("add brick fragment should appear");
+		}
+		Log.d("FOREST", "add brick fragment appeared");
 
-		ListView fragmentListView = solo.getCurrentViews(ListView.class).get(
-				solo.getCurrentViews(ListView.class).size() - 1);
+		if (solo.searchText(brickName, nThElement, true)) {
+			clickOnBrickInAddBrickFragment(solo, brickName);
 
-		while (!solo.searchText(solo.getCurrentActivity().getString(brickStringId))) {
-			if (!solo.scrollDownList(fragmentListView)) {
-				fail("Text not shown");
+		} else {
+			fail("add brick named " + brickName + " should appear");
+		}
+		solo.sleep(600);
+	}
+
+	private static void clickOnBrickInAddBrickFragment(Solo solo, String brickName) {
+		ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
+		for (TextView v : array) {
+			if (v.getText().toString().equals(brickName)) {
+				//v.getParent() = BrickLayout or LinearLayout (brick visual element)
+				//v.getParent().getParent() = brick container (also contains checkmark)
+				//v.getParent().getParent().getParent() = listview list of bricks
+				//v.getParent().getParent().getParent().getParent()= linearLayout inside addbrickfragment
+				ViewParent p = v.getParent().getParent().getParent().getParent();
+				if (p instanceof View && ((View) p).getId() == R.id.add_brick_fragment_list) {
+					Log.d("FOREST", "dunkey");
+					solo.clickOnView(v);
+				}
 			}
 		}
-
-		solo.clickOnText(solo.getCurrentActivity().getString(brickStringId), nThElement, true);
-		solo.sleep(500);
 	}
 
 	public static List<Brick> createTestProject() {
@@ -425,7 +459,6 @@ public class UiTestUtils {
 		}
 
 		firstSprite.addScript(testScript);
-
 		project.addSprite(firstSprite);
 
 		projectManager.setFileChecksumContainer(new FileChecksumContainer());
@@ -467,6 +500,46 @@ public class UiTestUtils {
 		projectManager.setProject(project);
 		projectManager.setCurrentSprite(firstSprite);
 		projectManager.setCurrentScript(testScript);
+
+		return brickList;
+	}
+
+	public static List<Brick> createTestProjectWithUserBrick() {
+		int xPosition = 457;
+		int yPosition = 598;
+		double size = 0.8;
+
+		Project project = new Project(null, DEFAULT_TEST_PROJECT_NAME);
+		Sprite firstSprite = new Sprite("cat");
+
+		Script testScript = new StartScript(firstSprite);
+
+		ArrayList<Brick> brickList = new ArrayList<Brick>();
+		brickList.add(new HideBrick(firstSprite));
+		brickList.add(new ShowBrick(firstSprite));
+		brickList.add(new SetSizeToBrick(firstSprite, size));
+		brickList.add(new GoNStepsBackBrick(firstSprite, 1));
+		brickList.add(new ComeToFrontBrick(firstSprite));
+		brickList.add(new PlaceAtBrick(firstSprite, xPosition, yPosition));
+
+		for (Brick brick : brickList) {
+			testScript.addBrick(brick);
+		}
+
+		firstSprite.addScript(testScript);
+
+		UserBrick firstUserBrick = new UserBrick(firstSprite);
+		firstUserBrick.addUIText(TEST_USER_BRICK_NAME);
+		firstUserBrick.addUIField("test1");
+		firstUserBrick.appendBrickToScript(new ChangeXByNBrick(firstSprite, BrickValues.CHANGE_X_BY));
+
+		project.addSprite(firstSprite);
+
+		projectManager.setFileChecksumContainer(new FileChecksumContainer());
+		projectManager.setProject(project);
+		projectManager.setCurrentSprite(firstSprite);
+		projectManager.setCurrentScript(testScript);
+		StorageHandler.getInstance().saveProject(project);
 
 		return brickList;
 	}

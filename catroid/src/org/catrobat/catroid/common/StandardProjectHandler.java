@@ -186,7 +186,7 @@ public class StandardProjectHandler {
 		firstUserBrick.appendBrickToScript(new ChangeXByNBrick(mole1Sprite, BrickValues.CHANGE_X_BY));
 
 		UserBrick secondUserBrick = new UserBrick(mole1Sprite);
-		secondUserBrick.addUILocalizedStringByName("brick_change_x_by");
+		secondUserBrick.addUILocalizedString(R.string.brick_change_x_by);
 		secondUserBrick.addUIField("amount");
 		secondUserBrick.appendBrickToScript(new ChangeXByNBrick(mole1Sprite, BrickValues.CHANGE_X_BY));
 

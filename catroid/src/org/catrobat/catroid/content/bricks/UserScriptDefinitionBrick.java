@@ -40,6 +40,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
+import android.view.ViewParent;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -177,6 +178,19 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 
 	@Override
 	public void onClick(View eventOrigin) {
+		if (eventOrigin == null) {
+			return;
+		} else {
+			if (eventOrigin != view) {
+				ViewParent p = eventOrigin.getParent();
+				if (p instanceof View && ((View) p) != view) {
+					p = p.getParent();
+					if (p instanceof View && ((View) p) != view) {
+						return;
+					}
+				}
+			}
+		}
 		if (checkbox.getVisibility() == View.VISIBLE) {
 			return;
 		}
