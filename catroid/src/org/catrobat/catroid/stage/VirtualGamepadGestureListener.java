@@ -22,7 +22,10 @@
  */
 package org.catrobat.catroid.stage;
 
+import java.util.List;
+
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.WhenVirtualPadBrick.Direction;
 
@@ -68,6 +71,16 @@ public class VirtualGamepadGestureListener implements GestureListener {
 
 				Log.e("DPadThread<run>", "thread started");
 
+				List<Sprite> sprites = ProjectManager.getInstance().getCurrentProject().getSpriteList();
+
+				for (int sprite = 0; sprite < sprites.size(); sprite++) {
+					if (sprites.get(sprite).getName().equals(Constants.VGP_SPRITE_PAD)) {
+						Sprite tmpSprite = sprites.get(sprite);
+						tmpSprite.look.setVisible(true);
+						break;
+					}
+				}
+
 				while (running) {
 
 					Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
@@ -96,12 +109,18 @@ public class VirtualGamepadGestureListener implements GestureListener {
 						sprite.createWhenVirtualPadScriptActionSequence(Direction.RIGHT.getId());
 					}
 
-					//					Log.e("DPAD THREAD", "dpad thread is running... [" + dPadUp + "|" + dPadDown + "|" + dPadLeft + "|"
-					//							+ dPadRight + "]");
 					Thread.sleep(100);
 				}
 
 				Log.e("DPadThread<run>", "thread stopped");
+
+				for (int sprite = 0; sprite < sprites.size(); sprite++) {
+					if (sprites.get(sprite).getName().equals(Constants.VGP_SPRITE_PAD)) {
+						Sprite tmpSprite = sprites.get(sprite);
+						tmpSprite.look.setVisible(false);
+						break;
+					}
+				}
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -253,9 +272,9 @@ public class VirtualGamepadGestureListener implements GestureListener {
 				}
 
 				if (y > dPadStartY && (y - dPadMinMotion) > dPadStartY) {
-					tmpUp = true;
-				} else if (y < dPadStartY && (y + dPadMinMotion) < dPadStartY) {
 					tmpDown = true;
+				} else if (y < dPadStartY && (y + dPadMinMotion) < dPadStartY) {
+					tmpUp = true;
 				}
 
 				setDPadDirection(tmpUp, tmpDown, tmpLeft, tmpRight);
