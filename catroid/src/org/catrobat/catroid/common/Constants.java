@@ -66,4 +66,16 @@ public final class Constants {
 	public static final int UPLOAD_NOTIFICATION = 102;
 	public static final int DOWNLOAD_NOTIFICATION = 103;
 	public static final int COPY_NOTIFICATION = 104;
+
+	//Virtual Gamepad
+	public static final String VGP_SPRITE_PAD = "vgp_sprite_pad";
+	public static final String VGP_IMAGE_PAD_CENTER = "vgp_image_pad_center";
+	public static final String VGP_IMAGE_PAD_UP = "vgp_image_pad_up";
+	public static final String VGP_IMAGE_PAD_DOWN = "vgp_image_pad_down";
+	public static final String VGP_IMAGE_PAD_LEFT = "vgp_image_pad_left";
+	public static final String VGP_IMAGE_PAD_RIGHT = "vgp_image_pad_right";
+	public static final String VGP_IMAGE_PAD_UPLEFT = "vgp_image_pad_upleft";
+	public static final String VGP_IMAGE_PAD_UPRIGHT = "vgp_image_pad_upright";
+	public static final String VGP_IMAGE_PAD_DOWNLEFT = "vgp_image_pad_downleft";
+	public static final String VGP_IMAGE_PAD_DOWNRIGHT = "vgp_image_pad_downright";
 }
