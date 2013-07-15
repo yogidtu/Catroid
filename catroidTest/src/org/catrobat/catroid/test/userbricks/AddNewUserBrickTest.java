@@ -24,7 +24,6 @@ package org.catrobat.catroid.test.userbricks;
 
 import java.util.ArrayList;
 
-import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.UserScript;
 import org.catrobat.catroid.content.bricks.UserBrick;
@@ -35,7 +34,7 @@ import org.catrobat.catroid.test.utils.Reflection;
 
 import android.test.AndroidTestCase;
 
-public class UserBrickCloneTest extends AndroidTestCase {
+public class AddNewUserBrickTest extends AndroidTestCase {
 	private Sprite sprite;
 
 	@Override
@@ -46,11 +45,7 @@ public class UserBrickCloneTest extends AndroidTestCase {
 	}
 
 	public void testBrickCloneWithFormula() {
-		UserBrick brick = new UserBrick(sprite);
-		brick.addUILocalizedString(R.string.about);
-		brick.addUIText("test0");
-		brick.addUIField("test1");
-		brickClone(brick);
+
 	}
 
 	private void brickClone(UserBrick brick) {
