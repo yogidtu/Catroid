@@ -22,21 +22,21 @@
  */
 package org.catrobat.catroid.content.actions.physics;
 
-import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicsObject;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
 public class IfOnEdgeBouncePhysicsAction extends TemporalAction {
 
-	private PhysicObject physicObject;
+	private PhysicsObject physicsObject;
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setIfOnEdgeBounce(true);
+		physicsObject.setIfOnEdgeBounce(true);
 	}
 
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
+	public void setPhysicObject(PhysicsObject physicsObject) {
+		this.physicsObject = physicsObject;
 	}
 
 }

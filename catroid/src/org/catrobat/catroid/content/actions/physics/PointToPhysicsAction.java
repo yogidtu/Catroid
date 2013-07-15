@@ -26,13 +26,13 @@ import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicsObject;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
 public class PointToPhysicsAction extends TemporalAction {
 
-	private PhysicObject physicObject;
+	private PhysicsObject physicsObject;
 	private Sprite sprite;
 	private Sprite pointedSprite;
 
@@ -75,15 +75,15 @@ public class PointToPhysicsAction extends TemporalAction {
 			rotationDegrees = (90f - Math.toDegrees(Math.atan2(pointedSpriteYPosition - spriteYPosition,
 					pointedSpriteXPosition - spriteXPosition)));
 		}
-		physicObject.setDirection((float) rotationDegrees);
+		physicsObject.setDirection((float) rotationDegrees);
 	}
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
+	public void setPhysicObject(PhysicsObject physicsObject) {
+		this.physicsObject = physicsObject;
 	}
 
 	public void setPointedSprite(Sprite pointedSprite) {

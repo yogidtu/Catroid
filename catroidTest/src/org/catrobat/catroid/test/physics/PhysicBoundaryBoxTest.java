@@ -25,9 +25,9 @@ package org.catrobat.catroid.test.physics;
 import java.util.Iterator;
 import java.util.List;
 
-import org.catrobat.catroid.physics.PhysicBoundaryBox;
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.PhysicsBoundaryBox;
+import org.catrobat.catroid.physics.PhysicsObject;
+import org.catrobat.catroid.physics.PhysicsWorld;
 
 import android.test.AndroidTestCase;
 
@@ -49,17 +49,17 @@ public class PhysicBoundaryBoxTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		world = new World(PhysicWorld.DEFAULT_GRAVITY, PhysicWorld.IGNORE_SLEEPING_OBJECTS);
+		world = new World(PhysicsWorld.DEFAULT_GRAVITY, PhysicsWorld.IGNORE_SLEEPING_OBJECTS);
 	}
 
 	public void testDefaultSettings() {
-		assertEquals("Wrong configuration", 5, PhysicBoundaryBox.FRAME_SIZE);
-		assertEquals("Wrong configuration", 0x0002, PhysicBoundaryBox.COLLISION_MASK);
+		assertEquals("Wrong configuration", 5, PhysicsBoundaryBox.FRAME_SIZE);
+		assertEquals("Wrong configuration", 0x0002, PhysicsBoundaryBox.COLLISION_MASK);
 	}
 
 	public void testProperties() {
 		assertEquals("World isn't emtpy", 0, world.getBodyCount());
-		new PhysicBoundaryBox(world).create();
+		new PhysicsBoundaryBox(world).create();
 		assertEquals("World contains wrong number of boundary box sides", 4, world.getBodyCount());
 
 		Iterator<Body> bodyIterator = world.getBodies();
@@ -72,8 +72,8 @@ public class PhysicBoundaryBoxTest extends AndroidTestCase {
 			assertEquals("Body should contain only one shape (side)", 1, fixtures.size());
 			for (Fixture fixture : fixtures) {
 				Filter filter = fixture.getFilterData();
-				assertEquals("Wrong bit mask for collision", PhysicObject.COLLISION_MASK, filter.maskBits);
-				assertEquals("Wrong category bits for collision", PhysicBoundaryBox.COLLISION_MASK, filter.categoryBits);
+				assertEquals("Wrong bit mask for collision", PhysicsObject.COLLISION_MASK, filter.maskBits);
+				assertEquals("Wrong category bits for collision", PhysicsBoundaryBox.COLLISION_MASK, filter.categoryBits);
 			}
 		}
 	}

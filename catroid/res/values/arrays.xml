@@ -39,7 +39,7 @@
     </string-array>
 
     <!-- Physicobjecttype -->
-    <string-array name="physic_object_types">
+    <string-array name="physics_object_types">
         <item>Dynamic</item>
         <item>Fixed</item>
         <item>None</item>

@@ -150,7 +150,7 @@ public class SetMassBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		//		sequence.addAction(ExtendedActions.setMass(sprite, physicObject, mass));
+		//		sequence.addAction(ExtendedActions.setMass(sprite, physicsObject, mass));
 		sequence.addAction(sprite.getActionFactory().createSetMassAction(sprite, mass));
 		return null;
 	}

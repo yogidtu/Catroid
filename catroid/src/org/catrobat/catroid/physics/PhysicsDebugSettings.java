@@ -22,7 +22,7 @@
  */
 package org.catrobat.catroid.physics;
 
-public class PhysicDebugSettings {
+public class PhysicsDebugSettings {
 
 	public final static boolean BOUNCE_ON_EDGES = true;
 

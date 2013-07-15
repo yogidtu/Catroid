@@ -34,8 +34,8 @@ import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.physics.PhysicDebugSettings;
-import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.PhysicsDebugSettings;
+import org.catrobat.catroid.physics.PhysicsWorld;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
 import org.catrobat.catroid.utils.Utils;
 
@@ -92,7 +92,7 @@ public class StageListener implements ApplicationListener {
 	private boolean skipFirstFrameForAutomaticScreenshot;
 
 	private Project project;
-	private PhysicWorld physicWorld;
+	private PhysicsWorld physicsWorld;
 
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -160,8 +160,8 @@ public class StageListener implements ApplicationListener {
 		camera = (OrthographicCamera) stage.getCamera();
 		camera.position.set(0, 0, 0);
 
-		// TODO: Reset physic objects.
-		physicWorld = project.resetPhysicWorld();
+		// TODO: Reset physics objects.
+		physicsWorld = project.resetPhysicWorld();
 
 		sprites = project.getSpriteList();
 
@@ -277,8 +277,8 @@ public class StageListener implements ApplicationListener {
 
 			project = ProjectManager.getInstance().getCurrentProject();
 
-			// TODO: Reset physic objects.
-			physicWorld = project.resetPhysicWorld();
+			// TODO: Reset physics objects.
+			physicsWorld = project.resetPhysicWorld();
 
 			sprites = project.getSpriteList();
 			if (spriteSize > 0) {
@@ -349,13 +349,13 @@ public class StageListener implements ApplicationListener {
 			 */
 			if (DYNAMIC_SAMPLING_RATE_FOR_ACTIONS == false) {
 				stage.act(deltaTime);
-				physicWorld.step(deltaTime);
+				physicsWorld.step(deltaTime);
 			} else {
 				float optimizedDeltaTime = deltaTime / deltaActionTimeDivisor;
 				long timeBeforeActionsUpdate = SystemClock.uptimeMillis();
 				while (deltaTime > 0f) {
 					stage.act(optimizedDeltaTime);
-					physicWorld.step(optimizedDeltaTime);
+					physicsWorld.step(optimizedDeltaTime);
 					deltaTime -= optimizedDeltaTime;
 				}
 				long executionTimeOfActionsUpdate = SystemClock.uptimeMillis() - timeBeforeActionsUpdate;
@@ -400,8 +400,8 @@ public class StageListener implements ApplicationListener {
 			drawAxes();
 		}
 
-		if (PhysicDebugSettings.Render.RENDER_COLLISION_FRAMES && !finished) {
-			physicWorld.render(camera.combined);
+		if (PhysicsDebugSettings.Render.RENDER_COLLISION_FRAMES && !finished) {
+			physicsWorld.render(camera.combined);
 		}
 
 		if (DEBUG) {

@@ -83,7 +83,7 @@ import org.catrobat.catroid.content.bricks.physics.SetBounceFactorBrick;
 import org.catrobat.catroid.content.bricks.physics.SetFrictionBrick;
 import org.catrobat.catroid.content.bricks.physics.SetGravityBrick;
 import org.catrobat.catroid.content.bricks.physics.SetMassBrick;
-import org.catrobat.catroid.content.bricks.physics.SetPhysicObjectTypeBrick;
+import org.catrobat.catroid.content.bricks.physics.SetPhysicsObjectTypeBrick;
 import org.catrobat.catroid.content.bricks.physics.SetVelocityBrick;
 import org.catrobat.catroid.content.bricks.physics.TurnLeftSpeedBrick;
 import org.catrobat.catroid.content.bricks.physics.TurnRightSpeedBrick;
@@ -159,7 +159,7 @@ public class CategoryBricksFactory {
 		}
 
 		if (isPhysicObject(sprite)) {
-			motionBrickList.add(new SetPhysicObjectTypeBrick(sprite, BrickValues.PHYSIC_TYPE));
+			motionBrickList.add(new SetPhysicsObjectTypeBrick(sprite, BrickValues.PHYSIC_TYPE));
 			motionBrickList.add(new SetMassBrick(sprite, BrickValues.PHYSIC_MASS));
 			motionBrickList.add(new SetBounceFactorBrick(sprite, BrickValues.PHYSIC_BOUNCE_FACTOR * 100));
 			motionBrickList.add(new SetFrictionBrick(sprite, BrickValues.PHYSIC_FRICTION * 100));

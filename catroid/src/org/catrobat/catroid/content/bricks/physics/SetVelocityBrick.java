@@ -178,7 +178,7 @@ public class SetVelocityBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		//		sequence.addAction(ExtendedActions.setVelocity(sprite, physicObject, velocityX, velocityY));
+		//		sequence.addAction(ExtendedActions.setVelocity(sprite, physicsObject, velocityX, velocityY));
 		sequence.addAction(sprite.getActionFactory().createSetVelocityAction(sprite, velocityX, velocityY));
 		return null;
 	}

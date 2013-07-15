@@ -20,28 +20,41 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.actions.physics;
+package org.catrobat.catroid.physics;
 
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicObject.Type;
+import org.catrobat.catroid.content.Look;
 
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
+import com.badlogic.gdx.math.Vector2;
 
-public class SetPhysicObjectTypeAction extends TemporalAction {
+public final class PhysicsWorldConverter {
 
-	private PhysicObject physicObject;
-	private Type type;
+	public static float angleBox2dToCat(float angle) {
+		float direction = (float) (Math.toDegrees(angle) + Look.DEGREE_UI_OFFSET) % 360;
+		if (direction < 0) {
+			direction += 360f;
+		}
+		direction = 180f - direction;
 
-	@Override
-	protected void update(float percent) {
-		physicObject.setType(type);
+		return direction;
 	}
 
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
+	public static float angleCatToBox2d(float angle) {
+		return (float) Math.toRadians((-angle + Look.DEGREE_UI_OFFSET) % 360);
 	}
 
-	public void setType(Type type) {
-		this.type = type;
+	public static float lengthCatToBox2d(float length) {
+		return length / PhysicsWorld.RATIO;
+	}
+
+	public static float lengthBox2dToCat(float length) {
+		return length * PhysicsWorld.RATIO;
+	}
+
+	public static Vector2 vecCatToBox2d(Vector2 vector) {
+		return new Vector2(lengthCatToBox2d(vector.x), lengthCatToBox2d(vector.y));
+	}
+
+	public static Vector2 vecBox2dToCat(Vector2 vector) {
+		return new Vector2(lengthBox2dToCat(vector.x), lengthBox2dToCat(vector.y));
 	}
 }

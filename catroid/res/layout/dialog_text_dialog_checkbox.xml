@@ -37,7 +37,7 @@
         android:singleLine="true" />
 
     <CheckBox
-        android:id="@+id/new_sprite_dialog_physic_checkbox"
+        android:id="@+id/new_sprite_dialog_physics_checkbox"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="PhysicsObject" />

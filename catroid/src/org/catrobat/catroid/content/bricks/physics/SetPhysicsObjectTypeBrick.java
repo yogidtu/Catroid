@@ -28,8 +28,8 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BrickBaseType;
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicObject.Type;
+import org.catrobat.catroid.physics.PhysicsObject;
+import org.catrobat.catroid.physics.PhysicsObject.Type;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -49,16 +49,16 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class SetPhysicObjectTypeBrick extends BrickBaseType {
+public class SetPhysicsObjectTypeBrick extends BrickBaseType {
 	private static final long serialVersionUID = 1L;
 
 	private Type type;
 	private transient AdapterView<?> adapterView;
 
-	public SetPhysicObjectTypeBrick() {
+	public SetPhysicsObjectTypeBrick() {
 	}
 
-	public SetPhysicObjectTypeBrick(Sprite sprite, PhysicObject.Type type) {
+	public SetPhysicsObjectTypeBrick(Sprite sprite, PhysicsObject.Type type) {
 		this.sprite = sprite;
 		this.type = type;
 	}
@@ -75,7 +75,7 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType {
 
 	@Override
 	public Brick clone() {
-		return new SetPhysicObjectTypeBrick(sprite, type);
+		return new SetPhysicsObjectTypeBrick(sprite, type);
 	}
 
 	@Override
@@ -84,10 +84,10 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType {
 			return view;
 		}
 
-		view = View.inflate(context, R.layout.brick_set_physic_object_type, null);
+		view = View.inflate(context, R.layout.brick_set_physics_object_type, null);
 		view = getViewWithAlpha(alphaValue);
 
-		setCheckboxView(R.id.brick_set_physic_object_checkbox);
+		setCheckboxView(R.id.brick_set_physics_object_checkbox);
 		final Brick brickInstance = this;
 		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -99,7 +99,7 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType {
 
 		});
 
-		final Spinner spinner = (Spinner) view.findViewById(R.id.brick_set_physic_object_type_spinner);
+		final Spinner spinner = (Spinner) view.findViewById(R.id.brick_set_physics_object_type_spinner);
 		spinner.setAdapter(createAdapter(context));
 		spinner.setSelection(type.ordinal());
 
@@ -109,7 +109,7 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				if (position < PhysicObject.Type.values().length) {
+				if (position < PhysicsObject.Type.values().length) {
 					type = Type.values()[position];
 					adapterView = parent;
 				}
@@ -127,7 +127,7 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType {
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item);
 		arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-		for (String type : context.getResources().getStringArray(R.array.physic_object_types)) {
+		for (String type : context.getResources().getStringArray(R.array.physics_object_types)) {
 			arrayAdapter.add(type);
 		}
 
@@ -136,12 +136,12 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType {
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_physic_object_layout);
+		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_set_physics_object_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
 
-		Spinner lookbrickSpinner = (Spinner) view.findViewById(R.id.brick_set_physic_object_type_spinner);
-		TextView lookbrickTextView = (TextView) view.findViewById(R.id.brick_set_physic_object_text_view);
+		Spinner lookbrickSpinner = (Spinner) view.findViewById(R.id.brick_set_physics_object_type_spinner);
+		TextView lookbrickTextView = (TextView) view.findViewById(R.id.brick_set_physics_object_text_view);
 
 		ColorStateList color = lookbrickTextView.getTextColors().withAlpha(alphaValue);
 		lookbrickTextView.setTextColor(color);
@@ -157,19 +157,19 @@ public class SetPhysicObjectTypeBrick extends BrickBaseType {
 	@Override
 	public View getPrototypeView(Context context) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View view = inflater.inflate(R.layout.brick_set_physic_object_type, null);
-		Spinner pointToSpinner = (Spinner) view.findViewById(R.id.brick_set_physic_object_type_spinner);
+		View view = inflater.inflate(R.layout.brick_set_physics_object_type, null);
+		Spinner pointToSpinner = (Spinner) view.findViewById(R.id.brick_set_physics_object_type_spinner);
 		pointToSpinner.setFocusableInTouchMode(false);
 		pointToSpinner.setFocusable(false);
 		SpinnerAdapter pointToSpinnerAdapter = createAdapter(context);
 		pointToSpinner.setAdapter(pointToSpinnerAdapter);
-		pointToSpinner.setSelection(PhysicObject.Type.DYNAMIC.ordinal());
+		pointToSpinner.setSelection(PhysicsObject.Type.DYNAMIC.ordinal());
 		return view;
 	}
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		//		sequence.addAction(ExtendedActions.setPhysicObjectType(sprite, physicObject, type));
+		//		sequence.addAction(ExtendedActions.setPhysicObjectType(sprite, physicsObject, type));
 		sequence.addAction(sprite.getActionFactory().createSetPhysicObjectTypeAction(sprite, type));
 		return null;
 	}

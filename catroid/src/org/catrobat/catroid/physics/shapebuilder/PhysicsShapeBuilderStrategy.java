@@ -20,41 +20,12 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.physics;
+package org.catrobat.catroid.physics.shapebuilder;
 
-import org.catrobat.catroid.content.Look;
+import org.catrobat.catroid.common.LookData;
 
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Shape;
 
-public final class PhysicWorldConverter {
-
-	public static float angleBox2dToCat(float angle) {
-		float direction = (float) (Math.toDegrees(angle) + Look.DEGREE_UI_OFFSET) % 360;
-		if (direction < 0) {
-			direction += 360f;
-		}
-		direction = 180f - direction;
-
-		return direction;
-	}
-
-	public static float angleCatToBox2d(float angle) {
-		return (float) Math.toRadians((-angle + Look.DEGREE_UI_OFFSET) % 360);
-	}
-
-	public static float lengthCatToBox2d(float length) {
-		return length / PhysicWorld.RATIO;
-	}
-
-	public static float lengthBox2dToCat(float length) {
-		return length * PhysicWorld.RATIO;
-	}
-
-	public static Vector2 vecCatToBox2d(Vector2 vector) {
-		return new Vector2(lengthCatToBox2d(vector.x), lengthCatToBox2d(vector.y));
-	}
-
-	public static Vector2 vecBox2dToCat(Vector2 vector) {
-		return new Vector2(lengthBox2dToCat(vector.x), lengthBox2dToCat(vector.y));
-	}
+public interface PhysicsShapeBuilderStrategy {
+	public Shape[] build(LookData lookData);
 }

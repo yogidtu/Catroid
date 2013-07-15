@@ -23,23 +23,23 @@
 package org.catrobat.catroid.content.actions.physics;
 
 import org.catrobat.catroid.content.actions.SetLookAction;
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.PhysicsObject;
+import org.catrobat.catroid.physics.PhysicsWorld;
 
 public class SetLookPhysicsAction extends SetLookAction {
-	private PhysicWorld physicWorld;
-	private PhysicObject physicObject;
+	private PhysicsWorld physicsWorld;
+	private PhysicsObject physicsObject;
 
 	@Override
-	public void physicUpdateHook() {
-		physicWorld.changeLook(physicObject, sprite.look);
+	public void physicsUpdateHook() {
+		physicsWorld.changeLook(physicsObject, sprite.look);
 	}
 
-	public void setPhysicWorld(PhysicWorld physicWorld) {
-		this.physicWorld = physicWorld;
+	public void setPhysicWorld(PhysicsWorld physicsWorld) {
+		this.physicsWorld = physicsWorld;
 	}
 
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
+	public void setPhysicObject(PhysicsObject physicsObject) {
+		this.physicsObject = physicsObject;
 	}
 }

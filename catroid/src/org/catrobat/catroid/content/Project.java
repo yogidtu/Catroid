@@ -32,7 +32,7 @@ import org.catrobat.catroid.common.MessageContainer;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
-import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.PhysicsWorld;
 import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
@@ -52,7 +52,7 @@ public class Project implements Serializable {
 	@XStreamAlias("variables")
 	private UserVariablesContainer userVariables = null;
 
-	private transient PhysicWorld physicWorld;
+	private transient PhysicsWorld physicsWorld;
 
 	public Project(Context context, String name) {
 		xmlHeader.setProgramName(name);
@@ -76,7 +76,7 @@ public class Project implements Serializable {
 			return;
 		}
 
-		physicWorld = new PhysicWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight);
+		physicsWorld = new PhysicsWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight);
 		xmlHeader.setApplicationName(context.getString(R.string.app_name));
 		Sprite background = new Sprite(context.getString(R.string.background));
 		background.look.setZIndex(0);
@@ -163,19 +163,19 @@ public class Project implements Serializable {
 
 	// default constructor for XMLParser
 	public Project() {
-		physicWorld = new PhysicWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight);
+		physicsWorld = new PhysicsWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight);
 	}
 
 	public UserVariablesContainer getUserVariables() {
 		return userVariables;
 	}
 
-	public PhysicWorld getPhysicWorld() {
-		return physicWorld;
+	public PhysicsWorld getPhysicWorld() {
+		return physicsWorld;
 	}
 
-	public PhysicWorld resetPhysicWorld() {
-		return (physicWorld = new PhysicWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight));
+	public PhysicsWorld resetPhysicWorld() {
+		return (physicsWorld = new PhysicsWorld(xmlHeader.virtualScreenWidth, xmlHeader.virtualScreenHeight));
 	}
 
 	public void removeUnusedBroadcastMessages() {

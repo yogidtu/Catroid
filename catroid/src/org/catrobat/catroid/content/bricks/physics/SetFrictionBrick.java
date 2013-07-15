@@ -150,7 +150,7 @@ public class SetFrictionBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		//		sequence.addAction(ExtendedActions.setFriction(sprite, physicObject, friction));
+		//		sequence.addAction(ExtendedActions.setFriction(sprite, physicsObject, friction));
 		sequence.addAction(sprite.getActionFactory().createSetFrictionAction(sprite, friction));
 		return null;
 	}

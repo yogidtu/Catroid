@@ -58,13 +58,13 @@ public class NewSpritePhysicDialog extends DialogFragment {
 	public static final String DIALOG_FRAGMENT_TAG = "dialog_new_sprite";
 
 	private EditText input;
-	private CheckBox physicCheckbox;
+	private CheckBox physicsCheckbox;
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_text_dialog_checkbox, null);
 		input = (EditText) dialogView.findViewById(R.id.dialog_text_checkbox_EditText);
-		physicCheckbox = (CheckBox) dialogView.findViewById(R.id.new_sprite_dialog_physic_checkbox);
+		physicsCheckbox = (CheckBox) dialogView.findViewById(R.id.new_sprite_dialog_physics_checkbox);
 
 		if (getHint() != null) {
 			input.setHint(getHint());
@@ -205,7 +205,7 @@ public class NewSpritePhysicDialog extends DialogFragment {
 		}
 
 		Sprite sprite;
-		if (physicCheckbox.isChecked()) {
+		if (physicsCheckbox.isChecked()) {
 			sprite = new PhysicSprite(newSpriteName);
 		} else {
 			sprite = new Sprite(newSpriteName);

@@ -265,8 +265,8 @@ public class Utils {
 
 	public static int getPhysicalPixels(int densityIndependentPixels, Context context) {
 		final float scale = context.getResources().getDisplayMetrics().density;
-		int physicalPixels = (int) (densityIndependentPixels * scale + 0.5f);
-		return physicalPixels;
+		int physicsalPixels = (int) (densityIndependentPixels * scale + 0.5f);
+		return physicsalPixels;
 	}
 
 	public static void saveToPreferences(Context context, String key, String message) {

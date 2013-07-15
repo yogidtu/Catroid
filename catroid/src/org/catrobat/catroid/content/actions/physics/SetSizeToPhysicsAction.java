@@ -23,23 +23,23 @@
 package org.catrobat.catroid.content.actions.physics;
 
 import org.catrobat.catroid.content.actions.SetSizeToAction;
-import org.catrobat.catroid.physics.PhysicObject;
-import org.catrobat.catroid.physics.PhysicWorld;
+import org.catrobat.catroid.physics.PhysicsObject;
+import org.catrobat.catroid.physics.PhysicsWorld;
 
 public class SetSizeToPhysicsAction extends SetSizeToAction {
-	private PhysicObject physicObject;
-	private PhysicWorld physicWorld;
+	private PhysicsObject physicsObject;
+	private PhysicsWorld physicsWorld;
 
 	@Override
-	public void physicUpdateHook() {
-		physicWorld.changeLook(physicObject, sprite.look);
+	public void physicsUpdateHook() {
+		physicsWorld.changeLook(physicsObject, sprite.look);
 	}
 
-	public void setPhysicWorld(PhysicWorld physicWorld) {
-		this.physicWorld = physicWorld;
+	public void setPhysicWorld(PhysicsWorld physicsWorld) {
+		this.physicsWorld = physicsWorld;
 	}
 
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
+	public void setPhysicObject(PhysicsObject physicsObject) {
+		this.physicsObject = physicsObject;
 	}
 }

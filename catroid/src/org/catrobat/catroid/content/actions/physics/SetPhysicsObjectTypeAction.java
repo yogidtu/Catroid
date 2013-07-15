@@ -20,12 +20,28 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.physics.shapebuilder;
+package org.catrobat.catroid.content.actions.physics;
 
-import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.physics.PhysicsObject;
+import org.catrobat.catroid.physics.PhysicsObject.Type;
 
-import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
-public interface PhysicShapeBuilderStrategy {
-	public Shape[] build(LookData lookData);
+public class SetPhysicsObjectTypeAction extends TemporalAction {
+
+	private PhysicsObject physicsObject;
+	private Type type;
+
+	@Override
+	protected void update(float percent) {
+		physicsObject.setType(type);
+	}
+
+	public void setPhysicObject(PhysicsObject physicsObject) {
+		this.physicsObject = physicsObject;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
 }

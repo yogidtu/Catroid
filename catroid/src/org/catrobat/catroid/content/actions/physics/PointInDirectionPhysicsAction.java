@@ -24,27 +24,27 @@ package org.catrobat.catroid.content.actions.physics;
 
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.physics.PhysicObject;
+import org.catrobat.catroid.physics.PhysicsObject;
 
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
 public class PointInDirectionPhysicsAction extends TemporalAction {
 
 	private Sprite sprite;
-	private PhysicObject physicObject;
+	private PhysicsObject physicsObject;
 	private Formula degrees;
 
 	@Override
 	protected void update(float percent) {
-		physicObject.setDirection(degrees.interpretFloat(sprite));
+		physicsObject.setDirection(degrees.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 
-	public void setPhysicObject(PhysicObject physicObject) {
-		this.physicObject = physicObject;
+	public void setPhysicObject(PhysicsObject physicsObject) {
+		this.physicsObject = physicsObject;
 	}
 
 	public void setDegreesInUserInterfaceDimensionUnit(Formula degrees) {
