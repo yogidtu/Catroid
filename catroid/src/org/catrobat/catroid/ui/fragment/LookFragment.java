@@ -32,7 +32,7 @@ import java.util.SortedSet;
 import java.util.concurrent.locks.Lock;
 
 import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.io.StorageHandler;

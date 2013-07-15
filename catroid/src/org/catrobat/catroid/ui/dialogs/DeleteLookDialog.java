@@ -36,7 +36,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 
 public class DeleteLookDialog extends DialogFragment {
 

@@ -31,7 +31,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 
 public class CustomIconContextMenu extends DialogFragment implements DialogInterface.OnCancelListener,
 		DialogInterface.OnDismissListener {

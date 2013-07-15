@@ -25,7 +25,7 @@ package org.catrobat.catroid.formulaeditor;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 
 import android.content.Context;
 import android.util.Log;

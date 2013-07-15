@@ -35,7 +35,7 @@ public final class Constants {
 	public static final String RECORDING_EXTENTION = ".mp3";
 
 	public static final String DEFAULT_ROOT = Environment.getExternalStorageDirectory().getAbsolutePath()
-			+ "/Pocket Code";
+			+ "/Pocket Code Robot Albert";
 	public static final String TMP_PATH = DEFAULT_ROOT + "/tmp";
 	public static final String IMAGE_DIRECTORY = "images";
 	public static final String SOUND_DIRECTORY = "sounds";
@@ -60,8 +60,7 @@ public final class Constants {
 
 	//Various:
 	public static final int BUFFER_8K = 8 * 1024;
-	public static final String POCKET_PAINT_DOWNLOAD_LINK = "market://details?id="
-			+ POCKET_PAINT_PACKAGE_NAME;
+	public static final String POCKET_PAINT_DOWNLOAD_LINK = "market://details?id=" + POCKET_PAINT_PACKAGE_NAME;
 	public static final String PREF_PROJECTNAME_KEY = "projectName";
 
 	//Services + Notifications

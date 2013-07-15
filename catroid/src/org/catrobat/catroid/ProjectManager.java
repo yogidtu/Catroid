@@ -34,6 +34,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.Utils;
+import org.catrobat.robotalbert.R;
 
 import android.content.Context;
 import android.os.AsyncTask;

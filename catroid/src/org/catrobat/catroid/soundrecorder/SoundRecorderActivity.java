@@ -24,7 +24,7 @@ package org.catrobat.catroid.soundrecorder;
 
 import java.io.IOException;
 
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.utils.Utils;
 

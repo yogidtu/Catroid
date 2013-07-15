@@ -38,7 +38,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 
 /**
  * Simple dialog for entering text with ok and cancel button will not permit to

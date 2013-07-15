@@ -45,7 +45,7 @@ package org.catrobat.catroid.bluetooth;
 import java.util.ArrayList;
 import java.util.Set;
 
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

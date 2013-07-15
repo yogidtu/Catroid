@@ -25,7 +25,7 @@ package org.catrobat.catroid.transfers;
 import java.io.File;
 import java.io.IOException;
 
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.utils.UtilDeviceInfo;
 import org.catrobat.catroid.utils.UtilZip;

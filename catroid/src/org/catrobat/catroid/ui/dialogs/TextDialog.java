@@ -22,7 +22,7 @@
  */
 package org.catrobat.catroid.ui.dialogs;
 
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

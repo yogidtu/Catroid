@@ -22,7 +22,7 @@
  */
 package org.catrobat.catroid.ui.fragment;
 
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 
 import android.app.Dialog;
 import android.content.Context;

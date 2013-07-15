@@ -24,7 +24,7 @@ package org.catrobat.catroid.formulaeditor;
 
 import java.io.Serializable;
 
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 

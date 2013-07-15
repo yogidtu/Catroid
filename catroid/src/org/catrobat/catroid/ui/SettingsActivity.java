@@ -22,7 +22,7 @@
  */
 package org.catrobat.catroid.ui;
 
-import org.catrobat.catroid.R;
+import org.catrobat.robotalbert.R;
 
 import android.content.Intent;
 import android.os.Bundle;
