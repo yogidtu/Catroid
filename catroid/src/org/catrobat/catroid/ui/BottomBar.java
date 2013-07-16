@@ -47,15 +47,17 @@ public class BottomBar {
 		}
 	}
 
-	public static void setButtonVisible(Activity activity) {
+	public static void setButtonVisible(Activity activity, boolean visible) {
 		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
 
 		if (bottomBarLayout != null) {
-			bottomBarLayout.findViewById(R.id.button_add).setVisibility(LinearLayout.VISIBLE);
-			bottomBarLayout.findViewById(R.id.button_play).setVisibility(LinearLayout.VISIBLE);
-			bottomBarLayout.findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
-			bottomBarLayout.findViewById(R.id.bottom_bar_separator).setVisibility(View.VISIBLE);
-			bottomBarLayout.findViewById(R.id.button_play).setVisibility(View.VISIBLE);
+			int forLinearLayout = visible ? LinearLayout.VISIBLE : LinearLayout.GONE;
+			int forView = visible ? View.VISIBLE : View.GONE;
+			bottomBarLayout.findViewById(R.id.button_add).setVisibility(forLinearLayout);
+			bottomBarLayout.findViewById(R.id.button_play).setVisibility(forLinearLayout);
+			bottomBarLayout.findViewById(R.id.bottom_bar).setVisibility(forView);
+			bottomBarLayout.findViewById(R.id.bottom_bar_separator).setVisibility(forView);
+			bottomBarLayout.findViewById(R.id.button_play).setVisibility(forView);
 		}
 	}
 

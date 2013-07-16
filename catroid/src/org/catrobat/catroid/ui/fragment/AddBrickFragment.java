@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
@@ -35,14 +34,11 @@ import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.adapter.PrototypeBrickAdapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,30 +107,26 @@ public class AddBrickFragment extends SherlockListFragment {
 				+ currentSprite.getNextNewUserBrickId());
 		newBrick.addUILocalizedField(R.string.example_user_brick_field);
 
-		adapter.refreshBrickList(currentSprite.getUserBrickList());
+		setupSelectedBrickCategory();
 
-		//getListView().set
+		View recentlyAddedBrickView = newBrick.getView(getActivity(), 0, adapter);
 
-		DragEvent beginDrag = makeDragEvent(100, (int) (ScreenValues.SCREEN_HEIGHT * 0.5f),
-				DragEvent.ACTION_DRAG_STARTED);
+		//View recentlyAddedBrickView = getListView().getChildAt(getListView().getChildCount() - 1);
 
-		DragEvent endDrag = makeDragEvent(100, 0, DragEvent.ACTION_DROP);
+		// This should work, but it does not.
+		//Rect rectangle = new Rect(recentlyAddedBrickView.getLeft(), recentlyAddedBrickView.getTop(),
+		//		recentlyAddedBrickView.getRight(), recentlyAddedBrickView.getBottom());
+		//getListView().requestRectangleOnScreen(rectangle);
 
-		getListView().dispatchDragEvent(beginDrag);
-		getListView().dispatchDragEvent(endDrag);
-	}
+		// this seems to work, but it doesn't animate (smooth scroll)
 
-	@SuppressLint("NewApi")
-	private DragEvent makeDragEvent(int x, int y, int action) {
-		Parcel parcel = Parcel.obtain();
-		parcel.writeInt(action);
-		parcel.writeFloat(x);
-		parcel.writeFloat(y);
-		parcel.writeInt(0); // Result
-		parcel.writeInt(0); // No Clipdata
-		parcel.writeInt(0); // No Clip Description
-		parcel.setDataPosition(0);
-		return DragEvent.CREATOR.createFromParcel(parcel);
+		//int scroll = recentlyAddedBrickView.getBottom() - getListView().getScrollY() - getListView().getHeight();
+		//if (scroll > 0) {
+		//	getListView().scrollBy(0, scroll);
+		//}
+
+		getListView().setSelection(getListView().getCount());
+
 	}
 
 	@Override
@@ -174,7 +166,9 @@ public class AddBrickFragment extends SherlockListFragment {
 	public void onDestroy() {
 		resetActionBar();
 		addButtonHandler = null;
-		BottomBar.disableButtons(getActivity());
+		BottomBar.setButtonVisible(getActivity(), true);
+		getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+
 		super.onDestroy();
 	}
 

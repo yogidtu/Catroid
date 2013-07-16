@@ -977,8 +977,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 		items.add(context.getText(R.string.brick_context_dialog_delete_brick));
 
-		//copyBrick
-		items.add(context.getText(R.string.brick_context_dialog_edit_brick));
+		items.add(context.getText(R.string.brick_context_dialog_copy_brick));
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -1003,7 +1002,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 					view.performLongClick();
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
 					launchBrickScriptActivityOnBrickAt(context, itemPosition);
-				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
+				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_copy_brick))) {
 					copyBrickListAndProject(itemPosition, false);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_delete_brick))) {
 					showConfirmDeleteDialog(itemPosition);

@@ -114,8 +114,7 @@ public class CategoryBricksFactory {
 		} else if (category.equals(context.getString(R.string.category_variables))) {
 			tempList = setupVariablesCategoryList(sprite);
 		} else if (category.equals(context.getString(R.string.category_user_bricks))) {
-			tempList = setupUserBricksCategoryList(sprite);
-			Log.d("FOREST", "setupUserBricksCategoryList().size = " + tempList.size());
+			return setupUserBricksCategoryList(sprite);
 		} else if (category.equals(context.getString(R.string.category_lego_nxt))) {
 			tempList = setupLegoNxtCategoryList(sprite);
 		}

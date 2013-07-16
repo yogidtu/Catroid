@@ -46,8 +46,8 @@ public class PrototypeBrickAdapter extends BaseAdapter {
 		this.brickList = brickList;
 	}
 
-	public void refreshBrickList(List<Brick> newList) {
-		brickList = newList;
+	public void addBrickToList(Brick brick) {
+		brickList.add(brick);
 		notifyDataSetChanged();
 	}
 
