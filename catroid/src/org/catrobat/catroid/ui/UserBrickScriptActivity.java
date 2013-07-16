@@ -64,7 +64,7 @@ public class UserBrickScriptActivity extends ScriptActivity {
 		BrickAdapter adapter = getScriptFragment().getAdapter();
 
 		adapter.setUserBrick(userBrick);
-		adapter.updateBrickList();
+		adapter.updateProjectBrickList();
 	}
 
 	public void setupActionBar() {
