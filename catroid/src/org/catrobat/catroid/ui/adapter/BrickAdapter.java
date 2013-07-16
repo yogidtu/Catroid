@@ -353,12 +353,20 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			if (draggedBrick instanceof ScriptBrick) {
 				addScriptToProject(to, (ScriptBrick) draggedBrick);
 			} else {
-				addBrickToPosition(to, draggedBrick);
+				if (userScript != null) {
+					addBrickToPositionInUserScript(to, draggedBrick);
+				} else {
+					addBrickToPositionInProject(to, draggedBrick);
+				}
 			}
 
 			addingNewBrick = false;
 		} else {
-			moveExistingBrick(fromBeginDrag, toEndDrag);
+			if (userScript != null) {
+				moveUserBrick(fromBeginDrag, toEndDrag);
+			} else {
+				moveExistingProjectBrick(fromBeginDrag, toEndDrag);
+			}
 		}
 
 		draggedBrick = null;
@@ -404,13 +412,13 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		ProjectManager.getInstance().setCurrentScript(newScript);
 	}
 
-	private void moveExistingBrick(int from, int to) {
-		if (userScript != null) {
-			Brick brick = userScript.getBrick(getPositionInUserScript(from));
-			userScript.removeBrick(brick);
-			userScript.addBrick(getPositionInUserScript(to), brick);
-			return;
-		}
+	private void moveUserBrick(int from, int to) {
+		Brick brick = userScript.getBrick(getPositionInUserScript(from));
+		userScript.removeBrick(brick);
+		userScript.addBrick(getPositionInUserScript(to), brick);
+	}
+
+	private void moveExistingProjectBrick(int from, int to) {
 
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 
@@ -436,12 +444,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		toScript.addBrick(brickPositionTo, brick);
 	}
 
-	private void addBrickToPosition(int position, Brick brick) {
-
-		if (userScript != null) {
-			addBrickToPositionInUserScript(position, brick);
-			return;
-		}
+	private void addBrickToPositionInProject(int position, Brick brick) {
 
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 
@@ -658,6 +661,58 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		notifyDataSetChanged();
 	}
 
+	public void addNewMultipleBricks(int position, Brick brickToBeAdded) {
+
+		if (draggedBrick != null) {
+			Log.w(TAG, "Want to add Brick while there is another one currently dragged.");
+			return;
+		}
+
+		Sprite currentSprite = ProjectManager.INSTANCE.getCurrentSprite();
+		int scriptCount = currentSprite.getNumberOfScripts();
+		if (scriptCount == 0 && brickToBeAdded instanceof ScriptBrick) {
+			currentSprite.addScript(((ScriptBrick) brickToBeAdded).initScript(currentSprite));
+			initBrickList();
+			notifyDataSetChanged();
+			return;
+		}
+
+		if (position < 0) {
+			position = 0;
+		} else if (position > brickList.size()) {
+			position = brickList.size();
+		}
+
+		if (brickToBeAdded instanceof ScriptBrick) {
+
+			brickList.add(position, brickToBeAdded);
+			position = getNewPositionForScriptBrick(position, brickToBeAdded);
+			brickList.remove(brickToBeAdded);
+			brickList.add(position, brickToBeAdded);
+			scrollToPosition(position);
+
+		} else {
+
+			position = getNewPositionIfEndingBrickIsThere(position, brickToBeAdded);
+			position = position <= 0 ? 1 : position;
+			position = position > brickList.size() ? brickList.size() : position;
+			brickList.add(position, brickToBeAdded);
+
+		}
+
+		if (scriptCount == 0) {
+			Script script = new StartScript(currentSprite);
+			currentSprite.addScript(script);
+			brickList.add(0, script.getScriptBrick());
+			positionOfInsertedBrick = 1;
+		}
+
+		notifyDataSetChanged();
+
+		ProjectManager.getInstance().saveProject();
+
+	}
+
 	private int getNewPositionForScriptBrick(int position, Brick brick) {
 		if (brickList.size() == 0) {
 			return 0;
@@ -851,7 +906,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		return wrapper;
 	}
 
-	public void updateBrickList() {
+	public void updateProjectBrickList() {
 		initBrickList();
 		notifyDataSetChanged();
 	}
@@ -913,6 +968,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			items.add(context.getText(R.string.brick_context_dialog_animate_bricks));
 		}
 		items.add(context.getText(R.string.brick_context_dialog_delete_brick));
+		items.add(context.getText(R.string.brick_context_dialog_copy_brick));
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -937,6 +993,8 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 					view.performLongClick();
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
 					launchBrickScriptActivityOnBrickAt(context, itemPosition);
+				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_copy_brick))) {
+					copyBrickListAndProject(itemPosition, false);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_delete_brick))) {
 					showConfirmDeleteDialog(itemPosition);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_animate_bricks))) {
@@ -957,6 +1015,19 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		if ((selectMode == ListView.CHOICE_MODE_NONE)) {
 			alertDialog.show();
 		}
+	}
+
+	protected void copyBrickListAndProject(int itemPosition, boolean b) {
+
+		Brick copy;
+
+		Brick origin = (Brick) (dragAndDropListView.getItemAtPosition(itemPosition));
+
+		copy = origin.clone();
+
+		addNewBrick((brickList.size() - 1), copy);
+
+		notifyDataSetChanged();
 	}
 
 	public void launchBrickScriptActivityOnBrickAt(Context context, int index) {
@@ -1259,12 +1330,12 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		spriteToEdit.removeScript(scriptToDelete);
 		if (spriteToEdit.getNumberOfScripts() == 0) {
 			ProjectManager.INSTANCE.setCurrentScript(null);
-			updateBrickList();
+			updateProjectBrickList();
 		} else {
 			int lastScriptIndex = spriteToEdit.getNumberOfScripts() - 1;
 			Script lastScript = spriteToEdit.getScript(lastScriptIndex);
 			ProjectManager.INSTANCE.setCurrentScript(lastScript);
-			updateBrickList();
+			updateProjectBrickList();
 		}
 	}
 

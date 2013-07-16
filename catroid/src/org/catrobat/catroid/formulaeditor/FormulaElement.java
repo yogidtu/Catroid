@@ -212,7 +212,6 @@ public class FormulaElement implements Serializable {
 				if (isInteger(minimum) && isInteger(maximum)
 						&& !(rightChild.type == ElementType.NUMBER && rightChild.value.contains("."))
 						&& !(leftChild.type == ElementType.NUMBER && leftChild.value.contains("."))) {
-					//Log.i("info", "randomDouble: " + randomDouble);
 
 					if ((Math.abs(randomDouble) - (int) Math.abs(randomDouble)) >= 0.5) {
 						return Double.valueOf(randomDouble.intValue()) + 1;
@@ -336,7 +335,7 @@ public class FormulaElement implements Serializable {
 				returnValue = (double) sprite.look.getBrightnessInUserInterfaceDimensionUnit();
 				break;
 			case OBJECT_GHOSTEFFECT:
-				returnValue = (double) sprite.look.getGhostEffectInUserInterfaceDimensionUnit();
+				returnValue = (double) sprite.look.getTransparencyInUserInterfaceDimensionUnit();
 				break;
 			case OBJECT_LAYER:
 				returnValue = (double) sprite.look.getZIndex();
