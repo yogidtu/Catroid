@@ -360,7 +360,6 @@
     <string name="brick_note_default_value">"Anmerkung hier hinzufügen…" </string>
     <string name="brick_broadcast_default_value">"Nachricht 1"</string>
     
-    <string name="brick_when_key_pressed">Wenn Taste gedrückt</string>
     <string name="brick_when_virtual_pad_pressed">Wenn virtuelles Steuerkreuz gedrückt</string>
     <string name="brick_when_virtual_button_pressed">Wenn virtuelle Taste gedrückt</string>
     <!--  -->
@@ -512,6 +511,14 @@
     <string name="formula_editor_variable_dialog_for_this_sprite_only">Nur für dieses Objekt</string>
     <string name="formula_editor_variable_dialog_hint">Namen eingeben</string>
     <string name="formula_editor_variable_context_action_item_selected">Variablen ausgewählt!</string>
+    <!--  -->
+
+	<!-- Virtual Gamepad -->
+    <string name="virtual_gamepad_pad_up">Oben</string>
+    <string name="virtual_gamepad_pad_down">Unten</string>
+    <string name="virtual_gamepad_pad_left">Links</string>
+    <string name="virtual_gamepad_pad_right">Rechts</string>
+    <string name="virtual_gamepad_button_press">drücken</string>
     <!--  -->
 
 </resources>

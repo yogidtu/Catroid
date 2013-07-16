@@ -36,14 +36,12 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.WhenKeyScript;
 import org.catrobat.catroid.content.WhenScript;
 import org.catrobat.catroid.content.WhenVirtualButtonScript;
 import org.catrobat.catroid.content.WhenVirtualPadScript;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BroadcastReceiverBrick;
 import org.catrobat.catroid.content.bricks.WhenBrick;
-import org.catrobat.catroid.content.bricks.WhenKeyBrick;
 import org.catrobat.catroid.content.bricks.WhenStartedBrick;
 import org.catrobat.catroid.content.bricks.WhenVirtualButtonBrick;
 import org.catrobat.catroid.content.bricks.WhenVirtualPadBrick;
@@ -87,13 +85,11 @@ public class XMLValidatingTest extends AndroidTestCase {
 		Script startScript = new StartScript(sprite);
 		Script whenScript = new WhenScript(sprite);
 		Script broadcastScript = new BroadcastScript(sprite);
-		Script whenKeyScript = new WhenKeyScript(sprite);
 		Script whenVirtualPadScript = new WhenVirtualPadScript(sprite);
 		Script whenVirtualButtonScript = new WhenVirtualButtonScript(sprite);
 		sprite.addScript(startScript);
 		sprite.addScript(whenScript);
 		sprite.addScript(broadcastScript);
-		sprite.addScript(whenKeyScript);
 		sprite.addScript(whenVirtualPadScript);
 		sprite.addScript(whenVirtualButtonScript);
 		project.addSprite(sprite);
@@ -116,7 +112,6 @@ public class XMLValidatingTest extends AndroidTestCase {
 			for (Brick brick : brickList) {
 				if (brick.getClass().equals(WhenBrick.class) || brick.getClass().equals(WhenStartedBrick.class)
 						|| brick.getClass().equals(BroadcastReceiverBrick.class)
-						|| brick.getClass().equals(WhenKeyBrick.class)
 						|| brick.getClass().equals(WhenVirtualPadBrick.class)
 						|| brick.getClass().equals(WhenVirtualButtonBrick.class)) {
 					Log.i("XMLValidationtest", "These bricks are not in the new schema");
