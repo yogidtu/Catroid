@@ -52,4 +52,21 @@
         <item>@string/add_look_draw_new_image</item>
     </string-array>
 
+    <!-- Xperia Play key spinner -->
+	<string-array name="xperia_play_key_chooser">
+		<item>@string/xperia_play_key_chooser_direction_up</item>
+		<item>@string/xperia_play_key_chooser_direction_down</item>
+		<item>@string/xperia_play_key_chooser_direction_left</item>
+		<item>@string/xperia_play_key_chooser_direction_right</item>
+		<item>@string/xperia_play_key_chooser_cross</item>
+		<item>@string/xperia_play_key_chooser_circle</item>
+		<item>@string/xperia_play_key_chooser_square</item>
+		<item>@string/xperia_play_key_chooser_triangle</item>
+		<item>@string/xperia_play_key_chooser_left</item>
+		<item>@string/xperia_play_key_chooser_right</item>
+		<item>@string/xperia_play_key_chooser_start</item>
+		<item>@string/xperia_play_key_chooser_select</item>
+		<item>@string/xperia_play_key_chooser_menu</item>
+	</string-array>
+    
 </resources>

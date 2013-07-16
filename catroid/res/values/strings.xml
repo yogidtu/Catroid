@@ -373,6 +373,7 @@
     <string name="brick_variable_spinner_create_new_variable">New…</string>
     <string name="brick_note_default_value">"add comment here…"</string>
     <string name="brick_broadcast_default_value">"message 1"</string>
+    <string name="brick_when_key_pressed">When key pressed</string>
     <!--  -->
 
 
@@ -544,5 +545,22 @@
         <item quantity="other">Variables selected!</item>
     </plurals>
     <!--  -->
+    
+    
+	<!-- Formula Editor Strings -->
+	<string name="xperia_play_key_chooser_direction_up">directional pad (up)</string>
+	<string name="xperia_play_key_chooser_direction_down">directional pad (down)</string>
+	<string name="xperia_play_key_chooser_direction_left">directional pad (left)</string>
+	<string name="xperia_play_key_chooser_direction_right">directional pad (right)</string>
+	<string name="xperia_play_key_chooser_cross">cross</string>
+	<string name="xperia_play_key_chooser_circle">circle</string>
+	<string name="xperia_play_key_chooser_square">square</string>
+	<string name="xperia_play_key_chooser_triangle">triangle</string>
+	<string name="xperia_play_key_chooser_left">left</string>
+	<string name="xperia_play_key_chooser_right">right</string>
+	<string name="xperia_play_key_chooser_start">start</string>
+	<string name="xperia_play_key_chooser_select">select</string>
+	<string name="xperia_play_key_chooser_menu">menu</string>
+	<!--  -->
 
 </resources>

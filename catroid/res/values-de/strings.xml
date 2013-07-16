@@ -372,6 +372,7 @@
     <string name="brick_variable_spinner_create_new_variable">Neu…</string>
     <string name="brick_note_default_value">"Anmerkung hier hinzufügen…" </string>
     <string name="brick_broadcast_default_value">"Nachricht 1"</string>
+    <string name="brick_when_key_pressed">Wenn Taste gedrückt</string>
     <!--  -->
 
 
@@ -543,5 +544,22 @@
         <item quantity="other">Variablen ausgewählt!</item>
     </plurals>
     <!--  -->
-
+    
+    
+    <!-- Formula Editor Strings -->
+	<string name="xperia_play_key_chooser_direction_up">Steuerkreuz (Oben)</string>
+	<string name="xperia_play_key_chooser_direction_down">Steuerkreuz (Unten)</string>
+	<string name="xperia_play_key_chooser_direction_left">Steuerkreuz (Links)</string>
+	<string name="xperia_play_key_chooser_direction_right">Steuerkreuz (Rechts)</string>
+	<string name="xperia_play_key_chooser_cross">Kreuz</string>
+	<string name="xperia_play_key_chooser_circle">Kreis</string>
+	<string name="xperia_play_key_chooser_square">Quadrat</string>
+	<string name="xperia_play_key_chooser_triangle">Dreieck</string>
+	<string name="xperia_play_key_chooser_left">Links</string>
+	<string name="xperia_play_key_chooser_right">Rechts</string>
+	<string name="xperia_play_key_chooser_start">Start</string>
+	<string name="xperia_play_key_chooser_select">Select</string>
+	<string name="xperia_play_key_chooser_menu">Menü</string>
+	<!--  -->
+	
 </resources>
