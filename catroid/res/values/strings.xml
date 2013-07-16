@@ -556,6 +556,8 @@
     <!-- User Bricks strings  -->
     <string name="example_user_brick">Example</string>
     <string name="example_user_brick_field">Field1</string>
+    <string name="new_user_brick">New Brick</string>
+    <string name="new_user_brick_field">Field1</string>
     <!--  -->
     
 

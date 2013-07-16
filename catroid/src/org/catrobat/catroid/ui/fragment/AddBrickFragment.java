@@ -103,30 +103,13 @@ public class AddBrickFragment extends SherlockListFragment {
 	public void handleAddButton() {
 		Sprite currentSprite = ProjectManager.INSTANCE.getCurrentSprite();
 		UserBrick newBrick = new UserBrick(currentSprite);
-		newBrick.addUIText(scriptFragment.getString(R.string.example_user_brick) + " "
+		newBrick.addUIText(scriptFragment.getString(R.string.new_user_brick) + " "
 				+ currentSprite.getNextNewUserBrickId());
-		newBrick.addUILocalizedField(R.string.example_user_brick_field);
+		newBrick.addUILocalizedField(R.string.new_user_brick_field);
 
 		setupSelectedBrickCategory();
 
-		View recentlyAddedBrickView = newBrick.getView(getActivity(), 0, adapter);
-
-		//View recentlyAddedBrickView = getListView().getChildAt(getListView().getChildCount() - 1);
-
-		// This should work, but it does not.
-		//Rect rectangle = new Rect(recentlyAddedBrickView.getLeft(), recentlyAddedBrickView.getTop(),
-		//		recentlyAddedBrickView.getRight(), recentlyAddedBrickView.getBottom());
-		//getListView().requestRectangleOnScreen(rectangle);
-
-		// this seems to work, but it doesn't animate (smooth scroll)
-
-		//int scroll = recentlyAddedBrickView.getBottom() - getListView().getScrollY() - getListView().getHeight();
-		//if (scroll > 0) {
-		//	getListView().scrollBy(0, scroll);
-		//}
-
 		getListView().setSelection(getListView().getCount());
-
 	}
 
 	@Override
