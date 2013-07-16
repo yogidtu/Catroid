@@ -126,6 +126,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
+
 		menu.findItem(R.id.show_details).setVisible(false);
 		menu.findItem(R.id.rename).setVisible(false);
 		menu.findItem(R.id.edit_in_pocket_paint).setVisible(false);
@@ -197,6 +198,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
+
 		if (view.getId() == R.id.brick_list_view) {
 			menu.setHeaderTitle(R.string.script_context_menu_title);
 
@@ -214,6 +216,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 		switch (item.getItemId()) {
 			case R.id.script_menu_delete: {
+
 				showConfirmDeleteDialog(true);
 				break;
 			}
@@ -394,6 +397,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 	@Override
 	public void startDeleteActionMode() {
+
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
 
@@ -414,6 +418,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 	@Override
 	protected void showDeleteDialog() {
+
 		DeleteLookDialog deleteLookDialog = DeleteLookDialog.newInstance(selectedBrickPosition);
 		deleteLookDialog.show(getFragmentManager(), DeleteLookDialog.DIALOG_FRAGMENT_TAG);
 	}
@@ -474,6 +479,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
+
 			if (adapter.getAmountOfCheckedItems() == 0) {
 				clearCheckedBricksAndEnableButtons();
 			} else {
@@ -647,6 +653,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 	@Override
 	public void onBrickChecked() {
+
 		if (actionMode == null) {
 			return;
 		}

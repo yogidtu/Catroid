@@ -124,6 +124,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	public void initBrickList() {
+
 		if (userBrick != null) {
 			initBrickListUserScript();
 			return;
@@ -191,6 +192,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 	@Override
 	public void drag(int from, int to) {
+
 		if (to < 0 || to >= brickList.size()) {
 			to = brickList.size() - 1;
 		}
@@ -615,6 +617,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	public void addNewBrick(int position, Brick brickToBeAdded) {
+
 		if (draggedBrick != null) {
 			Log.w(TAG, "Want to add Brick while there is another one currently dragged.");
 			return;
@@ -636,16 +639,20 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 
 		if (brickToBeAdded instanceof ScriptBrick) {
+
 			brickList.add(position, brickToBeAdded);
 			position = getNewPositionForScriptBrick(position, brickToBeAdded);
 			brickList.remove(brickToBeAdded);
 			brickList.add(position, brickToBeAdded);
 			scrollToPosition(position);
+
 		} else {
+
 			position = getNewPositionIfEndingBrickIsThere(position, brickToBeAdded);
 			position = position <= 0 ? 1 : position;
 			position = position > brickList.size() ? brickList.size() : position;
 			brickList.add(position, brickToBeAdded);
+
 		}
 
 		initInsertedBrick = true;
@@ -659,6 +666,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 
 		notifyDataSetChanged();
+
 	}
 
 	public void addNewMultipleBricks(int position, Brick brickToBeAdded) {
@@ -968,7 +976,9 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			items.add(context.getText(R.string.brick_context_dialog_animate_bricks));
 		}
 		items.add(context.getText(R.string.brick_context_dialog_delete_brick));
-		items.add(context.getText(R.string.brick_context_dialog_copy_brick));
+
+		//copyBrick
+		items.add(context.getText(R.string.brick_context_dialog_edit_brick));
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -993,7 +1003,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 					view.performLongClick();
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
 					launchBrickScriptActivityOnBrickAt(context, itemPosition);
-				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_copy_brick))) {
+				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
 					copyBrickListAndProject(itemPosition, false);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_delete_brick))) {
 					showConfirmDeleteDialog(itemPosition);
@@ -1017,19 +1027,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 	}
 
-	protected void copyBrickListAndProject(int itemPosition, boolean b) {
-
-		Brick copy;
-
-		Brick origin = (Brick) (dragAndDropListView.getItemAtPosition(itemPosition));
-
-		copy = origin.clone();
-
-		addNewBrick((brickList.size() - 1), copy);
-
-		notifyDataSetChanged();
-	}
-
 	public void launchBrickScriptActivityOnBrickAt(Context context, int index) {
 		int temp[] = getScriptAndBrickIndexFromProject(index);
 		Script script = ProjectManager.INSTANCE.getCurrentSprite().getScript(temp[0]);
@@ -1046,6 +1043,19 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			context.startActivity(intent);
 
 		}
+	}
+
+	protected void copyBrickListAndProject(int itemPosition, boolean b) {
+
+		Brick copy;
+
+		Brick origin = (Brick) (dragAndDropListView.getItemAtPosition(itemPosition));
+
+		copy = origin.clone();
+
+		addNewBrick((brickList.size() - 1), copy);
+
+		notifyDataSetChanged();
 	}
 
 	private void showConfirmDeleteDialog(int itemPosition) {

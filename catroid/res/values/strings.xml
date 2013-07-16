@@ -1,4 +1,4 @@
-f<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--
  *  Catroid: An on-device visual programming system for Android devices
  *  Copyright (C) 2010-2013 The Catrobat Team
@@ -559,5 +559,8 @@ f<?xml version="1.0" encoding="utf-8" standalone="no"?>
     <!--  -->
     
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/catrobat/master
 </resources>
