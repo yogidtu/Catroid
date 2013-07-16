@@ -86,6 +86,11 @@ public class PhysicsWorld {
 			look.setXInUserInterfaceDimensionUnit(physicsObject.getX());
 			look.setYInUserInterfaceDimensionUnit(physicsObject.getY());
 			look.setDirectionInUserInterfaceDimensionUnit(physicsObject.getDirection());
+
+			System.out.println("Coordinates");
+			System.out.print("x: " + look.getXInUserInterfaceDimensionUnit());
+			System.out.print("y: " + look.getYInUserInterfaceDimensionUnit());
+			System.out.println();
 		}
 	}
 

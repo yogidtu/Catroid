@@ -35,7 +35,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 
 public class PhysicsShapeBuilder {
 	private final Map<String, Shape[]> shapeMap = new HashMap<String, Shape[]>();
-	private PhysicsShapeBuilderStrategy strategy = new PhysicsShapeBuilderStrategyFastHull();
+	private PhysicsShapeBuilderStrategy strategy = new PhysicsShapeBuilderJTS();
 
 	public PhysicsShapeBuilder() {
 	}
