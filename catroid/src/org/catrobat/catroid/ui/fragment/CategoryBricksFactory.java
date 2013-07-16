@@ -86,6 +86,7 @@ import org.catrobat.catroid.formulaeditor.Operators;
 import org.catrobat.catroid.ui.UserBrickScriptActivity;
 
 import android.content.Context;
+import android.util.Log;
 
 public class CategoryBricksFactory {
 
@@ -114,6 +115,7 @@ public class CategoryBricksFactory {
 			tempList = setupVariablesCategoryList(sprite);
 		} else if (category.equals(context.getString(R.string.category_user_bricks))) {
 			tempList = setupUserBricksCategoryList(sprite);
+			Log.d("FOREST", "setupUserBricksCategoryList().size = " + tempList.size());
 		} else if (category.equals(context.getString(R.string.category_lego_nxt))) {
 			tempList = setupLegoNxtCategoryList(sprite);
 		}
@@ -223,6 +225,7 @@ public class CategoryBricksFactory {
 	}
 
 	private List<Brick> setupUserBricksCategoryList(Sprite sprite) {
+		Log.d("FOREST", "CategoryBricksFactory.setupUserBricksCategoryList");
 		return ProjectManager.INSTANCE.getCurrentSprite().getUserBrickList();
 	}
 

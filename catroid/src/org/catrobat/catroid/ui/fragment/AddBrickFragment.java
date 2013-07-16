@@ -26,17 +26,23 @@ import java.util.List;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
+import org.catrobat.catroid.content.bricks.UserBrick;
+import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.adapter.PrototypeBrickAdapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +63,7 @@ public class AddBrickFragment extends SherlockListFragment {
 	private int previousActionBarNavigationMode;
 	private PrototypeBrickAdapter adapter;
 	private CategoryBricksFactory categoryBricksFactory = new CategoryBricksFactory();
+	public static AddBrickFragment addButtonHandler = null;
 
 	public static AddBrickFragment newInstance(String selectedCategory, ScriptFragment scriptFragment) {
 		AddBrickFragment fragment = new AddBrickFragment();
@@ -86,6 +93,48 @@ public class AddBrickFragment extends SherlockListFragment {
 		List<Brick> brickList = categoryBricksFactory.getBricks(selectedCategory, sprite, context);
 		adapter = new PrototypeBrickAdapter(context, brickList);
 		setListAdapter(adapter);
+
+		Log.d("a", "setupSelectedBrickCategory(): selectedCategory = " + getActivity().toString());
+
+		if (selectedCategory.equals(context.getString(R.string.category_user_bricks))) {
+			addButtonHandler = this;
+
+			// enable add button
+			BottomBar.disablePlayButton(getActivity());
+		}
+	}
+
+	public void handleAddButton() {
+		Sprite currentSprite = ProjectManager.INSTANCE.getCurrentSprite();
+		UserBrick newBrick = new UserBrick(currentSprite);
+		newBrick.addUIText(scriptFragment.getString(R.string.example_user_brick) + " "
+				+ currentSprite.getNextNewUserBrickId());
+		newBrick.addUILocalizedField(R.string.example_user_brick_field);
+
+		adapter.refreshBrickList(currentSprite.getUserBrickList());
+
+		//getListView().set
+
+		DragEvent beginDrag = makeDragEvent(100, (int) (ScreenValues.SCREEN_HEIGHT * 0.5f),
+				DragEvent.ACTION_DRAG_STARTED);
+
+		DragEvent endDrag = makeDragEvent(100, 0, DragEvent.ACTION_DROP);
+
+		getListView().dispatchDragEvent(beginDrag);
+		getListView().dispatchDragEvent(endDrag);
+	}
+
+	@SuppressLint("NewApi")
+	private DragEvent makeDragEvent(int x, int y, int action) {
+		Parcel parcel = Parcel.obtain();
+		parcel.writeInt(action);
+		parcel.writeFloat(x);
+		parcel.writeFloat(y);
+		parcel.writeInt(0); // Result
+		parcel.writeInt(0); // No Clipdata
+		parcel.writeInt(0); // No Clip Description
+		parcel.setDataPosition(0);
+		return DragEvent.CREATOR.createFromParcel(parcel);
 	}
 
 	@Override
@@ -124,6 +173,8 @@ public class AddBrickFragment extends SherlockListFragment {
 	@Override
 	public void onDestroy() {
 		resetActionBar();
+		addButtonHandler = null;
+		BottomBar.disableButtons(getActivity());
 		super.onDestroy();
 	}
 

@@ -112,6 +112,15 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		uiData.version++;
 	}
 
+	public void addUILocalizedField(int id) {
+		UserBrickUIData comp = new UserBrickUIData();
+		comp.isField = true;
+		comp.hasLocalizedString = true;
+		comp.localizedStringId = id;
+		uiData.add(comp);
+		uiData.version++;
+	}
+
 	public void addUIField(String id) {
 		UserBrickUIData comp = new UserBrickUIData();
 		comp.isField = true;

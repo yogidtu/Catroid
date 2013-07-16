@@ -552,6 +552,11 @@
     <string name="add_field">Add Field</string>
     <!--  -->
     
+    <!-- User Bricks strings  -->
+    <string name="example_user_brick">Example</string>
+    <string name="example_user_brick_field">Field1</string>
+    <!--  -->
+    
 
 
 </resources>
