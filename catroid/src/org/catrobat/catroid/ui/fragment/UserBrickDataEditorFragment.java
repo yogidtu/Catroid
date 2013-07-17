@@ -28,8 +28,8 @@ import org.catrobat.catroid.content.bricks.UserBrickUIData;
 import org.catrobat.catroid.ui.DragNDropBrickLayout;
 import org.catrobat.catroid.ui.ReorderListener;
 import org.catrobat.catroid.ui.UserBrickScriptActivity;
-import org.catrobat.catroid.ui.dialogs.NewUserBrickFieldDialog;
 import org.catrobat.catroid.ui.dialogs.NewUserBrickTextDialog;
+import org.catrobat.catroid.ui.dialogs.NewUserBrickVariableDialog;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -54,7 +54,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
 public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener, ReorderListener,
-		NewUserBrickTextDialog.NewUserBrickTextDialogListener, NewUserBrickFieldDialog.NewUserBrickFieldDialogListener {
+		NewUserBrickTextDialog.NewUserBrickTextDialogListener,
+		NewUserBrickVariableDialog.NewUserBrickVariableDialogListener {
 
 	public static final String BRICK_DATA_EDITOR_FRAGMENT_TAG = "brick_data_editor_fragment";
 	private static final String BRICK_BUNDLE_ARGUMENT = "current_brick";
@@ -160,8 +161,8 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 				if (action.equals(res.getString(R.string.add_text))) {
 					addTextDialog();
 				}
-				if (action.equals(res.getString(R.string.add_field))) {
-					addFieldDialog();
+				if (action.equals(res.getString(R.string.add_variable))) {
+					addVariableDialog();
 				}
 				if (action.equals(res.getString(R.string.close))) {
 					onUserDismiss();
@@ -180,11 +181,11 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 				NewUserBrickTextDialog.DIALOG_FRAGMENT_TAG);
 	}
 
-	public void addFieldDialog() {
-		NewUserBrickFieldDialog dialog = new NewUserBrickFieldDialog();
-		dialog.addNewUserBrickFieldDialogListener(this);
+	public void addVariableDialog() {
+		NewUserBrickVariableDialog dialog = new NewUserBrickVariableDialog();
+		dialog.addNewUserBrickVariableDialogListener(this);
 		dialog.show(((SherlockFragmentActivity) getActivity()).getSupportFragmentManager(),
-				NewUserBrickFieldDialog.DIALOG_FRAGMENT_TAG);
+				NewUserBrickVariableDialog.DIALOG_FRAGMENT_TAG);
 	}
 
 	@Override
@@ -194,8 +195,8 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	}
 
 	@Override
-	public void onFinishAddFieldDialog(String text) {
-		currentBrick.addUIField(text);
+	public void onFinishAddVariableDialog(String text) {
+		currentBrick.addUIVariable(text);
 		updateBrickView();
 	}
 
@@ -233,7 +234,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 		for (UserBrickUIData d : currentBrick.uiData) {
 			View dataView = null;
-			if (d.isField) {
+			if (d.isVariable) {
 				dataView = View.inflate(context, R.layout.brick_user_data_parameter, null);
 			} else {
 				dataView = View.inflate(context, R.layout.brick_user_data_text, null);

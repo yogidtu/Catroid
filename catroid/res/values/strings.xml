@@ -550,14 +550,14 @@
     <!-- Brick Data Editor Strings -->
     <string name="brick_data_editor_title">Brick Editor</string>
     <string name="add_text">Add Text</string>
-    <string name="add_field">Add Field</string>
+    <string name="add_variable">Add Variable</string>
     <!--  -->
     
     <!-- User Bricks strings  -->
     <string name="example_user_brick">Example</string>
-    <string name="example_user_brick_field">Field1</string>
+    <string name="example_user_brick_variable">Variable 1</string>
     <string name="new_user_brick">New Brick</string>
-    <string name="new_user_brick_field">Field1</string>
+    <string name="new_user_brick_variable">Variable 1</string>
     <!--  -->
     
 

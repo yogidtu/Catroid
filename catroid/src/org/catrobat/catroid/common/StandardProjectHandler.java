@@ -174,20 +174,20 @@ public class StandardProjectHandler {
 
 		UserBrick firstUserBrick = new UserBrick(mole1Sprite);
 		firstUserBrick.addUIText("test0");
-		firstUserBrick.addUIField("test1");
+		firstUserBrick.addUIVariable("test1");
 		firstUserBrick.addUIText("test2");
-		firstUserBrick.addUIField("test3");
+		firstUserBrick.addUIVariable("test3");
 		firstUserBrick.addUIText("test4");
-		firstUserBrick.addUIField("test5");
+		firstUserBrick.addUIVariable("test5");
 		firstUserBrick.addUIText("test6");
-		firstUserBrick.addUIField("test7");
+		firstUserBrick.addUIVariable("test7");
 		firstUserBrick.addUIText("test8");
-		firstUserBrick.addUIField("test9");
+		firstUserBrick.addUIVariable("test9");
 		firstUserBrick.appendBrickToScript(new ChangeXByNBrick(mole1Sprite, BrickValues.CHANGE_X_BY));
 
 		UserBrick secondUserBrick = new UserBrick(mole1Sprite);
 		secondUserBrick.addUILocalizedString(R.string.brick_change_x_by);
-		secondUserBrick.addUIField("amount");
+		secondUserBrick.addUIVariable("amount");
 		secondUserBrick.appendBrickToScript(new ChangeXByNBrick(mole1Sprite, BrickValues.CHANGE_X_BY));
 
 		// start script

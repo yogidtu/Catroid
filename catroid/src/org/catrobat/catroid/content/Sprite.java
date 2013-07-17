@@ -127,7 +127,7 @@ public class Sprite implements Serializable, Cloneable {
 		// the UserBrick constructor will insert the UserBrick into this Sprite's userBricks list.
 		UserBrick exampleBrick = new UserBrick(this);
 		exampleBrick.addUILocalizedString(R.string.example_user_brick);
-		exampleBrick.addUILocalizedField(R.string.example_user_brick_field);
+		exampleBrick.addUILocalizedVariable(R.string.example_user_brick_variable);
 
 	}
 

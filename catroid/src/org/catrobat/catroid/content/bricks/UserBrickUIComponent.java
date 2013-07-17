@@ -38,7 +38,7 @@ public class UserBrickUIComponent implements Serializable {
 
 	public int dataIndex;
 
-	public Formula fieldFormula;
+	public Formula variableFormula;
 	public transient TextView textView;
 	public transient TextView prototypeView;
 }

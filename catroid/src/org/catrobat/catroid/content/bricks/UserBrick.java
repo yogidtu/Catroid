@@ -96,7 +96,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	public void addUILocalizedString(int id) {
 		UserBrickUIData comp = new UserBrickUIData();
-		comp.isField = false;
+		comp.isVariable = false;
 		comp.hasLocalizedString = true;
 		comp.localizedStringId = id;
 		uiData.add(comp);
@@ -105,25 +105,25 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	public void addUIText(String text) {
 		UserBrickUIData comp = new UserBrickUIData();
-		comp.isField = false;
+		comp.isVariable = false;
 		comp.hasLocalizedString = false;
 		comp.userDefinedName = text;
 		uiData.add(comp);
 		uiData.version++;
 	}
 
-	public void addUILocalizedField(int id) {
+	public void addUILocalizedVariable(int id) {
 		UserBrickUIData comp = new UserBrickUIData();
-		comp.isField = true;
+		comp.isVariable = true;
 		comp.hasLocalizedString = true;
 		comp.localizedStringId = id;
 		uiData.add(comp);
 		uiData.version++;
 	}
 
-	public void addUIField(String id) {
+	public void addUIVariable(String id) {
 		UserBrickUIData comp = new UserBrickUIData();
-		comp.isField = true;
+		comp.isVariable = true;
 		comp.userDefinedName = id;
 		comp.hasLocalizedString = false;
 		uiData.add(comp);
@@ -145,8 +145,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		for (int i = 0; i < uiData.size(); i++) {
 			UserBrickUIComponent c = new UserBrickUIComponent();
 			c.dataIndex = i;
-			if (uiData.get(i).isField) {
-				c.fieldFormula = new Formula(0);
+			if (uiData.get(i).isVariable) {
+				c.variableFormula = new Formula(0);
 			}
 			uiComponents.add(c);
 		}
@@ -225,7 +225,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			if (c != null && c.textView != null) {
 				UserBrickUIData d = uiData.get(c.dataIndex);
 				c.textView.setTextColor(c.textView.getTextColors().withAlpha(alphaValue));
-				if (d.isField) {
+				if (d.isVariable) {
 					c.textView.getBackground().setAlpha(alphaValue);
 				}
 			}
@@ -256,16 +256,16 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		for (UserBrickUIComponent c : uiComponents) {
 			TextView currentTextView = null;
 			UserBrickUIData d = uiData.get(c.dataIndex);
-			if (d.isField) {
+			if (d.isVariable) {
 				currentTextView = new EditText(context);
 
 				if (prototype) {
 					currentTextView.setTextAppearance(context, R.style.BrickPrototypeTextView);
-					currentTextView.setText(String.valueOf(c.fieldFormula.interpretInteger(sprite)));
+					currentTextView.setText(String.valueOf(c.variableFormula.interpretInteger(sprite)));
 				} else {
 					currentTextView.setTextAppearance(context, R.style.BrickEditText);
-					c.fieldFormula.setTextFieldId(currentTextView.getId());
-					c.fieldFormula.refreshTextField(view);
+					c.variableFormula.setTextFieldId(currentTextView.getId());
+					c.variableFormula.refreshTextField(view);
 
 					currentTextView.setOnClickListener(this);
 				}
@@ -297,7 +297,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	public String getName(Context context) {
 		String name = "";
 		for (UserBrickUIData d : uiData) {
-			if (!d.isField) {
+			if (!d.isVariable) {
 				name = d.getString(context);
 				break;
 			}
@@ -318,8 +318,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 		for (UserBrickUIComponent c : uiComponents) {
 			UserBrickUIData d = uiData.get(c.dataIndex);
-			if (d.isField && c.textView.getId() == eventOrigin.getId()) {
-				FormulaEditorFragment.showFragment(view, this, c.fieldFormula);
+			if (d.isVariable && c.textView.getId() == eventOrigin.getId()) {
+				FormulaEditorFragment.showFragment(view, this, c.variableFormula);
 			}
 		}
 	}

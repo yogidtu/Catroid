@@ -105,7 +105,7 @@ public class AddBrickFragment extends SherlockListFragment {
 		UserBrick newBrick = new UserBrick(currentSprite);
 		newBrick.addUIText(scriptFragment.getString(R.string.new_user_brick) + " "
 				+ currentSprite.getNextNewUserBrickId());
-		newBrick.addUILocalizedField(R.string.new_user_brick_field);
+		newBrick.addUILocalizedVariable(R.string.new_user_brick_variable);
 
 		setupSelectedBrickCategory();
 

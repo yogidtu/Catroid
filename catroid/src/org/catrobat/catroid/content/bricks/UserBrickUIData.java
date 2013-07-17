@@ -35,7 +35,7 @@ public class UserBrickUIData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public int key;
-	public boolean isField;
+	public boolean isVariable;
 	public boolean hasLocalizedString;
 	public int localizedStringId;
 	public String userDefinedName = "";

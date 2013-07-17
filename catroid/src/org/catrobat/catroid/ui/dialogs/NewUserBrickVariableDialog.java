@@ -42,19 +42,19 @@ import android.widget.EditText;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
 
-public class NewUserBrickFieldDialog extends SherlockDialogFragment {
+public class NewUserBrickVariableDialog extends SherlockDialogFragment {
 
 	public static final String DIALOG_FRAGMENT_TAG = "dialog_new_text_catroid";
 
-	public NewUserBrickFieldDialog() {
+	public NewUserBrickVariableDialog() {
 		super();
 	}
 
-	public interface NewUserBrickFieldDialogListener {
-		void onFinishAddFieldDialog(String text);
+	public interface NewUserBrickVariableDialogListener {
+		void onFinishAddVariableDialog(String text);
 	}
 
-	private List<NewUserBrickFieldDialogListener> listenerList = new ArrayList<NewUserBrickFieldDialog.NewUserBrickFieldDialogListener>();
+	private List<NewUserBrickVariableDialogListener> listenerList = new ArrayList<NewUserBrickVariableDialog.NewUserBrickVariableDialogListener>();
 
 	@Override
 	public void onCancel(DialogInterface dialog) {
@@ -68,7 +68,7 @@ public class NewUserBrickFieldDialog extends SherlockDialogFragment {
 				.inflate(R.layout.dialog_brick_editor_add_field, null);
 
 		final Dialog dialogNewVariable = new AlertDialog.Builder(getActivity()).setView(dialogView)
-				.setTitle(R.string.add_field).setNegativeButton(R.string.cancel_button, new OnClickListener() {
+				.setTitle(R.string.add_variable).setNegativeButton(R.string.cancel_button, new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.cancel();
@@ -92,13 +92,13 @@ public class NewUserBrickFieldDialog extends SherlockDialogFragment {
 		return dialogNewVariable;
 	}
 
-	public void addNewUserBrickFieldDialogListener(NewUserBrickFieldDialogListener newVariableDialogListener) {
+	public void addNewUserBrickVariableDialogListener(NewUserBrickVariableDialogListener newVariableDialogListener) {
 		listenerList.add(newVariableDialogListener);
 	}
 
 	private void finishDialog(String text) {
-		for (NewUserBrickFieldDialogListener newVariableDialogListener : listenerList) {
-			newVariableDialogListener.onFinishAddFieldDialog(text);
+		for (NewUserBrickVariableDialogListener newVariableDialogListener : listenerList) {
+			newVariableDialogListener.onFinishAddVariableDialog(text);
 		}
 	}
 
