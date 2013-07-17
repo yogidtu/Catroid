@@ -1,5 +1,18 @@
 <component name="CopyrightManager">
-  <settings default="">
-    <module2copyright />
+  <settings default="Catrobat">
+    <module2copyright>
+      <element module="All" copyright="Catrobat" />
+    </module2copyright>
+    <LanguageOptions name="JAVA">
+      <option name="fileTypeOverride" value="3" />
+      <option name="separateBefore" value="true" />
+      <option name="prefixLines" value="false" />
+      <option name="lenBefore" value="2" />
+    </LanguageOptions>
+    <LanguageOptions name="XML">
+      <option name="fileTypeOverride" value="3" />
+      <option name="fileLocation" value="2" />
+      <option name="prefixLines" value="false" />
+    </LanguageOptions>
   </settings>
 </component>
