@@ -28,8 +28,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public final class PhysicsWorldConverter {
 
-	public static float angleBox2dToCat(float angle) {
-		float direction = (float) (Math.toDegrees(angle) + Look.DEGREE_UI_OFFSET) % 360;
+	public static float toCatroidAngle(float box2dAngle) {
+		float direction = (float) (Math.toDegrees(box2dAngle) + Look.DEGREE_UI_OFFSET) % 360;
 		if (direction < 0) {
 			direction += 360f;
 		}
@@ -38,23 +38,23 @@ public final class PhysicsWorldConverter {
 		return direction;
 	}
 
-	public static float angleCatToBox2d(float angle) {
-		return (float) Math.toRadians((-angle + Look.DEGREE_UI_OFFSET) % 360);
+	public static float toBox2dAngle(float catroidAngle) {
+		return (float) Math.toRadians((-catroidAngle + Look.DEGREE_UI_OFFSET) % 360);
 	}
 
-	public static float lengthCatToBox2d(float length) {
-		return length / PhysicsWorld.RATIO;
+	public static float toCatroidCoordinate(float box2dCoordinate) {
+		return box2dCoordinate * PhysicsWorld.RATIO;
 	}
 
-	public static float lengthBox2dToCat(float length) {
-		return length * PhysicsWorld.RATIO;
+	public static float toBox2dCoordinate(float catroidCoordinate) {
+		return catroidCoordinate / PhysicsWorld.RATIO;
 	}
 
-	public static Vector2 vecCatToBox2d(Vector2 vector) {
-		return new Vector2(lengthCatToBox2d(vector.x), lengthCatToBox2d(vector.y));
+	public static Vector2 toCatroidVector(Vector2 catroidVector) {
+		return new Vector2(toCatroidCoordinate(catroidVector.x), toCatroidCoordinate(catroidVector.y));
 	}
 
-	public static Vector2 vecBox2dToCat(Vector2 vector) {
-		return new Vector2(lengthBox2dToCat(vector.x), lengthBox2dToCat(vector.y));
+	public static Vector2 toBox2dVector(Vector2 catroidVector) {
+		return new Vector2(toBox2dCoordinate(catroidVector.x), toBox2dCoordinate(catroidVector.y));
 	}
 }

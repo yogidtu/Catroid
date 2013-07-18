@@ -150,36 +150,36 @@ public class PhysicsObject {
 	}
 
 	public float getDirection() {
-		return PhysicsWorldConverter.angleBox2dToCat(body.getAngle());
+		return PhysicsWorldConverter.toCatroidAngle(body.getAngle());
 	}
 
 	public void setDirection(float degrees) {
-		body.setTransform(body.getPosition(), PhysicsWorldConverter.angleCatToBox2d(degrees));
+		body.setTransform(body.getPosition(), PhysicsWorldConverter.toBox2dAngle(degrees));
 	}
 
 	public float getX() {
-		return PhysicsWorldConverter.lengthBox2dToCat(body.getPosition().x);
+		return PhysicsWorldConverter.toCatroidCoordinate(body.getPosition().x);
 	}
 
 	public float getY() {
-		return PhysicsWorldConverter.lengthBox2dToCat(body.getPosition().y);
+		return PhysicsWorldConverter.toCatroidCoordinate(body.getPosition().y);
 	}
 
 	public Vector2 getPosition() {
-		return PhysicsWorldConverter.vecBox2dToCat(body.getPosition());
+		return PhysicsWorldConverter.toCatroidVector(body.getPosition());
 	}
 
 	public void setX(float x) {
-		body.setTransform(PhysicsWorldConverter.lengthCatToBox2d(x), body.getPosition().y, body.getAngle());
+		body.setTransform(PhysicsWorldConverter.toBox2dCoordinate(x), body.getPosition().y, body.getAngle());
 	}
 
 	public void setY(float y) {
-		body.setTransform(body.getPosition().x, PhysicsWorldConverter.lengthCatToBox2d(y), body.getAngle());
+		body.setTransform(body.getPosition().x, PhysicsWorldConverter.toBox2dCoordinate(y), body.getAngle());
 	}
 
 	public void setPosition(float x, float y) {
-		x = PhysicsWorldConverter.lengthCatToBox2d(x);
-		y = PhysicsWorldConverter.lengthCatToBox2d(y);
+		x = PhysicsWorldConverter.toBox2dCoordinate(x);
+		y = PhysicsWorldConverter.toBox2dCoordinate(y);
 		body.setTransform(x, y, body.getAngle());
 	}
 
@@ -196,11 +196,11 @@ public class PhysicsObject {
 	}
 
 	public Vector2 getVelocity() {
-		return PhysicsWorldConverter.vecBox2dToCat(body.getLinearVelocity());
+		return PhysicsWorldConverter.toCatroidVector(body.getLinearVelocity());
 	}
 
 	public void setVelocity(float x, float y) {
-		body.setLinearVelocity(PhysicsWorldConverter.lengthCatToBox2d(x), PhysicsWorldConverter.lengthCatToBox2d(y));
+		body.setLinearVelocity(PhysicsWorldConverter.toBox2dCoordinate(x), PhysicsWorldConverter.toBox2dCoordinate(y));
 	}
 
 	public float getMass() {
