@@ -6,5 +6,7 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry kind="lib" path="C:/Users/Majda/AppData/Local/Android/android-sdk/platforms/android-8/android.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Majda/AppData/Local/Android/android-sdk/platforms/android-17/uiautomator.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

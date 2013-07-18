@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/**
  *  Catroid: An on-device visual programming system for Android devices
  *  Copyright (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
@@ -20,9 +19,29 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-<wallpaper 
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:thumbnail="@drawable/ic_launcher"  
-   android:settingsActivity= "org.catrobat.catroid.livewallpaper.LiveWallpaperSettings" /> 
- 
+ */
+package org.catrobat.catroid.livewallpaper;
+
+import org.catrobat.catroid.R;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
+
+@SuppressLint("NewApi")
+public class LiveWallpaperSettings extends PreferenceActivity {
+	@Override
+	protected void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
+	}
+
+	public static class SettingsFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(final Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			addPreferencesFromResource(R.xml.livewallappersettings);
+		}
+	}
+}

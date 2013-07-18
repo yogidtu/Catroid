@@ -545,4 +545,6 @@
     </plurals>
     <!--  -->
 
+	<!-- Live Wallpaper Strings -->
+ 	<string name="lwp_general_information">General information</string>
 </resources>
