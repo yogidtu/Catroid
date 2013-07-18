@@ -160,7 +160,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		if (to == -1) {
 			UserBrickUIData d = uiData.remove(from);
 			uiData.add(0, d);
-		} else if (from < to) {
+		} else if (from <= to) {
 			UserBrickUIData d = uiData.remove(from);
 			uiData.add(to, d);
 		} else {

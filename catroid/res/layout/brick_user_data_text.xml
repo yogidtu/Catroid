@@ -22,35 +22,47 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/brick_data_text"
+    android:id="@+id/brick_data_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/brick_data_round_rect"
+    android:baselineAligned="true"
+    android:measureWithLargestChild="false"
+    android:orientation="horizontal"
+    android:paddingTop="8dp" 
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/brick_data_round_rect"
-            android:orientation="horizontal"
-                android:paddingTop="6dp"
-                android:paddingLeft="9dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="7dp"
-            >
-
-            <TextView
-                android:id="@+id/text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            android:paddingTop="0dp"
 				android:paddingLeft="3dp"
-				android:paddingRight="2dp"
-                android:textColor="@color/solid_white"
-                android:textStyle="bold" >
+				android:paddingRight="5dp"
+            android:textColor="@color/solid_white"
+            android:textStyle="bold" 
+            android:textSize="16sp" >
 
-            </TextView>
-
-   			<Button
-   			    android:id="@+id/button"
-   			    android:layout_width="28dp"
-   			    android:layout_height="21dp"
-   			    android:layout_marginTop="4dp"
-   			    android:layout_marginLeft="6dp"
-   			    android:background="@drawable/brick_data_close"
-   			 />
+        </TextView>
+        
+		<TextView
+            android:id="@+id/separator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="0dp"
+            android:textColor="@color/solid_white"
+            android:text="@string/separator"
+            android:textSize="20sp" >
+        </TextView>
+            
+   	<Button
+   	    android:id="@+id/button"
+   	    android:layout_width="30dp"
+   	    android:layout_height="25dp"
+   	    android:layout_marginTop="2dp"
+   	    android:background="@drawable/brick_data_close"
+   	 />
 
 </LinearLayout>

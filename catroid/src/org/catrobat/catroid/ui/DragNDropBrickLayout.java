@@ -6,6 +6,7 @@ import org.catrobat.catroid.common.ScreenValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
+import android.text.format.Time;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -39,11 +40,14 @@ public class DragNDropBrickLayout extends BrickLayout {
 	private int viewToWindowSpaceX;
 	private int viewToWindowSpaceY;
 
+	private long dragBeganMillis;
+	private long dragEndMillis;
+
 	private WeirdFloatingWindowData dragView;
 	private WeirdFloatingWindowData dragCursor1;
 	private WeirdFloatingWindowData dragCursor2;
 
-	public ReorderListener parent;
+	public DragAndDropBrickLayoutListener parent;
 
 	public DragNDropBrickLayout(Context context) {
 		super(context);
@@ -57,7 +61,7 @@ public class DragNDropBrickLayout extends BrickLayout {
 		super(context, attributeSet, defStyle);
 	}
 
-	public void setListener(ReorderListener parent) {
+	public void setListener(DragAndDropBrickLayoutListener parent) {
 		this.parent = parent;
 	}
 
@@ -71,8 +75,9 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 		switch (action) {
 			case MotionEvent.ACTION_DOWN:
-				if (click(x, y)) {
-					drag(x, y);
+				int itemPosition = click(x, y);
+				if (itemPosition != -1) {
+					beginDrag(x, y, itemPosition);
 				}
 				break;
 			case MotionEvent.ACTION_MOVE:
@@ -91,7 +96,7 @@ public class DragNDropBrickLayout extends BrickLayout {
 		return true;
 	}
 
-	private boolean click(int x, int y) {
+	private int click(int x, int y) {
 		int itemPosition = 0;
 
 		for (BrickLayout.LineData line : lines) {
@@ -99,13 +104,46 @@ public class DragNDropBrickLayout extends BrickLayout {
 				if (x > e.posX && y > e.posY && x < e.posX + e.width && y < e.posY + e.height) {
 					dragPointOffsetX = (e.posX - x);
 					dragPointOffsetY = (e.posY - y);
-					startDrag(itemPosition);
-					return true;
+					return itemPosition;
 				}
 				itemPosition++;
 			}
 		}
-		return false;
+		return -1;
+	}
+
+	private void beginDrag(int x, int y, int itemIndex) {
+		dragBeganMillis = getMillisNow();
+
+		// frequent dragdrops can cause a null reference when the event for the new drag happens before the drop finishes.
+		if (dragging || dragBeganMillis - dragEndMillis < 200) {
+			return;
+		}
+
+		justStartedDragging = true;
+		draggedItemIndex = itemIndex;
+
+		stopDrag();
+
+		View item = getChildAt(itemIndex);
+		if (item == null) {
+			return;
+		}
+		item.setDrawingCacheEnabled(true);
+		item.setVisibility(View.INVISIBLE);
+
+		// Create a copy of the drawing cache so that it does not get recycled
+		// by the framework when the list tries to clean up memory
+		Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
+
+		dragView = makeWeirdFloatingWindow(bitmap, item.getWidth(), item.getHeight());
+
+		dragCursor1 = makeWeirdFloatingWindow(View.inflate(getContext(), R.layout.brick_user_data_insert, null));
+		dragCursor2 = makeWeirdFloatingWindow(View.inflate(getContext(), R.layout.brick_user_data_insert, null));
+
+		dragging = true;
+
+		drag(x, y);
 	}
 
 	// move the drag view
@@ -126,35 +164,17 @@ public class DragNDropBrickLayout extends BrickLayout {
 		}
 	}
 
-	// enable the drag view for dragging
-	private void startDrag(int itemIndex) {
-		justStartedDragging = true;
-		draggedItemIndex = itemIndex;
-
-		stopDrag();
-
-		View item = getChildAt(itemIndex);
-		if (item == null) {
-			return;
-		}
-		item.setDrawingCacheEnabled(true);
-		item.setVisibility(View.GONE);
-
-		// Create a copy of the drawing cache so that it does not get recycled
-		// by the framework when the list tries to clean up memory
-		Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
-
-		dragView = makeWeirdFloatingWindow(bitmap, item.getWidth(), item.getHeight());
-
-		dragCursor1 = makeWeirdFloatingWindow(View.inflate(getContext(), R.layout.brick_user_data_insert, null));
-		dragCursor2 = makeWeirdFloatingWindow(View.inflate(getContext(), R.layout.brick_user_data_insert, null));
-
-		dragging = true;
-	}
-
 	private void drop(int x, int y) {
+		dragEndMillis = getMillisNow();
+
+		long difference = dragEndMillis - dragBeganMillis;
+		if (difference < 400 && draggedItemIndex == lastInsertableSpaceIndex) {
+			parent.click(draggedItemIndex);
+		} else {
+			parent.reorder(draggedItemIndex, lastInsertableSpaceIndex);
+		}
+
 		stopDrag();
-		parent.reorder(draggedItemIndex, lastInsertableSpaceIndex);
 	}
 
 	private void stopDrag() {
@@ -225,6 +245,12 @@ public class DragNDropBrickLayout extends BrickLayout {
 			}
 		}
 		return closestPreviousElementIndex;
+	}
+
+	private long getMillisNow() {
+		Time time = new Time();
+		time.setToNow();
+		return time.toMillis(true);
 	}
 
 	private void repositionCursors(int insertableSpaceIndex) {
