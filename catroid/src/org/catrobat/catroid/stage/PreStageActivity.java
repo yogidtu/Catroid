@@ -24,6 +24,7 @@ package org.catrobat.catroid.stage;
 
 import android.annotation.SuppressLint;
 import org.catrobat.catroid.multiplayer.Multiplayer;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -105,7 +106,11 @@ public class PreStageActivity extends Activity {
 					Toast.makeText(PreStageActivity.this, R.string.notification_blueth_err, Toast.LENGTH_LONG).show();
 					resourceFailed();
 				} else if (bluetoothState == BluetoothManager.BLUETOOTH_ALREADY_ON) {
-					//start to create bluetoothconnection 
+					//start to create bluetoothconnection
+					multiplayer = Multiplayer.getInstance();
+					multiplayer.setReceiverHandler(recieveHandler);
+					// BtServerSocketListener socketListener = new BtServerSocketListener(multiplayer);
+					// socketListener.start();
 					startBluetoothCommunication(false, bluetoothDeviceName, bluetoothDeviceWaitingText);
 				}
 
@@ -151,6 +156,10 @@ public class PreStageActivity extends Activity {
 		if (legoNXT != null) {
 			legoNXT.pauseCommunicator();
 		}
+		if (multiplayer != null) {
+			multiplayer.destroyMultiplayerManager();
+			multiplayer = null;
+		}
 	}
 
 	//all resources that should not have to be reinitialized every stage start
@@ -158,6 +167,10 @@ public class PreStageActivity extends Activity {
 		if (legoNXT != null) {
 			legoNXT.destroyCommunicator();
 			legoNXT = null;
+		}
+		if (multiplayer != null) {
+			multiplayer.destroyMultiplayerManager();
+			multiplayer = null;
 		}
 		deleteSpeechFiles();
 	}
@@ -244,7 +257,6 @@ public class PreStageActivity extends Activity {
 								break;
 							case Brick.BLUETOOTH_MULTIPLAYER:
 								// TODO: multiplayer, Bluetoothsockets
-								multiplayer = new Multiplayer(this, recieveHandler);
 								address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
 								multiplayer.createBtManager(address);
 								break;
