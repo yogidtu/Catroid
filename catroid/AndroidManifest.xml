@@ -122,7 +122,7 @@
             android:theme="@style/Theme.Catroid"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
-        <activity
+         <activity
             android:name=".ui.UserBrickScriptActivity"
             android:theme="@style/Theme.Catroid"
             android:windowSoftInputMode="adjustPan"

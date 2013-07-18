@@ -49,7 +49,7 @@ public class UserBrickCloneTest extends AndroidTestCase {
 		UserBrick brick = new UserBrick(sprite);
 		brick.addUILocalizedString(R.string.about);
 		brick.addUIText("test0");
-		brick.addUIField("test1");
+		brick.addUIVariable("test1");
 		brickClone(brick);
 	}
 

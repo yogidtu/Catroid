@@ -530,7 +530,7 @@ public class UiTestUtils {
 
 		UserBrick firstUserBrick = new UserBrick(firstSprite);
 		firstUserBrick.addUIText(TEST_USER_BRICK_NAME);
-		firstUserBrick.addUIField("test1");
+		firstUserBrick.addUIVariable("test1");
 		firstUserBrick.appendBrickToScript(new ChangeXByNBrick(firstSprite, BrickValues.CHANGE_X_BY));
 
 		project.addSprite(firstSprite);
