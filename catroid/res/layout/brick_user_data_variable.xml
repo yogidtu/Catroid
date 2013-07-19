@@ -27,35 +27,45 @@
     android:layout_height="wrap_content"
     android:background="@drawable/brick_data_round_rect"
     android:orientation="horizontal"
-                android:paddingTop="6dp"
-                android:paddingLeft="9dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="9dp"
- >
+    android:paddingTop="8dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="10dp" >
 
       <TextView
           android:id="@+id/text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_margin="0dp"
           android:background="@drawable/brick_data_param"
-          android:gravity="center"
-          android:paddingBottom="0dp"
+          android:paddingBottom="4dp"
           android:paddingLeft="4dp"
-          android:paddingRight="6dp"
+          android:paddingRight="4dp"
           android:paddingTop="0dp"
+		  android:text="asd"
           android:textColor="@color/solid_white"
-          android:textStyle="bold" 
-          >
+          android:textSize="16sp"
+          android:textStyle="bold" >
+
       </TextView>
 
-<Button
-    android:id="@+id/button"
-    android:layout_width="28dp"
-    android:layout_height="21dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginLeft="6dp"
-    android:background="@drawable/brick_data_close"
- />
+	<TextView
+    	android:id="@+id/separator"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:paddingTop="0dp"
+		android:paddingLeft="3dp"
+		android:paddingRight="3dp"
+    	android:textColor="@color/solid_white"
+  		android:text="@string/separator"
+		android:textSize="20sp" >
+	</TextView>
+      
+	<Button
+	    android:id="@+id/button"
+	    android:layout_width="30dp"
+	    android:layout_height="25dp"
+	    android:layout_marginTop="2dp"
+	    android:background="@drawable/brick_data_close"
+	 />
 
 </LinearLayout>

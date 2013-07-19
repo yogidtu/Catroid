@@ -22,11 +22,13 @@
  */
 package org.catrobat.catroid.ui;
 
-public interface ReorderListener {
+public interface DragAndDropBrickLayoutListener {
 
 	/**
 	 * Re-orders elements in a list.
 	 * Removes element at <b>from</b> and adds it after element at <b>to</b>
 	 */
 	void reorder(int from, int to);
+
+	void click(int id);
 }

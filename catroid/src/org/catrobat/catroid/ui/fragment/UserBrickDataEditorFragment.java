@@ -25,8 +25,8 @@ package org.catrobat.catroid.ui.fragment;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIData;
+import org.catrobat.catroid.ui.DragAndDropBrickLayoutListener;
 import org.catrobat.catroid.ui.DragNDropBrickLayout;
-import org.catrobat.catroid.ui.ReorderListener;
 import org.catrobat.catroid.ui.UserBrickScriptActivity;
 import org.catrobat.catroid.ui.dialogs.NewUserBrickTextDialog;
 import org.catrobat.catroid.ui.dialogs.NewUserBrickVariableDialog;
@@ -53,8 +53,8 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
-public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener, ReorderListener,
-		NewUserBrickTextDialog.NewUserBrickTextDialogListener,
+public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener,
+		DragAndDropBrickLayoutListener, NewUserBrickTextDialog.NewUserBrickTextDialogListener,
 		NewUserBrickVariableDialog.NewUserBrickVariableDialogListener {
 
 	public static final String BRICK_DATA_EDITOR_FRAGMENT_TAG = "brick_data_editor_fragment";
@@ -202,8 +202,14 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	@Override
 	public void reorder(int from, int to) {
+
 		currentBrick.reorderUIData(from, to);
 		updateBrickView();
+	}
+
+	@Override
+	public void click(int id) {
+
 	}
 
 	private void deleteButtonClicked(View theView) {
@@ -235,7 +241,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		for (UserBrickUIData d : currentBrick.uiData) {
 			View dataView = null;
 			if (d.isVariable) {
-				dataView = View.inflate(context, R.layout.brick_user_data_parameter, null);
+				dataView = View.inflate(context, R.layout.brick_user_data_variable, null);
 			} else {
 				dataView = View.inflate(context, R.layout.brick_user_data_text, null);
 			}
