@@ -33,6 +33,7 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 	private int lastInsertableSpaceIndex;
 	private boolean justStartedDragging;
+	private boolean secondDragFrame;
 	private int draggedItemIndex;
 	private int dragPointOffsetX;
 	private int dragPointOffsetY;
@@ -42,6 +43,8 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 	private long dragBeganMillis;
 	private long dragEndMillis;
+
+	private View draggedItemInLayout;
 
 	private WeirdFloatingWindowData dragView;
 	private WeirdFloatingWindowData dragCursor1;
@@ -125,18 +128,17 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 		stopDrag();
 
-		View item = getChildAt(itemIndex);
-		if (item == null) {
+		draggedItemInLayout = getChildAt(itemIndex);
+		if (draggedItemInLayout == null) {
 			return;
 		}
-		item.setDrawingCacheEnabled(true);
-		item.setVisibility(View.INVISIBLE);
+		draggedItemInLayout.setDrawingCacheEnabled(true);
 
 		// Create a copy of the drawing cache so that it does not get recycled
 		// by the framework when the list tries to clean up memory
-		Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
+		Bitmap bitmap = Bitmap.createBitmap(draggedItemInLayout.getDrawingCache());
 
-		dragView = makeWeirdFloatingWindow(bitmap, item.getWidth(), item.getHeight());
+		dragView = makeWeirdFloatingWindow(bitmap, draggedItemInLayout.getWidth(), draggedItemInLayout.getHeight());
 
 		dragCursor1 = makeWeirdFloatingWindow(View.inflate(getContext(), R.layout.brick_user_data_insert, null));
 		dragCursor2 = makeWeirdFloatingWindow(View.inflate(getContext(), R.layout.brick_user_data_insert, null));
@@ -155,12 +157,18 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 		int insertableSpaceIndex = findClosestInsertableSpace(centerOfDraggedElementX, centerOfDraggedElementY);
 
+		if (secondDragFrame) {
+			draggedItemInLayout.setVisibility(View.INVISIBLE);
+			secondDragFrame = false;
+		}
+
 		if (justStartedDragging || lastInsertableSpaceIndex != insertableSpaceIndex) {
 
 			repositionCursors(insertableSpaceIndex);
 
 			lastInsertableSpaceIndex = insertableSpaceIndex;
 			justStartedDragging = false;
+			secondDragFrame = true;
 		}
 	}
 

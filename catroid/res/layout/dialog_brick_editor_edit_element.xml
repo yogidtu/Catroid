@@ -27,7 +27,7 @@
     android:orientation="vertical" >
 
     <EditText
-        android:id="@+id/dialog_brick_editor_add_text_edit_text"
+        android:id="@+id/dialog_brick_editor_edit_element_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"

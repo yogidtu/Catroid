@@ -549,9 +549,11 @@
     
     <!-- Brick Data Editor Strings -->
     <string name="brick_data_editor_title">Brick Editor</string>
-    <string name="add_text">Add Text</string>
-    <string name="add_variable">Add Variable</string>
     <string name="separator">|</string>
+    <string name="add_text">Add Text</string>
+    <string name="edit_text">Edit Text</string>
+    <string name="add_variable">Add Variable</string>
+    <string name="edit_variable">Edit Variable</string>
     <!--  -->
     
     <!-- User Bricks strings  -->

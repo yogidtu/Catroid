@@ -27,21 +27,20 @@
     android:layout_height="wrap_content"
     android:background="@drawable/brick_data_round_rect"
     android:orientation="horizontal"
-    android:paddingTop="8dp"
+    android:paddingTop="6dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:paddingBottom="10dp" >
+    android:paddingBottom="12dp" >
 
       <TextView
           android:id="@+id/text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/brick_data_param"
-          android:paddingBottom="4dp"
+          android:paddingBottom="2dp"
           android:paddingLeft="4dp"
           android:paddingRight="4dp"
           android:paddingTop="0dp"
-		  android:text="asd"
           android:textColor="@color/solid_white"
           android:textSize="16sp"
           android:textStyle="bold" >

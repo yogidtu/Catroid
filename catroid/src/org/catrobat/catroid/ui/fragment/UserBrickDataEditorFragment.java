@@ -28,8 +28,7 @@ import org.catrobat.catroid.content.bricks.UserBrickUIData;
 import org.catrobat.catroid.ui.DragAndDropBrickLayoutListener;
 import org.catrobat.catroid.ui.DragNDropBrickLayout;
 import org.catrobat.catroid.ui.UserBrickScriptActivity;
-import org.catrobat.catroid.ui.dialogs.NewUserBrickTextDialog;
-import org.catrobat.catroid.ui.dialogs.NewUserBrickVariableDialog;
+import org.catrobat.catroid.ui.dialogs.UserBrickEditElementDialog;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -54,8 +53,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
 public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener,
-		DragAndDropBrickLayoutListener, NewUserBrickTextDialog.NewUserBrickTextDialogListener,
-		NewUserBrickVariableDialog.NewUserBrickVariableDialogListener {
+		DragAndDropBrickLayoutListener, UserBrickEditElementDialog.DialogListener {
 
 	public static final String BRICK_DATA_EDITOR_FRAGMENT_TAG = "brick_data_editor_fragment";
 	private static final String BRICK_BUNDLE_ARGUMENT = "current_brick";
@@ -175,28 +173,28 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	}
 
 	public void addTextDialog() {
-		NewUserBrickTextDialog dialog = new NewUserBrickTextDialog();
-		dialog.addNewUserBrickTextDialogListener(this);
-		dialog.show(((SherlockFragmentActivity) getActivity()).getSupportFragmentManager(),
-				NewUserBrickTextDialog.DIALOG_FRAGMENT_TAG);
+		int indexOfNewText = currentBrick.addUIText("");
+		editElementDialog(indexOfNewText, R.string.add_text, R.string.add_text);
+
 	}
 
 	public void addVariableDialog() {
-		NewUserBrickVariableDialog dialog = new NewUserBrickVariableDialog();
-		dialog.addNewUserBrickVariableDialogListener(this);
+		int indexOfNewText = currentBrick.addUIVariable("");
+		editElementDialog(indexOfNewText, R.string.add_variable, R.string.add_variable);
+	}
+
+	public void editElementDialog(int id, int title, int defaultText) {
+		UserBrickEditElementDialog dialog = new UserBrickEditElementDialog();
+		dialog.addDialogListener(this);
 		dialog.show(((SherlockFragmentActivity) getActivity()).getSupportFragmentManager(),
-				NewUserBrickVariableDialog.DIALOG_FRAGMENT_TAG);
+				UserBrickEditElementDialog.DIALOG_FRAGMENT_TAG);
+		UserBrickEditElementDialog.setTitle(title);
+		UserBrickEditElementDialog.setDefaultText(defaultText);
 	}
 
 	@Override
-	public void onFinishAddTextDialog(String text) {
-		currentBrick.addUIText(text);
-		updateBrickView();
-	}
+	public void onFinishDialog(String text) {
 
-	@Override
-	public void onFinishAddVariableDialog(String text) {
-		currentBrick.addUIVariable(text);
 		updateBrickView();
 	}
 
@@ -209,7 +207,12 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	@Override
 	public void click(int id) {
-
+		UserBrickUIData d = currentBrick.uiData.get(id);
+		if (d != null) {
+			int title = d.isVariable ? R.string.edit_variable : R.string.edit_text;
+			int defaultText = d.isVariable ? R.string.edit_variable : R.string.edit_text;
+			editElementDialog(id, title, defaultText);
+		}
 	}
 
 	private void deleteButtonClicked(View theView) {

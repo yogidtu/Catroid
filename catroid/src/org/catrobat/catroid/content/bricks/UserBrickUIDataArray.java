@@ -34,4 +34,5 @@ public class UserBrickUIDataArray extends ArrayList<UserBrickUIData> implements 
 	private static final long serialVersionUID = 1L;
 
 	public int version = 0;
+
 }

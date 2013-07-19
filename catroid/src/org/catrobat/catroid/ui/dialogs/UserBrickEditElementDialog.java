@@ -42,19 +42,30 @@ import android.widget.EditText;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
 
-public class NewUserBrickVariableDialog extends SherlockDialogFragment {
+public class UserBrickEditElementDialog extends SherlockDialogFragment {
 
 	public static final String DIALOG_FRAGMENT_TAG = "dialog_new_text_catroid";
 
-	public NewUserBrickVariableDialog() {
+	private static int stringResourceOfTitle;
+	private static int stringResourceOfDefaultText;
+
+	public UserBrickEditElementDialog() {
 		super();
 	}
 
-	public interface NewUserBrickVariableDialogListener {
-		void onFinishAddVariableDialog(String text);
+	public interface DialogListener {
+		void onFinishDialog(String text);
 	}
 
-	private List<NewUserBrickVariableDialogListener> listenerList = new ArrayList<NewUserBrickVariableDialog.NewUserBrickVariableDialogListener>();
+	private List<DialogListener> listenerList = new ArrayList<UserBrickEditElementDialog.DialogListener>();
+
+	public static void setTitle(int stringResource) {
+		stringResourceOfTitle = stringResource;
+	}
+
+	public static void setDefaultText(int stringResource) {
+		stringResourceOfDefaultText = stringResource;
+	}
 
 	@Override
 	public void onCancel(DialogInterface dialog) {
@@ -64,11 +75,11 @@ public class NewUserBrickVariableDialog extends SherlockDialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle bundle) {
-		final View dialogView = LayoutInflater.from(getActivity())
-				.inflate(R.layout.dialog_brick_editor_add_field, null);
+		final View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_brick_editor_edit_element,
+				null);
 
 		final Dialog dialogNewVariable = new AlertDialog.Builder(getActivity()).setView(dialogView)
-				.setTitle(R.string.add_variable).setNegativeButton(R.string.cancel_button, new OnClickListener() {
+				.setTitle(stringResourceOfTitle).setNegativeButton(R.string.cancel_button, new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.cancel();
@@ -92,19 +103,19 @@ public class NewUserBrickVariableDialog extends SherlockDialogFragment {
 		return dialogNewVariable;
 	}
 
-	public void addNewUserBrickVariableDialogListener(NewUserBrickVariableDialogListener newVariableDialogListener) {
+	public void addDialogListener(DialogListener newVariableDialogListener) {
 		listenerList.add(newVariableDialogListener);
 	}
 
 	private void finishDialog(String text) {
-		for (NewUserBrickVariableDialogListener newVariableDialogListener : listenerList) {
-			newVariableDialogListener.onFinishAddVariableDialog(text);
+		for (DialogListener newVariableDialogListener : listenerList) {
+			newVariableDialogListener.onFinishDialog(text);
 		}
 	}
 
 	private void handleOkButton(View dialogView) {
 		EditText variableNameEditText = (EditText) dialogView
-				.findViewById(R.id.dialog_brick_editor_add_field_edit_text);
+				.findViewById(R.id.dialog_brick_editor_edit_element_edit_text);
 
 		String variableName = variableNameEditText.getText().toString();
 		finishDialog(variableName);
@@ -114,7 +125,7 @@ public class NewUserBrickVariableDialog extends SherlockDialogFragment {
 		final Button positiveButton = ((AlertDialog) dialogNewVariable).getButton(AlertDialog.BUTTON_POSITIVE);
 
 		EditText dialogEditText = (EditText) dialogNewVariable
-				.findViewById(R.id.dialog_brick_editor_add_field_edit_text);
+				.findViewById(R.id.dialog_brick_editor_edit_element_edit_text);
 
 		InputMethodManager inputMethodManager = (InputMethodManager) getSherlockActivity().getSystemService(
 				Context.INPUT_METHOD_SERVICE);

@@ -94,40 +94,44 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		return copyBrick;
 	}
 
-	public void addUILocalizedString(int id) {
+	public int addUILocalizedString(int id) {
 		UserBrickUIData comp = new UserBrickUIData();
 		comp.isVariable = false;
 		comp.hasLocalizedString = true;
 		comp.localizedStringId = id;
 		uiData.add(comp);
 		uiData.version++;
+		return uiData.size() - 1;
 	}
 
-	public void addUIText(String text) {
+	public int addUIText(String text) {
 		UserBrickUIData comp = new UserBrickUIData();
 		comp.isVariable = false;
 		comp.hasLocalizedString = false;
 		comp.userDefinedName = text;
 		uiData.add(comp);
 		uiData.version++;
+		return uiData.size() - 1;
 	}
 
-	public void addUILocalizedVariable(int id) {
+	public int addUILocalizedVariable(int id) {
 		UserBrickUIData comp = new UserBrickUIData();
 		comp.isVariable = true;
 		comp.hasLocalizedString = true;
 		comp.localizedStringId = id;
 		uiData.add(comp);
 		uiData.version++;
+		return uiData.size() - 1;
 	}
 
-	public void addUIVariable(String id) {
+	public int addUIVariable(String id) {
 		UserBrickUIData comp = new UserBrickUIData();
 		comp.isVariable = true;
 		comp.userDefinedName = id;
 		comp.hasLocalizedString = false;
 		uiData.add(comp);
 		uiData.version++;
+		return uiData.size() - 1;
 	}
 
 	public void removeDataAt(int id) {
