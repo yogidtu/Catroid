@@ -1,9 +1,0 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
- 
-  <PreferenceCategory android:title = "@string/lwp_general_information" />
-  
-  <Preference 
-      android:title = "@string/main_menu_about_pocketcode"
-      android:key="@string/main_menu_about_pocketcode" />
-
-</PreferenceScreen> 

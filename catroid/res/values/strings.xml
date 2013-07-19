@@ -548,4 +548,9 @@
 
 	<!-- Live Wallpaper Strings -->
  	<string name="lwp_general_information">General information</string>
+ 	<string name="about_this_wallpaper">About this wallpaper</string>
+ 	<string name="lwp_project_name">Name: </string>
+ 	<string name="lwp_project_description">Description: </string> 
+ 	<string name="lwp_preferences">Preferences </string>
+ 	<string name="lwp_allow_sounds">Allow sounds </string> 
 </resources>

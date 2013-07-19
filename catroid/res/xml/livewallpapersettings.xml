@@ -1,0 +1,20 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+ 
+  <PreferenceCategory android:title = "@string/lwp_general_information" />
+  
+  <Preference 
+      android:title = "@string/main_menu_about_pocketcode"
+      android:key="@string/main_menu_about_pocketcode" />
+
+    <Preference 
+      android:title = "@string/about_this_wallpaper"
+      android:key="@string/about_this_wallpaper" />
+    
+     <PreferenceCategory android:title = "@string/lwp_preferences" />
+     
+     <CheckBoxPreference
+    	android:key="@string/lwp_allow_sounds"
+    	android:title="@string/lwp_allow_sounds"
+    	android:defaultValue="true" />
+  
+</PreferenceScreen> 

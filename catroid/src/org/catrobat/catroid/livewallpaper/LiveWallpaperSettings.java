@@ -25,15 +25,22 @@ package org.catrobat.catroid.livewallpaper;
 import org.catrobat.catroid.R;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 
 @SuppressLint("NewApi")
 public class LiveWallpaperSettings extends PreferenceActivity {
+
+	static Context context;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		context = this;
 		getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
 	}
 
@@ -41,7 +48,49 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 		@Override
 		public void onCreate(final Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.livewallappersettings);
+			addPreferencesFromResource(R.xml.livewallpapersettings);
+			handleAboutPcoketCodePreference();
+			handleAboutThisWallpaperPreference();
+
+			handleAllowSoundsCheckBox();
+
 		}
+
+		private void handleAllowSoundsCheckBox() {
+			// TODO implement me
+
+		}
+
+		private void handleAboutThisWallpaperPreference() {
+			Preference pref = findPreference(getResources().getString(R.string.about_this_wallpaper));
+
+			pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					AboutWallpaperDialog aboutWallpaperDialog = new AboutWallpaperDialog(context);
+					aboutWallpaperDialog.show();
+					return false;
+				}
+			});
+
+		}
+
+		private void handleAboutPcoketCodePreference() {
+			Preference licence = findPreference(getResources().getString(R.string.main_menu_about_pocketcode));
+
+			licence.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+
+					AboutPocketCodeDialog aboutDialog = new AboutPocketCodeDialog(context);
+					aboutDialog.show();
+					return false;
+				}
+			});
+
+		}
+
 	}
 }

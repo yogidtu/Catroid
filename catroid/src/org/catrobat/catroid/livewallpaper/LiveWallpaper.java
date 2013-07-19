@@ -69,4 +69,5 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		// TODO Auto-generated method stub
 
 	}
+
 }
