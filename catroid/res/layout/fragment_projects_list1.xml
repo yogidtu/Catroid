@@ -11,32 +11,31 @@
  *  
  *  An additional term exception under section 7 of the GNU Affero
  *  General Public License, version 3, is available at
- *  http://developer.catrobatSupport.org/license_additional_term
+ *  http://developer.catrobat.org/license_additional_term
  *  
  *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTs:android="http://schemas.android.com/apk/res/android"
-    android:id="@+idY; without even the implied warranty of
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *  GNU Affero General Public License for more details.
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/MyProjectsActivityRoot"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white" >
+    android:background="@color/my_projects_activity_background_color"
+    android:orientation="vertical" >
 
-    <include
-        android:id="@+id/bottom_bar"
-        layout="@layout/bottom_bar" />
+    <!-- Projects list -->
 
-    <FrameLayout
-        android:id="@+id/fragment_projects_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/bottom_bar"
-        class="org.catrobat.catroid.ui.fragment.ProjectsListFragment" />
+    <ListView
+        android:id="@android:id/list"
+        style="@style/ListViewShadowed" 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"/>
 
-</RelativeLayout>
+</LinearLayout>

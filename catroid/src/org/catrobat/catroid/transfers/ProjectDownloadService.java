@@ -25,7 +25,7 @@ package org.catrobat.catroid.transfers;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.dialogs.OverwriteRenameDialog;
 import org.catrobat.catroid.utils.StatusBarNotificationManager;
 import org.catrobat.catroid.utils.UtilZip;
@@ -43,7 +43,8 @@ import android.widget.Toast;
 
 public class ProjectDownloadService extends IntentService {
 
-	private static final String DOWNLOAD_FILE_NAME = "down" + Constants.CATROBAT_EXTENTION;
+	private static final String DOWNLOAD_FILE_NAME = "down"
+			+ Constants.CATROBAT_EXTENTION;
 
 	private String projectName;
 	private String zipFileString;
@@ -67,7 +68,8 @@ public class ProjectDownloadService extends IntentService {
 	public int onStartCommand(Intent intent, int flags, int startID) {
 		int returnCode = super.onStartCommand(intent, flags, startID);
 		this.projectName = intent.getStringExtra("downloadName");
-		this.zipFileString = Utils.buildPath(Constants.TMP_PATH, DOWNLOAD_FILE_NAME);
+		this.zipFileString = Utils.buildPath(Constants.TMP_PATH,
+				DOWNLOAD_FILE_NAME);
 		this.url = intent.getStringExtra("url");
 		this.notificationId = intent.getIntExtra("notificationId", 0);
 
@@ -84,15 +86,18 @@ public class ProjectDownloadService extends IntentService {
 		receiver = (ResultReceiver) intent.getParcelableExtra("receiver");
 		showOverwriteDialog = false;
 		try {
-			ServerCalls.getInstance().downloadProject(url, zipFileString, receiver, notificationId, projectName);
+			ServerCalls.getInstance().downloadProject(url, zipFileString,
+					receiver, notificationId, projectName);
 
-			if (StorageHandler.getInstance().projectExistsIgnoreCase(projectName)) {
+			if (StorageHandler.getInstance().projectExistsIgnoreCase(
+					projectName)) {
 				showOverwriteDialog = true;
 				result = true;
 			}
 
 			if (!showOverwriteDialog) {
-				result = UtilZip.unZipFile(zipFileString, Utils.buildProjectPath(projectName));
+				result = UtilZip.unZipFile(zipFileString,
+						Utils.buildProjectPath(projectName));
 			}
 
 		} catch (WebconnectionException e) {
@@ -104,14 +109,22 @@ public class ProjectDownloadService extends IntentService {
 	public void onDestroy() {
 
 		if (result && showOverwriteDialog) {
-			//project name and zip file string are temporariliy saved in the StatusBarNotificationManager to create it later on in the right context  
-			StatusBarNotificationManager.INSTANCE.downloadProjectName.add(projectName);
-			StatusBarNotificationManager.INSTANCE.downloadProjectZipFileString.add(zipFileString);
+			// project name and zip file string are temporariliy saved in the
+			// StatusBarNotificationManager to create it later on in the right
+			// context
+			StatusBarNotificationManager.INSTANCE.downloadProjectName
+					.add(projectName);
+			StatusBarNotificationManager.INSTANCE.downloadProjectZipFileString
+					.add(zipFileString);
 			try {
-				//The context of the calling activity is needed, otherwise an exception occurs
-				MainMenuActivity activity = StatusBarNotificationManager.INSTANCE.getActivity(notificationId);
-				OverwriteRenameDialog renameDialog = new OverwriteRenameDialog(activity, projectName, zipFileString);
-				renameDialog.show(activity.getSupportFragmentManager(), OverwriteRenameDialog.DIALOG_FRAGMENT_TAG);
+				// The context of the calling activity is needed, otherwise an
+				// exception occurs
+				MainMenuActivity_Shruti activity = StatusBarNotificationManager.INSTANCE
+						.getActivity(notificationId);
+				OverwriteRenameDialog renameDialog = new OverwriteRenameDialog(
+						activity, projectName, zipFileString);
+				renameDialog.show(activity.getSupportFragmentManager(),
+						OverwriteRenameDialog.DIALOG_FRAGMENT_TAG);
 			} catch (RuntimeException e) {
 				e.printStackTrace();
 			}
@@ -123,7 +136,8 @@ public class ProjectDownloadService extends IntentService {
 			return;
 		}
 
-		Toast.makeText(this, R.string.success_project_download, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, R.string.success_project_download,
+				Toast.LENGTH_SHORT).show();
 		super.onDestroy();
 	}
 
