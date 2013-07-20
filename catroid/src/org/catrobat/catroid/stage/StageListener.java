@@ -102,7 +102,7 @@ public class StageListener implements ApplicationListener {
 	private float virtualWidth;
 	private float virtualHeight;
 
-	enum ScreenModes {
+	private enum ScreenModes {
 		STRETCH, MAXIMIZE
 	};
 
@@ -119,8 +119,6 @@ public class StageListener implements ApplicationListener {
 
 	private StageDialog stageDialog;
 
-	private boolean texturesRendered = false;
-
 	public int maximizeViewPortX = 0;
 	public int maximizeViewPortY = 0;
 	public int maximizeViewPortHeight = 0;
@@ -130,7 +128,7 @@ public class StageListener implements ApplicationListener {
 
 	private byte[] thumbnail;
 
-	StageListener() {
+	protected StageListener() {
 	}
 
 	@Override
@@ -139,9 +137,8 @@ public class StageListener implements ApplicationListener {
 		font.setColor(1f, 0f, 0.05f, 1f);
 		font.setScale(1.2f);
 
-		pathForScreenshot = Utils.buildProjectPath(ProjectManager.INSTANCE.getCurrentProject().getName()) + "/";
-
 		project = ProjectManager.INSTANCE.getCurrentProject();
+		pathForScreenshot = Utils.buildProjectPath(project.getName()) + "/";
 
 		virtualWidth = project.getXmlHeader().virtualScreenWidth;
 		virtualHeight = project.getXmlHeader().virtualScreenHeight;
@@ -158,13 +155,11 @@ public class StageListener implements ApplicationListener {
 		camera.position.set(0, 0, 0);
 
 		sprites = project.getSpriteList();
-
 		for (Sprite sprite : sprites) {
 			sprite.resetSprite();
 			stage.addActor(sprite.look);
 			sprite.resume();
 		}
-
 		if (sprites.size() > 0) {
 			sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
 		}
@@ -189,6 +184,7 @@ public class StageListener implements ApplicationListener {
 			return;
 		}
 		paused = false;
+
 		SoundManager.getInstance().resume();
 		for (Sprite sprite : sprites) {
 			sprite.resume();
@@ -196,10 +192,11 @@ public class StageListener implements ApplicationListener {
 	}
 
 	void menuPause() {
-		if (finished || reloadProject || (sprites == null)) {
+		if (finished || reloadProject) {
 			return;
 		}
 		paused = true;
+
 		SoundManager.getInstance().pause();
 		for (Sprite sprite : sprites) {
 			sprite.pause();
@@ -212,8 +209,7 @@ public class StageListener implements ApplicationListener {
 		}
 		this.stageDialog = stageDialog;
 
-		ProjectManager.INSTANCE.getCurrentProject().getUserVariables().resetAllUserVariables();
-
+		project.getUserVariables().resetAllUserVariables();
 		reloadProject = true;
 	}
 
@@ -225,18 +221,18 @@ public class StageListener implements ApplicationListener {
 				sprite.resume();
 			}
 		}
-		renderTextures();
+
 		for (Sprite sprite : sprites) {
 			sprite.look.refreshTextures();
 		}
-
 	}
 
 	@Override
 	public void pause() {
-		if (finished || (sprites == null)) {
+		if (finished) {
 			return;
 		}
+
 		if (!paused) {
 			SoundManager.getInstance().pause();
 			for (Sprite sprite : sprites) {
@@ -249,7 +245,6 @@ public class StageListener implements ApplicationListener {
 		finished = true;
 		SoundManager.getInstance().clear();
 		if (thumbnail != null) {
-			prepareAutomaticScreenshotAndNoMeadiaFile();
 			saveScreenshot(thumbnail, SCREENSHOT_AUTOMATIC_FILE_NAME);
 		}
 
@@ -257,26 +252,22 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void render() {
-
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (reloadProject) {
 			int spriteSize = sprites.size();
 			for (int i = 0; i < spriteSize; i++) {
-				Sprite sprite = sprites.get(i);
-				sprite.pause();
+				sprites.get(i).pause();
 			}
 			stage.clear();
 			SoundManager.getInstance().clear();
 
-			project = ProjectManager.INSTANCE.getCurrentProject();
-			sprites = project.getSpriteList();
+			Sprite sprite;
 			if (spriteSize > 0) {
 				sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
-				sprites.get(0).pause();
 			}
 			for (int i = 0; i < spriteSize; i++) {
-				Sprite sprite = sprites.get(i);
+				sprite = sprites.get(i);
 				sprite.resetSprite();
 				stage.addActor(sprite.look);
 				sprite.pause();
@@ -288,11 +279,6 @@ public class StageListener implements ApplicationListener {
 			synchronized (stageDialog) {
 				stageDialog.notify();
 			}
-		}
-
-		if (!texturesRendered) {
-			renderTextures();
-			texturesRendered = true;
 		}
 
 		switch (screenMode) {
@@ -377,13 +363,6 @@ public class StageListener implements ApplicationListener {
 			makeScreenshot = false;
 		}
 
-		//		if (paused && !finished) {
-		//			batch.setProjectionMatrix(camera.combined);
-		//			batch.begin();
-		//			batch.draw(pauseScreen, -pauseScreen.getWidth() / 2, -pauseScreen.getHeight() / 2);
-		//			batch.end();
-		//		}
-
 		if (axesOn && !finished) {
 			drawAxes();
 		}
@@ -463,7 +442,9 @@ public class StageListener implements ApplicationListener {
 
 		FileHandle image = Gdx.files.absolute(pathForScreenshot + fileName);
 		OutputStream stream = image.write(false);
+
 		try {
+			new File(pathForScreenshot + Constants.NO_MEDIA_FILE).createNewFile();
 			centerSquareBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
 			stream.close();
 		} catch (IOException e) {
@@ -505,19 +486,6 @@ public class StageListener implements ApplicationListener {
 		return whiteBackground;
 	}
 
-	private void renderTextures() {
-		List<Sprite> sprites = project.getSpriteList();
-		int spriteSize = sprites.size();
-		for (int i = 0; i > spriteSize; i++) {
-			List<LookData> data = sprites.get(i).getLookDataList();
-			int dataSize = data.size();
-			for (int j = 0; j < dataSize; j++) {
-				LookData lookData = data.get(j);
-				lookData.setTextureRegion();
-			}
-		}
-	}
-
 	private void disposeTextures() {
 		List<Sprite> sprites = project.getSpriteList();
 		int spriteSize = sprites.size();
@@ -529,24 +497,6 @@ public class StageListener implements ApplicationListener {
 				lookData.getPixmap().dispose();
 				lookData.getTextureRegion().getTexture().dispose();
 			}
-		}
-	}
-
-	private void prepareAutomaticScreenshotAndNoMeadiaFile() {
-		File noMediaFile = new File(pathForScreenshot + Constants.NO_MEDIA_FILE);
-		File screenshotAutomaticFile = new File(pathForScreenshot + SCREENSHOT_AUTOMATIC_FILE_NAME);
-		try {
-			if (screenshotAutomaticFile.exists()) {
-				screenshotAutomaticFile.delete();
-				screenshotAutomaticFile = new File(pathForScreenshot + SCREENSHOT_AUTOMATIC_FILE_NAME);
-			}
-			screenshotAutomaticFile.createNewFile();
-
-			if (!noMediaFile.exists()) {
-				noMediaFile.createNewFile();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 }
