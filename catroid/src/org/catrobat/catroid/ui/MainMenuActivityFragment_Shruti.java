@@ -59,7 +59,6 @@ import android.text.SpannableStringBuilder;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -70,10 +69,11 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
-		OnCheckTokenCompleteListener, OnClickListener {
+public class MainMenuActivityFragment_Shruti extends SherlockFragment implements OnCheckTokenCompleteListener,
+		OnClickListener {
 
 	private static final int DIALOG_ALERT = 10;
 
@@ -93,19 +93,16 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 			super.onReceiveResult(resultCode, resultData);
 			if (resultCode == Constants.UPDATE_DOWNLOAD_PROGRESS) {
 				long progress = resultData.getLong("currentDownloadProgress");
-				boolean endOfFileReached = resultData
-						.getBoolean("endOfFileReached");
+				boolean endOfFileReached = resultData.getBoolean("endOfFileReached");
 				Integer notificationId = resultData.getInt("notificationId");
 				String projectName = resultData.getString("projectName");
 				if (endOfFileReached) {
 					progress = 100;
 				}
 				String notificationMessage = "Download " + progress + "% "
-						+ getString(R.string.notification_percent_completed)
-						+ ":" + projectName;
+						+ getString(R.string.notification_percent_completed) + ":" + projectName;
 
-				StatusBarNotificationManager.INSTANCE.updateNotification(
-						notificationId, notificationMessage,
+				StatusBarNotificationManager.INSTANCE.updateNotification(notificationId, notificationMessage,
 						Constants.DOWNLOAD_NOTIFICATION, endOfFileReached);
 			}
 		}
@@ -117,41 +114,34 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 	private android.app.ActionBar actionBar;
 	private Lock viewSwitchLock = new ViewSwitchLock();
 
-	public void onAttach(MainMenuActivity activity) {
+	public void onAttach(MainMenuActivity_Shruti activity) {
 		super.onAttach(activity);
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 
 	}
 
 	View rootView;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.v("reached", "till here");
-		rootView = inflater.inflate(R.layout.activity_main_menu, container,
-				false);
-		Button main_menu_button_new = (Button) rootView
-				.findViewById(R.id.main_menu_button_new);
+		rootView = inflater.inflate(R.layout.activity_main_menu, container, false);
+		Button main_menu_button_new = (Button) rootView.findViewById(R.id.main_menu_button_new);
 		main_menu_button_new.setOnClickListener(this);
-		Button main_menu_button_continue = (Button) rootView
-				.findViewById(R.id.main_menu_button_continue);
+		Button main_menu_button_continue = (Button) rootView.findViewById(R.id.main_menu_button_continue);
 		main_menu_button_continue.setOnClickListener(this);
-		Button main_menu_button_programs = (Button) rootView
-				.findViewById(R.id.main_menu_button_programs);
+		Button main_menu_button_programs = (Button) rootView.findViewById(R.id.main_menu_button_programs);
 		main_menu_button_programs.setOnClickListener(this);
-		Button main_menu_button_forum = (Button) rootView
-				.findViewById(R.id.main_menu_button_forum);
+		Button main_menu_button_forum = (Button) rootView.findViewById(R.id.main_menu_button_forum);
 		main_menu_button_forum.setOnClickListener(this);
-		Button main_menu_button_web = (Button) rootView
-				.findViewById(R.id.main_menu_button_web);
+		Button main_menu_button_web = (Button) rootView.findViewById(R.id.main_menu_button_web);
 		main_menu_button_web.setOnClickListener(this);
-		Button main_menu_button_upload = (Button) rootView
-				.findViewById(R.id.main_menu_button_upload);
+		Button main_menu_button_upload = (Button) rootView.findViewById(R.id.main_menu_button_upload);
 		main_menu_button_upload.setOnClickListener(this);
 
 		return rootView;
@@ -169,8 +159,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 	}
 
 	public void onFinishEditDialog(String inputText) {
-		Toast.makeText(getActivity(), "Hi, " + inputText, Toast.LENGTH_SHORT)
-				.show();
+		Toast.makeText(getActivity(), "Hi, " + inputText, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -181,8 +170,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		// projectToEdit = (ProjectData)
 		// savedInstanceState.getSerializable(BUNDLE_ARGUMENTS_PROJECT_DATA);
 		// }
-		if (!Utils
-				.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
+		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
 			return;
 		}
 		Utils.updateScreenWidthAndHeight(getActivity());
@@ -193,8 +181,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		actionBar.setDisplayUseLogoEnabled(true);
 		actionBar.setTitle(R.string.app_name);
 
-		getActivity().findViewById(R.id.main_menu_button_continue).setEnabled(
-				false);
+		getActivity().findViewById(R.id.main_menu_button_continue).setEnabled(false);
 
 		// Load external project from URL or local file system.
 		Uri loadExternalProjectUri = getActivity().getIntent().getData();
@@ -209,47 +196,47 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.main_menu_button_new:
-			// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
-			// Toast.LENGTH_LONG).show();
+			case R.id.main_menu_button_new:
+				// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
+				// Toast.LENGTH_LONG).show();
 
-			handleNewButton(rootView);
-			break;
+				handleNewButton(rootView);
+				break;
 
-		case R.id.main_menu_button_continue:
-			// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
-			// Toast.LENGTH_LONG).show();
+			case R.id.main_menu_button_continue:
+				// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
+				// Toast.LENGTH_LONG).show();
 
-			handleContinueButton(rootView);
-			break;
-		case R.id.main_menu_button_programs:
-			// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
-			// Toast.LENGTH_LONG).show();
+				handleContinueButton(rootView);
+				break;
+			case R.id.main_menu_button_programs:
+				// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
+				// Toast.LENGTH_LONG).show();
 
-			handleProgramsButton(rootView);
-			break;
-		case R.id.main_menu_button_forum:
-			// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
-			// Toast.LENGTH_LONG).show();
+				handleProgramsButton(rootView);
+				break;
+			case R.id.main_menu_button_forum:
+				// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
+				// Toast.LENGTH_LONG).show();
 
-			handleForumButton(rootView);
-			break;
+				handleForumButton(rootView);
+				break;
 
-		case R.id.main_menu_button_web:
-			// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
-			// Toast.LENGTH_LONG).show();
+			case R.id.main_menu_button_web:
+				// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
+				// Toast.LENGTH_LONG).show();
 
-			handleWebButton(rootView);
-			break;
-		case R.id.main_menu_button_upload:
-			// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
-			// Toast.LENGTH_LONG).show();
+				handleWebButton(rootView);
+				break;
+			case R.id.main_menu_button_upload:
+				// Toast.makeText(getActivity().getApplicationContext(), "Shruti",
+				// Toast.LENGTH_LONG).show();
 
-			handleUploadButton(rootView);
-			break;
+				handleUploadButton(rootView);
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 	}
 
@@ -257,16 +244,14 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 	public void onResume() {
 		super.onResume();
 
-		if (!Utils
-				.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
+		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
 			return;
 		}
 
 		PreStageActivity.shutdownPersistentResources();
 		Utils.loadProjectIfNeeded(getActivity());
 		setMainMenuButtonContinueText();
-		getActivity().findViewById(R.id.main_menu_button_continue).setEnabled(
-				true);
+		getActivity().findViewById(R.id.main_menu_button_continue).setEnabled(true);
 		StatusBarNotificationManager.INSTANCE.displayDialogs(getActivity());
 	}
 
@@ -279,9 +264,8 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 
 		if (ProjectManager.INSTANCE.getCurrentProject() != null) {
 			ProjectManager.INSTANCE.saveProject();
-			Utils.saveToPreferences(getActivity(),
-					Constants.PREF_PROJECTNAME_KEY, ProjectManager.INSTANCE
-							.getCurrentProject().getName());
+			Utils.saveToPreferences(getActivity(), Constants.PREF_PROJECTNAME_KEY, ProjectManager.INSTANCE
+					.getCurrentProject().getName());
 		}
 	}
 
@@ -303,26 +287,26 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 	 * 
 	 * }
 	 */
-	public boolean onCreateOptionsMenu(Menu menu, MenuInflater inflator) {
-		getSherlockActivity().getSupportMenuInflater().inflate(
-				R.menu.menu_main_menu, menu);
-		return onCreateOptionsMenu(menu, inflator);
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflator) {
+		getSherlockActivity().getSupportMenuInflater().inflate(R.menu.menu_main_menu, menu);
+		super.onCreateOptionsMenu(menu, inflator);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.menu_settings: {
-			Intent intent = new Intent(getActivity(), SettingsActivity.class);
-			startActivity(intent);
-			return true;
-		}
-		case R.id.menu_about: {
-			AboutDialogFragment aboutDialog = new AboutDialogFragment();
-			aboutDialog.show(getActivity().getSupportFragmentManager(),
-					AboutDialogFragment.DIALOG_FRAGMENT_TAG);
-			return true;
-		}
+			case R.id.menu_settings: {
+				Intent intent = new Intent(getActivity(), SettingsActivity.class);
+				startActivity(intent);
+				return true;
+			}
+			case R.id.menu_about: {
+				AboutDialogFragment aboutDialog = new AboutDialogFragment();
+				aboutDialog.show(getActivity().getSupportFragmentManager(), AboutDialogFragment.DIALOG_FRAGMENT_TAG);
+				return true;
+			}
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -341,8 +325,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
-		Toast.makeText(getActivity().getApplicationContext(), "Shruti",
-				Toast.LENGTH_LONG).show();
+		Toast.makeText(getActivity().getApplicationContext(), "Shruti", Toast.LENGTH_LONG).show();
 		showOrientationDialog();
 		// getActivity().showDialog(DIALOG_ALERT);
 
@@ -350,42 +333,35 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
-		case DIALOG_ALERT:
-			// Create out AlterDialog
-			Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setMessage("What orientation of the project do you want?");
-			builder.setCancelable(true);
-			builder.setPositiveButton("Landscape",
-					new LandscapeOnClickListener());
-			builder.setNegativeButton("Portrait", new PortraitOnClickListener());
-			AlertDialog dialog1 = builder.create();
-			dialog1.show();
+			case DIALOG_ALERT:
+				// Create out AlterDialog
+				Builder builder = new AlertDialog.Builder(getActivity());
+				builder.setMessage("What orientation of the project do you want?");
+				builder.setCancelable(true);
+				builder.setPositiveButton("Landscape", new LandscapeOnClickListener());
+				builder.setNegativeButton("Portrait", new PortraitOnClickListener());
+				AlertDialog dialog1 = builder.create();
+				dialog1.show();
 		}
 		return onCreateDialog(id);
 	}
 
-	private final class PortraitOnClickListener implements
-			DialogInterface.OnClickListener {
+	private final class PortraitOnClickListener implements DialogInterface.OnClickListener {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			Toast.makeText(getActivity().getApplicationContext(),
-					"Project in portrait mode", Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity().getApplicationContext(), "Project in portrait mode", Toast.LENGTH_LONG).show();
 			NewProjectDialog dialog2 = new NewProjectDialog();
-			dialog2.show(getActivity().getSupportFragmentManager(),
-					NewProjectDialog.DIALOG_FRAGMENT_TAG);
+			dialog2.show(getActivity().getSupportFragmentManager(), NewProjectDialog.DIALOG_FRAGMENT_TAG);
 
 		}
 	}
 
-	private final class LandscapeOnClickListener implements
-			DialogInterface.OnClickListener {
+	private final class LandscapeOnClickListener implements DialogInterface.OnClickListener {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			Toast.makeText(getActivity().getApplicationContext(),
-					"To be continued", Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity().getApplicationContext(), "To be continued", Toast.LENGTH_LONG).show();
 			// MainMenuActivity.this.finish();
-			Intent intent = new Intent(getActivity(),
-					MainMenuActivity_Shruti.class);
+			Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 			startActivity(intent);
 		}
 	}
@@ -417,20 +393,15 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(getActivity());
-		String token = preferences.getString(Constants.TOKEN,
-				Constants.NO_TOKEN);
-		String username = preferences.getString(Constants.USERNAME,
-				Constants.NO_USERNAME);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		String token = preferences.getString(Constants.TOKEN, Constants.NO_TOKEN);
+		String username = preferences.getString(Constants.USERNAME, Constants.NO_USERNAME);
 
-		if (token == Constants.NO_TOKEN
-				|| token.length() != ServerCalls.TOKEN_LENGTH
+		if (token == Constants.NO_TOKEN || token.length() != ServerCalls.TOKEN_LENGTH
 				|| token.equals(ServerCalls.TOKEN_CODE_INVALID)) {
 			showLoginRegisterDialog();
 		} else {
-			CheckTokenTask checkTokenTask = new CheckTokenTask(getActivity(),
-					token, username);
+			CheckTokenTask checkTokenTask = new CheckTokenTask(getActivity(), token, username);
 			checkTokenTask.setOnCheckTokenCompleteListener(this);
 			checkTokenTask.execute();
 		}
@@ -444,21 +415,18 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 	@Override
 	public void onCheckTokenSuccess() {
 		UploadProjectDialog uploadProjectDialog = new UploadProjectDialog();
-		uploadProjectDialog.show(getActivity().getSupportFragmentManager(),
-				UploadProjectDialog.DIALOG_FRAGMENT_TAG);
+		uploadProjectDialog.show(getActivity().getSupportFragmentManager(), UploadProjectDialog.DIALOG_FRAGMENT_TAG);
 	}
 
 	public int createNotification(String downloadName) {
 		StatusBarNotificationManager manager = StatusBarNotificationManager.INSTANCE;
-		int notificationId = manager.createNotification(downloadName,
-				getActivity(), Constants.DOWNLOAD_NOTIFICATION);
+		int notificationId = manager.createNotification(downloadName, getActivity(), Constants.DOWNLOAD_NOTIFICATION);
 		return notificationId;
 	}
 
 	private void showLoginRegisterDialog() {
 		LoginRegisterDialog loginRegisterDialog = new LoginRegisterDialog();
-		loginRegisterDialog.show(getActivity().getSupportFragmentManager(),
-				LoginRegisterDialog.DIALOG_FRAGMENT_TAG);
+		loginRegisterDialog.show(getActivity().getSupportFragmentManager(), LoginRegisterDialog.DIALOG_FRAGMENT_TAG);
 	}
 
 	private void unbindDrawables(View view) {
@@ -477,8 +445,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		String scheme = loadExternalProjectUri.getScheme();
 		if (scheme.startsWith((TYPE_HTTP))) {
 			String url = loadExternalProjectUri.toString();
-			int projectNameIndex = url.lastIndexOf(PROJECTNAME_TAG)
-					+ PROJECTNAME_TAG.length();
+			int projectNameIndex = url.lastIndexOf(PROJECTNAME_TAG) + PROJECTNAME_TAG.length();
 			String projectName = url.substring(projectNameIndex);
 			try {
 				projectName = URLDecoder.decode(projectName, "UTF-8");
@@ -486,10 +453,8 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 				Log.e(TAG, "Could not decode project name: " + projectName, e);
 			}
 
-			Intent downloadIntent = new Intent(getActivity(),
-					ProjectDownloadService.class);
-			downloadIntent.putExtra("receiver", new DownloadReceiver(
-					new Handler()));
+			Intent downloadIntent = new Intent(getActivity(), ProjectDownloadService.class);
+			downloadIntent.putExtra("receiver", new DownloadReceiver(new Handler()));
 			downloadIntent.putExtra("downloadName", projectName);
 			downloadIntent.putExtra("url", url);
 			int notificationId = createNotification(projectName);
@@ -503,28 +468,24 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 			int b = path.lastIndexOf('.');
 			String projectName = path.substring(a, b);
 			if (!UtilZip.unZipFile(path, Utils.buildProjectPath(projectName))) {
-				Utils.showErrorDialog(getActivity(),
-						getResources().getString(R.string.error_load_project));
+				Utils.showErrorDialog(getActivity(), getResources().getString(R.string.error_load_project));
 			}
 		}
 	}
 
 	private void setMainMenuButtonContinueText() {
-		Button mainMenuButtonContinue = (Button) getActivity().findViewById(
-				R.id.main_menu_button_continue);
-		TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(
-				getActivity(), R.style.MainMenuButtonTextSecondLine);
+		Button mainMenuButtonContinue = (Button) getActivity().findViewById(R.id.main_menu_button_continue);
+		TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(getActivity(),
+				R.style.MainMenuButtonTextSecondLine);
 		SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
 		String mainMenuContinue = this.getString(R.string.main_menu_continue);
 
 		spannableStringBuilder.append(mainMenuContinue);
 		spannableStringBuilder.append("\n");
-		spannableStringBuilder.append(ProjectManager.INSTANCE
-				.getCurrentProject().getName());
+		spannableStringBuilder.append(ProjectManager.INSTANCE.getCurrentProject().getName());
 
-		spannableStringBuilder.setSpan(textAppearanceSpan,
-				mainMenuContinue.length() + 1, spannableStringBuilder.length(),
-				Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+		spannableStringBuilder.setSpan(textAppearanceSpan, mainMenuContinue.length() + 1,
+				spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 		mainMenuButtonContinue.setText(spannableStringBuilder);
 	}
@@ -558,8 +519,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 			mCallbacklist = (OnHeadlineSelectedListenerList) activity;
 			mWeb = (OnWebSelectedListener) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnHeadlineSelectedListener");
+			throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
 		}
 
 		super.onAttach(activity);

@@ -1,6 +1,7 @@
 package org.catrobat.catroid.ui;
 
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.ui.dialogs.AboutDialogFragment;
 import org.catrobat.catroid.ui.fragment.ProjectsListFragment;
 import org.catrobat.catroid.ui.fragment.WebViewFragment_Shruti;
 
@@ -11,16 +12,22 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
-		WebViewFragment_Shruti.OnHeadlineSelectedListener,
-		MainMenuActivityFragment_Shruti.OnWebSelectedListener,
+		WebViewFragment_Shruti.OnHeadlineSelectedListener, MainMenuActivityFragment_Shruti.OnWebSelectedListener,
 
 		MainMenuActivityFragment_Shruti.OnHeadlineSelectedListenerList {
 	public static int flag = -1;
+	private android.app.ActionBar actionBar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -30,15 +37,18 @@ public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
 		MainMenuActivityFragment_Shruti listFragment = (MainMenuActivityFragment_Shruti) getSupportFragmentManager()
 				.findFragmentById(R.id.projectList);
 
-		android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager()
-				.beginTransaction();
+		android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		listFragment = new MainMenuActivityFragment_Shruti();
 		Log.v("reached111111", "till here");
-		ft.replace(R.id.projectList, listFragment, "List_Fragment");
-		ft.addToBackStack(null);
+		ft.add(R.id.projectList, listFragment, "List_Fragment");
+		//ft.addToBackStack(null);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		ft.commit();
 		Log.v("reached", "till here");
+
+		actionBar = getActionBar();
+		actionBar.setDisplayUseLogoEnabled(true);
+		actionBar.setTitle(R.string.app_name);
 
 		/*
 		 * ProjectsListFragment listFragment = (ProjectsListFragment)
@@ -78,11 +88,10 @@ public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
 
 				getFragmentManager().popBackStack();
 				MyProjectsActivity f5 = new MyProjectsActivity();
-				android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager()
-						.beginTransaction();
+				android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				ft.replace(R.id.projectList, f5); // f2_container is your
 													// FrameLayout container
-				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 				ft.addToBackStack(null);
 				ft.commit();
 				// flag = -1;
@@ -115,11 +124,10 @@ public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
 
 				getFragmentManager().popBackStack();
 				WebViewFragment_Shruti f5 = new WebViewFragment_Shruti();
-				android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager()
-						.beginTransaction();
+				android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				ft.replace(R.id.projectList, f5); // f2_container is your
 													// FrameLayout container
-				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 				ft.addToBackStack(null);
 				ft.commit();
 				// flag = -1;
@@ -157,11 +165,10 @@ public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
 				if (flag1.equals("1")) {
 					// getFragmentManager().popBackStack();
 					ProjectsListFragment f4 = new ProjectsListFragment();
-					android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager()
-							.beginTransaction();
+					android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 					ft.replace(R.id.projectList, f4); // f2_container is your
 														// FrameLayout container
-					ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+					ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 					ft.addToBackStack(null);
 					ft.commit();
 					flag = -1;
@@ -182,6 +189,49 @@ public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
 
 		}
 		super.onStop();
+	}
+
+	public boolean onCreateOptionsMenu(Menu menu, MenuInflater inflator) {
+		getSupportMenuInflater().inflate(R.menu.menu_main_menu, menu);
+		return onCreateOptionsMenu(menu, inflator);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.menu_settings: {
+				Intent intent = new Intent(this, SettingsActivity.class);
+				startActivity(intent);
+				return true;
+			}
+			case R.id.menu_about: {
+				AboutDialogFragment aboutDialog = new AboutDialogFragment();
+				aboutDialog.show(getSupportFragmentManager(), AboutDialogFragment.DIALOG_FRAGMENT_TAG);
+				return true;
+			}
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void unbindDrawables(View view) {
+		if (view.getBackground() != null) {
+			view.getBackground().setCallback(null);
+		}
+		if (view instanceof ViewGroup && !(view instanceof AdapterView)) {
+			for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+				unbindDrawables(((ViewGroup) view).getChildAt(i));
+			}
+			((ViewGroup) view).removeAllViews();
+		}
+	}
+
+	@Override
+	public void onDestroy() {
+
+		super.onDestroy();
+		//unbindDrawables();
+		System.gc();
+
 	}
 
 }

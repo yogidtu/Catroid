@@ -56,23 +56,19 @@ public class MyProjectsActivity extends SherlockFragment {
 	private SherlockFragmentActivity mActivity;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 
 		Log.v("reached", "till here");
-		rootView = inflater.inflate(R.layout.activity_my_projects, container,
-				false);
+		rootView = inflater.inflate(R.layout.activity_my_projects, container, false);
 
-		projectsListFragment = (ProjectsListFragment) getChildFragmentManager()
-				.findFragmentById(R.id.fragment_projects_list);
+		projectsListFragment = (ProjectsListFragment) getChildFragmentManager().findFragmentById(
+				R.id.fragment_projects_list);
 
-		android.support.v4.app.FragmentTransaction ft = getChildFragmentManager()
-				.beginTransaction();
+		android.support.v4.app.FragmentTransaction ft = getChildFragmentManager().beginTransaction();
 		projectsListFragment = new ProjectsListFragment();
 		Log.v("reached111111", "till here");
-		ft.replace(R.id.fragment_projects_list, projectsListFragment,
-				"List_Fragment");
+		ft.replace(R.id.fragment_projects_list, projectsListFragment, "List_Fragment");
 		ft.addToBackStack(null);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		ft.commit();
@@ -90,8 +86,7 @@ public class MyProjectsActivity extends SherlockFragment {
 		// setContentView(R.layout.activity_my_projects);
 		setUpActionBar();
 		// setHasOptionsMenu(true);
-		getActivity().findViewById(R.id.bottom_bar_separator).setVisibility(
-				View.GONE);
+		getActivity().findViewById(R.id.bottom_bar_separator).setVisibility(View.GONE);
 		getActivity().findViewById(R.id.button_play).setVisibility(View.GONE);
 
 	}
@@ -114,6 +109,12 @@ public class MyProjectsActivity extends SherlockFragment {
 	 * unbindDrawables(((ViewGroup) rootView).getChildAt(i)); } ((ViewGroup)
 	 * rootView).removeAllViews(); } }
 	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+
+	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -123,8 +124,7 @@ public class MyProjectsActivity extends SherlockFragment {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		handleShowDetails(projectsListFragment.getShowDetails(),
-				menu.findItem(R.id.show_details));
+		handleShowDetails(projectsListFragment.getShowDetails(), menu.findItem(R.id.show_details));
 		return;
 	}
 
@@ -146,41 +146,39 @@ public class MyProjectsActivity extends SherlockFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home: {
-			Intent intent = new Intent(getActivity(),
-					MainMenuActivityFragment_Shruti.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(intent);
-			return true;
-		}
-		case R.id.copy: {
-			projectsListFragment.startCopyActionMode();
-			break;
-		}
-		case R.id.delete: {
-			projectsListFragment.startDeleteActionMode();
-			break;
-		}
-		case R.id.rename: {
-			projectsListFragment.startRenameActionMode();
-			break;
-		}
-		case R.id.show_details: {
-			handleShowDetails(!projectsListFragment.getShowDetails(), item);
-			break;
-		}
-		case R.id.settings: {
-			Intent intent = new Intent(getActivity(), SettingsActivity.class);
-			startActivity(intent);
-			break;
-		}
+			case android.R.id.home: {
+				Intent intent = new Intent(getActivity(), MainMenuActivityFragment_Shruti.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+				return true;
+			}
+			case R.id.copy: {
+				projectsListFragment.startCopyActionMode();
+				break;
+			}
+			case R.id.delete: {
+				projectsListFragment.startDeleteActionMode();
+				break;
+			}
+			case R.id.rename: {
+				projectsListFragment.startRenameActionMode();
+				break;
+			}
+			case R.id.show_details: {
+				handleShowDetails(!projectsListFragment.getShowDetails(), item);
+				break;
+			}
+			case R.id.settings: {
+				Intent intent = new Intent(getActivity(), SettingsActivity.class);
+				startActivity(intent);
+				break;
+			}
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	private void setUpActionBar() {
-		String title = getResources().getString(
-				R.string.my_projects_activity_title);
+		String title = getResources().getString(R.string.my_projects_activity_title);
 
 		actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(title);
@@ -189,10 +187,8 @@ public class MyProjectsActivity extends SherlockFragment {
 
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (projectsListFragment.getActionModeActive()) {
-			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
-					&& event.getAction() == KeyEvent.ACTION_UP) {
-				ProjectAdapter adapter = (ProjectAdapter) projectsListFragment
-						.getListAdapter();
+			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+				ProjectAdapter adapter = (ProjectAdapter) projectsListFragment.getListAdapter();
 				adapter.clearCheckedProjects();
 			}
 		}
