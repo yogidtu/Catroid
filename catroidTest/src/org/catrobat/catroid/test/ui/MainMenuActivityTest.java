@@ -24,15 +24,15 @@ package org.catrobat.catroid.test.ui;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 
-public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
+public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainMenuActivity_Shruti> {
 
 	public MainMenuActivityTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override
