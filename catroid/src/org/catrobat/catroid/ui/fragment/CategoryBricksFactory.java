@@ -92,6 +92,8 @@ public class CategoryBricksFactory {
 
 	public List<Brick> getBricks(String category, Sprite sprite, Context context) {
 
+		Log.d("FOREST", category + ", " + context.getString(R.string.category_user_bricks));
+
 		UserBrickScriptActivity activity;
 		try {
 			activity = (UserBrickScriptActivity) context;

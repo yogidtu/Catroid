@@ -40,15 +40,15 @@ import org.catrobat.catroid.content.bricks.NestingBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
-import org.catrobat.catroid.ui.UserBrickScriptActivity;
 import org.catrobat.catroid.ui.ViewSwitchLock;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListView;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListener;
+import org.catrobat.catroid.ui.fragment.AddBrickFragment;
+import org.catrobat.catroid.ui.fragment.ScriptFragment;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
@@ -970,7 +970,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			items.add(context.getText(R.string.brick_context_dialog_move_brick));
 		}
 		if ((brickList.get(itemPosition) instanceof UserBrick)) {
-			items.add(context.getText(R.string.brick_context_dialog_edit_brick));
+			items.add(context.getText(R.string.brick_context_dialog_show_source));
 		}
 		if (brickList.get(itemPosition) instanceof NestingBrick) {
 			items.add(context.getText(R.string.brick_context_dialog_animate_bricks));
@@ -1000,8 +1000,8 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				CharSequence clickedItemText = items.get(item);
 				if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_move_brick))) {
 					view.performLongClick();
-				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
-					launchBrickScriptActivityOnBrickAt(context, itemPosition);
+				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_show_source))) {
+					launchAddBrickAndSelectBrickAt(context, itemPosition);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_copy_brick))) {
 					copyBrickListAndProject(itemPosition, false);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_delete_brick))) {
@@ -1026,7 +1026,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 	}
 
-	public void launchBrickScriptActivityOnBrickAt(Context context, int index) {
+	public void launchAddBrickAndSelectBrickAt(Context context, int index) {
 		int temp[] = getScriptAndBrickIndexFromProject(index);
 		Script script = ProjectManager.INSTANCE.getCurrentSprite().getScript(temp[0]);
 		if (script != null) {
@@ -1036,12 +1036,14 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				return;
 			}
 
-			Intent intent = new Intent(context, UserBrickScriptActivity.class);
-			UserBrickScriptActivity.setUserBrick(brick); // TODO USE BUNDLE INSTEAD!!?
+			if (brick instanceof UserBrick) {
+				AddBrickFragment.setBrickFocus(((UserBrick) brick));
+			}
 
-			context.startActivity(intent);
-
+			ScriptFragment theScriptFragment = ((ScriptFragment) scriptFragment);
+			theScriptFragment.onCategorySelected(context.getString(R.string.category_user_bricks));
 		}
+		//launchBrickScriptActivityOnBrickAt(context, itemPosition);
 	}
 
 	protected void copyBrickListAndProject(int itemPosition, boolean b) {

@@ -139,6 +139,10 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		uiData.version++;
 	}
 
+	public boolean isInstanceOf(UserBrick b) {
+		return (b.uiData == uiData);
+	}
+
 	public Iterator<UserBrickUIComponent> getUIComponentIterator() {
 		return uiComponents.iterator();
 	}

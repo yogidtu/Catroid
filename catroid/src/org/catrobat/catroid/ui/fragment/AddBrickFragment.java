@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.ui.fragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.catrobat.catroid.ProjectManager;
@@ -32,9 +33,18 @@ import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.ui.BottomBar;
+import org.catrobat.catroid.ui.UserBrickScriptActivity;
 import org.catrobat.catroid.ui.adapter.PrototypeBrickAdapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -42,7 +52,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -60,6 +74,16 @@ public class AddBrickFragment extends SherlockListFragment {
 	private PrototypeBrickAdapter adapter;
 	private CategoryBricksFactory categoryBricksFactory = new CategoryBricksFactory();
 	public static AddBrickFragment addButtonHandler = null;
+
+	// used for state machine
+	private static boolean cameFromScriptActivity = false;
+	private static UserBrick brickToFocus;
+	private static int listIndexToFocus = -1;
+
+	public static void setBrickFocus(UserBrick b) {
+		cameFromScriptActivity = true;
+		brickToFocus = b;
+	}
 
 	public static AddBrickFragment newInstance(String selectedCategory, ScriptFragment scriptFragment) {
 		AddBrickFragment fragment = new AddBrickFragment();
@@ -95,9 +119,55 @@ public class AddBrickFragment extends SherlockListFragment {
 		if (selectedCategory.equals(context.getString(R.string.category_user_bricks))) {
 			addButtonHandler = this;
 
+			Log.d("FOREST", "asd0");
+			if (brickToFocus != null) {
+				Log.d("FOREST", "asd1");
+				int i = 0;
+				for (Brick brick : brickList) {
+					UserBrick b = ((UserBrick) brick);
+					if (brickToFocus.isInstanceOf(b)) {
+
+						Log.d("FOREST", "asd");
+						listIndexToFocus = i;
+						animateBrick(b, adapter);
+
+						brickToFocus = null;
+						break;
+					}
+					i++;
+				}
+			}
+
 			// enable add button
 			BottomBar.disablePlayButton(getActivity());
 		}
+	}
+
+	private void animateBrick(final Brick b, PrototypeBrickAdapter adapter) {
+		Context context = getActivity();
+		Animation animation = AnimationUtils.loadAnimation(context, R.anim.blink);
+
+		animation.setAnimationListener(new AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+				b.setAnimationState(true);
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				b.setAnimationState(false);
+			}
+		});
+
+		View view = b.getView(context, 0, adapter);
+
+		view.startAnimation(animation);
 	}
 
 	public void handleAddButton() {
@@ -149,8 +219,17 @@ public class AddBrickFragment extends SherlockListFragment {
 	public void onDestroy() {
 		resetActionBar();
 		addButtonHandler = null;
+
+		// enable both buttons
 		BottomBar.setButtonVisible(getActivity(), true);
-		getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+
+		if (!cameFromScriptActivity) {
+			// we came from the category fragment, and we are going back there, so disable the buttons entirely
+			getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+		} else {
+			// leave the buttons visible if we are going back to the script activity
+			cameFromScriptActivity = false;
+		}
 
 		super.onDestroy();
 	}
@@ -158,42 +237,125 @@ public class AddBrickFragment extends SherlockListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		setupSelectedBrickCategory();
+
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
 
+		if (listIndexToFocus != -1) {
+			getListView().setSelection(listIndexToFocus);
+			listIndexToFocus = -1;
+		}
+
 		getListView().setOnItemClickListener(new ListView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-				Brick brickToBeAdded = adapter.getItem(position).clone();
-				scriptFragment.updateAdapterAfterAddNewBrick(brickToBeAdded);
+				Context context = getActivity();
+				Brick clickedBrick = adapter.getItem(position);
 
-				if (brickToBeAdded instanceof ScriptBrick) {
-					Script script = ((ScriptBrick) brickToBeAdded).initScript(ProjectManager.getInstance()
-							.getCurrentSprite());
-					ProjectManager.getInstance().setCurrentScript(script);
+				if (clickedBrick instanceof UserBrick) {
+					clickedOnUserBrick(((UserBrick) clickedBrick), view);
+				} else {
+					addBrickToScript(clickedBrick);
 				}
-
-				FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-				Fragment categoryFragment = getFragmentManager().findFragmentByTag(
-						BrickCategoryFragment.BRICK_CATEGORY_FRAGMENT_TAG);
-				if (categoryFragment != null) {
-					fragmentTransaction.remove(categoryFragment);
-					getFragmentManager().popBackStack();
-				}
-				Fragment addBrickFragment = getFragmentManager().findFragmentByTag(
-						AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
-				if (addBrickFragment != null) {
-					fragmentTransaction.remove(addBrickFragment);
-					getFragmentManager().popBackStack();
-				}
-				fragmentTransaction.commit();
 			}
 
 		});
+	}
+
+	private void clickedOnUserBrick(final UserBrick clickedBrick, View view) {
+		final Context context = getActivity();
+
+		final List<CharSequence> items = new ArrayList<CharSequence>();
+
+		items.add(context.getText(R.string.brick_context_dialog_add_to_script));
+
+		items.add(context.getText(R.string.brick_context_dialog_edit_brick));
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+		boolean drawingCacheEnabled = view.isDrawingCacheEnabled();
+		view.setDrawingCacheEnabled(true);
+		view.setDrawingCacheBackgroundColor(Color.TRANSPARENT);
+		view.buildDrawingCache(true);
+
+		if (view.getDrawingCache() != null) {
+			Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+			view.setDrawingCacheEnabled(drawingCacheEnabled);
+
+			ImageView imageView = getGlowingBorder(bitmap);
+			builder.setCustomTitle(imageView);
+		}
+
+		builder.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int item) {
+				CharSequence clickedItemText = items.get(item);
+				if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_add_to_script))) {
+					addBrickToScript(clickedBrick);
+				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
+					launchBrickScriptActivityOnBrick(context, clickedBrick);
+				}
+			}
+		});
+
+		AlertDialog alertDialog = builder.create();
+		alertDialog.show();
+	}
+
+	public void addBrickToScript(Brick brickToBeAdded) {
+		scriptFragment.updateAdapterAfterAddNewBrick(brickToBeAdded.clone());
+
+		if (brickToBeAdded instanceof ScriptBrick) {
+			Script script = ((ScriptBrick) brickToBeAdded).initScript(ProjectManager.getInstance().getCurrentSprite());
+			ProjectManager.getInstance().setCurrentScript(script);
+		}
+
+		FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+		Fragment categoryFragment = getFragmentManager().findFragmentByTag(
+				BrickCategoryFragment.BRICK_CATEGORY_FRAGMENT_TAG);
+		if (categoryFragment != null) {
+			fragmentTransaction.remove(categoryFragment);
+			getFragmentManager().popBackStack();
+		}
+		Fragment addBrickFragment = getFragmentManager().findFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
+		if (addBrickFragment != null) {
+			fragmentTransaction.remove(addBrickFragment);
+			getFragmentManager().popBackStack();
+		}
+		fragmentTransaction.commit();
+	}
+
+	public void launchBrickScriptActivityOnBrick(Context context, Brick brick) {
+		Intent intent = new Intent(context, UserBrickScriptActivity.class);
+		UserBrickScriptActivity.setUserBrick(brick); // TODO USE BUNDLE INSTEAD!!?
+
+		context.startActivity(intent);
+	}
+
+	public ImageView getGlowingBorder(Bitmap bitmap) {
+		ImageView imageView = new ImageView(getActivity());
+		imageView.setBackgroundColor(Color.TRANSPARENT);
+		imageView.setId(R.id.drag_and_drop_list_view_image_view);
+
+		Bitmap glowingBitmap = Bitmap.createBitmap(bitmap.getWidth() + 30, bitmap.getHeight() + 30,
+				Bitmap.Config.ARGB_8888);
+		Canvas glowingCanvas = new Canvas(glowingBitmap);
+		Bitmap alpha = bitmap.extractAlpha();
+		Paint paintBlur = new Paint();
+		paintBlur.setColor(Color.WHITE);
+		glowingCanvas.drawBitmap(alpha, 15, 15, paintBlur);
+		BlurMaskFilter blurMaskFilter = new BlurMaskFilter(15.0f, BlurMaskFilter.Blur.OUTER);
+		paintBlur.setMaskFilter(blurMaskFilter);
+		glowingCanvas.drawBitmap(alpha, 15, 15, paintBlur);
+		paintBlur.setMaskFilter(null);
+		glowingCanvas.drawBitmap(bitmap, 15, 15, paintBlur);
+
+		imageView.setImageBitmap(glowingBitmap);
+
+		return imageView;
 	}
 }
