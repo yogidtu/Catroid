@@ -6,8 +6,8 @@ import org.catrobat.catroid.common.ScreenValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
-import android.text.format.Time;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -116,7 +116,9 @@ public class DragNDropBrickLayout extends BrickLayout {
 	}
 
 	private void beginDrag(int x, int y, int itemIndex) {
-		dragBeganMillis = getMillisNow();
+		dragBeganMillis = System.currentTimeMillis();
+
+		Log.d("FOREST", "beginDrag");
 
 		// frequent dragdrops can cause a null reference when the event for the new drag happens before the drop finishes.
 		if (dragging || dragBeganMillis - dragEndMillis < 200) {
@@ -173,10 +175,14 @@ public class DragNDropBrickLayout extends BrickLayout {
 	}
 
 	private void drop(int x, int y) {
-		dragEndMillis = getMillisNow();
+		dragEndMillis = System.currentTimeMillis();
 
 		long difference = dragEndMillis - dragBeganMillis;
-		if (difference < 400 && draggedItemIndex == lastInsertableSpaceIndex) {
+		Log.d("FOREST", "difference: " + difference + " & "
+				+ (draggedItemIndex == lastInsertableSpaceIndex ? "true" : "false"));
+		if (difference < 400
+				&& (draggedItemIndex == lastInsertableSpaceIndex || draggedItemIndex == lastInsertableSpaceIndex + 1)) {
+
 			parent.click(draggedItemIndex);
 		} else {
 			parent.reorder(draggedItemIndex, lastInsertableSpaceIndex);
@@ -253,12 +259,6 @@ public class DragNDropBrickLayout extends BrickLayout {
 			}
 		}
 		return closestPreviousElementIndex;
-	}
-
-	private long getMillisNow() {
-		Time time = new Time();
-		time.setToNow();
-		return time.toMillis(true);
 	}
 
 	private void repositionCursors(int insertableSpaceIndex) {

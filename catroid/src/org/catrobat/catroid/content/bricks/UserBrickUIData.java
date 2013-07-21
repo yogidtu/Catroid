@@ -38,10 +38,10 @@ public class UserBrickUIData implements Serializable {
 	public boolean isVariable;
 	public boolean hasLocalizedString;
 	public int localizedStringId;
-	public String userDefinedName = "";
+	public CharSequence userDefinedName = "";
 
-	public String getString(Context context) {
-		String text = null;
+	public CharSequence getString(Context context) {
+		CharSequence text = null;
 		if (hasLocalizedString) {
 			text = context.getString(localizedStringId);
 		} else {
@@ -50,8 +50,8 @@ public class UserBrickUIData implements Serializable {
 		return text;
 	}
 
-	public String debugString() {
-		String text = null;
+	public CharSequence debugString() {
+		CharSequence text = null;
 		if (hasLocalizedString) {
 			text = "" + localizedStringId;
 		} else {

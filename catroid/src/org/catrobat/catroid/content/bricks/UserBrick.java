@@ -298,8 +298,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		}
 	}
 
-	public String getName(Context context) {
-		String name = "";
+	public CharSequence getName(Context context) {
+		CharSequence name = "";
 		for (UserBrickUIData d : uiData) {
 			if (!d.isVariable) {
 				name = d.getString(context);

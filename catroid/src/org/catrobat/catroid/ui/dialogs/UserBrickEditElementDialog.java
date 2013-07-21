@@ -34,6 +34,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnShowListener;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -46,15 +48,17 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 
 	public static final String DIALOG_FRAGMENT_TAG = "dialog_new_text_catroid";
 
+	private static CharSequence text;
+	private static boolean editMode;
 	private static int stringResourceOfTitle;
-	private static int stringResourceOfDefaultText;
+	private static int stringResourceOfHintText;
 
 	public UserBrickEditElementDialog() {
 		super();
 	}
 
 	public interface DialogListener {
-		void onFinishDialog(String text);
+		void onFinishDialog(CharSequence text);
 	}
 
 	private List<DialogListener> listenerList = new ArrayList<UserBrickEditElementDialog.DialogListener>();
@@ -63,8 +67,24 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 		stringResourceOfTitle = stringResource;
 	}
 
-	public static void setDefaultText(int stringResource) {
-		stringResourceOfDefaultText = stringResource;
+	public static void setText(CharSequence sequence) {
+		text = sequence;
+	}
+
+	public static void setHintText(int stringResource) {
+		stringResourceOfHintText = stringResource;
+	}
+
+	public static int getDefaultText() {
+		return stringResourceOfHintText;
+	}
+
+	public static void setEditMode(boolean mode) {
+		editMode = mode;
+	}
+
+	public static boolean getEditMode() {
+		return editMode;
 	}
 
 	@Override
@@ -77,6 +97,10 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 	public Dialog onCreateDialog(Bundle bundle) {
 		final View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_brick_editor_edit_element,
 				null);
+
+		EditText textField = (EditText) dialogView.findViewById(R.id.dialog_brick_editor_edit_element_edit_text);
+		textField.setText(text);
+		textField.setSelection(textField.getText().length());
 
 		final Dialog dialogNewVariable = new AlertDialog.Builder(getActivity()).setView(dialogView)
 				.setTitle(stringResourceOfTitle).setNegativeButton(R.string.cancel_button, new OnClickListener() {
@@ -107,30 +131,51 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 		listenerList.add(newVariableDialogListener);
 	}
 
-	private void finishDialog(String text) {
+	private void finishDialog(CharSequence text) {
 		for (DialogListener newVariableDialogListener : listenerList) {
 			newVariableDialogListener.onFinishDialog(text);
 		}
 	}
 
 	private void handleOkButton(View dialogView) {
-		EditText variableNameEditText = (EditText) dialogView
+		EditText elementTextEditText = (EditText) dialogView
 				.findViewById(R.id.dialog_brick_editor_edit_element_edit_text);
 
-		String variableName = variableNameEditText.getText().toString();
-		finishDialog(variableName);
+		CharSequence elementText = elementTextEditText.getText();
+		finishDialog(elementText);
 	}
 
 	private void handleOnShow(final Dialog dialogNewVariable) {
 		final Button positiveButton = ((AlertDialog) dialogNewVariable).getButton(AlertDialog.BUTTON_POSITIVE);
+		positiveButton.setEnabled(false);
 
 		EditText dialogEditText = (EditText) dialogNewVariable
 				.findViewById(R.id.dialog_brick_editor_edit_element_edit_text);
+
+		dialogEditText.setHint(stringResourceOfHintText);
 
 		InputMethodManager inputMethodManager = (InputMethodManager) getSherlockActivity().getSystemService(
 				Context.INPUT_METHOD_SERVICE);
 		inputMethodManager.showSoftInput(dialogEditText, InputMethodManager.SHOW_IMPLICIT);
 
+		dialogEditText.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable editable) {
+				positiveButton.setEnabled(true);
+				if (editable.length() == 0) {
+					positiveButton.setEnabled(false);
+				}
+			}
+		});
 	}
 
 }

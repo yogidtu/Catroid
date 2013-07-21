@@ -59,6 +59,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	private static final String BRICK_BUNDLE_ARGUMENT = "current_brick";
 	private Context context;
 	private UserBrick currentBrick;
+	private int indexOfCurrentlyEditedElement;
 	private LinearLayout editorBrickSpace;
 	private View brickView;
 
@@ -174,27 +175,40 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	public void addTextDialog() {
 		int indexOfNewText = currentBrick.addUIText("");
-		editElementDialog(indexOfNewText, R.string.add_text, R.string.add_text);
+
+		editElementDialog(indexOfNewText, "", false, R.string.add_text, R.string.add_text);
+		indexOfCurrentlyEditedElement = indexOfNewText;
 
 	}
 
 	public void addVariableDialog() {
 		int indexOfNewText = currentBrick.addUIVariable("");
-		editElementDialog(indexOfNewText, R.string.add_variable, R.string.add_variable);
+		editElementDialog(indexOfNewText, "", false, R.string.add_variable, R.string.add_variable);
+		indexOfCurrentlyEditedElement = indexOfNewText;
 	}
 
-	public void editElementDialog(int id, int title, int defaultText) {
+	public void editElementDialog(int id, CharSequence text, boolean editMode, int title, int defaultText) {
 		UserBrickEditElementDialog dialog = new UserBrickEditElementDialog();
 		dialog.addDialogListener(this);
 		dialog.show(((SherlockFragmentActivity) getActivity()).getSupportFragmentManager(),
 				UserBrickEditElementDialog.DIALOG_FRAGMENT_TAG);
 		UserBrickEditElementDialog.setTitle(title);
-		UserBrickEditElementDialog.setDefaultText(defaultText);
+		UserBrickEditElementDialog.setText(text);
+		UserBrickEditElementDialog.setHintText(defaultText);
+		UserBrickEditElementDialog.setEditMode(editMode);
 	}
 
 	@Override
-	public void onFinishDialog(String text) {
-
+	public void onFinishDialog(CharSequence text) {
+		UserBrickUIData d = currentBrick.uiData.get(indexOfCurrentlyEditedElement);
+		if (d != null) {
+			String emptyString = ("").toString();
+			if (text != null) {
+				d.userDefinedName = text;
+			} else if (d.userDefinedName.toString().equals(emptyString)) {
+				currentBrick.uiData.remove(d);
+			}
+		}
 		updateBrickView();
 	}
 
@@ -207,11 +221,14 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	@Override
 	public void click(int id) {
+		Log.d("FOREST", "click()");
 		UserBrickUIData d = currentBrick.uiData.get(id);
 		if (d != null) {
+			Log.d("FOREST", "d != null");
 			int title = d.isVariable ? R.string.edit_variable : R.string.edit_text;
 			int defaultText = d.isVariable ? R.string.edit_variable : R.string.edit_text;
-			editElementDialog(id, title, defaultText);
+			editElementDialog(id, d.getString(getActivity()), true, title, defaultText);
+			indexOfCurrentlyEditedElement = id;
 		}
 	}
 

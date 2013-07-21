@@ -74,12 +74,12 @@ public class UserBrickScriptActivity extends ScriptActivity {
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
-		String[] items = new String[2];
+		CharSequence[] items = new String[2];
 		items[0] = getResources().getString(R.string.scripts);
 
 		items[1] = userBrick.getName(this);
 
-		final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
+		final ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<CharSequence>(this,
 				R.layout.activity_script_spinner_item, items);
 
 		actionBar.setListNavigationCallbacks(spinnerAdapter, new OnNavigationListener() {
