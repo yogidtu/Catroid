@@ -326,9 +326,13 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
-		Toast.makeText(getActivity().getApplicationContext(), "Shruti", Toast.LENGTH_LONG).show();
-		showOrientationDialog();
-		// getActivity().showDialog(DIALOG_ALERT);
+		/*
+		 * Toast.makeText(getActivity().getApplicationContext(), "Shruti", Toast.LENGTH_LONG).show();
+		 * showOrientationDialog();
+		 * // getActivity().showDialog(DIALOG_ALERT);
+		 */
+		NewProjectDialog dialog = new NewProjectDialog();
+		dialog.show(getFragmentManager(), NewProjectDialog.DIALOG_FRAGMENT_TAG);
 
 	}
 
