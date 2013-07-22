@@ -41,6 +41,7 @@ import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.ShowBrick;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
@@ -62,7 +63,7 @@ import android.widget.ListView;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private String testProject = UiTestUtils.PROJECTNAME1;
 	private String testProject2 = UiTestUtils.PROJECTNAME2;
@@ -73,7 +74,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 	private static final float CATROBAT_LANGUAGE_VERSION_NOT_SUPPORTED = 0.0f;
 
 	public MainMenuActivityTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

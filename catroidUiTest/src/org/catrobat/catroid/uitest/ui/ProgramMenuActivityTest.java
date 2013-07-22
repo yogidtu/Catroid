@@ -40,6 +40,7 @@ import org.catrobat.catroid.content.bricks.SetXBrick;
 import org.catrobat.catroid.content.bricks.SetYBrick;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.SettingsActivity;
@@ -54,10 +55,10 @@ import android.widget.EditText;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class ProgramMenuActivityTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class ProgramMenuActivityTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	public ProgramMenuActivityTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

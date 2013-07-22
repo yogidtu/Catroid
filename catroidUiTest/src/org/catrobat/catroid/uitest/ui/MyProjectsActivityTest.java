@@ -41,6 +41,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.SettingsActivity;
@@ -66,7 +67,7 @@ import android.widget.TextView;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private final String INVALID_PROJECT_MODIFIER = "invalidProject";
 	private final String whitelistedCharacterString = "[Hey+, =lo_ok. I'm; -special! too!]";
 	private final String blacklistedCharacterString = "<H/ey,\", :I'\\m s*pe?ci>al! ?äö|üß<>";
@@ -92,7 +93,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 	private final String lorem = "Lorem ipsum dolor sit amet";
 
 	public MyProjectsActivityTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

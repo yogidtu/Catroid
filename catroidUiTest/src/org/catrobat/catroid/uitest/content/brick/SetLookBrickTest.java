@@ -36,7 +36,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.fragment.LookFragment;
@@ -46,7 +46,7 @@ import org.catrobat.catroid.uitest.util.UiTestUtils;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class SetLookBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class SetLookBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private final int RESOURCE_LOOK = org.catrobat.catroid.uitest.R.raw.icon;
 	private final int RESOURCE_LOOK2 = org.catrobat.catroid.uitest.R.raw.icon2;
 
@@ -60,7 +60,7 @@ public class SetLookBrickTest extends BaseActivityInstrumentationTestCase<MainMe
 	private File paintroidImageFile;
 
 	public SetLookBrickTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

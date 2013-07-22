@@ -23,7 +23,7 @@
 package org.catrobat.catroid.uitest.ui.fragment;
 
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -31,12 +31,12 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.widget.ListView;
 
-public class AddBrickFragmentTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class AddBrickFragmentTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private static final String KEY_SETTINGS_MINDSTORM_BRICKS = "setting_mindstorm_bricks";
 
 	public AddBrickFragmentTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

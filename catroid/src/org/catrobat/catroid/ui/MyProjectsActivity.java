@@ -29,43 +29,41 @@ import org.catrobat.catroid.ui.adapter.ProjectAdapter;
 import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
 import org.catrobat.catroid.ui.fragment.ProjectsListFragment;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-public class MyProjectsActivity extends SherlockFragment {
+public class MyProjectsActivity extends SherlockFragmentActivity {
 
 	private ActionBar actionBar;
 	private Lock viewSwitchLock = new ViewSwitchLock();
 	private ProjectsListFragment projectsListFragment;
 
-	View rootView;
-	private SherlockFragmentActivity mActivity;
-
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
+	public void onCreate(Bundle savedInstanceState) {
+		getIntent();
 
-		Log.v("reached", "till here");
-		rootView = inflater.inflate(R.layout.activity_my_projects, container, false);
+		super.onCreate(savedInstanceState);
 
-		projectsListFragment = (ProjectsListFragment) getChildFragmentManager().findFragmentById(
+		setContentView(R.layout.activity_my_projects);
+		setUpActionBar();
+
+		findViewById(R.id.bottom_bar_separator).setVisibility(View.GONE);
+		findViewById(R.id.button_play).setVisibility(View.GONE);
+
+		projectsListFragment = (ProjectsListFragment) getSupportFragmentManager().findFragmentById(
 				R.id.fragment_projects_list);
-
-		android.support.v4.app.FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+		android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		projectsListFragment = new ProjectsListFragment();
 		Log.v("reached111111", "till here");
 		ft.replace(R.id.fragment_projects_list, projectsListFragment, "List_Fragment");
@@ -74,80 +72,48 @@ public class MyProjectsActivity extends SherlockFragment {
 		ft.commit();
 		Log.v("reached", "till here");
 
-		// Button button_add = (Button)
-		// getActivity().findViewById(R.id.button_add);
-		// button_add.setOnClickListener(this);
-		return rootView;
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		// setContentView(R.layout.activity_my_projects);
-		setUpActionBar();
-		// setHasOptionsMenu(true);
-		getActivity().findViewById(R.id.bottom_bar_separator).setVisibility(View.GONE);
-		getActivity().findViewById(R.id.button_play).setVisibility(View.GONE);
-
 	}
 
 	// Code from Stackoverflow to reduce memory problems
 	// onDestroy() and unbindDrawables() methods taken from
 	// http://stackoverflow.com/a/6779067
-
-	/*
-	 * @Override public void onDestroy() { super.onDestroy();
-	 * 
-	 * unbindDrawables(rootView); System.gc(); }
-	 * 
-	 * private void unbindDrawables(View rootView) {
-	 * 
-	 * if (rootView.getBackground() != null) {
-	 * rootView.getBackground().setCallback(null); } if (rootView instanceof
-	 * ViewGroup && !(rootView instanceof AdapterView)) { for (int i = 0; i <
-	 * ((ViewGroup) rootView).getChildCount(); i++) {
-	 * unbindDrawables(((ViewGroup) rootView).getChildAt(i)); } ((ViewGroup)
-	 * rootView).removeAllViews(); } }
-	 */
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
+	protected void onDestroy() {
+		super.onDestroy();
 
+		unbindDrawables(findViewById(R.id.MyProjectsActivityRoot));
+		System.gc();
+	}
+
+	private void unbindDrawables(View view) {
+		if (view.getBackground() != null) {
+			view.getBackground().setCallback(null);
+		}
+		if (view instanceof ViewGroup && !(view instanceof AdapterView)) {
+			for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+				unbindDrawables(((ViewGroup) view).getChildAt(i));
+			}
+			((ViewGroup) view).removeAllViews();
+		}
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.menu_myprojects, menu);
-		super.onCreateOptionsMenu(menu, inflater);
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getSupportMenuInflater().inflate(R.menu.menu_myprojects, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		handleShowDetails(projectsListFragment.getShowDetails(), menu.findItem(R.id.show_details));
-		return;
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		//handleShowDetails(projectsListFragment.getShowDetails(), menu.findItem(R.id.show_details));
+		return super.onPrepareOptionsMenu(menu);
 	}
-
-	/*
-	 * public final void onCreateOptionsMenu(android.view.Menu menu,
-	 * android.view.MenuInflater inflater) { onCreateOptionsMenu(new
-	 * MenuWrapper(menu), mActivity.getSupportMenuInflater()); }
-	 * 
-	 * @Override public void onCreateOptionsMenu(Menu menu, MenuInflater
-	 * inflater) { // Nothing to see here. }
-	 * 
-	 * @Override public final void onPrepareOptionsMenu(android.view.Menu menu)
-	 * { onPrepareOptionsMenu(new MenuWrapper(menu)); }
-	 * 
-	 * @Override public void onPrepareOptionsMenu(Menu menu) { // Nothing to see
-	 * here. }
-	 */
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case android.R.id.home: {
-				Intent intent = new Intent(getActivity(), MainMenuActivityFragment_Shruti.class);
+				Intent intent = new Intent(this, MainMenuActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				return true;
@@ -169,7 +135,7 @@ public class MyProjectsActivity extends SherlockFragment {
 				break;
 			}
 			case R.id.settings: {
-				Intent intent = new Intent(getActivity(), SettingsActivity.class);
+				Intent intent = new Intent(MyProjectsActivity.this, SettingsActivity.class);
 				startActivity(intent);
 				break;
 			}
@@ -180,11 +146,12 @@ public class MyProjectsActivity extends SherlockFragment {
 	private void setUpActionBar() {
 		String title = getResources().getString(R.string.my_projects_activity_title);
 
-		actionBar = getSherlockActivity().getSupportActionBar();
+		actionBar = getSupportActionBar();
 		actionBar.setTitle(title);
 		actionBar.setHomeButtonEnabled(true);
 	}
 
+	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (projectsListFragment.getActionModeActive()) {
 			if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
@@ -192,18 +159,15 @@ public class MyProjectsActivity extends SherlockFragment {
 				adapter.clearCheckedProjects();
 			}
 		}
-		return dispatchKeyEvent(event);
+		return super.dispatchKeyEvent(event);
 	}
 
 	public void handleAddButton(View view) {
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
-
 		NewProjectDialog dialog = new NewProjectDialog();
-
-		dialog.show(getFragmentManager(), NewProjectDialog.DIALOG_FRAGMENT_TAG);
-
+		dialog.show(getSupportFragmentManager(), NewProjectDialog.DIALOG_FRAGMENT_TAG);
 	}
 
 	private void handleShowDetails(boolean showDetails, MenuItem item) {
@@ -217,30 +181,4 @@ public class MyProjectsActivity extends SherlockFragment {
 		}
 		item.setTitle(menuItemText);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.view.View.OnClickListener#onClick(android.view.View)
-	 */
-	/*
-	 * @Override public void onClick(View v) { // TODO Auto-generated method
-	 * stub handleAddButton(v);
-	 * 
-	 * }
-	 */
-	@Override
-	public void onAttach(Activity activity) {
-		if (!(activity instanceof SherlockFragmentActivity)) {
-			throw new IllegalStateException(getClass().getSimpleName()
-					+ " must be attached to a SherlockFragmentActivity.");
-		}
-		mActivity = (SherlockFragmentActivity) activity;
-
-		super.onAttach(activity);
-	}
-
-	/*
-	 * @Override public void onDetach() { mActivity = null; super.onDetach(); }
-	 */
 }

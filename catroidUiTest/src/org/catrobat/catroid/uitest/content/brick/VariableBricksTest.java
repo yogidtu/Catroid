@@ -32,14 +32,14 @@ import org.catrobat.catroid.content.bricks.ChangeVariableBrick;
 import org.catrobat.catroid.content.bricks.SetVariableBrick;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.suitebuilder.annotation.Smoke;
 import android.widget.Spinner;
 
-public class VariableBricksTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class VariableBricksTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private Project project;
 	private UserVariablesContainer userVariablesContainer;
 	private SetVariableBrick setVariableBrick;
@@ -47,7 +47,7 @@ public class VariableBricksTest extends BaseActivityInstrumentationTestCase<Main
 	private Sprite sprite;
 
 	public VariableBricksTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

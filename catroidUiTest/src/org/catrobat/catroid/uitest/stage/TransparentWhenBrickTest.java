@@ -38,12 +38,12 @@ import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-public class TransparentWhenBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class TransparentWhenBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private final int screenWidth = 480;
 	private final int screenHeight = 800;
@@ -58,7 +58,7 @@ public class TransparentWhenBrickTest extends BaseActivityInstrumentationTestCas
 	SetGhostEffectBrick setGhostEffectBrick;
 
 	public TransparentWhenBrickTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

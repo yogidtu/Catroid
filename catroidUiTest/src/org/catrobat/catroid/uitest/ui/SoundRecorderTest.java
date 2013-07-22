@@ -30,7 +30,7 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.soundrecorder.SoundRecorderActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
@@ -43,10 +43,10 @@ import android.content.res.Configuration;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class SoundRecorderTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class SoundRecorderTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	public SoundRecorderTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

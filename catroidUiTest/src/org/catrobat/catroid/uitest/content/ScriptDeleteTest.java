@@ -34,16 +34,16 @@ import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.HideBrick;
 import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.ShowBrick;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-public class ScriptDeleteTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class ScriptDeleteTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private ArrayList<Brick> brickListToCheck;
 
 	public ScriptDeleteTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

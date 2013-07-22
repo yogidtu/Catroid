@@ -38,7 +38,7 @@ import org.catrobat.catroid.content.bricks.PlaySoundBrick;
 import org.catrobat.catroid.io.SoundManager;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
@@ -49,12 +49,12 @@ import org.catrobat.catroid.utils.Utils;
 import android.app.Activity;
 import android.media.MediaPlayer;
 
-public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private String testProject = UiTestUtils.PROJECTNAME1;
 
 	public StageDialogTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

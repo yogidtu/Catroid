@@ -29,7 +29,7 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
@@ -39,7 +39,7 @@ import android.widget.ListView;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class RenameSpriteDialogTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class RenameSpriteDialogTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private String testProject = UiTestUtils.PROJECTNAME1;
 	private String cat = "cat";
@@ -47,7 +47,7 @@ public class RenameSpriteDialogTest extends BaseActivityInstrumentationTestCase<
 	private String catMixedCase = "CaT";
 
 	public RenameSpriteDialogTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

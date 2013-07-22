@@ -42,17 +42,17 @@ import org.catrobat.catroid.content.bricks.LoopEndlessBrick;
 import org.catrobat.catroid.content.bricks.NestingBrick;
 import org.catrobat.catroid.content.bricks.RepeatBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.widget.ListView;
 
-public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private Project project;
 
 	public LoopBrickTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

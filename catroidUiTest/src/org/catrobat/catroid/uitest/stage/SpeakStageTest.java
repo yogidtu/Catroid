@@ -38,6 +38,7 @@ import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
@@ -48,7 +49,7 @@ import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.widget.ListView;
 
-public class SpeakStageTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class SpeakStageTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private TextToSpeechMock textToSpeechMock;
 	private Sprite spriteNormal, spriteNull, spriteInterrupt;
 	private String textMessageTest = "This is a test text.";
@@ -57,7 +58,7 @@ public class SpeakStageTest extends BaseActivityInstrumentationTestCase<MainMenu
 	private String textMessageLong = "This is very very long long test text.";
 
 	public SpeakStageTest() throws InterruptedException {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

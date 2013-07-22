@@ -28,6 +28,7 @@ import java.util.Locale;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
@@ -41,14 +42,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class UserConceptTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class UserConceptTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private String saveToken;
 	private String loginDialogTitle;
 	private String uploadDialogTitle;
 
 	public UserConceptTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

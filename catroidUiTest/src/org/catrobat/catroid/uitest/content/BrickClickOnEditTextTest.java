@@ -30,7 +30,7 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.SetXBrick;
 import org.catrobat.catroid.content.bricks.SetYBrick;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -40,11 +40,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-public class BrickClickOnEditTextTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class BrickClickOnEditTextTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private static final String KEY_SETTINGS_MINDSTORM_BRICKS = "setting_mindstorm_bricks";
 
 	public BrickClickOnEditTextTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

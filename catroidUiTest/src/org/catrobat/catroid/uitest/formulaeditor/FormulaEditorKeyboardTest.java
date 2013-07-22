@@ -33,14 +33,14 @@ import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ChangeSizeByNBrick;
 import org.catrobat.catroid.content.bricks.GlideToBrick;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.suitebuilder.annotation.Smoke;
 import android.widget.EditText;
 
-public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private Project project;
 	private Sprite firstSprite;
@@ -52,7 +52,7 @@ public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCa
 	private static final int Y_POS_EDIT_TEXT_ID = 1;
 
 	public FormulaEditorKeyboardTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

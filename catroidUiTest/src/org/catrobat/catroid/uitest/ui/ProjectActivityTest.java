@@ -54,6 +54,7 @@ import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
@@ -79,7 +80,7 @@ import android.widget.TextView;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private static final String TEST_SPRITE_NAME = "cat";
 	private static final String FIRST_TEST_SPRITE_NAME = "test1";
 	private static final String SECOND_TEST_SPRITE_NAME = "test2";
@@ -98,7 +99,7 @@ public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<Mai
 	private List<Sprite> spriteList;
 
 	public ProjectActivityTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

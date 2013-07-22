@@ -41,18 +41,18 @@ import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.TurnLeftBrick;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-public class ComplexStageTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class ComplexStageTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private final int screenWidth = 480;
 	private final int screenHeight = 800;
 
 	private Project project;
 
 	public ComplexStageTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

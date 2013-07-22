@@ -33,7 +33,7 @@ import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ChangeVariableBrick;
 import org.catrobat.catroid.formulaeditor.UserVariable;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.ui.dialogs.NewVariableDialog;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
@@ -48,14 +48,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-public class ChangeVariableTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class ChangeVariableTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private static final int MAX_ITERATIONS = 10;
 	private Project project;
 	private ChangeVariableBrick changeVariableBrick;
 
 	public ChangeVariableTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

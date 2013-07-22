@@ -31,11 +31,11 @@ import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.BroadcastBrick;
 import org.catrobat.catroid.content.bricks.SetXBrick;
 import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-public class MultipleBroadcastsTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class MultipleBroadcastsTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private Sprite sprite1;
 	private int sprite1PosX = 30;
@@ -48,7 +48,7 @@ public class MultipleBroadcastsTest extends BaseActivityInstrumentationTestCase<
 	private final String broadcastMessage = "run";
 
 	public MultipleBroadcastsTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

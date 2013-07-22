@@ -31,7 +31,7 @@ import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.SoundAdapter;
@@ -52,7 +52,7 @@ import android.widget.LinearLayout;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private static final int RESOURCE_SOUND = org.catrobat.catroid.uitest.R.raw.longsound;
 	private static final int RESOURCE_SOUND2 = org.catrobat.catroid.uitest.R.raw.testsoundui;
 	private static final int VISIBLE = View.VISIBLE;
@@ -81,7 +81,7 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 	private ProjectManager projectManager;
 
 	public SoundFragmentTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

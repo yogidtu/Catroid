@@ -30,6 +30,7 @@ import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
@@ -44,7 +45,7 @@ import android.widget.EditText;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class UploadDialogTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class UploadDialogTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private String testProject = UiTestUtils.PROJECTNAME1;
 	private String newTestProject = UiTestUtils.PROJECTNAME2;
 
@@ -52,7 +53,7 @@ public class UploadDialogTest extends BaseActivityInstrumentationTestCase<MainMe
 	private String uploadDialogTitle;
 
 	public UploadDialogTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 	}
 
 	@Override

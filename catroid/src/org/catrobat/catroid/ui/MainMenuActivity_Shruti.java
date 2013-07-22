@@ -86,15 +86,21 @@ public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
 		try {
 			if (flag4 == 1) {
 
-				getFragmentManager().popBackStack();
-				MyProjectsActivity f5 = new MyProjectsActivity();
-				android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				ft.replace(R.id.projectList, f5); // f2_container is your
-													// FrameLayout container
-				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-				ft.addToBackStack(null);
-				ft.commit();
-				// flag = -1;
+				/*
+				 * getFragmentManager().popBackStack();
+				 * MyProjectsActivity f5 = new MyProjectsActivity();
+				 * android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				 * ft.replace(R.id.projectList, f5); // f2_container is your
+				 * // FrameLayout container
+				 * ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+				 * ft.addToBackStack(null);
+				 * ft.commit();
+				 * // flag = -1;
+				 */
+				Intent myIntent = new Intent(MainMenuActivity_Shruti.this, MyProjectsActivity.class);
+				//myIntent.putExtra("key", value); //Optional parameters
+				startActivity(myIntent);
+
 				flag4 = -1;
 
 			}

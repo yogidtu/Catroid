@@ -30,7 +30,7 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.formulaeditor.UserVariable;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -42,12 +42,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class BrickValueParameterTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class BrickValueParameterTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 
 	private static final String KEY_SETTINGS_MINDSTORM_BRICKS = "setting_mindstorm_bricks";
 
 	public BrickValueParameterTest() {
-		super(MainMenuActivity.class);
+		super(MainMenuActivity_Shruti.class);
 
 	}
 
