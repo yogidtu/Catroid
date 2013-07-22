@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -27,7 +28,7 @@ public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
 
 		MainMenuActivityFragment_Shruti.OnHeadlineSelectedListenerList {
 	public static int flag = -1;
-	private android.app.ActionBar actionBar;
+	private ActionBar actionBar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
 		ft.commit();
 		Log.v("reached", "till here");
 
-		actionBar = getActionBar();
+		actionBar = getSupportActionBar();
 		actionBar.setDisplayUseLogoEnabled(true);
 		actionBar.setTitle(R.string.app_name);
 
