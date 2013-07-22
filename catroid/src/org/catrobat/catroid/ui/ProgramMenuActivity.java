@@ -70,7 +70,7 @@ public class ProgramMenuActivity extends SherlockFragmentActivity {
 		if (tooltipActive) {
 			Tooltip.getInstance(this).stopTooltipSystem();
 		}
-		if (ProjectManager.INSTANCE.getCurrentSpritePosition() == 0) {
+		if (ProjectManager.getInstance().getCurrentSpritePosition() == 0) {
 			((Button) findViewById(R.id.program_menu_button_looks)).setText(R.string.backgrounds);
 		} else {
 			((Button) findViewById(R.id.program_menu_button_looks)).setText(R.string.looks);
