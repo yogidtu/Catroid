@@ -66,6 +66,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -111,7 +112,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 	private static final String TAG = "MainMenuActivity";
 	private static final String PROJECTNAME_TAG = "fname=";
 
-	private android.app.ActionBar actionBar;
+	private ActionBar actionBar;
 	private Lock viewSwitchLock = new ViewSwitchLock();
 
 	public void onAttach(MainMenuActivity_Shruti activity) {
@@ -166,7 +167,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		// registerForContextMenu(getListView());
-		// if (savedInstanceState != null) {
+		// if (savedInstanceState != null) {18:00:00
 		// projectToEdit = (ProjectData)
 		// savedInstanceState.getSerializable(BUNDLE_ARGUMENTS_PROJECT_DATA);
 		// }
@@ -177,7 +178,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 
 		// getActivity().setContentView(R.layout.activity_main_menu);
 
-		actionBar = getActivity().getActionBar();
+		actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setDisplayUseLogoEnabled(true);
 		actionBar.setTitle(R.string.app_name);
 
