@@ -107,7 +107,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
 		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
-		solo.waitForFragmentById(R.id.projectList);
+		//		solo.waitForFragmentById(R.id.projectList);
 		UiTestUtils.createValidUser(getActivity());
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		String originalToken = sharedPreferences.getString(Constants.TOKEN, Constants.NO_TOKEN);
