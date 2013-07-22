@@ -43,6 +43,8 @@ import org.catrobat.catroid.utils.UtilZip;
 import org.catrobat.catroid.utils.Utils;
 import org.catrobat.catroid.web.ServerCalls;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -89,7 +91,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 				String notificationMessage = "Download " + progress + "% "
 						+ getString(R.string.notification_percent_completed) + ":" + projectName;
 
-				StatusBarNotificationManager.INSTANCE.updateNotification(notificationId, notificationMessage,
+				StatusBarNotificationManager.getInstance().updateNotification(notificationId, notificationMessage,
 						Constants.DOWNLOAD_NOTIFICATION, endOfFileReached);
 			}
 		}
@@ -138,7 +140,6 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		Utils.loadProjectIfNeeded(this);
 		setMainMenuButtonContinueText();
 		findViewById(R.id.main_menu_button_continue).setEnabled(true);
-		StatusBarNotificationManager.INSTANCE.displayDialogs(this);
 
 		if (!Tutorial.getInstance(null).isActive()) {
 			Tutorial.getInstance(this).startTutorial();
@@ -147,6 +148,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 
 		}
 
+		StatusBarNotificationManager.getInstance().displayDialogs(this);
 	}
 
 	@Override
@@ -157,10 +159,13 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			return;
 		}
 
-		if (ProjectManager.INSTANCE.getCurrentProject() != null) {
-			ProjectManager.INSTANCE.saveProject();
-			Utils.saveToPreferences(this, Constants.PREF_PROJECTNAME_KEY, ProjectManager.INSTANCE.getCurrentProject()
-					.getName());
+		// onPause is sufficient --> gets called before "process_killed",
+		// onStop(), onDestroy(), onRestart()
+		// also when you switch activities
+		if (ProjectManager.getInstance().getCurrentProject() != null) {
+			ProjectManager.getInstance().saveProject();
+			Utils.saveToPreferences(this, Constants.PREF_PROJECTNAME_KEY, ProjectManager.getInstance()
+					.getCurrentProject().getName());
 		}
 	}
 
@@ -208,7 +213,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
-		if (ProjectManager.INSTANCE.getCurrentProject() != null) {
+		if (ProjectManager.getInstance().getCurrentProject() != null) {
 			Intent intent = new Intent(MainMenuActivity.this, ProjectActivity.class);
 			startActivity(intent);
 		}
@@ -243,9 +248,28 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			return;
 		}
 
-		Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-				Uri.parse(getText(R.string.pocketcode_website).toString()));
-		startActivity(browserIntent);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getText(R.string.main_menu_web_dialog_title));
+		builder.setMessage(getText(R.string.main_menu_web_dialog_message));
+
+		builder.setPositiveButton(getText(R.string.ok), new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getText(R.string.pocketcode_website)
+						.toString()));
+				startActivity(browserIntent);
+			}
+		});
+		builder.setNegativeButton(getText(R.string.cancel_button), new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+			}
+		});
+
+		AlertDialog alertDialog = builder.create();
+		alertDialog.setCanceledOnTouchOutside(true);
+		alertDialog.show();
 	}
 
 	public void handleUploadButton(View v) {
@@ -278,7 +302,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 	}
 
 	public int createNotification(String downloadName) {
-		StatusBarNotificationManager manager = StatusBarNotificationManager.INSTANCE;
+		StatusBarNotificationManager manager = StatusBarNotificationManager.getInstance();
 		int notificationId = manager.createNotification(downloadName, this, Constants.DOWNLOAD_NOTIFICATION);
 		return notificationId;
 	}
@@ -340,7 +364,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 
 		spannableStringBuilder.append(mainMenuContinue);
 		spannableStringBuilder.append("\n");
-		spannableStringBuilder.append(ProjectManager.INSTANCE.getCurrentProject().getName());
+		spannableStringBuilder.append(ProjectManager.getInstance().getCurrentProject().getName());
 
 		spannableStringBuilder.setSpan(textAppearanceSpan, mainMenuContinue.length() + 1,
 				spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
