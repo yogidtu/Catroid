@@ -36,7 +36,6 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
@@ -106,7 +105,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
 
 		UiTestUtils.createValidUser(getActivity());
@@ -133,7 +132,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 		solo.sleep(1000);
 		UiTestUtils.clickOnHomeActionBarButton(solo);
-		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		solo.waitForActivity(MainMenuActivity_Shruti.class.getSimpleName());
 
 		UiTestUtils.createValidUser(getActivity());
 
@@ -182,7 +181,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
 
 		UiTestUtils.createValidUser(getActivity());
@@ -227,7 +226,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
 
 		UiTestUtils.createValidUser(getActivity());
@@ -267,7 +266,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
 
 		UiTestUtils.createValidUser(getActivity());
@@ -496,17 +495,17 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENTION;
 		downloadUrl += "?fname=" + projectName;
 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		intent.setAction(Intent.ACTION_VIEW);
 		intent.setData(Uri.parse(downloadUrl));
 		solo.goBack();
-		launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity.class, intent);
+		launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity_Shruti.class, intent);
 		solo.sleep(500);
 		assertTrue("OverwriteRenameDialog not shown.", solo.searchText(solo.getString(R.string.overwrite_text)));
 		solo.clickOnText(solo.getString(R.string.overwrite_replace));
 		solo.clickOnButton(solo.getString(R.string.ok));
 
-		boolean waitResult = solo.waitForActivity("MainMenuActivity", 10000);
+		boolean waitResult = solo.waitForActivity("MainMenuActivity_Shruti", 10000);
 		assertTrue("Download takes too long.", waitResult);
 		assertTrue("Download not successful.", solo.searchText(solo.getString(R.string.success_project_download)));
 		assertEquals("Testproject not loaded.", projectName, ProjectManager.getInstance().getCurrentProject().getName());
@@ -523,10 +522,10 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENTION;
 		downloadUrl += "?fname=" + newTestProject;
 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		intent.setAction(Intent.ACTION_VIEW);
 		intent.setData(Uri.parse(downloadUrl));
-		launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity.class, intent);
+		launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity_Shruti.class, intent);
 
 		solo.sleep(5000);
 		assertTrue("OverwriteRenameDialog not shown.", solo.searchText(solo.getString(R.string.overwrite_text)));
@@ -548,7 +547,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		solo.enterText(0, testProject);
 		solo.clickOnButton(solo.getString(R.string.ok));
 
-		boolean waitResult = solo.waitForActivity("MainMenuActivity", 10000);
+		boolean waitResult = solo.waitForActivity("MainMenuActivity_Shruti", 10000);
 		assertTrue("Download takes too long.", waitResult);
 		assertTrue("Download not successful.", solo.searchText(solo.getString(R.string.success_project_download)));
 		assertTrue("Testproject2 not loaded.", solo.searchText(newTestProject));
