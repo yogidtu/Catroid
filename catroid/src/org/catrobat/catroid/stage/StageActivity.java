@@ -24,7 +24,7 @@ package org.catrobat.catroid.stage;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Values;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
 
@@ -53,9 +53,6 @@ public class StageActivity extends AndroidApplication {
 		stageDialog = new StageDialog(this, stageListener, R.style.stage_dialog);
 		calculateScreenSizes();
 		initialize(stageListener, true);
-		if (ProjectManager.getInstance().getCurrentProject().isManualScreenshot()) {
-			stageListener.setMakeAutomaticScreenshot(false);
-		}
 	}
 
 	@Override
@@ -65,7 +62,6 @@ public class StageActivity extends AndroidApplication {
 	}
 
 	public void manageLoadAndFinish() {
-		finish();
 		stageListener.pause();
 		stageListener.finish();
 
@@ -87,28 +83,28 @@ public class StageActivity extends AndroidApplication {
 
 	private void calculateScreenSizes() {
 		ifLandscapeSwitchWidthAndHeight();
-		int virtualScreenWidth = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenWidth;
-		int virtualScreenHeight = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenHeight;
-		if (virtualScreenWidth == Values.SCREEN_WIDTH && virtualScreenHeight == Values.SCREEN_HEIGHT) {
+		int virtualScreenWidth = ProjectManager.INSTANCE.getCurrentProject().getXmlHeader().virtualScreenWidth;
+		int virtualScreenHeight = ProjectManager.INSTANCE.getCurrentProject().getXmlHeader().virtualScreenHeight;
+		if (virtualScreenWidth == ScreenValues.SCREEN_WIDTH && virtualScreenHeight == ScreenValues.SCREEN_HEIGHT) {
 			resizePossible = false;
 			return;
 		}
 		resizePossible = true;
-		stageListener.maximizeViewPortWidth = Values.SCREEN_WIDTH + 1;
+		stageListener.maximizeViewPortWidth = ScreenValues.SCREEN_WIDTH + 1;
 		do {
 			stageListener.maximizeViewPortWidth--;
 			stageListener.maximizeViewPortHeight = (int) (((float) stageListener.maximizeViewPortWidth / (float) virtualScreenWidth) * virtualScreenHeight);
-		} while (stageListener.maximizeViewPortHeight > Values.SCREEN_HEIGHT);
+		} while (stageListener.maximizeViewPortHeight > ScreenValues.SCREEN_HEIGHT);
 
-		stageListener.maximizeViewPortX = (Values.SCREEN_WIDTH - stageListener.maximizeViewPortWidth) / 2;
-		stageListener.maximizeViewPortY = (Values.SCREEN_HEIGHT - stageListener.maximizeViewPortHeight) / 2;
+		stageListener.maximizeViewPortX = (ScreenValues.SCREEN_WIDTH - stageListener.maximizeViewPortWidth) / 2;
+		stageListener.maximizeViewPortY = (ScreenValues.SCREEN_HEIGHT - stageListener.maximizeViewPortHeight) / 2;
 	}
 
 	private void ifLandscapeSwitchWidthAndHeight() {
-		if (Values.SCREEN_WIDTH > Values.SCREEN_HEIGHT) {
-			int tmp = Values.SCREEN_HEIGHT;
-			Values.SCREEN_HEIGHT = Values.SCREEN_WIDTH;
-			Values.SCREEN_WIDTH = tmp;
+		if (ScreenValues.SCREEN_WIDTH > ScreenValues.SCREEN_HEIGHT) {
+			int tmp = ScreenValues.SCREEN_HEIGHT;
+			ScreenValues.SCREEN_HEIGHT = ScreenValues.SCREEN_WIDTH;
+			ScreenValues.SCREEN_WIDTH = tmp;
 		}
 	}
 

@@ -40,6 +40,7 @@
         style="@style/BrickContainer.Motion.Small" >
 
         <TextView
+            android:id="@+id/brick_move_n_steps_label"
             style="@style/BrickText.SingleLine"
             android:text="@string/brick_move" >
         </TextView>
@@ -52,6 +53,7 @@
         <EditText
             android:id="@+id/brick_move_n_steps_edit_text"
             style="@style/BrickEditText"
+            android:maxEms="8"
             android:inputType="number|numberDecimal|numberSigned" >
         </EditText>
 

@@ -27,23 +27,20 @@ import java.util.List;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Values;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.SetXBrick;
 import org.catrobat.catroid.content.bricks.StopAllSoundsBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.ActivityInstrumentationTestCase2;
 import android.view.Display;
 import android.widget.ListView;
 
-import com.jayway.android.robotium.solo.Solo;
-
-public class BrickDragAndDropTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
-	private Solo solo;
+public class BrickDragAndDropTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
 	public BrickDragAndDropTest() {
 		super(MainMenuActivity.class);
@@ -53,20 +50,11 @@ public class BrickDragAndDropTest extends ActivityInstrumentationTestCase2<MainM
 	protected void setUp() throws Exception {
 		super.setUp();
 		UiTestUtils.createEmptyProject();
-		solo = new Solo(getInstrumentation(), getActivity());
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
-		super.tearDown();
-		solo = null;
-	}
-
 	public void testClickOnEmptySpace() {
-		solo.clickOnScreen(20, Values.SCREEN_HEIGHT - 150);
+		solo.clickOnScreen(20, ScreenValues.SCREEN_HEIGHT - 150);
 		solo.sleep(200);
 		assertFalse("Brickcategories should not be shown", solo.searchText(solo.getString(R.string.categories)));
 	}
@@ -91,7 +79,7 @@ public class BrickDragAndDropTest extends ActivityInstrumentationTestCase2<MainM
 		solo.clickOnText(scriptsName);
 		solo.clickOnText(scriptsName);
 
-		List<Brick> brickListToCheck = ProjectManager.getInstance().getCurrentScript().getBrickList();
+		List<Brick> brickListToCheck = ProjectManager.INSTANCE.getCurrentScript().getBrickList();
 		assertEquals("One Brick should be in bricklist, one hovering and therefore not in project yet", 1,
 				brickListToCheck.size());
 		assertEquals("Both bricks (plus ScriptBrick) should be present in the adapter", 3, adapter.getCount());

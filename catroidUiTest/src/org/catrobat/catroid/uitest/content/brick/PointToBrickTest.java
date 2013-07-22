@@ -35,19 +35,16 @@ import org.catrobat.catroid.content.bricks.PlaceAtBrick;
 import org.catrobat.catroid.content.bricks.PointToBrick;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.jayway.android.robotium.solo.Solo;
+public class PointToBrickTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
 
-public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptActivity> {
-
-	private Solo solo;
 	private Project project;
 
 	private final String spriteName1 = "cat1";
@@ -60,16 +57,11 @@ public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptAct
 
 	@Override
 	public void setUp() throws Exception {
+		// normally super.setUp should be called first
+		// but kept the test failing due to view is null
+		// when starting in ScriptActivity
 		createProject();
-		solo = new Solo(getInstrumentation(), getActivity());
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
-		super.tearDown();
-		solo = null;
+		super.setUp();
 	}
 
 	@Smoke
@@ -95,6 +87,7 @@ public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptAct
 		solo.clickInList(0);
 		solo.waitForView(EditText.class);
 		solo.enterText(0, newSpriteName);
+		solo.goBack();
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.sleep(300);
 
@@ -114,18 +107,26 @@ public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptAct
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		solo.clickOnText(solo.getString(R.string.category_motion));
 		solo.searchText(solo.getString(R.string.category_motion));
-		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
+		ListView fragmentListView = solo.getCurrentViews(ListView.class).get(
+				solo.getCurrentViews(ListView.class).size() - 1);
 		solo.scrollDownList(fragmentListView);
 		assertTrue("Wrong selection in prototype spinner", solo.isSpinnerTextSelected(spriteName2));
 
 		UiTestUtils.goToHomeActivity(getActivity());
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
+
 		solo.clickLongOnText(spriteName1);
 		solo.waitForText(solo.getString(R.string.delete));
 		solo.clickOnText(solo.getString(R.string.delete));
+
+		assertTrue("Confirmation-dialog not shown",
+				solo.waitForText(solo.getString(R.string.dialog_confirm_delete_object_message), 0, 1000));
+		solo.clickOnText(solo.getString(R.string.yes));
+
 		solo.clickLongOnText(newSpriteName);
 		solo.waitForText(solo.getString(R.string.delete));
 		solo.clickOnText(solo.getString(R.string.delete));
+		solo.clickOnButton(solo.getString(R.string.yes));
 
 		solo.clickOnText(spriteName2);
 		solo.sleep(200);
@@ -134,7 +135,7 @@ public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptAct
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		solo.clickOnText(solo.getString(R.string.category_motion));
 		solo.searchText(solo.getString(R.string.category_motion));
-		fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
+		fragmentListView = solo.getCurrentViews(ListView.class).get(solo.getCurrentViews(ListView.class).size() - 1);
 		solo.scrollDownList(fragmentListView);
 		assertTrue("Wrong selection in prototype spinner", solo.isSpinnerTextSelected(spinnerNewText));
 	}
@@ -158,8 +159,8 @@ public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptAct
 		sprite1.addScript(startScript1);
 		project.addSprite(sprite1);
 
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(sprite1);
-		ProjectManager.getInstance().setCurrentScript(startScript1);
+		ProjectManager.INSTANCE.setProject(project);
+		ProjectManager.INSTANCE.setCurrentSprite(sprite1);
+		ProjectManager.INSTANCE.setCurrentScript(startScript1);
 	}
 }

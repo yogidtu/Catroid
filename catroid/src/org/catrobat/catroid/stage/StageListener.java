@@ -31,7 +31,7 @@ import java.util.List;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.Values;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.WhenVirtualButtonScript;
@@ -72,7 +72,8 @@ public class StageListener implements ApplicationListener {
 	private static boolean DYNAMIC_SAMPLING_RATE_FOR_ACTIONS = true;
 
 	private static final boolean DEBUG = false;
-	public static final String SCREENSHOT_FILE_NAME = "screenshot.png";
+	public static final String SCREENSHOT_AUTOMATIC_FILE_NAME = "automatic_screenshot.png";
+	public static final String SCREENSHOT_MANUAL_FILE_NAME = "manual_screenshot.png";
 	private FPSLogger fpsLogger;
 
 	private Stage stage;
@@ -81,14 +82,14 @@ public class StageListener implements ApplicationListener {
 	private boolean firstStart = true;
 	private boolean reloadProject = false;
 
-	private boolean makeAutomaticScreenshot = true;
+	private static boolean makeAutomaticScreenshot = true;
 	private boolean makeScreenshot = false;
 	private String pathForScreenshot;
 	private int screenshotWidth;
 	private int screenshotHeight;
 	private int screenshotX;
 	private int screenshotY;
-	private byte[] screenshot;
+	private byte[] screenshot = null;
 	// in first frame, framebuffer could be empty and screenshot
 	// would be white
 	private boolean skipFirstFrameForAutomaticScreenshot;
@@ -134,6 +135,7 @@ public class StageListener implements ApplicationListener {
 
 	private boolean virtualGamepadSelected = false;
 	private Sprite vgpPadSprite;
+	private byte[] thumbnail;
 
 	StageListener() {
 	}
@@ -144,9 +146,9 @@ public class StageListener implements ApplicationListener {
 		font.setColor(1f, 0f, 0.05f, 1f);
 		font.setScale(1.2f);
 
-		pathForScreenshot = Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()) + "/";
+		pathForScreenshot = Utils.buildProjectPath(ProjectManager.INSTANCE.getCurrentProject().getName()) + "/";
 
-		project = ProjectManager.getInstance().getCurrentProject();
+		project = ProjectManager.INSTANCE.getCurrentProject();
 
 		virtualWidth = project.getXmlHeader().virtualScreenWidth;
 		virtualHeight = project.getXmlHeader().virtualScreenHeight;
@@ -182,10 +184,9 @@ public class StageListener implements ApplicationListener {
 
 						while (running) {
 
-							Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
+							Sprite sprite = ProjectManager.INSTANCE.getCurrentSprite();
 							if (sprite == null) {
-								List<Sprite> spriteList = ProjectManager.getInstance().getCurrentProject()
-										.getSpriteList();
+								List<Sprite> spriteList = ProjectManager.INSTANCE.getCurrentProject().getSpriteList();
 								for (Sprite tmp : spriteList) {
 									for (int script = 0; script < tmp.getNumberOfScripts(); script++) {
 										if (tmp.getScript(script) instanceof WhenVirtualPadScript
@@ -430,7 +431,6 @@ public class StageListener implements ApplicationListener {
 		camera.position.set(0, 0, 0);
 
 		sprites = project.getSpriteList();
-		sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
 
 		for (int sprite = 0; sprite < sprites.size(); sprite++) {
 			stage.addActor(sprites.get(sprite).look);
@@ -446,6 +446,17 @@ public class StageListener implements ApplicationListener {
 				break;
 			}
 		}
+
+		for (Sprite sprite : sprites) {
+			sprite.resetSprite();
+			stage.addActor(sprite.look);
+			sprite.resume();
+		}
+
+		if (sprites.size() > 0) {
+			sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
+		}
+
 		if (DEBUG) {
 			OrthoCamController camController = new OrthoCamController(camera);
 			InputMultiplexer multiplexer = new InputMultiplexer();
@@ -495,12 +506,9 @@ public class StageListener implements ApplicationListener {
 			return;
 		}
 		this.stageDialog = stageDialog;
-		ProjectManager projectManager = ProjectManager.getInstance();
-		int currentSpritePos = projectManager.getCurrentSpritePosition();
-		int currentScriptPos = projectManager.getCurrentScriptPosition();
-		projectManager.loadProject(projectManager.getCurrentProject().getName(), context, false);
-		projectManager.setCurrentSpriteWithPosition(currentSpritePos);
-		projectManager.setCurrentScriptWithPosition(currentScriptPos);
+
+		ProjectManager.INSTANCE.getCurrentProject().getUserVariables().resetAllUserVariables();
+
 		reloadProject = true;
 	}
 
@@ -535,6 +543,10 @@ public class StageListener implements ApplicationListener {
 	public void finish() {
 		finished = true;
 		SoundManager.getInstance().clear();
+		if (thumbnail != null) {
+			prepareAutomaticScreenshotAndNoMeadiaFile();
+			saveScreenshot(thumbnail, SCREENSHOT_AUTOMATIC_FILE_NAME);
+		}
 
 		for (int i = 0; i < sprites.size(); i++) {
 			if (sprites.get(i).getName().equals(Constants.VGP_SPRITE_PAD)) {
@@ -558,12 +570,15 @@ public class StageListener implements ApplicationListener {
 			stage.clear();
 			SoundManager.getInstance().clear();
 
-			project = ProjectManager.getInstance().getCurrentProject();
+			project = ProjectManager.INSTANCE.getCurrentProject();
 			sprites = project.getSpriteList();
-			sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
-			sprites.get(0).pause();
+			if (spriteSize > 0) {
+				sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
+				sprites.get(0).pause();
+			}
 			for (int i = 0; i < spriteSize; i++) {
 				Sprite sprite = sprites.get(i);
+				sprite.resetSprite();
 				stage.addActor(sprite.look);
 				sprite.pause();
 			}
@@ -591,9 +606,9 @@ public class StageListener implements ApplicationListener {
 				break;
 			case STRETCH:
 			default:
-				Gdx.gl.glViewport(0, 0, Values.SCREEN_WIDTH, Values.SCREEN_HEIGHT);
-				screenshotWidth = Values.SCREEN_WIDTH;
-				screenshotHeight = Values.SCREEN_HEIGHT;
+				Gdx.gl.glViewport(0, 0, ScreenValues.SCREEN_WIDTH, ScreenValues.SCREEN_HEIGHT);
+				screenshotWidth = ScreenValues.SCREEN_WIDTH;
+				screenshotHeight = ScreenValues.SCREEN_HEIGHT;
 				screenshotX = 0;
 				screenshotY = 0;
 				break;
@@ -602,8 +617,10 @@ public class StageListener implements ApplicationListener {
 		batch.setProjectionMatrix(camera.combined);
 
 		if (firstStart) {
-			sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
 			int spriteSize = sprites.size();
+			if (spriteSize > 0) {
+				sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
+			}
 			for (int i = 0; i < spriteSize; i++) {
 				sprites.get(i).createStartScriptActionSequence();
 			}
@@ -649,8 +666,8 @@ public class StageListener implements ApplicationListener {
 			if (skipFirstFrameForAutomaticScreenshot) {
 				skipFirstFrameForAutomaticScreenshot = false;
 			} else {
-				prepareScreenshotFiles();
-				this.makeThumbnail();
+				thumbnail = ScreenUtils.getFrameBufferPixels(screenshotX, screenshotY, screenshotWidth,
+						screenshotHeight, true);
 				makeAutomaticScreenshot = false;
 			}
 		}
@@ -713,21 +730,15 @@ public class StageListener implements ApplicationListener {
 		disposeTextures();
 	}
 
-	private void makeThumbnail() {
-		byte[] screenshot = ScreenUtils.getFrameBufferPixels(screenshotX, screenshotY, screenshotWidth,
-				screenshotHeight, true);
-		this.saveScreenshot(screenshot);
-	}
-
-	public boolean makeScreenshot() {
+	public boolean makeManualScreenshot() {
 		makeScreenshot = true;
 		while (makeScreenshot) {
 			Thread.yield();
 		}
-		return this.saveScreenshot(this.screenshot);
+		return this.saveScreenshot(this.screenshot, SCREENSHOT_MANUAL_FILE_NAME);
 	}
 
-	private boolean saveScreenshot(byte[] screenshot) {
+	private boolean saveScreenshot(byte[] screenshot, String fileName) {
 		int length = screenshot.length;
 		Bitmap fullScreenBitmap, centerSquareBitmap;
 		int[] colors = new int[length / 4];
@@ -751,7 +762,7 @@ public class StageListener implements ApplicationListener {
 			centerSquareBitmap = Bitmap.createBitmap(fullScreenBitmap, 0, 0, screenshotWidth, screenshotHeight);
 		}
 
-		FileHandle image = Gdx.files.absolute(pathForScreenshot + SCREENSHOT_FILE_NAME);
+		FileHandle image = Gdx.files.absolute(pathForScreenshot + fileName);
 		OutputStream stream = image.write(false);
 		try {
 			centerSquareBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -822,23 +833,15 @@ public class StageListener implements ApplicationListener {
 		}
 	}
 
-	public void setMakeAutomaticScreenshot(boolean makeAutomaticScreenshot) {
-		this.makeAutomaticScreenshot = makeAutomaticScreenshot;
-	}
-
-	public boolean isMakeAutomaticScreenshot() {
-		return this.makeAutomaticScreenshot;
-	}
-
-	private void prepareScreenshotFiles() {
-		File noMediaFile = new File(pathForScreenshot + ".nomedia");
-		File screenshotFile = new File(pathForScreenshot + SCREENSHOT_FILE_NAME);
+	private void prepareAutomaticScreenshotAndNoMeadiaFile() {
+		File noMediaFile = new File(pathForScreenshot + Constants.NO_MEDIA_FILE);
+		File screenshotAutomaticFile = new File(pathForScreenshot + SCREENSHOT_AUTOMATIC_FILE_NAME);
 		try {
-			if (screenshotFile.exists()) {
-				screenshotFile.delete();
-				screenshotFile = new File(pathForScreenshot + SCREENSHOT_FILE_NAME);
+			if (screenshotAutomaticFile.exists()) {
+				screenshotAutomaticFile.delete();
+				screenshotAutomaticFile = new File(pathForScreenshot + SCREENSHOT_AUTOMATIC_FILE_NAME);
 			}
-			screenshotFile.createNewFile();
+			screenshotAutomaticFile.createNewFile();
 
 			if (!noMediaFile.exists()) {
 				noMediaFile.createNewFile();

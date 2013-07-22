@@ -28,6 +28,7 @@ import java.util.Locale;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.web.ServerCalls;
@@ -35,33 +36,30 @@ import org.catrobat.catroid.web.ServerCalls;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import com.jayway.android.robotium.solo.Solo;
+public class UserConceptTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
-public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
-
-	private Solo solo;
 	private String saveToken;
 	private String loginDialogTitle;
 	private String uploadDialogTitle;
 
 	public UserConceptTest() {
 		super(MainMenuActivity.class);
-		UiTestUtils.clearAllUtilTestProjects();
 	}
 
 	@Override
 	@UiThreadTest
 	public void setUp() throws Exception {
-		solo = new Solo(getInstrumentation(), getActivity());
+		super.setUp();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		saveToken = prefs.getString(Constants.TOKEN, Constants.NO_TOKEN);
 		loginDialogTitle = solo.getString(R.string.login_register_dialog_title);
 		uploadDialogTitle = solo.getString(R.string.upload_project_dialog_title);
+		solo.waitForActivity(MainMenuActivity.class);
 	}
 
 	@Override
@@ -69,11 +67,7 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, saveToken).commit();
 		Reflection.setPrivateField(ServerCalls.getInstance(), "emailForUiTests", null);
-		UiTestUtils.goBackToHome(getInstrumentation());
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
 		super.tearDown();
-		solo = null;
 	}
 
 	public void testLicenceLinkPresent() throws Throwable {
@@ -142,6 +136,7 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		fillLoginDialog(true);
 
 		assertNotNull("Upload Dialog is not shown.", uploadDialogTitle);
+		UiTestUtils.goBackToHome(getInstrumentation());
 	}
 
 	public void testRegisterWithShortPassword() throws Throwable {
@@ -203,11 +198,12 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 
 	private void fillLoginDialogWithUsername(boolean correct, String username) {
 		assertNotNull("Login Dialog is not shown.", solo.getText(solo.getString(R.string.login_register_dialog_title)));
-
+		ArrayList<EditText> currentEditTexts = solo.getCurrentViews(EditText.class);
 		// enter a username
 		String testUser = username;
-		solo.clearEditText(0);
-		solo.enterText(0, testUser);
+		solo.clearEditText(currentEditTexts.get(0));
+		solo.enterText(currentEditTexts.get(0), testUser);
+		solo.goBack();
 		// enter a password
 		String testPassword;
 		if (correct) {
@@ -215,9 +211,9 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		} else {
 			testPassword = "short";
 		}
-		solo.clearEditText(1);
-		solo.clickOnEditText(1);
-		solo.enterText(1, testPassword);
+		solo.clearEditText(currentEditTexts.get(1));
+		solo.clickOnView(currentEditTexts.get(1));
+		solo.enterText(currentEditTexts.get(1), testPassword);
 
 		// set the email to use. we need a random email because the server does not allow same email with different users 
 		String testEmail = testUser + "@gmail.com";
@@ -229,11 +225,12 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 
 	private void fillLoginDialog(boolean correct) {
 		assertNotNull("Login Dialog is not shown.", solo.getText(solo.getString(R.string.login_register_dialog_title)));
-
+		ArrayList<EditText> currentEditTexts = solo.getCurrentViews(EditText.class);
 		// enter a username
 		String testUser = "testUser" + System.currentTimeMillis();
-		solo.clearEditText(0);
-		solo.enterText(0, testUser);
+		solo.clearEditText(currentEditTexts.get(0));
+		solo.enterText(currentEditTexts.get(0), testUser);
+		solo.goBack();
 		// enter a password
 		String testPassword;
 		if (correct) {
@@ -241,9 +238,9 @@ public class UserConceptTest extends ActivityInstrumentationTestCase2<MainMenuAc
 		} else {
 			testPassword = "short";
 		}
-		solo.clearEditText(1);
-		solo.clickOnEditText(1);
-		solo.enterText(1, testPassword);
+		solo.clearEditText(currentEditTexts.get(1));
+		solo.clickOnView(currentEditTexts.get(1));
+		solo.enterText(currentEditTexts.get(1), testPassword);
 
 		// set the email to use. we need a random email because the server does not allow same email with different users 
 		String testEmail = testUser + "@gmail.com";

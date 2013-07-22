@@ -32,9 +32,13 @@ import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.content.Script;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.UtilFile;
@@ -46,17 +50,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.test.ActivityInstrumentationTestCase2;
+import android.test.FlakyTest;
 import android.test.UiThreadTest;
 import android.util.Log;
+import android.widget.EditText;
 
-import com.jayway.android.robotium.solo.Solo;
-
-public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
+public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private static final String TEST_FILE_DOWNLOAD_URL = "http://catroidtest.ist.tugraz.at/catroid/download/";
 	private static final int LONG_TEST_SOUND = org.catrobat.catroid.uitest.R.raw.longsound;
 
-	private Solo solo;
 	private String testProject = UiTestUtils.PROJECTNAME1;
 	private String newTestProject = UiTestUtils.PROJECTNAME2;
 	private String testDescription = UiTestUtils.PROJECTDESCRIPTION1;
@@ -69,13 +71,12 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 
 	public ProjectUpAndDownloadTest() {
 		super(MainMenuActivity.class);
-		UiTestUtils.clearAllUtilTestProjects();
 	}
 
 	@Override
 	@UiThreadTest
 	public void setUp() throws Exception {
-		solo = new Solo(getInstrumentation(), getActivity());
+		super.setUp();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		saveToken = prefs.getString(Constants.TOKEN, Constants.NO_TOKEN);
 		uploadDialogTitle = solo.getString(R.string.upload_project_dialog_title);
@@ -85,11 +86,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 	public void tearDown() throws Exception {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		prefs.edit().putString(Constants.TOKEN, saveToken).commit();
-		UiTestUtils.goBackToHome(getInstrumentation());
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
 		super.tearDown();
-		solo = null;
 	}
 
 	private void setServerURLToTestUrl() throws Throwable {
@@ -100,8 +97,16 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		});
 	}
 
-	public void testTokenReplacementAfterUpload() throws Throwable {
+	@FlakyTest(tolerance = 4)
+	public void testUploadProjectSuccessAndTokenReplacementAfterUpload() throws Throwable {
 		setServerURLToTestUrl();
+		createTestProject(testProject);
+		addABrickToProject();
+
+		//intent to the main activity is sent since changing activity orientation is not working
+		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
+		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		getActivity().startActivity(intent);
 
 		UiTestUtils.createValidUser(getActivity());
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -112,22 +117,6 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		assertFalse("Original token not available", originalToken.equals(Constants.NO_TOKEN));
 		assertFalse("New token not available", newToken.equals(Constants.NO_TOKEN));
 		assertFalse("Original token should be replaced by new token after upload", originalToken.equals(newToken));
-	}
-
-	public void testUploadProjectSuccess() throws Throwable {
-		setServerURLToTestUrl();
-
-		createTestProject(testProject);
-		addABrickToProject();
-
-		//intent to the main activity is sent since changing activity orientation is not working
-		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
-		getActivity().startActivity(intent);
-
-		UiTestUtils.createValidUser(getActivity());
-
-		uploadProject(newTestProject, newTestDescription);
 
 		UiTestUtils.clearAllUtilTestProjects();
 
@@ -135,6 +124,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		//downloadProject();
 	}
 
+	@FlakyTest(tolerance = 4)
 	public void testUploadProjectOldCatrobatLanguageVersion() throws Throwable {
 		setServerURLToTestUrl();
 
@@ -159,6 +149,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.clearEditText(0);
 		solo.clickOnEditText(0);
 		solo.enterText(0, newTestProject);
+		solo.goBack();
 
 		// enter a description
 		solo.clearEditText(1);
@@ -179,6 +170,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		UiTestUtils.clearAllUtilTestProjects();
 	}
 
+	@FlakyTest(tolerance = 4)
 	public void testRenameProjectNameAndDescriptionWhenUploading() throws Throwable {
 		setServerURLToTestUrl();
 
@@ -223,6 +215,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 				serverProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
 	}
 
+	@FlakyTest(tolerance = 4)
 	public void testRenameProjectDescriptionWhenUploading() throws Throwable {
 		setServerURLToTestUrl();
 
@@ -264,6 +257,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 				serverProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
 	}
 
+	@FlakyTest(tolerance = 4)
 	public void testUpAndDownloadJapaneseUnicodeProject() throws Throwable {
 		setServerURLToTestUrl();
 
@@ -291,14 +285,15 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		assertTrue("Project name on server was changed", serverProjectName.equalsIgnoreCase(testProject));
 	}
 
+	@FlakyTest(tolerance = 4)
 	public void testDownload() throws Throwable {
 		setServerURLToTestUrl();
 
 		String projectName = UiTestUtils.DEFAULT_TEST_PROJECT_NAME;
 		UiTestUtils.createTestProject();
 
-		//Adds a sufficient number of media files so that the project is big enough (16 files ~1MB) for download-testing
-		int numberMediaFiles = 10;
+		//Adds a sufficient number of media files so that the project is big enough (5 files ~0.4MB) for download-testing
+		int numberMediaFiles = 5;
 		String soundName = "testSound";
 
 		ArrayList<SoundInfo> soundInfoList = ProjectManager.INSTANCE.getCurrentSprite().getSoundList();
@@ -313,7 +308,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 			ProjectManager.INSTANCE.getFileChecksumContainer().addChecksum(soundInfo.getChecksum(),
 					soundInfo.getAbsolutePath());
 		}
-		StorageHandler.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
+		StorageHandler.getInstance().saveProject(ProjectManager.INSTANCE.getCurrentProject());
 		Project newProject = StorageHandler.getInstance().loadProject(projectName);
 		ProjectManager.INSTANCE.setProject(newProject);
 
@@ -331,6 +326,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		assertTrue("Project was successfully downloaded", serverProjectName.equalsIgnoreCase(projectName));
 	}
 
+	@FlakyTest(tolerance = 4)
 	public void testUploadStandardProject() throws Throwable {
 		if (!createAndSaveStandardProject() || this.standardProject == null) {
 			fail("Standard project not created");
@@ -339,10 +335,11 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		setServerURLToTestUrl();
 		UiTestUtils.createValidUser(getActivity());
 
-		String uploadButtonText = solo.getString(R.string.upload_button);
-
 		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
-		solo.waitForText(uploadButtonText);
+
+		String uploadButtonText = solo.getString(R.string.upload_button);
+		assertTrue("Upload button not found within 5 secs!", solo.waitForText(uploadButtonText, 0, 5000));
+
 		solo.goBack();
 		solo.sleep(500);
 		solo.clickOnButton(uploadButtonText);
@@ -370,6 +367,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 
 	}
 
+	@FlakyTest(tolerance = 4)
 	public void testUploadModifiedStandardProject() throws Throwable {
 		if (!createAndSaveStandardProject() || this.standardProject == null) {
 			fail("Standard project not created");
@@ -381,17 +379,17 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		solo.waitForText(solo.getString(R.string.main_menu_continue));
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 
-		solo.waitForText(solo.getString(R.string.default_project_sprites_pocketcode_name));
-		solo.clickOnText(solo.getString(R.string.default_project_sprites_pocketcode_name));
+		solo.waitForText(solo.getString(R.string.default_project_sprites_mole_name) + " 1");
+		solo.clickOnText(solo.getString(R.string.default_project_sprites_mole_name) + " 1");
 
 		solo.waitForText(solo.getString(R.string.looks));
 		solo.clickOnButton(solo.getString(R.string.looks));
 
 		String deleteLookText = solo.getString(R.string.delete);
-		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_pocketcode_normalcat));
+		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_mole_whacked));
 		solo.waitForText(deleteLookText);
 		solo.clickOnText(deleteLookText);
-		solo.clickOnButton(solo.getString(R.string.ok));
+		solo.clickOnButton(solo.getString(R.string.yes));
 
 		solo.goBack();
 		solo.goBack();
@@ -433,11 +431,13 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.enterText(0, projectToCreate);
+		solo.goBack();
 		solo.clickOnButton(solo.getString(R.string.ok));
-		solo.sleep(2000);
+		solo.waitForFragmentById(R.id.fragment_sprites_list);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		solo.enterText(0, "new sprite");
+		solo.goBack();
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.sleep(2000);
 
@@ -448,32 +448,39 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 	private void addABrickToProject() {
 		solo.clickInList(0);
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
+		solo.waitForText(solo.getString(R.string.scripts));
 		solo.clickOnText(solo.getString(R.string.scripts));
 		UiTestUtils.addNewBrick(solo, R.string.brick_wait);
 		UiTestUtils.goToHomeActivity(getActivity());
 	}
 
 	private void uploadProject(String uploadProjectName, String uploadProjectDescription) {
+		// change project to a non default state
+		Sprite firstSprite = ProjectManager.INSTANCE.getCurrentProject().getSpriteList().get(0);
+		Script firstScript = firstSprite.getScript(0);
+		firstScript.addBrick(new WaitBrick(firstSprite, 1000));
+
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(uploadDialogTitle);
 
 		// enter a new title
-		solo.clearEditText(0);
-		solo.clickOnEditText(0);
-		solo.enterText(0, uploadProjectName);
+		EditText projectUploadName = (EditText) solo.getView(R.id.project_upload_name);
+		solo.clearEditText(projectUploadName);
+		solo.enterText(projectUploadName, uploadProjectName);
 
 		// enter a description
-		solo.clearEditText(1);
-		solo.clickOnEditText(1);
-		solo.enterText(1, uploadProjectDescription);
+		EditText projectUploadDescription = (EditText) solo.getView(R.id.project_description_upload);
+		solo.clearEditText(projectUploadDescription);
+		solo.enterText(projectUploadDescription, uploadProjectDescription);
 
 		solo.clickOnButton(solo.getString(R.string.upload_button));
 		solo.sleep(500);
 
+		boolean success = solo.waitForText(solo.getString(R.string.success_project_upload), 1, 50000);
+		assertTrue("Upload failed. Internet connection?", success);
+		String resultString = (String) Reflection.getPrivateField(ServerCalls.getInstance(), "resultString");
+
 		try {
-			boolean success = solo.waitForText(solo.getString(R.string.success_project_upload), 1, 50000);
-			assertTrue("Upload failed. Internet connection?", success);
-			String resultString = (String) Reflection.getPrivateField(ServerCalls.getInstance(), "resultString");
 			JSONObject jsonObject;
 			jsonObject = new JSONObject(resultString);
 			serverProjectId = jsonObject.optInt("projectId");
@@ -485,7 +492,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 	}
 
 	private void downloadProjectAndReplace(String projectName) {
-		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROID_EXTENTION;
+		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENTION;
 		downloadUrl += "?fname=" + projectName;
 
 		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
@@ -501,7 +508,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 		boolean waitResult = solo.waitForActivity("MainMenuActivity", 10000);
 		assertTrue("Download takes too long.", waitResult);
 		assertTrue("Download not successful.", solo.searchText(solo.getString(R.string.success_project_download)));
-		assertEquals("Testproject not loaded.", projectName, ProjectManager.getInstance().getCurrentProject().getName());
+		assertEquals("Testproject not loaded.", projectName, ProjectManager.INSTANCE.getCurrentProject().getName());
 
 		String projectPath = Constants.DEFAULT_ROOT + "/" + projectName;
 		File downloadedDirectory = new File(projectPath);
@@ -512,7 +519,7 @@ public class ProjectUpAndDownloadTest extends ActivityInstrumentationTestCase2<M
 
 	@SuppressWarnings("unused")
 	private void downloadProject() {
-		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROID_EXTENTION;
+		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENTION;
 		downloadUrl += "?fname=" + newTestProject;
 
 		Intent intent = new Intent(getActivity(), MainMenuActivity.class);

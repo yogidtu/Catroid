@@ -27,7 +27,7 @@ import java.io.File;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.Values;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
@@ -57,13 +57,13 @@ public class NextLookActionTest extends InstrumentationTestCase {
 
 		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
 		StorageHandler.getInstance().saveProject(project);
-		ProjectManager.getInstance().setProject(project);
+		ProjectManager.INSTANCE.setProject(project);
 
 		testImage = TestUtils.saveFileToProject(projectName, "testImage.png", IMAGE_FILE_ID, getInstrumentation()
 				.getContext(), TestUtils.TYPE_IMAGE_FILE);
 
-		Values.SCREEN_HEIGHT = 200;
-		Values.SCREEN_WIDTH = 200;
+		ScreenValues.SCREEN_HEIGHT = 200;
+		ScreenValues.SCREEN_WIDTH = 200;
 	}
 
 	@Override

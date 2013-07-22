@@ -94,6 +94,8 @@ import org.catrobat.catroid.content.bricks.TurnRightBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
+import org.catrobat.catroid.formulaeditor.InternToken;
+import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.ui.MainMenuActivity;
@@ -115,6 +117,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.test.ActivityInstrumentationTestCase2;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -123,9 +126,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -135,8 +140,9 @@ import com.actionbarsherlock.internal.widget.IcsSpinner;
 import com.jayway.android.robotium.solo.Solo;
 
 public class UiTestUtils {
-	private static ProjectManager projectManager = ProjectManager.getInstance();
+	private static ProjectManager projectManager = ProjectManager.INSTANCE;
 	private static SparseIntArray brickCategoryMap;
+	private static List<InternToken> internTokenList = new ArrayList<InternToken>();
 
 	public static final String DEFAULT_TEST_PROJECT_NAME = "testProject";
 	public static final String PROJECTNAME1 = "testingproject1";
@@ -260,7 +266,7 @@ public class UiTestUtils {
 
 		Formula formula = (Formula) Reflection.getPrivateField(theBrick, fieldName);
 
-		assertEquals("Wrong text in field", newValue, formula.interpretFloat(theBrick.getSprite()), 0.01f);
+		assertEquals("Wrong text in field", newValue, formula.interpretDouble(theBrick.getSprite()), 0.01f);
 		assertEquals("Text not updated in the brick list", newValue,
 				Double.parseDouble(solo.getEditText(editTextNumber).getText().toString().replace(',', '.')), 0.01f);
 
@@ -383,7 +389,8 @@ public class UiTestUtils {
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
 		solo.searchText(solo.getCurrentActivity().getString(categoryStringId));
 
-		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
+		ListView fragmentListView = solo.getCurrentViews(ListView.class).get(
+				solo.getCurrentViews(ListView.class).size() - 1);
 
 		while (!solo.searchText(solo.getCurrentActivity().getString(brickStringId))) {
 			if (!solo.scrollDownList(fragmentListView)) {
@@ -506,8 +513,8 @@ public class UiTestUtils {
 
 		ArrayList<Brick> brickList = new ArrayList<Brick>();
 
-		brickList.add(new BroadcastBrick(firstSprite));
-		brickList.add(new BroadcastWaitBrick(firstSprite));
+		brickList.add(new BroadcastBrick(firstSprite, "broadcastMessage1"));
+		brickList.add(new BroadcastWaitBrick(firstSprite, "broadcastMessage2"));
 		brickList.add(new ChangeBrightnessByNBrick(firstSprite, 0));
 		brickList.add(new ChangeGhostEffectByNBrick(firstSprite, 0));
 		brickList.add(new ChangeSizeByNBrick(firstSprite, 0));
@@ -527,7 +534,7 @@ public class UiTestUtils {
 		brickList.add(new NoteBrick(firstSprite));
 		brickList.add(new PlaceAtBrick(firstSprite, 0, 0));
 		brickList.add(new PlaySoundBrick(firstSprite));
-		brickList.add(new PointInDirectionBrick(firstSprite, Direction.DIRECTION_DOWN));
+		brickList.add(new PointInDirectionBrick(firstSprite, Direction.DOWN));
 		brickList.add(new PointToBrick(firstSprite, firstSprite));
 		brickList.add(new SetBrightnessBrick(firstSprite, 0));
 		brickList.add(new SetGhostEffectBrick(firstSprite, 0));
@@ -694,10 +701,10 @@ public class UiTestUtils {
 	public static Project createProject(String projectName, ArrayList<Sprite> spriteList, Context context) {
 		Project project = new Project(context, projectName);
 		StorageHandler.getInstance().saveProject(project);
-		ProjectManager.getInstance().setProject(project);
+		ProjectManager.INSTANCE.setProject(project);
 
 		for (Sprite sprite : spriteList) {
-			ProjectManager.getInstance().addSprite(sprite);
+			ProjectManager.INSTANCE.addSprite(sprite);
 		}
 
 		StorageHandler.getInstance().saveProject(project);
@@ -708,7 +715,7 @@ public class UiTestUtils {
 		StorageHandler storageHandler = StorageHandler.getInstance();
 
 		Project project = new Project(context, projectName);
-		Sprite firstSprite = new Sprite(context.getString(R.string.default_project_sprites_pocketcode_name));
+		Sprite firstSprite = new Sprite(context.getString(R.string.default_project_sprites_mole_name));
 		Sprite secondSprite = new Sprite("second_sprite");
 
 		Script firstSpriteScript = new StartScript(firstSprite);
@@ -747,7 +754,7 @@ public class UiTestUtils {
 		brickList.add(new SpeakBrick(firstSprite, "Hallo"));
 
 		brickList.add(new WaitBrick(firstSprite, 19));
-		brickList.add(new BroadcastWaitBrick(firstSprite));
+		brickList.add(new BroadcastWaitBrick(firstSprite, "firstMessage"));
 		brickList.add(new NoteBrick(firstSprite));
 		LoopBeginBrick beginBrick = new ForeverBrick(firstSprite);
 		LoopEndBrick endBrick = new LoopEndBrick(firstSprite, beginBrick);
@@ -760,20 +767,57 @@ public class UiTestUtils {
 		beginBrick.setLoopEndBrick(endBrick);
 		brickList.add(beginBrick);
 		brickList.add(endBrick);
+		brickList.add(new WaitBrick(firstSprite, 1));
+
+		// create formula to test copying
+		// ( 1 + global ) * local - COMPASS_DIRECTION
 
 		FormulaElement numberElement = new FormulaElement(FormulaElement.ElementType.NUMBER, "1", null);
 		FormulaElement bracesElement = new FormulaElement(FormulaElement.ElementType.BRACKET, null, null, null,
 				numberElement);
-		Formula formula = new Formula(bracesElement);
-		brickList.add(new WaitBrick(firstSprite, formula));
+
+		FormulaElement operatorElementPlus = new FormulaElement(FormulaElement.ElementType.OPERATOR, "PLUS", null);
+		FormulaElement operatorElementMult = new FormulaElement(FormulaElement.ElementType.OPERATOR, "MULT", null);
+		FormulaElement operatorElementMinus = new FormulaElement(FormulaElement.ElementType.OPERATOR, "MINUS", null);
+
+		UserVariablesContainer variableContainer = project.getUserVariables();
+		variableContainer.addProjectUserVariable("global");
+		FormulaElement variableElementGlobal = new FormulaElement(FormulaElement.ElementType.USER_VARIABLE, "global",
+				null);
+		variableContainer.addSpriteUserVariableToSprite(firstSprite, "local");
+		FormulaElement variableElemetLocal = new FormulaElement(FormulaElement.ElementType.USER_VARIABLE, "local", null);
+
+		FormulaElement sensorElemet = new FormulaElement(FormulaElement.ElementType.SENSOR, "COMPASS_DIRECTION", null);
+
+		operatorElementPlus.setLeftChild(numberElement);
+		operatorElementPlus.setRightChild(variableElementGlobal);
+		bracesElement.setRightChild(operatorElementPlus);
+		operatorElementMult.setLeftChild(bracesElement);
+		operatorElementMult.setRightChild(variableElemetLocal);
+		operatorElementMinus.setLeftChild(operatorElementMult);
+		operatorElementMinus.setRightChild(sensorElemet);
+
+		if (internTokenList.isEmpty()) {
+			internTokenList.addAll(operatorElementMinus.getInternTokenList());
+		}
+
+		Formula formula = new Formula(operatorElementMinus);
+
+		IfLogicBeginBrick ifBeginBrick = new IfLogicBeginBrick(firstSprite, formula);
+		IfLogicElseBrick ifElseBrick = new IfLogicElseBrick(firstSprite, ifBeginBrick);
+		IfLogicEndBrick ifEndBrick = new IfLogicEndBrick(firstSprite, ifElseBrick, ifBeginBrick);
+		brickList.add(ifBeginBrick);
+		brickList.add(new SpeakBrick(firstSprite, "Hello, I'm true!"));
+		brickList.add(ifElseBrick);
+		brickList.add(new SpeakBrick(firstSprite, "Hallo, I'm false!"));
+		brickList.add(ifEndBrick);
 
 		for (Brick brick : brickList) {
 			firstSpriteScript.addBrick(brick);
 		}
 		firstSprite.addScript(firstSpriteScript);
 
-		BroadcastScript broadcastScript = new BroadcastScript(firstSprite);
-		broadcastScript.setBroadcastMessage("Hallo");
+		BroadcastScript broadcastScript = new BroadcastScript(firstSprite, "Hallo");
 		BroadcastReceiverBrick brickBroad = new BroadcastReceiverBrick(firstSprite, broadcastScript);
 		firstSprite.addScript(broadcastScript);
 		brickList.add(brickBroad);
@@ -781,11 +825,15 @@ public class UiTestUtils {
 		project.addSprite(firstSprite);
 		project.addSprite(secondSprite);
 
-		ProjectManager.getInstance().setFileChecksumContainer(new FileChecksumContainer());
-		ProjectManager.getInstance().setCurrentSprite(firstSprite);
-		ProjectManager.getInstance().setCurrentScript(firstSpriteScript);
+		ProjectManager.INSTANCE.setFileChecksumContainer(new FileChecksumContainer());
+		ProjectManager.INSTANCE.setCurrentSprite(firstSprite);
+		ProjectManager.INSTANCE.setCurrentScript(firstSpriteScript);
 
 		storageHandler.saveProject(project);
+	}
+
+	public static List<InternToken> getInternTokenList() {
+		return internTokenList;
 	}
 
 	public static void clearAllUtilTestProjects() {
@@ -868,10 +916,15 @@ public class UiTestUtils {
 	 * @param overflowMenuItemId
 	 *            ID of an action item (icon)
 	 */
-	public static void openActionMode(Solo solo, String overflowMenuItemName, int menuItemId) {
-		if (overflowMenuItemName != null && menuItemId != 0) {
+	public static void openActionMode(Solo solo, String overflowMenuItemName, int menuItemId, Activity activity) {
 
-			if (solo.getView(menuItemId) == null) {
+		if (overflowMenuItemName != null && menuItemId != 0) {
+			ArrayList<View> views = solo.getCurrentViews();
+			ArrayList<Integer> ids = new ArrayList<Integer>();
+			for (View view : views) {
+				ids.add(view.getId());
+			}
+			if (!ids.contains(menuItemId)) {
 				solo.clickOnMenuItem(overflowMenuItemName, true);
 			} else {
 				UiTestUtils.clickOnActionBar(solo, menuItemId);
@@ -927,7 +980,6 @@ public class UiTestUtils {
 	}
 
 	public static void createValidUser(Context context) {
-
 		try {
 			String testUser = "testUser" + System.currentTimeMillis();
 			String testPassword = "pwspws";
@@ -986,7 +1038,7 @@ public class UiTestUtils {
 			fail("ListView not shown in 10 secs!");
 		}
 
-		ArrayList<ListView> listViews = solo.getCurrentListViews();
+		ArrayList<ListView> listViews = solo.getCurrentViews(ListView.class);
 		if (listViews.size() <= listViewIndex) {
 			fail("Listview Index wrong");
 		}
@@ -1063,11 +1115,6 @@ public class UiTestUtils {
 	private static class ProjectWithCatrobatLanguageVersion extends Project {
 		static final long serialVersionUID = 1L;
 		private final float catrobatLanguageVersion;
-
-		@SuppressWarnings("unused")
-		public ProjectWithCatrobatLanguageVersion() {
-			catrobatLanguageVersion = 0.6f;
-		}
 
 		public ProjectWithCatrobatLanguageVersion(String name, float catrobatLanguageVersion) {
 			super(null, name);
@@ -1186,9 +1233,9 @@ public class UiTestUtils {
 
 	public static boolean clickOnTextInList(Solo solo, String text) {
 		solo.sleep(300);
-		ArrayList<TextView> textViews = solo.getCurrentTextViews(solo.getView(android.R.id.list));
-		for (int i = 0; i < textViews.size(); i++) {
-			TextView view = textViews.get(i);
+		ArrayList<TextView> textViews = solo.getCurrentViews(TextView.class, solo.getView(android.R.id.list));
+		for (int textView = 0; textView < textViews.size(); textView++) {
+			TextView view = textViews.get(textView);
 			if (view.getText().toString().equalsIgnoreCase(text)) {
 				solo.clickOnView(view);
 				return true;
@@ -1199,9 +1246,9 @@ public class UiTestUtils {
 
 	public static boolean longClickOnTextInList(Solo solo, String text) {
 		solo.sleep(300);
-		ArrayList<TextView> textViews = solo.getCurrentTextViews(solo.getView(android.R.id.list));
-		for (int i = 0; i < textViews.size(); i++) {
-			TextView view = textViews.get(i);
+		ArrayList<TextView> textViews = solo.getCurrentViews(TextView.class);
+		for (int position = 0; position < textViews.size(); position++) {
+			TextView view = textViews.get(position);
 			if (view.getText().toString().equalsIgnoreCase(text)) {
 				solo.clickLongOnView(view);
 				return true;
@@ -1241,7 +1288,7 @@ public class UiTestUtils {
 	}
 
 	public static ListView getScriptListView(Solo solo) {
-		return solo.getCurrentListViews().get(1);
+		return solo.getCurrentViews(ListView.class).get(1);
 	}
 
 	public static void waitForFragment(Solo solo, int fragmentRootLayoutId) {
@@ -1293,7 +1340,7 @@ public class UiTestUtils {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
 			return UiTestUtils.getActionbarSpinnerOnPreHoneyComb(solo).getAdapter().getCount();
 		} else {
-			return solo.getCurrentSpinners().get(ACTION_BAR_SPINNER_INDEX).getAdapter().getCount();
+			return solo.getCurrentViews(Spinner.class).get(ACTION_BAR_SPINNER_INDEX).getAdapter().getCount();
 		}
 	}
 
@@ -1310,7 +1357,7 @@ public class UiTestUtils {
 
 	public static View getViewContainerByString(Solo solo, String text, int containerId) {
 		View parent = solo.getView(containerId);
-		List<TextView> views = solo.getCurrentTextViews(parent);
+		List<TextView> views = solo.getCurrentViews(TextView.class, parent);
 		for (TextView view : views) {
 
 			if (view.getText().equals(text)) {
@@ -1332,10 +1379,34 @@ public class UiTestUtils {
 
 	public static List<TextView> getViewsByParentId(Solo solo, int parentId) {
 		View parent = solo.getView(parentId);
-		return solo.getCurrentTextViews(parent);
+		return solo.getCurrentViews(TextView.class, parent);
 	}
 
 	public static void prepareStageForTest() {
 		Reflection.setPrivateField(StageListener.class, "DYNAMIC_SAMPLING_RATE_FOR_ACTIONS", false);
+	}
+
+	/*
+	 * This is a workaround from this robotium issue
+	 * http://code.google.com/p/robotium/issues/detail?id=296
+	 * 
+	 * This method should be removed, when the issue is fixed in robotium!
+	 */
+	public static void clickOnButton(Solo solo, ActivityInstrumentationTestCase2<?> testCase, String buttonText) {
+		final Button buttonWithinTheDialog = solo.getButton(buttonText);
+		try {
+			testCase.runTestOnUiThread(new Runnable() {
+				public void run() {
+					buttonWithinTheDialog.performClick();
+				}
+			});
+		} catch (Throwable throwable) {
+			Log.e("CATROID", throwable.getMessage());
+		}
+		solo.sleep(500);
+	}
+
+	public static void waitForText(Solo solo, String text) {
+		assertEquals("Text not found!", true, solo.waitForText(text, 0, 2000));
 	}
 }

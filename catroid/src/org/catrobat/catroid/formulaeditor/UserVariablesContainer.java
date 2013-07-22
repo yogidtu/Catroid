@@ -25,6 +25,7 @@ package org.catrobat.catroid.formulaeditor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -62,20 +63,26 @@ public class UserVariablesContainer implements Serializable {
 		return var;
 	}
 
-	public void addSpriteUserVariable(String userVariableName, Double userVariableValue) {
-		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
-		UserVariable userVariableToAdd = new UserVariable(userVariableName, userVariableValue);
-		List<UserVariable> varList = getOrCreateVariableListForSprite(currentSprite);
-		varList.add(userVariableToAdd);
+	public UserVariable addSpriteUserVariable(String userVariableName) {
+		Sprite currentSprite = ProjectManager.INSTANCE.getCurrentSprite();
+		return addSpriteUserVariableToSprite(currentSprite, userVariableName);
 	}
 
-	public void addProjectUserVariable(String userVariableName, Double userVariableValue) {
-		UserVariable userVariableToAdd = new UserVariable(userVariableName, userVariableValue);
+	public UserVariable addSpriteUserVariableToSprite(Sprite sprite, String userVariableName) {
+		UserVariable userVariableToAdd = new UserVariable(userVariableName);
+		List<UserVariable> varList = getOrCreateVariableListForSprite(sprite);
+		varList.add(userVariableToAdd);
+		return userVariableToAdd;
+	}
+
+	public UserVariable addProjectUserVariable(String userVariableName) {
+		UserVariable userVariableToAdd = new UserVariable(userVariableName);
 		projectVariables.add(userVariableToAdd);
+		return userVariableToAdd;
 	}
 
 	public void deleteUserVariableByName(String userVariableName) {
-		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
+		Sprite currentSprite = ProjectManager.INSTANCE.getCurrentSprite();
 		UserVariable variableToDelete;
 		List<UserVariable> spriteVariables = getOrCreateVariableListForSprite(currentSprite);
 		variableToDelete = findUserVariable(userVariableName, spriteVariables);
@@ -90,12 +97,24 @@ public class UserVariablesContainer implements Serializable {
 	}
 
 	public List<UserVariable> getOrCreateVariableListForSprite(Sprite sprite) {
-		List<UserVariable> vars = spriteVariables.get(sprite);
-		if (vars == null) {
-			vars = new ArrayList<UserVariable>();
-			spriteVariables.put(sprite, vars);
+		List<UserVariable> variables = spriteVariables.get(sprite);
+		if (variables == null) {
+			variables = new ArrayList<UserVariable>();
+			spriteVariables.put(sprite, variables);
 		}
-		return vars;
+		return variables;
+	}
+
+	public List<UserVariable> createVariableListForCopySprite(Sprite sprite) {
+		return spriteVariables.get(sprite);
+	}
+
+	public void cleanVariableListForSprite(Sprite sprite) {
+		List<UserVariable> vars = spriteVariables.get(sprite);
+		if (vars != null) {
+			vars.clear();
+		}
+		spriteVariables.remove(sprite);
 	}
 
 	private UserVariable findUserVariable(String name, List<UserVariable> variables) {
@@ -110,4 +129,20 @@ public class UserVariablesContainer implements Serializable {
 		return null;
 	}
 
+	public void resetAllUserVariables() {
+
+		resetUserVariables(projectVariables);
+
+		Iterator<Sprite> spriteIterator = spriteVariables.keySet().iterator();
+		while (spriteIterator.hasNext()) {
+			Sprite currentSprite = spriteIterator.next();
+			resetUserVariables(spriteVariables.get(currentSprite));
+		}
+	}
+
+	private void resetUserVariables(List<UserVariable> UserVariableList) {
+		for (UserVariable userVariable : UserVariableList) {
+			userVariable.setValue(0);
+		}
+	}
 }

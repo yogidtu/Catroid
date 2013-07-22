@@ -24,22 +24,19 @@ package org.catrobat.catroid.uitest.stage;
 
 import java.util.ArrayList;
 
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.BroadcastScript;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.BroadcastBrick;
 import org.catrobat.catroid.content.bricks.SetXBrick;
 import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.uitest.util.Reflection;
+import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.ActivityInstrumentationTestCase2;
+public class MultipleBroadcastsTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
-import com.jayway.android.robotium.solo.Solo;
-
-public class MultipleBroadcastsTest extends ActivityInstrumentationTestCase2<StageActivity> {
-
-	private Solo solo;
 	private Sprite sprite1;
 	private int sprite1PosX = 30;
 	private Sprite sprite2;
@@ -48,35 +45,32 @@ public class MultipleBroadcastsTest extends ActivityInstrumentationTestCase2<Sta
 	private int sprite3PosX = -30;
 	private Sprite sprite4;
 	private int sprite4PosX = -60;
+	private final String broadcastMessage = "run";
 
 	public MultipleBroadcastsTest() {
-		super(StageActivity.class);
+		super(MainMenuActivity.class);
 	}
 
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.prepareStageForTest();
 		createProject();
-		solo = new Solo(getInstrumentation(), getActivity());
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
-		super.tearDown();
-		solo = null;
+		UiTestUtils.prepareStageForTest();
+		UiTestUtils.getIntoSpritesFromMainMenu(solo);
+		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 	}
 
 	public void testSendMultipleBroadcastsWhenProjectStart() {
 		solo.waitForActivity(StageActivity.class.getSimpleName());
-		Reflection.setPrivateField(StageActivity.stageListener, "makeAutomaticScreenshot", false);
 		solo.sleep(2000);
-		assertEquals("Sprite1 is at the false x position", sprite1PosX, (int) sprite1.look.getXInUserInterfaceDimensionUnit());
-		assertEquals("Sprite2 is at the false x position", sprite2PosX, (int) sprite2.look.getXInUserInterfaceDimensionUnit());
-		assertEquals("Sprite3 is at the false x position", sprite3PosX, (int) sprite3.look.getXInUserInterfaceDimensionUnit());
-		assertEquals("Sprite4 is at the false x position", sprite4PosX, (int) sprite4.look.getXInUserInterfaceDimensionUnit());
+		assertEquals("Sprite1 is at the false x position", sprite1PosX,
+				(int) sprite1.look.getXInUserInterfaceDimensionUnit());
+		assertEquals("Sprite2 is at the false x position", sprite2PosX,
+				(int) sprite2.look.getXInUserInterfaceDimensionUnit());
+		assertEquals("Sprite3 is at the false x position", sprite3PosX,
+				(int) sprite3.look.getXInUserInterfaceDimensionUnit());
+		assertEquals("Sprite4 is at the false x position", sprite4PosX,
+				(int) sprite4.look.getXInUserInterfaceDimensionUnit());
 
 	}
 
@@ -85,11 +79,9 @@ public class MultipleBroadcastsTest extends ActivityInstrumentationTestCase2<Sta
 
 		sprite1 = new Sprite("sprite1");
 		StartScript startScript1 = new StartScript(sprite1);
-		BroadcastBrick broadcastBrick1 = new BroadcastBrick(sprite1);
-		broadcastBrick1.setSelectedMessage("run");
+		BroadcastBrick broadcastBrick1 = new BroadcastBrick(sprite1, broadcastMessage);
 		startScript1.addBrick(broadcastBrick1);
-		BroadcastScript broadcastScript1 = new BroadcastScript(sprite1);
-		broadcastScript1.setBroadcastMessage("run");
+		BroadcastScript broadcastScript1 = new BroadcastScript(sprite1, "run");
 		SetXBrick setXBrick1 = new SetXBrick(sprite1, sprite1PosX);
 		broadcastScript1.addBrick(setXBrick1);
 		sprite1.addScript(startScript1);
@@ -98,11 +90,9 @@ public class MultipleBroadcastsTest extends ActivityInstrumentationTestCase2<Sta
 
 		sprite2 = new Sprite("sprite2");
 		StartScript startScript2 = new StartScript(sprite2);
-		BroadcastBrick broadcastBrick2 = new BroadcastBrick(sprite2);
-		broadcastBrick2.setSelectedMessage("run");
+		BroadcastBrick broadcastBrick2 = new BroadcastBrick(sprite2, broadcastMessage);
 		startScript2.addBrick(broadcastBrick2);
-		BroadcastScript broadcastScript2 = new BroadcastScript(sprite2);
-		broadcastScript2.setBroadcastMessage("run");
+		BroadcastScript broadcastScript2 = new BroadcastScript(sprite2, "run");
 		SetXBrick setXBrick2 = new SetXBrick(sprite2, sprite2PosX);
 		broadcastScript2.addBrick(setXBrick2);
 		sprite2.addScript(startScript2);
@@ -111,11 +101,9 @@ public class MultipleBroadcastsTest extends ActivityInstrumentationTestCase2<Sta
 
 		sprite3 = new Sprite("sprite3");
 		StartScript startScript3 = new StartScript(sprite3);
-		BroadcastBrick broadcastBrick3 = new BroadcastBrick(sprite3);
-		broadcastBrick3.setSelectedMessage("run");
+		BroadcastBrick broadcastBrick3 = new BroadcastBrick(sprite3, broadcastMessage);
 		startScript3.addBrick(broadcastBrick3);
-		BroadcastScript broadcastScript3 = new BroadcastScript(sprite3);
-		broadcastScript3.setBroadcastMessage("run");
+		BroadcastScript broadcastScript3 = new BroadcastScript(sprite3, "run");
 		SetXBrick setXBrick3 = new SetXBrick(sprite3, sprite3PosX);
 		broadcastScript3.addBrick(setXBrick3);
 		sprite3.addScript(startScript3);
@@ -124,11 +112,9 @@ public class MultipleBroadcastsTest extends ActivityInstrumentationTestCase2<Sta
 
 		sprite4 = new Sprite("sprite4");
 		StartScript startScript4 = new StartScript(sprite4);
-		BroadcastBrick broadcastBrick4 = new BroadcastBrick(sprite4);
-		broadcastBrick4.setSelectedMessage("run");
+		BroadcastBrick broadcastBrick4 = new BroadcastBrick(sprite4, broadcastMessage);
 		startScript4.addBrick(broadcastBrick4);
-		BroadcastScript broadcastScript4 = new BroadcastScript(sprite4);
-		broadcastScript4.setBroadcastMessage("run");
+		BroadcastScript broadcastScript4 = new BroadcastScript(sprite4, "run");
 		SetXBrick setXBrick4 = new SetXBrick(sprite4, sprite4PosX);
 		broadcastScript4.addBrick(setXBrick4);
 		sprite4.addScript(startScript4);
@@ -137,5 +123,4 @@ public class MultipleBroadcastsTest extends ActivityInstrumentationTestCase2<Sta
 
 		UiTestUtils.createProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME, spriteList, null);
 	}
-
 }

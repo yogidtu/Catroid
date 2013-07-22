@@ -36,6 +36,7 @@ import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
@@ -89,10 +90,20 @@ public class ForeverBrick extends LoopBeginBrick {
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_forever_layout);
-		Drawable background = layout.getBackground();
-		background.setAlpha(alphaValue);
-		this.alphaValue = (alphaValue);
+
+		if (view != null) {
+
+			LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_forever_layout);
+			Drawable background = layout.getBackground();
+			background.setAlpha(alphaValue);
+
+			TextView ifForeverLabel = (TextView) view.findViewById(R.id.brick_forever_label);
+			ifForeverLabel.setTextColor(ifForeverLabel.getTextColors().withAlpha(alphaValue));
+
+			this.alphaValue = (alphaValue);
+
+		}
+
 		return view;
 	}
 

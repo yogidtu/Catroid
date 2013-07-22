@@ -33,16 +33,13 @@ import org.catrobat.catroid.content.bricks.SetVariableBrick;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
 import android.widget.Spinner;
 
-import com.jayway.android.robotium.solo.Solo;
-
-public class VariableBricksTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
-	private Solo solo;
+public class VariableBricksTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private Project project;
 	private UserVariablesContainer userVariablesContainer;
 	private SetVariableBrick setVariableBrick;
@@ -55,29 +52,25 @@ public class VariableBricksTest extends ActivityInstrumentationTestCase2<MainMen
 
 	@Override
 	public void setUp() throws Exception {
+		super.setUp();
 		createProject();
-		solo = new Solo(getInstrumentation(), getActivity());
 		UiTestUtils.prepareStageForTest();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 	}
 
 	@Override
 	public void tearDown() throws Exception {
-		UiTestUtils.goBackToHome(getInstrumentation());
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
 		userVariablesContainer.deleteUserVariableByName("p1");
 		userVariablesContainer.deleteUserVariableByName("p2");
 		userVariablesContainer.deleteUserVariableByName("sprite_var1");
 		userVariablesContainer.deleteUserVariableByName("sprite_var2");
 		super.tearDown();
-		solo = null;
 	}
 
 	@Smoke
 	public void testVariableBricks() {
-		Spinner setVariableSpinner = solo.getCurrentSpinners().get(0);
-		Spinner changeVariableSpinner = solo.getCurrentSpinners().get(1);
+		Spinner setVariableSpinner = solo.getCurrentViews(Spinner.class).get(0);
+		Spinner changeVariableSpinner = solo.getCurrentViews(Spinner.class).get(1);
 
 		solo.clickOnView(setVariableSpinner);
 		solo.clickOnText("p2");
@@ -108,15 +101,15 @@ public class VariableBricksTest extends ActivityInstrumentationTestCase2<MainMen
 		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(sprite);
-		ProjectManager.getInstance().setCurrentScript(script);
+		ProjectManager.INSTANCE.setProject(project);
+		ProjectManager.INSTANCE.setCurrentSprite(sprite);
+		ProjectManager.INSTANCE.setCurrentScript(script);
 
 		userVariablesContainer = project.getUserVariables();
-		userVariablesContainer.addProjectUserVariable("p1", 0.0);
-		userVariablesContainer.addProjectUserVariable("p2", 0.0);
-		userVariablesContainer.addSpriteUserVariable("sprite_var1", 0.0);
-		userVariablesContainer.addSpriteUserVariable("sprite_var2", 0.0);
+		userVariablesContainer.addProjectUserVariable("p1");
+		userVariablesContainer.addProjectUserVariable("p2");
+		userVariablesContainer.addSpriteUserVariable("sprite_var1");
+		userVariablesContainer.addSpriteUserVariable("sprite_var2");
 
 		setVariableBrick = new SetVariableBrick(sprite, 0.0);
 		script.addBrick(setVariableBrick);

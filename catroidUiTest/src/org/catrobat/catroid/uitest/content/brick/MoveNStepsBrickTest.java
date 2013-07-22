@@ -36,20 +36,18 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.ui.fragment.ScriptFragment;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.Utils;
 
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import com.jayway.android.robotium.solo.Solo;
-
-public class MoveNStepsBrickTest extends ActivityInstrumentationTestCase2<ScriptActivity> {
+public class MoveNStepsBrickTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
 	private static final double STEPS_TO_MOVE = 23.0;
 
-	private Solo solo;
 	private Project project;
 	private MoveNStepsBrick moveNStepsBrick;
 
@@ -59,16 +57,11 @@ public class MoveNStepsBrickTest extends ActivityInstrumentationTestCase2<Script
 
 	@Override
 	public void setUp() throws Exception {
+		// normally super.setUp should be called first
+		// but kept the test failing due to view is null
+		// when starting in ScriptActivity
 		createProject();
-		solo = new Solo(getInstrumentation(), getActivity());
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
-		super.tearDown();
-		solo = null;
+		super.setUp();
 	}
 
 	private void createProject() {
@@ -81,9 +74,9 @@ public class MoveNStepsBrickTest extends ActivityInstrumentationTestCase2<Script
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(sprite);
-		ProjectManager.getInstance().setCurrentScript(script);
+		ProjectManager.INSTANCE.setProject(project);
+		ProjectManager.INSTANCE.setCurrentSprite(sprite);
+		ProjectManager.INSTANCE.setCurrentScript(script);
 
 	}
 
@@ -96,7 +89,7 @@ public class MoveNStepsBrickTest extends ActivityInstrumentationTestCase2<Script
 		int childrenCount = adapter.getChildCountFromLastGroup();
 		int groupCount = adapter.getScriptCount();
 
-		assertEquals("Incorrect number of bricks.", 2, solo.getCurrentListViews().get(1).getChildCount());
+		assertEquals("Incorrect number of bricks.", 2, solo.getCurrentViews(ListView.class).get(1).getChildCount());
 		assertEquals("Incorrect number of bricks.", 1, childrenCount);
 
 		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
@@ -110,7 +103,7 @@ public class MoveNStepsBrickTest extends ActivityInstrumentationTestCase2<Script
 		UiTestUtils.insertValueViaFormulaEditor(solo, 0, STEPS_TO_MOVE);
 
 		assertEquals("Wrong text in field.", STEPS_TO_MOVE,
-				(double) ((Formula) Reflection.getPrivateField(moveNStepsBrick, "steps")).interpretFloat(null));
+				((Formula) Reflection.getPrivateField(moveNStepsBrick, "steps")).interpretDouble(null));
 		assertEquals("Value in Brick is not updated.", STEPS_TO_MOVE,
 				Double.valueOf(solo.getEditText(0).getText().toString()));
 

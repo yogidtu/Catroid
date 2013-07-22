@@ -35,21 +35,16 @@ import org.catrobat.catroid.content.bricks.TurnRightBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
 
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.jayway.android.robotium.solo.Solo;
-
-public class TurnRightBrickTest extends ActivityInstrumentationTestCase2<ScriptActivity> {
+public class TurnRightBrickTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
 	private static final double TURN_DEGREES = 25;
 
-	private Solo solo;
 	private Project project;
 	private TurnRightBrick turnRightBrick;
 
@@ -59,16 +54,11 @@ public class TurnRightBrickTest extends ActivityInstrumentationTestCase2<ScriptA
 
 	@Override
 	public void setUp() throws Exception {
+		// normally super.setUp should be called first
+		// but kept the test failing due to view is null
+		// when starting in ScriptActivity
 		createProject();
-		solo = new Solo(getInstrumentation(), getActivity());
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
-		super.tearDown();
-		solo = null;
+		super.setUp();
 	}
 
 	@Smoke
@@ -92,24 +82,11 @@ public class TurnRightBrickTest extends ActivityInstrumentationTestCase2<ScriptA
 
 		Formula actualDegrees = (Formula) Reflection.getPrivateField(turnRightBrick, "degrees");
 
-		assertEquals("Wrong text in field", TURN_DEGREES, (double) actualDegrees.interpretFloat(null));
+		assertEquals("Wrong text in field", TURN_DEGREES, actualDegrees.interpretDouble(null));
 		assertEquals("Text not updated", TURN_DEGREES, Double.parseDouble(solo.getEditText(0).getText().toString()));
 
 		UiTestUtils.insertValueViaFormulaEditor(solo, 0, 1);
-		TextView secondsTextView = (TextView) solo.getView(R.id.brick_turn_right_degree_text_view);
-		assertTrue(
-				"Specifier hasn't changed from plural to singular",
-				secondsTextView.getText().equals(
-						secondsTextView.getResources().getQuantityString(R.plurals.brick_turn_right_degree_plural, 1)));
-
 		UiTestUtils.insertValueViaFormulaEditor(solo, 0, 1.4);
-		secondsTextView = (TextView) solo.getView(R.id.brick_turn_right_degree_text_view);
-		assertTrue(
-				"Specifier hasn't changed from singular to plural",
-				secondsTextView.getText().equals(
-						secondsTextView.getResources().getQuantityString(R.plurals.brick_turn_right_degree_plural,
-								Utils.convertDoubleToPluralInteger(1.4))));
-
 	}
 
 	private void createProject() {
@@ -122,8 +99,8 @@ public class TurnRightBrickTest extends ActivityInstrumentationTestCase2<ScriptA
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(sprite);
-		ProjectManager.getInstance().setCurrentScript(script);
+		ProjectManager.INSTANCE.setProject(project);
+		ProjectManager.INSTANCE.setCurrentSprite(sprite);
+		ProjectManager.INSTANCE.setCurrentScript(script);
 	}
 }

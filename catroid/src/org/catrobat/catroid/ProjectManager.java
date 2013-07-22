@@ -33,34 +33,26 @@ import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.FileChecksumContainer;
 import org.catrobat.catroid.common.MessageContainer;
 import org.catrobat.catroid.common.StandardProjectHandler;
-import org.catrobat.catroid.common.Values;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.utils.ImageEditing;
 import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
 public class ProjectManager {
 
+	public static final ProjectManager INSTANCE = new ProjectManager();
 	private Project project;
 	private Script currentScript;
 	private Sprite currentSprite;
-	public static final ProjectManager INSTANCE = new ProjectManager();
 
-	private FileChecksumContainer fileChecksumContainer;
+	private FileChecksumContainer fileChecksumContainer = new FileChecksumContainer();
 
 	private ProjectManager() {
-		fileChecksumContainer = new FileChecksumContainer();
-	}
-
-	public static ProjectManager getInstance() {
-		return INSTANCE;
 	}
 
 	public boolean loadProject(String projectName, Context context, boolean errorMessage) {
@@ -126,21 +118,16 @@ public class ProjectManager {
 	}
 
 	public boolean canLoadProject(String projectName) {
-		Project project = StorageHandler.getInstance().loadProject(projectName);
-		if (project == null) {
-			return false;
-		} else {
-			return true;
-		}
+		return StorageHandler.getInstance().loadProject(projectName) != null;
 	}
 
-	public boolean saveProject() {
+	public void saveProject() {
 		if (project == null) {
-			return false;
+			return;
 		}
+
 		SaveProjectAsynchronousTask saveTask = new SaveProjectAsynchronousTask();
 		saveTask.execute();
-		return true;
 	}
 
 	public boolean initializeDefaultProject(Context context) {
@@ -157,9 +144,14 @@ public class ProjectManager {
 		}
 	}
 
-	public void initializeNewProject(String projectName, Context context) throws IOException {
+	public void initializeNewProject(String projectName, Context context, boolean empty) throws IOException {
 		fileChecksumContainer = new FileChecksumContainer();
-		project = StandardProjectHandler.createAndSaveStandardProject(projectName, context);
+
+		if (empty) {
+			project = StandardProjectHandler.createAndSaveEmptyProject(projectName, context);
+		} else {
+			project = StandardProjectHandler.createAndSaveStandardProject(projectName, context);
+		}
 
 		currentSprite = null;
 		currentScript = null;
@@ -209,7 +201,7 @@ public class ProjectManager {
 
 		if (directoryRenamed) {
 			project.setName(newProjectName);
-			this.saveProject();
+			StorageHandler.getInstance().saveProject(project);
 		}
 
 		if (!directoryRenamed) {
@@ -286,8 +278,8 @@ public class ProjectManager {
 	}
 
 	public boolean spriteExists(String spriteName) {
-		for (Sprite tempSprite : project.getSpriteList()) {
-			if (tempSprite.getName().equalsIgnoreCase(spriteName)) {
+		for (Sprite sprite : project.getSpriteList()) {
+			if (sprite.getName().equalsIgnoreCase(spriteName)) {
 				return true;
 			}
 		}
@@ -305,30 +297,6 @@ public class ProjectManager {
 		}
 
 		return project.getSpriteList().get(currentSpritePosition).getScriptIndex(currentScript);
-	}
-
-	public boolean setCurrentSpriteWithPosition(int position) {
-		if (position >= project.getSpriteList().size() || position < 0) {
-			return false;
-		}
-
-		currentSprite = project.getSpriteList().get(position);
-		return true;
-	}
-
-	public boolean setCurrentScriptWithPosition(int position) {
-		int currentSpritePosition = this.getCurrentSpritePosition();
-		if (currentSpritePosition == -1) {
-			return false;
-		}
-
-		if (position >= project.getSpriteList().get(currentSpritePosition).getNumberOfScripts() || position < 0) {
-			return false;
-		}
-
-		currentScript = project.getSpriteList().get(this.getCurrentSpritePosition()).getScript(position);
-
-		return true;
 	}
 
 	private String createTemporaryDirectoryName(String projectDirectoryName) {
@@ -394,15 +362,15 @@ public class ProjectManager {
 				out.close();
 
 				//resize
-				int[] dimensions = ImageEditing.getImageDimensions(file.getAbsolutePath());
-				int originalWidth = dimensions[0];
-				int originalHeight = dimensions[1];
-				double ratio = (double) originalHeight / (double) originalWidth;
+				//				int[] dimensions = ImageEditing.getImageDimensions(file.getAbsolutePath());
+				//				int originalWidth = dimensions[0];
+				//				int originalHeight = dimensions[1];
+				//				double ratio = (double) originalHeight / (double) originalWidth;
 
 				// scale the dpad, that its always 1/2 of the screen width
-				Bitmap bitmap = ImageEditing.getScaledBitmapFromPath(file.getAbsolutePath(), Values.SCREEN_WIDTH / 2,
-						(int) (Values.SCREEN_WIDTH / 2 * ratio), false);
-				StorageHandler.saveBitmapToImageFile(file, bitmap);
+				//				Bitmap bitmap = ImageEditing.getScaledBitmapFromPath(file.getAbsolutePath(), Values.SCREEN_WIDTH / 2,
+				//						(int) (Values.SCREEN_WIDTH / 2 * ratio), false);
+				//				StorageHandler.saveBitmapToImageFile(file, bitmap);
 
 			} catch (Exception e) {
 				e.printStackTrace();

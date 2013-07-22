@@ -35,25 +35,22 @@ import org.catrobat.catroid.content.bricks.GoNStepsBackBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.jayway.android.robotium.solo.Solo;
 
 /**
  * 
  * @author Daniel Burtscher
  * 
  */
-public class GoNStepsBackTest extends ActivityInstrumentationTestCase2<ScriptActivity> {
+public class GoNStepsBackTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
 	private static final int STEPS_TO_GO_BACK = 17;
 
-	private Solo solo;
 	private Project project;
 	private GoNStepsBackBrick goNStepsBackBrick;
 
@@ -63,16 +60,11 @@ public class GoNStepsBackTest extends ActivityInstrumentationTestCase2<ScriptAct
 
 	@Override
 	public void setUp() throws Exception {
+		// normally super.setUp should be called first
+		// but kept the test failing due to view is null
+		// when starting in ScriptActivity
 		createProject();
-		solo = new Solo(getInstrumentation(), getActivity());
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
-		super.tearDown();
-		solo = null;
+		super.setUp();
 	}
 
 	@Smoke
@@ -95,7 +87,7 @@ public class GoNStepsBackTest extends ActivityInstrumentationTestCase2<ScriptAct
 		UiTestUtils.insertValueViaFormulaEditor(solo, 0, STEPS_TO_GO_BACK);
 
 		assertEquals("Wrong text in field.", STEPS_TO_GO_BACK,
-				(int) ((Formula) Reflection.getPrivateField(goNStepsBackBrick, "steps")).interpretFloat(null));
+				(int) ((Formula) Reflection.getPrivateField(goNStepsBackBrick, "steps")).interpretDouble(null));
 		assertEquals("Value in Brick is not updated.", (double) STEPS_TO_GO_BACK,
 				Double.valueOf(solo.getEditText(0).getText().toString()));
 
@@ -125,8 +117,8 @@ public class GoNStepsBackTest extends ActivityInstrumentationTestCase2<ScriptAct
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(sprite);
-		ProjectManager.getInstance().setCurrentScript(script);
+		ProjectManager.INSTANCE.setProject(project);
+		ProjectManager.INSTANCE.setCurrentSprite(sprite);
+		ProjectManager.INSTANCE.setCurrentScript(script);
 	}
 }

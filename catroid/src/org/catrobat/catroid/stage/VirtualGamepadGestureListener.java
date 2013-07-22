@@ -71,7 +71,7 @@ public class VirtualGamepadGestureListener implements GestureListener {
 
 				Log.e("DPadThread<run>", "thread started");
 
-				List<Sprite> sprites = ProjectManager.getInstance().getCurrentProject().getSpriteList();
+				List<Sprite> sprites = ProjectManager.INSTANCE.getCurrentProject().getSpriteList();
 
 				for (int sprite = 0; sprite < sprites.size(); sprite++) {
 					if (sprites.get(sprite).getName().equals(Constants.VGP_SPRITE_PAD)) {
@@ -83,7 +83,7 @@ public class VirtualGamepadGestureListener implements GestureListener {
 
 				while (running) {
 
-					Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
+					Sprite sprite = ProjectManager.INSTANCE.getCurrentSprite();
 					if (sprite == null) {
 						Log.e("DPadThread<run>", "sprite is null");
 						running = false;
@@ -173,10 +173,6 @@ public class VirtualGamepadGestureListener implements GestureListener {
 	@Override
 	public boolean touchDown(float x, float y, int pointer, int button) {
 		// TODO Auto-generated method stub
-
-		//Log.e(":::::: touchDown", "x: " + x + " - y: " + y);
-		//Log.e(":::::: touchDown - POINTER", "pointer: " + pointer + " - button: " + button);
-
 		return false;
 	}
 
@@ -188,9 +184,6 @@ public class VirtualGamepadGestureListener implements GestureListener {
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
 		// TODO Auto-generated method stub
-
-		Log.e(":::::: tap", "x: " + x + " - y: " + y + " - count: " + count + " - button: " + button);
-
 		return false;
 	}
 
@@ -202,15 +195,8 @@ public class VirtualGamepadGestureListener implements GestureListener {
 	@Override
 	public boolean longPress(float x, float y) {
 		try {
-			//Log.e(":::::: longPress", "x: " + x + " - y: " + y);
-			//Log.e(":::::: INIT DPAD", "x: " + x + " - y: " + y);
-
-			//dPadStartX = x;
-			//dPadStartY = y;
 			dPadThread = new DPadThread();
 			dPadThread.start();
-
-			//pan(x, y, x, y);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -225,13 +211,10 @@ public class VirtualGamepadGestureListener implements GestureListener {
 	@Override
 	public boolean fling(float velocityX, float velocityY, int button) {
 		try {
-			Log.e(":::::: fling", "x: " + velocityX + " - y: " + velocityY + " - button: " + button);
-
 			dPadStartX = dPadInitValue;
 			dPadStartY = dPadInitValue;
 
 			dPadThread.stopThread();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -256,8 +239,6 @@ public class VirtualGamepadGestureListener implements GestureListener {
 			double distance = Math.sqrt(Math.pow(dPadStartX - x, 2) + Math.pow(dPadStartY - y, 2));
 			if (distance <= dPadMinMotion || distance > dPadMaxMotion) {
 				setDPadDirection(false, false, false, false);
-
-				Log.e(":::::: pan NO MOTION", "x: " + x + " - y: " + y + " - distance: " + distance);
 			} else {
 				boolean tmpUp = false;
 				boolean tmpDown = false;
@@ -305,12 +286,6 @@ public class VirtualGamepadGestureListener implements GestureListener {
 	@Override
 	public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
 		// TODO Auto-generated method stub
-
-		//Log.e(":::::: pinch", "P1x: " + pointer1.x + " - P1y: " + pointer1.y);
-		//Log.e(":::::: pinch", "P2x: " + pointer2.x + " - P2y: " + pointer2.y);
-		//Log.d("pinch", "InitP1x: " + initialPointer1.x + " - InitP1y: " + initialPointer1.y);
-		//Log.d("pinch", "InitP2x: " + initialPointer2.x + " - InitP2y: " + initialPointer2.y);
-
 		return false;
 	}
 

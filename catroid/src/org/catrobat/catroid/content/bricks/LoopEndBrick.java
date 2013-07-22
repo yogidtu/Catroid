@@ -40,6 +40,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
@@ -66,33 +67,19 @@ public class LoopEndBrick extends NestingBrick implements AllowedAfterDeadEndBri
 
 	@Override
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
-		LoopEndBrick copyBrick = new LoopEndBrick();
+		LoopEndBrick copyBrick = (LoopEndBrick) clone();
+		loopBeginBrick.setLoopEndBrick(this);
+
 		copyBrick.sprite = sprite;
-
-		//Sets loopBeginBrick in LoopEndBrick and loopEndBrick in LoopBeginBrick
-		ArrayList<Brick> currentBrickList = script.getBrickList();
-		int loopEnds = 0;
-		for (int i = currentBrickList.size() - 1; i >= 0; i--) {
-			Brick brick = currentBrickList.get(i);
-			if (brick instanceof LoopBeginBrick) {
-				if (loopEnds > 0) {
-					loopEnds--;
-				} else {
-					copyBrick.loopBeginBrick = (LoopBeginBrick) brick;
-					LoopBeginBrick lbb = (LoopBeginBrick) brick;
-					lbb.setLoopEndBrick(copyBrick);
-					break;
-				}
-			} else if (brick instanceof LoopEndBrick) {
-				loopEnds++;
-			}
-		}
-
 		return copyBrick;
 	}
 
 	public LoopBeginBrick getLoopBeginBrick() {
 		return loopBeginBrick;
+	}
+
+	public void setLoopBeginBrick(LoopBeginBrick loopBeginBrick) {
+		this.loopBeginBrick = loopBeginBrick;
 	}
 
 	@Override
@@ -118,13 +105,25 @@ public class LoopEndBrick extends NestingBrick implements AllowedAfterDeadEndBri
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_loop_end_layout);
-		if (layout == null) {
-			layout = (LinearLayout) view.findViewById(R.id.brick_loop_end_no_puzzle_layout);
+
+		if (view != null) {
+
+			LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_loop_end_layout);
+			if (layout == null) {
+				layout = (LinearLayout) view.findViewById(R.id.brick_loop_end_no_puzzle_layout);
+				TextView loopLabel = (TextView) view.findViewById(R.id.brick_loop_end_no_puzzle_label);
+				loopLabel.setTextColor(loopLabel.getTextColors().withAlpha(alphaValue));
+			} else {
+				TextView loopLabel = (TextView) view.findViewById(R.id.brick_loop_end_label);
+				loopLabel.setTextColor(loopLabel.getTextColors().withAlpha(alphaValue));
+			}
+			Drawable background = layout.getBackground();
+			background.setAlpha(alphaValue);
+
+			this.alphaValue = (alphaValue);
+
 		}
-		Drawable background = layout.getBackground();
-		background.setAlpha(alphaValue);
-		this.alphaValue = (alphaValue);
+
 		return view;
 	}
 

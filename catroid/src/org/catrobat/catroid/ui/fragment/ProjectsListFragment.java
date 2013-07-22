@@ -49,6 +49,8 @@ import org.catrobat.catroid.ui.dialogs.SetDescriptionDialog.OnUpdateProjectDescr
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -63,7 +65,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
@@ -209,7 +210,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				try {
-					if (!ProjectManager.getInstance().loadProject((adapter.getItem(position)).projectName,
+					if (!ProjectManager.INSTANCE.loadProject((adapter.getItem(position)).projectName,
 							getActivity(), true)) {
 						return; // error message already in ProjectManager
 								// loadProject
@@ -230,11 +231,12 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 		super.onCreateContextMenu(menu, v, menuInfo);
 
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-		Adapter adapter = getListAdapter();
 
-		projectToEdit = (ProjectData) adapter.getItem(info.position);
+		projectToEdit = adapter.getItem(info.position);
 
-		if (ProjectManager.getInstance().getCurrentProject().getSpriteList().indexOf(projectToEdit) == 0) {
+		adapter.addCheckedProject(info.position);
+
+		if (ProjectManager.INSTANCE.getCurrentProject().getSpriteList().indexOf(projectToEdit) == 0) {
 			return;
 		}
 
@@ -255,7 +257,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 				break;
 
 			case R.id.context_menu_delete:
-				deleteProject();
+				showConfirmDeleteDialog();
 				break;
 
 			case R.id.context_menu_set_description:
@@ -338,8 +340,42 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 		dialogCopyProject.show(getActivity().getSupportFragmentManager(), CopyProjectDialog.DIALOG_FRAGMENT_TAG);
 	}
 
+	private void showConfirmDeleteDialog() {
+		String yes = getActivity().getString(R.string.yes);
+		String no = getActivity().getString(R.string.no);
+		String title = "";
+		if (adapter.getAmountOfCheckedProjects() == 1) {
+			title = getActivity().getString(R.string.dialog_confirm_delete_program_title);
+		} else {
+			title = getActivity().getString(R.string.dialog_confirm_delete_multiple_programs_title);
+		}
+
+		String message = getActivity().getString(R.string.dialog_confirm_delete_program_message);
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(title);
+		builder.setMessage(message);
+		builder.setPositiveButton(yes, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				deleteCheckedProjects();
+				clearCheckedProjectsAndEnableButtons();
+			}
+		});
+		builder.setNegativeButton(no, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				clearCheckedProjectsAndEnableButtons();
+				dialog.cancel();
+			}
+		});
+
+		AlertDialog alertDialog = builder.create();
+		alertDialog.show();
+	}
+
 	private void deleteProject() {
-		ProjectManager projectManager = ProjectManager.getInstance();
+		ProjectManager projectManager = ProjectManager.INSTANCE;
 		Project currentProject = projectManager.getCurrentProject();
 
 		if (currentProject != null && currentProject.getName().equalsIgnoreCase(projectToEdit.projectName)) {
@@ -361,6 +397,28 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 		}
 
 		initAdapter();
+	}
+
+	private void deleteCheckedProjects() {
+		Set<Integer> checkedSprites = adapter.getCheckedProjects();
+		Iterator<Integer> iterator = checkedSprites.iterator();
+		int numDeleted = 0;
+		while (iterator.hasNext()) {
+			int position = iterator.next();
+			projectToEdit = (ProjectData) getListView().getItemAtPosition(position - numDeleted);
+			deleteProject();
+			numDeleted++;
+		}
+	}
+
+	private void clearCheckedProjectsAndEnableButtons() {
+		setSelectMode(ListView.CHOICE_MODE_NONE);
+		adapter.clearCheckedProjects();
+
+		actionMode = null;
+		actionModeActive = false;
+
+		BottomBar.enableButtons(getActivity());
 	}
 
 	public static class ProjectData implements Serializable {
@@ -404,22 +462,11 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
-			Set<Integer> checkedSprites = adapter.getCheckedProjects();
-			Iterator<Integer> iterator = checkedSprites.iterator();
-			int numDeleted = 0;
-			while (iterator.hasNext()) {
-				int position = iterator.next();
-				projectToEdit = (ProjectData) getListView().getItemAtPosition(position - numDeleted);
-				deleteProject();
-				numDeleted++;
+			if (adapter.getAmountOfCheckedProjects() == 0) {
+				clearCheckedProjectsAndEnableButtons();
+			} else {
+				showConfirmDeleteDialog();
 			}
-			setSelectMode(ListView.CHOICE_MODE_NONE);
-			adapter.clearCheckedProjects();
-
-			actionMode = null;
-			actionModeActive = false;
-
-			BottomBar.enableButtons(getActivity());
 		}
 	};
 
@@ -454,13 +501,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 				projectToEdit = (ProjectData) getListView().getItemAtPosition(position);
 				showRenameDialog();
 			}
-			setSelectMode(ListView.CHOICE_MODE_NONE);
-			adapter.clearCheckedProjects();
-
-			actionMode = null;
-			actionModeActive = false;
-
-			BottomBar.enableButtons(getActivity());
+			clearCheckedProjectsAndEnableButtons();
 		}
 	};
 
@@ -495,13 +536,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 				projectToEdit = (ProjectData) getListView().getItemAtPosition(position);
 				showCopyProjectDialog();
 			}
-			setSelectMode(ListView.CHOICE_MODE_NONE);
-			adapter.clearCheckedProjects();
-
-			actionMode = null;
-			actionModeActive = false;
-
-			BottomBar.enableButtons(getActivity());
+			clearCheckedProjectsAndEnableButtons();
 		}
 	};
 

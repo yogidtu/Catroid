@@ -31,22 +31,19 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.jayway.android.robotium.solo.Solo;
+public class BrickValueParameterTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
-public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
-
-	private Solo solo;
 	private static final String KEY_SETTINGS_MINDSTORM_BRICKS = "setting_mindstorm_bricks";
 
 	public BrickValueParameterTest() {
@@ -57,7 +54,6 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.clearAllUtilTestProjects();
 
 		// enable mindstorm bricks, if disabled at start
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -65,22 +61,17 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 			sharedPreferences.edit().putBoolean(KEY_SETTINGS_MINDSTORM_BRICKS, true).commit();
 		}
 		createProject();
-		solo = new Solo(getInstrumentation(), getActivity());
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	@Override
 	public void tearDown() throws Exception {
-		UiTestUtils.goBackToHome(getInstrumentation());
 		// disable mindstorm bricks, if enabled
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		if (sharedPreferences.getBoolean(KEY_SETTINGS_MINDSTORM_BRICKS, false)) {
 			sharedPreferences.edit().putBoolean(KEY_SETTINGS_MINDSTORM_BRICKS, false).commit();
 		}
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
 		super.tearDown();
-		solo = null;
 	}
 
 	@Smoke
@@ -90,7 +81,8 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		solo.clickOnText(categoryMotionText);
 		solo.searchText(categoryMotionText);
-		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
+		ListView fragmentListView = solo.getCurrentViews(ListView.class).get(
+				solo.getCurrentViews(ListView.class).size() - 1);
 
 		TextView placeAtXTextView = (TextView) solo.getView(R.id.brick_place_at_prototype_text_view_x);
 		int xPositionPrototypeValue = Integer.parseInt(placeAtXTextView.getText().toString());
@@ -203,7 +195,8 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 
 		// Just to get focus
 		solo.searchText(categoryLooksText);
-		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
+		ListView fragmentListView = solo.getCurrentViews(ListView.class).get(
+				solo.getCurrentViews(ListView.class).size() - 1);
 
 		if (!solo.searchText(solo.getString(R.string.brick_set_look))) {
 			solo.scrollDownList(fragmentListView);
@@ -324,7 +317,8 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 
 		//Just to get focus
 		solo.searchText(categoryControlText);
-		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
+		ListView fragmentListView = solo.getCurrentViews(ListView.class).get(
+				solo.getCurrentViews(ListView.class).size() - 1);
 
 		TextView waitSecondsTextView = (TextView) solo.getView(R.id.brick_wait_prototype_text_view);
 		float waitPrototypeValue = Float.parseFloat(waitSecondsTextView.getText().toString());
@@ -361,6 +355,13 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 		String defaultNoteValue = solo.getString(R.string.brick_note_default_value);
 		assertEquals("Value in Note Speak is not correct", defaultNoteValue, notePrototypeValue);
 
+		if (!solo.searchText(solo.getString(R.string.brick_if_begin))) {
+			solo.scrollDownList(fragmentListView);
+		}
+		TextView ifLogicBeginView = (TextView) solo.getView(R.id.brick_if_begin_prototype_text_view);
+		int ifLogicBeginPrototypeValue = Integer.parseInt(ifLogicBeginView.getText().toString());
+		assertEquals("Value in If Begin is not correct", BrickValues.IF_CONDITION, ifLogicBeginPrototypeValue);
+
 		if (!solo.searchText(solo.getString(R.string.brick_repeat))) {
 			solo.scrollDownList(fragmentListView);
 		}
@@ -385,7 +386,8 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 		String categoryLegoNXTText = solo.getString(R.string.category_lego_nxt);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		ListView fragmentListView = solo.getCurrentListViews().get(solo.getCurrentListViews().size() - 1);
+		ListView fragmentListView = solo.getCurrentViews(ListView.class).get(
+				solo.getCurrentViews(ListView.class).size() - 1);
 		solo.scrollListToBottom(fragmentListView);
 		solo.clickOnText(categoryLegoNXTText);
 
@@ -466,11 +468,11 @@ public class BrickValueParameterTest extends ActivityInstrumentationTestCase2<Ma
 		sprite.addScript(script1);
 		project.addSprite(sprite);
 		project.addSprite(sprite1);
-		project.getUserVariables().addProjectUserVariable("BrickValueParameterTestUserVariable", 0.0);
+		project.getUserVariables().addProjectUserVariable("BrickValueParameterTestUserVariable");
 
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(sprite);
-		ProjectManager.getInstance().setCurrentScript(script);
+		ProjectManager.INSTANCE.setProject(project);
+		ProjectManager.INSTANCE.setCurrentSprite(sprite);
+		ProjectManager.INSTANCE.setCurrentScript(script);
 	}
 
 }

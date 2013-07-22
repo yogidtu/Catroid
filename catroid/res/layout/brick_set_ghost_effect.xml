@@ -43,6 +43,7 @@
         android:orientation="vertical" >
 
         <TextView
+            android:id="@+id/brick_set_ghost_effect_label"
             style="@style/BrickText.SingleLine"
             android:text="@string/brick_set_ghost_effect" >
         </TextView>
@@ -52,6 +53,7 @@
             android:layout_height="wrap_content" >
 
             <TextView
+                android:id="@+id/brick_set_ghost_effect_to"
                 style="@style/BrickText.SingleLine"
                 android:text="@string/to_label" >
             </TextView>
@@ -64,10 +66,12 @@
             <EditText
                 android:id="@+id/brick_set_ghost_effect_to_edit_text"
                 style="@style/BrickEditText"
+                android:maxEms="10"
                 android:inputType="number|numberDecimal" >
             </EditText>
 
             <TextView
+                android:id="@+id/brick_set_ghost_effect_percent"
                 style="@style/BrickText.SingleLine"
                 android:text="@string/percent_symbol" >
             </TextView>

@@ -60,7 +60,7 @@ public class WhenVirtualPadBrickTest extends ActivityInstrumentationTestCase2<Sc
 	@Override
 	public void tearDown() throws Exception {
 		solo.finishOpenedActivities();
-		ProjectManager.getInstance().deleteCurrentProject();
+		ProjectManager.INSTANCE.deleteCurrentProject();
 		UiTestUtils.clearAllUtilTestProjects();
 		super.tearDown();
 		solo = null;
@@ -98,7 +98,7 @@ public class WhenVirtualPadBrickTest extends ActivityInstrumentationTestCase2<Sc
 
 		solo.drag(20, 20, addedYPosition, yPosition.get(yPosition.size() - 1) + 20, 100);
 		solo.sleep(200);
-		projectBrickList = ProjectManager.getInstance().getCurrentSprite().getScript(0).getBrickList();
+		projectBrickList = ProjectManager.INSTANCE.getCurrentSprite().getScript(0).getBrickList();
 		assertEquals("Incorrect number of bricks.", 3, projectBrickList.size());
 
 		solo.sleep(200);
@@ -108,11 +108,11 @@ public class WhenVirtualPadBrickTest extends ActivityInstrumentationTestCase2<Sc
 
 		solo.drag(20, 20, addedYPosition, yPosition.get(3) + 20, 100);
 
-		projectBrickList = ProjectManager.getInstance().getCurrentSprite().getScript(0).getBrickList();
+		projectBrickList = ProjectManager.INSTANCE.getCurrentSprite().getScript(0).getBrickList();
 		assertEquals("Incorrect number of bricks.", 3, projectBrickList.size());
 		solo.searchText(solo.getString(R.string.brick_when_virtual_pad_pressed));
 		assertTrue("Wrong Script instance.",
-				(ProjectManager.getInstance().getCurrentSprite().getScript(0) instanceof WhenVirtualPadScript));
+				(ProjectManager.INSTANCE.getCurrentSprite().getScript(0) instanceof WhenVirtualPadScript));
 
 	}
 
@@ -128,8 +128,8 @@ public class WhenVirtualPadBrickTest extends ActivityInstrumentationTestCase2<Sc
 
 		project.addSprite(sprite);
 
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(sprite);
-		ProjectManager.getInstance().setCurrentScript(script);
+		ProjectManager.INSTANCE.setProject(project);
+		ProjectManager.INSTANCE.setCurrentSprite(sprite);
+		ProjectManager.INSTANCE.setCurrentScript(script);
 	}
 }

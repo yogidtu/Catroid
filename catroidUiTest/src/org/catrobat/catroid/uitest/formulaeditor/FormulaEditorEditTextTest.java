@@ -42,6 +42,7 @@ import org.catrobat.catroid.formulaeditor.InternToken;
 import org.catrobat.catroid.formulaeditor.InternTokenType;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.SimulatedSensorManager;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
@@ -54,12 +55,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.jayway.android.robotium.solo.Solo;
-
-public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentationTestCase2<MainMenuActivity> {
+public class FormulaEditorEditTextTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
 	private Project project;
-	private Solo solo;
 	private Sprite firstSprite;
 	private Brick changeBrick;
 	Script startScript1;
@@ -77,17 +75,9 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 
 	@Override
 	public void setUp() throws Exception {
+		super.setUp();
 		createProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
-		this.solo = new Solo(getInstrumentation(), getActivity());
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
-		super.tearDown();
-		solo = null;
 	}
 
 	private void createProject(String projectName) throws InterruptedException {
@@ -102,8 +92,8 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 		startScript1.addBrick(waitBrick);
 		project.addSprite(firstSprite);
 
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(firstSprite);
+		ProjectManager.INSTANCE.setProject(project);
+		ProjectManager.INSTANCE.setCurrentSprite(firstSprite);
 
 	}
 
@@ -591,16 +581,16 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 		solo.clickOnText(getActivity().getString(R.string.formula_editor_function_log));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_math));
+		solo.waitForText(getActivity().getString(R.string.formula_editor_function_pi));
+		solo.clickOnText(getActivity().getString(R.string.formula_editor_function_pi));
+
+		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_math));
 		solo.waitForText(getActivity().getString(R.string.formula_editor_function_sqrt));
 		solo.clickOnText(getActivity().getString(R.string.formula_editor_function_sqrt));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_math));
 		solo.waitForText(getActivity().getString(R.string.formula_editor_function_round));
 		solo.clickOnText(getActivity().getString(R.string.formula_editor_function_round));
-
-		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_math));
-		solo.waitForText(getActivity().getString(R.string.formula_editor_function_pi));
-		solo.clickOnText(getActivity().getString(R.string.formula_editor_function_pi));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_sensors));
 		solo.waitForText(getActivity().getString(R.string.formula_editor_sensor_x_acceleration));
@@ -627,32 +617,32 @@ public class FormulaEditorEditTextTest extends android.test.ActivityInstrumentat
 		solo.clickOnText(getActivity().getString(R.string.formula_editor_sensor_x_inclination));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_object));
-		solo.waitForText(getActivity().getString(R.string.formula_editor_look_x));
-		solo.clickOnText(getActivity().getString(R.string.formula_editor_look_x));
+		solo.waitForText(getActivity().getString(R.string.formula_editor_object_x));
+		solo.clickOnText(getActivity().getString(R.string.formula_editor_object_x));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_object));
-		solo.waitForText(getActivity().getString(R.string.formula_editor_look_y));
-		solo.clickOnText(getActivity().getString(R.string.formula_editor_look_y));
+		solo.waitForText(getActivity().getString(R.string.formula_editor_object_y));
+		solo.clickOnText(getActivity().getString(R.string.formula_editor_object_y));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_object));
-		solo.waitForText(getActivity().getString(R.string.formula_editor_look_ghosteffect));
-		solo.clickOnText(getActivity().getString(R.string.formula_editor_look_ghosteffect));
+		solo.waitForText(getActivity().getString(R.string.formula_editor_object_ghosteffect));
+		solo.clickOnText(getActivity().getString(R.string.formula_editor_object_ghosteffect));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_object));
-		solo.waitForText(getActivity().getString(R.string.formula_editor_look_brightness));
-		solo.clickOnText(getActivity().getString(R.string.formula_editor_look_brightness));
+		solo.waitForText(getActivity().getString(R.string.formula_editor_object_brightness));
+		solo.clickOnText(getActivity().getString(R.string.formula_editor_object_brightness));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_object));
-		solo.waitForText(getActivity().getString(R.string.formula_editor_look_size));
-		solo.clickOnText(getActivity().getString(R.string.formula_editor_look_size));
+		solo.waitForText(getActivity().getString(R.string.formula_editor_object_size));
+		solo.clickOnText(getActivity().getString(R.string.formula_editor_object_size));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_object));
-		solo.waitForText(getActivity().getString(R.string.formula_editor_look_rotation));
-		solo.clickOnText(getActivity().getString(R.string.formula_editor_look_rotation));
+		solo.waitForText(getActivity().getString(R.string.formula_editor_object_rotation));
+		solo.clickOnText(getActivity().getString(R.string.formula_editor_object_rotation));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_object));
-		solo.waitForText(getActivity().getString(R.string.formula_editor_look_layer));
-		solo.clickOnText(getActivity().getString(R.string.formula_editor_look_layer));
+		solo.waitForText(getActivity().getString(R.string.formula_editor_object_layer));
+		solo.clickOnText(getActivity().getString(R.string.formula_editor_object_layer));
 
 		String editTextString = formulaEditorEditText.getText().toString();
 		boolean hyphenOrCostumephraseOrSpritephraseFound = editTextString.contains(hyphen)

@@ -31,11 +31,13 @@ import org.catrobat.catroid.content.actions.ExtendedActions;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
@@ -85,10 +87,16 @@ public class HideBrick extends BrickBaseType {
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_hide_layout);
-		Drawable background = layout.getBackground();
-		background.setAlpha(alphaValue);
-		this.alphaValue = (alphaValue);
+		if (view != null) {
+			Log.d("TAG", "VIEW != NULL");
+			LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_hide_layout);
+			Drawable background = layout.getBackground();
+			background.setAlpha(alphaValue);
+			this.alphaValue = (alphaValue);
+
+			TextView hideLabel = (TextView) view.findViewById(R.id.brick_hide_label);
+			hideLabel.setTextColor(hideLabel.getTextColors().withAlpha(alphaValue));
+		}
 
 		return view;
 	}

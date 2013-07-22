@@ -35,8 +35,7 @@ public class SetVolumeToAction extends TemporalAction {
 
 	@Override
 	protected void update(float percent) {
-		float volumeValue = volume.interpretFloat(0f, 100f, sprite);
-		SoundManager.getInstance().setVolume(volumeValue);
+		SoundManager.getInstance().setVolume(volume.interpretFloat(sprite));
 	}
 
 	public void setSprite(Sprite sprite) {

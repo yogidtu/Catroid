@@ -34,6 +34,17 @@ public class ChangeVariableAction extends Action {
 	private Formula changeVariable;
 	private UserVariable userVariable;
 
+	@Override
+	public boolean act(float delta) {
+		if (userVariable == null) {
+			return true;
+		}
+		double originalValue = userVariable.getValue();
+		double value = changeVariable.interpretDouble(sprite);
+		userVariable.setValue(originalValue + value);
+		return true;
+	}
+
 	public void setUserVariable(UserVariable userVariable) {
 		this.userVariable = userVariable;
 	}
@@ -45,16 +56,4 @@ public class ChangeVariableAction extends Action {
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
-
-	@Override
-	public boolean act(float delta) {
-		if (userVariable == null) {
-			return true;
-		}
-		double originalValue = userVariable.getValue();
-		double value = changeVariable.interpretFloat(sprite);
-		userVariable.setValue(originalValue + value);
-		return true;
-	}
-
 }

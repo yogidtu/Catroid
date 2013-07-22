@@ -50,10 +50,10 @@ public class Sprite implements Serializable, Cloneable {
 
 	private Object readResolve() {
 		//filling FileChecksumContainer:
-		if (soundList != null && lookList != null && ProjectManager.getInstance().getCurrentProject() != null) {
-			FileChecksumContainer container = ProjectManager.getInstance().getFileChecksumContainer();
+		if (soundList != null && lookList != null && ProjectManager.INSTANCE.getCurrentProject() != null) {
+			FileChecksumContainer container = ProjectManager.INSTANCE.getFileChecksumContainer();
 			if (container == null) {
-				ProjectManager.getInstance().setFileChecksumContainer(new FileChecksumContainer());
+				ProjectManager.INSTANCE.setFileChecksumContainer(new FileChecksumContainer());
 			}
 			for (SoundInfo soundInfo : soundList) {
 				container.addChecksum(soundInfo.getChecksum(), soundInfo.getAbsolutePath());
@@ -74,6 +74,16 @@ public class Sprite implements Serializable, Cloneable {
 		}
 		if (lookList == null) {
 			lookList = new ArrayList<LookData>();
+		}
+		if (scriptList == null) {
+			scriptList = new ArrayList<Script>();
+		}
+	}
+
+	public void resetSprite() {
+		look = new Look(this);
+		for (LookData lookData : lookList) {
+			lookData.resetLookData();
 		}
 	}
 
@@ -110,7 +120,7 @@ public class Sprite implements Serializable, Cloneable {
 
 		ArrayList<LookData> cloneLookList = new ArrayList<LookData>();
 		for (LookData element : this.lookList) {
-			cloneLookList.add(element.copyLookDataForSprite(cloneSprite));
+			cloneLookList.add(element.clone());
 		}
 		cloneSprite.lookList = cloneLookList;
 
@@ -242,7 +252,10 @@ public class Sprite implements Serializable, Cloneable {
 	}
 
 	public int getNumberOfScripts() {
-		return scriptList.size();
+		if (scriptList != null) {
+			return scriptList.size();
+		}
+		return 0;
 	}
 
 	public int getNumberOfBricks() {

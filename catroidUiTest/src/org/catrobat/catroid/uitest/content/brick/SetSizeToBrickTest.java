@@ -28,7 +28,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.Values;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
@@ -39,27 +39,24 @@ import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.UtilFile;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.jayway.android.robotium.solo.Solo;
-
-public class SetSizeToBrickTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
+public class SetSizeToBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private static final int SCREEN_WIDTH = 480;
 	private static final int SCREEN_HEIGHT = 800;
 
 	private static final String TAG = SetSizeToBrickTest.class.getSimpleName();
 
 	private String projectName = "SetSizeToBrickTestProject";
-	private Solo solo;
 	private Project project;
 	private SetSizeToBrick setSizeToBrick;
 	private SetLookBrick setLookBrick;
@@ -73,22 +70,17 @@ public class SetSizeToBrickTest extends ActivityInstrumentationTestCase2<MainMen
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject();
-		solo = new Solo(getInstrumentation(), getActivity());
 		UiTestUtils.prepareStageForTest();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	@Override
 	public void tearDown() throws Exception {
-		UiTestUtils.goBackToHome(getInstrumentation());
-		solo.finishOpenedActivities();
 		File directory = new File(Constants.DEFAULT_ROOT + "/" + projectName);
 		if (directory.exists()) {
 			UtilFile.deleteDirectory(directory);
 		}
-		UiTestUtils.clearAllUtilTestProjects();
 		super.tearDown();
-		solo = null;
 	}
 
 	@Smoke
@@ -100,13 +92,15 @@ public class SetSizeToBrickTest extends ActivityInstrumentationTestCase2<MainMen
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-		Values.SCREEN_WIDTH = displayMetrics.widthPixels;
-		Values.SCREEN_HEIGHT = displayMetrics.heightPixels;
+		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
+		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 
 		solo.assertCurrentActivity("Not in stage", StageActivity.class);
+
+		solo.sleep(400);
 
 		solo.goBack();
 		solo.clickOnText(solo.getString(R.string.stage_dialog_screenshot));
@@ -118,7 +112,7 @@ public class SetSizeToBrickTest extends ActivityInstrumentationTestCase2<MainMen
 
 		// -------------------------------------------------------------------------------------------------------------
 		Bitmap screenshot = BitmapFactory.decodeFile(Constants.DEFAULT_ROOT + "/" + projectName + "/"
-				+ StageListener.SCREENSHOT_FILE_NAME);
+				+ StageListener.SCREENSHOT_MANUAL_FILE_NAME);
 
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
@@ -126,15 +120,15 @@ public class SetSizeToBrickTest extends ActivityInstrumentationTestCase2<MainMen
 		int blackQuadHeight = blackQuad.getHeight();
 		int blackQuadWidth = blackQuad.getWidth();
 		Log.v(TAG, "black_quad.png x: " + blackQuadHeight + " y: " + blackQuadWidth);
-		Log.v(TAG, "Screenshot height: " + Values.SCREEN_WIDTH + " width: " + Values.SCREEN_WIDTH);
+		Log.v(TAG, "Screenshot height: " + ScreenValues.SCREEN_WIDTH + " width: " + ScreenValues.SCREEN_WIDTH);
 
-		Log.v(TAG, (Values.SCREEN_WIDTH / 2) + (blackQuadHeight / 2) + 5 + "");
+		Log.v(TAG, (ScreenValues.SCREEN_WIDTH / 2) + (blackQuadHeight / 2) + 5 + "");
 
 		//Two times width, because of the quadratically screenshots
-		int colorInsideSizedQuad = screenshot.getPixel((Values.SCREEN_WIDTH / 2) + (blackQuadWidth / 2) + 5,
-				(Values.SCREEN_WIDTH / 2) + (blackQuadHeight / 2) + 5);
-		int colorOutsideSizedQuad = screenshot.getPixel(Values.SCREEN_WIDTH / 2 + blackQuadWidth + 10,
-				Values.SCREEN_WIDTH / 2 + blackQuadHeight + 10);
+		int colorInsideSizedQuad = screenshot.getPixel((ScreenValues.SCREEN_WIDTH / 2) + (blackQuadWidth / 2) + 5,
+				(ScreenValues.SCREEN_WIDTH / 2) + (blackQuadHeight / 2) + 5);
+		int colorOutsideSizedQuad = screenshot.getPixel(ScreenValues.SCREEN_WIDTH / 2 + blackQuadWidth + 10,
+				ScreenValues.SCREEN_WIDTH / 2 + blackQuadHeight + 10);
 
 		assertEquals("Image was not scaled up even though SetSizeTo was exectuted before!", Color.RED,
 				colorInsideSizedQuad);
@@ -142,8 +136,8 @@ public class SetSizeToBrickTest extends ActivityInstrumentationTestCase2<MainMen
 	}
 
 	private void createProject() {
-		Values.SCREEN_HEIGHT = SCREEN_HEIGHT;
-		Values.SCREEN_WIDTH = SCREEN_WIDTH;
+		ScreenValues.SCREEN_HEIGHT = SCREEN_HEIGHT;
+		ScreenValues.SCREEN_WIDTH = SCREEN_WIDTH;
 
 		project = new Project(getActivity(), projectName);
 		Sprite sprite = new Sprite("cat");
@@ -157,9 +151,9 @@ public class SetSizeToBrickTest extends ActivityInstrumentationTestCase2<MainMen
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(sprite);
-		ProjectManager.getInstance().setCurrentScript(script);
+		ProjectManager.INSTANCE.setProject(project);
+		ProjectManager.INSTANCE.setCurrentSprite(sprite);
+		ProjectManager.INSTANCE.setCurrentScript(script);
 		StorageHandler.getInstance().saveProject(project);
 
 		File image = UiTestUtils.saveFileToProject(projectName, "black_quad.png", imageRawId, getInstrumentation()
@@ -170,7 +164,7 @@ public class SetSizeToBrickTest extends ActivityInstrumentationTestCase2<MainMen
 		lookData.setLookName("image");
 		setLookBrick.setLook(lookData);
 		sprite.getLookDataList().add(lookData);
-		ProjectManager.getInstance().getFileChecksumContainer()
+		ProjectManager.INSTANCE.getFileChecksumContainer()
 				.addChecksum(lookData.getChecksum(), image.getAbsolutePath());
 		StorageHandler.getInstance().saveProject(project);
 	}

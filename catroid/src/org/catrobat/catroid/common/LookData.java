@@ -22,12 +22,9 @@
  */
 package org.catrobat.catroid.common;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.ImageEditing;
 import org.catrobat.catroid.utils.Utils;
 
@@ -63,19 +60,10 @@ public class LookData implements Serializable, Cloneable {
 		return cloneLookData;
 	}
 
-	public LookData copyLookDataForSprite(Sprite sprite) {
-		LookData cloneLookData = new LookData();
-
-		cloneLookData.name = this.name;
-
-		try {
-			cloneLookData.fileName = StorageHandler.getInstance()
-					.duplicateImage(ProjectManager.INSTANCE.getCurrentProject().getName(), fileName).getName();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return cloneLookData;
+	public void resetLookData() {
+		pixmap = null;
+		originalPixmap = null;
+		region = null;
 	}
 
 	public TextureRegion getTextureRegion() {
@@ -143,7 +131,7 @@ public class LookData implements Serializable, Cloneable {
 	}
 
 	private String getPathToImageDirectory() {
-		return Utils.buildPath(Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
+		return Utils.buildPath(Utils.buildProjectPath(ProjectManager.INSTANCE.getCurrentProject().getName()),
 				Constants.IMAGE_DIRECTORY);
 	}
 

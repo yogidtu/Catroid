@@ -36,6 +36,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Semaphore;
 
 import org.catrobat.catroid.BuildConfig;
@@ -43,9 +44,9 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.common.StandardProjectHandler;
-import org.catrobat.catroid.common.Values;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
 
@@ -115,8 +116,8 @@ public class Utils {
 	public static void updateScreenWidthAndHeight(Context context) {
 		WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		Display display = windowManager.getDefaultDisplay();
-		Values.SCREEN_WIDTH = display.getWidth();
-		Values.SCREEN_HEIGHT = display.getHeight();
+		ScreenValues.SCREEN_WIDTH = display.getWidth();
+		ScreenValues.SCREEN_HEIGHT = display.getHeight();
 	}
 
 	public static boolean isNetworkAvailable(Context context) {
@@ -135,7 +136,7 @@ public class Utils {
 	 * @return
 	 *         the path that was constructed.
 	 */
-	static public String buildPath(String... pathElements) {
+	public static String buildPath(String... pathElements) {
 		StringBuilder result = new StringBuilder("/");
 
 		for (String pathElement : pathElements) {
@@ -151,7 +152,7 @@ public class Utils {
 		return returnValue;
 	}
 
-	static public String buildProjectPath(String projectName) {
+	public static String buildProjectPath(String projectName) {
 		return buildPath(Constants.DEFAULT_ROOT, deleteSpecialCharactersInString(projectName));
 	}
 
@@ -197,7 +198,7 @@ public class Utils {
 			}
 		}
 
-		return toHex(messageDigest.digest());
+		return toHex(messageDigest.digest()).toLowerCase(Locale.US);
 	}
 
 	public static String md5Checksum(String string) {
@@ -205,7 +206,7 @@ public class Utils {
 
 		messageDigest.update(string.getBytes());
 
-		return toHex(messageDigest.digest());
+		return toHex(messageDigest.digest()).toLowerCase(Locale.US);
 	}
 
 	public static String getUniqueName() {
@@ -276,17 +277,17 @@ public class Utils {
 	}
 
 	public static void loadProjectIfNeeded(Context context) {
-		if (ProjectManager.getInstance().getCurrentProject() == null) {
+		if (ProjectManager.INSTANCE.getCurrentProject() == null) {
 			SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 			String projectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
 
 			if (projectName != null) {
-				ProjectManager.getInstance().loadProject(projectName, context, false);
+				ProjectManager.INSTANCE.loadProject(projectName, context, false);
 			} else if (ProjectManager.INSTANCE.canLoadProject(context.getString(R.string.default_project_name))) {
-				ProjectManager.getInstance().loadProject(context.getString(R.string.default_project_name), context,
+				ProjectManager.INSTANCE.loadProject(context.getString(R.string.default_project_name), context,
 						false);
 			} else {
-				ProjectManager.getInstance().initializeDefaultProject(context);
+				ProjectManager.INSTANCE.initializeDefaultProject(context);
 			}
 		}
 	}
@@ -301,7 +302,7 @@ public class Utils {
 
 	private static String searchForNonExistingLookName(String name, int nextNumber) {
 		String newName;
-		ArrayList<LookData> lookDataList = ProjectManager.getInstance().getCurrentSprite().getLookDataList();
+		ArrayList<LookData> lookDataList = ProjectManager.INSTANCE.getCurrentSprite().getLookDataList();
 		if (nextNumber == 0) {
 			newName = name;
 		} else {
@@ -324,7 +325,7 @@ public class Utils {
 
 		List<String> projectNameList = UtilFile.getProjectNames(new File(Constants.DEFAULT_ROOT));
 		for (String projectName : projectNameList) {
-			if (ProjectManager.getInstance().canLoadProject(projectName)) {
+			if (ProjectManager.INSTANCE.canLoadProject(projectName)) {
 				loadableProject = StorageHandler.getInstance().loadProject(projectName);
 				break;
 			}
@@ -335,7 +336,7 @@ public class Utils {
 	private static String searchForNonExistingSoundTitle(String title, int nextNumber) {
 		// search for sounds with the same title
 		String newTitle;
-		ArrayList<SoundInfo> soundInfoList = ProjectManager.getInstance().getCurrentSprite().getSoundList();
+		ArrayList<SoundInfo> soundInfoList = ProjectManager.INSTANCE.getCurrentSprite().getSoundList();
 		if (nextNumber == 0) {
 			newTitle = title;
 		} else {
@@ -387,8 +388,8 @@ public class Utils {
 						context.getString(R.string.default_project_name), context);
 			}
 
-			ProjectManager.getInstance().setProject(projectToCheck);
-			ProjectManager.getInstance().saveProject();
+			ProjectManager.INSTANCE.setProject(projectToCheck);
+			ProjectManager.INSTANCE.saveProject();
 
 			String standardProjectXMLString = StorageHandler.getInstance().getXMLStringOfAProject(standardProject);
 			int start = standardProjectXMLString.indexOf("<objectList>");

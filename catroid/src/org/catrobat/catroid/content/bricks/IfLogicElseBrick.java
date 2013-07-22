@@ -39,6 +39,7 @@ import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
@@ -49,15 +50,21 @@ public class IfLogicElseBrick extends NestingBrick implements AllowedAfterDeadEn
 	private IfLogicBeginBrick ifBeginBrick;
 	private IfLogicEndBrick ifEndBrick;
 
+	private transient IfLogicElseBrick copy;
+
 	public IfLogicElseBrick(Sprite sprite, IfLogicBeginBrick ifBeginBrick) {
 		this.sprite = sprite;
 		this.ifBeginBrick = ifBeginBrick;
-		ifBeginBrick.setElseBrick(this);
+		ifBeginBrick.setIfElseBrick(this);
 	}
 
 	@Override
 	public int getRequiredResources() {
 		return NO_RESOURCES;
+	}
+
+	public IfLogicElseBrick getCopy() {
+		return copy;
 	}
 
 	@Override
@@ -89,16 +96,26 @@ public class IfLogicElseBrick extends NestingBrick implements AllowedAfterDeadEn
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_if_else_layout);
-		Drawable background = layout.getBackground();
-		background.setAlpha(alphaValue);
-		this.alphaValue = (alphaValue);
+
+		if (view != null) {
+
+			LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_if_else_layout);
+			Drawable background = layout.getBackground();
+			background.setAlpha(alphaValue);
+
+			TextView ifElseLabel = (TextView) view.findViewById(R.id.brick_if_else_label);
+			ifElseLabel.setTextColor(ifElseLabel.getTextColors().withAlpha(alphaValue));
+
+			this.alphaValue = (alphaValue);
+
+		}
+
 		return view;
 	}
 
 	@Override
 	public Brick clone() {
-		return new IfLogicElseBrick(getSprite(), ifBeginBrick);
+		return new IfLogicElseBrick(sprite, ifBeginBrick);
 	}
 
 	@Override
@@ -108,6 +125,18 @@ public class IfLogicElseBrick extends NestingBrick implements AllowedAfterDeadEn
 
 	public void setIfEndBrick(IfLogicEndBrick ifEndBrick) {
 		this.ifEndBrick = ifEndBrick;
+	}
+
+	public void setIfBeginBrick(IfLogicBeginBrick ifBeginBrick) {
+		this.ifBeginBrick = ifBeginBrick;
+	}
+
+	public IfLogicBeginBrick getIfBeginBrick() {
+		return ifBeginBrick;
+	}
+
+	public IfLogicEndBrick getIfEndBrick() {
+		return ifEndBrick;
 	}
 
 	@Override
@@ -169,9 +198,13 @@ public class IfLogicElseBrick extends NestingBrick implements AllowedAfterDeadEn
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
 		//ifEndBrick and ifBeginBrick will be set in the copyBrickForSprite method of IfLogicEndBrick
 		IfLogicElseBrick copyBrick = (IfLogicElseBrick) clone(); //Using the clone method because of its flexibility if new fields are added
+		ifBeginBrick.setIfElseBrick(this);
+		ifEndBrick.setIfElseBrick(this);
+
 		copyBrick.ifBeginBrick = null;
 		copyBrick.ifEndBrick = null;
 		copyBrick.sprite = sprite;
+		this.copy = copyBrick;
 		return copyBrick;
 	}
 
