@@ -103,7 +103,7 @@ public class SoundInfo implements Serializable, Comparable<SoundInfo>, Cloneable
 	}
 
 	private String getPathToSoundDirectory() {
-		return Utils.buildPath(Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
+		return (Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
 				Constants.SOUND_DIRECTORY);
 	}
 

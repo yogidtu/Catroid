@@ -136,7 +136,7 @@ public class Utils {
 	 * @return
 	 *         the path that was constructed.
 	 */
-	public static String buildPath(String... pathElements) {
+	public static File buildPath(String... pathElements) {
 		StringBuilder result = new StringBuilder("/");
 
 		for (String pathElement : pathElements) {
@@ -149,10 +149,10 @@ public class Utils {
 			returnValue = returnValue.substring(0, returnValue.length() - 1);
 		}
 
-		return returnValue;
+		return new File(returnValue);
 	}
 
-	public static String buildProjectPath(String projectName) {
+	public static File buildProjectPath(String projectName) {
 		return buildPath(Constants.DEFAULT_ROOT, deleteSpecialCharactersInString(projectName));
 	}
 

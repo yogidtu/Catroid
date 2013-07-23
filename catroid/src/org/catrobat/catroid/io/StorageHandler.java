@@ -226,7 +226,7 @@ public class StorageHandler {
 		saveLoadLock.lock();
 		createCatroidRoot();
 		try {
-			File projectDirectory = new File(Utils.buildProjectPath(projectName));
+			File projectDirectory = (Utils.buildProjectPath(projectName));
 
 			if (projectDirectory.exists() && projectDirectory.isDirectory() && projectDirectory.canWrite()) {
 				InputStream projectFileStream = new FileInputStream(Utils.buildPath(projectDirectory.getAbsolutePath(),
@@ -257,24 +257,24 @@ public class StorageHandler {
 		try {
 			String projectFile = xstream.toXML(project);
 
-			String projectDirectoryName = Utils.buildProjectPath(project.getName());
+			String projectDirectoryName = project.getName();
 			File projectDirectory = new File(projectDirectoryName);
 
 			if (!(projectDirectory.exists() && projectDirectory.isDirectory() && projectDirectory.canWrite())) {
 				projectDirectory.mkdir();
 
-				File imageDirectory = new File(Utils.buildPath(projectDirectoryName, Constants.IMAGE_DIRECTORY));
+				File imageDirectory = (Utils.buildPath(projectDirectoryName, Constants.IMAGE_DIRECTORY));
 				imageDirectory.mkdir();
 
-				File noMediaFile = new File(Utils.buildPath(projectDirectoryName, Constants.IMAGE_DIRECTORY,
+				File noMediaFile = (Utils.buildPath(projectDirectoryName, Constants.IMAGE_DIRECTORY,
 						Constants.NO_MEDIA_FILE));
 				noMediaFile.createNewFile();
 
 				File soundDirectory = new File(projectDirectoryName + "/" + Constants.SOUND_DIRECTORY);
 				soundDirectory.mkdir();
 
-				noMediaFile = new File(Utils.buildPath(projectDirectoryName, Constants.SOUND_DIRECTORY,
-						Constants.NO_MEDIA_FILE));
+				noMediaFile = (Utils
+						.buildPath(projectDirectoryName, Constants.SOUND_DIRECTORY, Constants.NO_MEDIA_FILE));
 				noMediaFile.createNewFile();
 			}
 
@@ -295,14 +295,14 @@ public class StorageHandler {
 
 	public boolean deleteProject(Project project) {
 		if (project != null) {
-			return UtilFile.deleteDirectory(new File(Utils.buildProjectPath(project.getName())));
+			return UtilFile.deleteDirectory((Utils.buildProjectPath(project.getName())));
 		}
 		return false;
 	}
 
 	public boolean deleteProject(ProjectData projectData) {
 		if (projectData != null) {
-			return UtilFile.deleteDirectory(new File(Utils.buildProjectPath(projectData.projectName)));
+			return UtilFile.deleteDirectory((Utils.buildProjectPath(projectData.projectName)));
 		}
 		return false;
 	}
@@ -318,7 +318,7 @@ public class StorageHandler {
 	}
 
 	public boolean projectExistsIgnoreCase(String projectName) {
-		File projectDirectory = new File(Utils.buildProjectPath(projectName));
+		File projectDirectory = (Utils.buildProjectPath(projectName));
 		if (!projectDirectory.exists()) {
 			return false;
 		}
@@ -327,8 +327,7 @@ public class StorageHandler {
 
 	public File copySoundFile(String path) throws IOException {
 		String currentProject = ProjectManager.getInstance().getCurrentProject().getName();
-		File soundDirectory = new File(Utils.buildPath(Utils.buildProjectPath(currentProject),
-				Constants.SOUND_DIRECTORY));
+		File soundDirectory = new File(Utils.buildProjectPath(currentProject), Constants.SOUND_DIRECTORY);
 
 		File inputFile = new File(path);
 		if (!inputFile.exists() || !inputFile.canRead()) {
@@ -341,16 +340,15 @@ public class StorageHandler {
 			fileChecksumContainer.addChecksum(inputFileChecksum, null);
 			return new File(fileChecksumContainer.getPath(inputFileChecksum));
 		}
-		File outputFile = new File(Utils.buildPath(soundDirectory.getAbsolutePath(), inputFileChecksum + "_"
-				+ inputFile.getName()));
+		File outputFile = (Utils.buildPath(soundDirectory.getAbsolutePath(),
+				inputFileChecksum + "_" + inputFile.getName()));
 
 		return copyFileAddCheckSum(outputFile, inputFile, soundDirectory);
 	}
 
 	public File copyImage(String currentProjectName, String inputFilePath, String newName) throws IOException {
 		String newFilePath;
-		File imageDirectory = new File(Utils.buildPath(Utils.buildProjectPath(currentProjectName),
-				Constants.IMAGE_DIRECTORY));
+		File imageDirectory = new File(Utils.buildProjectPath(currentProjectName), Constants.IMAGE_DIRECTORY);
 
 		File inputFile = new File(inputFilePath);
 		if (!inputFile.exists() || !inputFile.canRead()) {
@@ -379,7 +377,7 @@ public class StorageHandler {
 			File outputFile = new File(newFilePath);
 			return copyFileAddCheckSum(outputFile, inputFile, imageDirectory);
 		} else {
-			File outputFile = new File(Utils.buildPath(imageDirectory.getAbsolutePath(), inputFile.getName()));
+			File outputFile = (Utils.buildPath(imageDirectory.getAbsolutePath(), inputFile.getName()));
 			return copyAndResizeImage(outputFile, inputFile, imageDirectory);
 		}
 	}

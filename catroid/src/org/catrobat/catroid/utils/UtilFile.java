@@ -58,7 +58,7 @@ public class UtilFile {
 	}
 
 	static public Long getProgressFromBytes(String projectName, Long progress) {
-		Long fileByteSize = getSizeOfFileOrDirectoryInByte(new File(Utils.buildProjectPath(projectName)));
+		Long fileByteSize = getSizeOfFileOrDirectoryInByte((Utils.buildProjectPath(projectName)));
 		if (fileByteSize == 0) {
 			return (long) 0;
 		}
@@ -110,7 +110,7 @@ public class UtilFile {
 
 		String filePath;
 		if (project == null || project.equalsIgnoreCase("")) {
-			filePath = Utils.buildProjectPath(name);
+			filePath = name;
 		} else {
 			switch (type) {
 				case TYPE_IMAGE_FILE:
@@ -120,7 +120,7 @@ public class UtilFile {
 					filePath = Utils.buildPath(Utils.buildProjectPath(project), Constants.SOUND_DIRECTORY, name);
 					break;
 				default:
-					filePath = Utils.buildProjectPath(name);
+					filePath = name;
 					break;
 			}
 		}

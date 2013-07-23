@@ -22,7 +22,6 @@
  */
 package org.catrobat.catroid.ui.adapter;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -145,7 +144,7 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 		holder.projectName.setText(projectName);
 
 		// set size of project:
-		holder.size.setText(UtilFile.getSizeAsString(new File(Utils.buildProjectPath(projectName))));
+		holder.size.setText(UtilFile.getSizeAsString((Utils.buildProjectPath(projectName))));
 
 		//set last changed:
 		Date projectLastModificationDate = new Date(projectData.lastUsed);

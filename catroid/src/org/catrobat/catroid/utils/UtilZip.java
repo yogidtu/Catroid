@@ -105,12 +105,12 @@ public class UtilZip {
 				InputStream zipInputStream = zipfile.getInputStream(zipEntry);
 
 				if (zipEntry.isDirectory()) {
-					File file = new File(Utils.buildPath(outDirectory, zipEntry.getName()));
+					File file = (Utils.buildPath(outDirectory, zipEntry.getName()));
 					file.mkdir();
 					zipInputStream.close();
 					continue;
 				}
-				File file = new File(Utils.buildPath(outDirectory, zipEntry.getName()));
+				File file = (Utils.buildPath(outDirectory, zipEntry.getName()));
 				file.getParentFile().mkdirs();
 				FileOutputStream fileOutputStream = new FileOutputStream(file);
 

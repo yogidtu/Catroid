@@ -296,8 +296,8 @@ public class StandardProjectHandler {
 
 	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
 			int fileId, Context context, boolean prependMd5) throws IOException {
-		final String filePath = Utils.buildPath(Utils.buildProjectPath(projectName), directoryName, outputName);
-		File copiedFile = new File(filePath);
+		final File filePath = Utils.buildPath(Utils.buildProjectPath(projectName), directoryName, outputName);
+		File copiedFile = (filePath);
 		if (!copiedFile.exists()) {
 			copiedFile.createNewFile();
 		}
