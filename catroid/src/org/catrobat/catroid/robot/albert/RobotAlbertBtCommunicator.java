@@ -104,42 +104,43 @@ public class RobotAlbertBtCommunicator extends RobotAlbertCommunicator {
 		} catch (IOException e) {
 		}
 
-		/*
-		 * while (connected) {
-		 * 
-		 * Log.d("test", "loop");
-		 * try {
-		 * receiveMessage();
-		 * } catch (IOException e) {
-		 * // TODO Auto-generated catch block
-		 * Log.d("RobotAlbertBtComm", "Exception in run:receiveMessage occured: " + e.toString());
-		 * //Log.d("Test", e.getMessage());
-		 * //This error occurs if robot albert is suddenly switched of
-		 * if (e.getMessage().equalsIgnoreCase("Software caused connection abort")) {
-		 * sendState(STATE_CONNECTERROR);
-		 * connected = false;
-		 * }
-		 * 
-		 * }
-		 * 
-		 * /*
-		 * try {
-		 * returnMessage = receiveMessage();
-		 * if ((returnMessage.length >= 2)
-		 * && ((returnMessage[0] == LCPMessage.REPLY_COMMAND) || (returnMessage[0] ==
-		 * LCPMessage.DIRECT_COMMAND_NOREPLY))) {
-		 * dispatchMessage(returnMessage);
-		 * }
-		 * 
-		 * } catch (IOException e) {
-		 * // don't inform the user when connection is already closed
-		 * if (connected) {
-		 * sendState(STATE_RECEIVEERROR);
-		 * }
-		 * return;
-		 * }
-		 */
-		//}
+		while (connected) {
+
+			//Log.d("test", "loop");
+			try {
+				receiveMessage();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				Log.d("RobotAlbertBtComm", "Exception in run:receiveMessage occured: " + e.toString());
+				//Log.d("Test", e.getMessage());
+				//This error occurs if robot albert is suddenly switched of
+				//if (e.getMessage().equalsIgnoreCase("Software caused connection abort")) {
+				//sendState(STATE_CONNECTERROR);
+				//connected = false;
+				//}
+
+			} catch (Exception e) {
+				Log.d("RobotAlbertBtComm", "Exception in run:receiveMessage occured (no IOException): " + e.toString());
+			}
+
+			/*
+			 * try {
+			 * returnMessage = receiveMessage();
+			 * if ((returnMessage.length >= 2)
+			 * && ((returnMessage[0] == LCPMessage.REPLY_COMMAND) || (returnMessage[0] ==
+			 * LCPMessage.DIRECT_COMMAND_NOREPLY))) {
+			 * dispatchMessage(returnMessage);
+			 * }
+			 * 
+			 * } catch (IOException e) {
+			 * // don't inform the user when connection is already closed
+			 * if (connected) {
+			 * sendState(STATE_RECEIVEERROR);
+			 * }
+			 * return;
+			 * }
+			 */
+		}
 	}
 
 	/**
