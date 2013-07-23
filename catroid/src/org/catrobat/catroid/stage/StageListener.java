@@ -130,8 +130,11 @@ public class StageListener implements ApplicationListener {
 
 	private byte[] thumbnail;
 
-	//needed for live wallpaper
+	private boolean isLiveWallpaper = false;
+
+	//needed for livewallpaper
 	public StageListener() {
+		this.isLiveWallpaper = true;
 	}
 
 	@Override
@@ -140,7 +143,10 @@ public class StageListener implements ApplicationListener {
 		font.setColor(1f, 0f, 0.05f, 1f);
 		font.setScale(1.2f);
 
-		pathForScreenshot = Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()) + "/";
+		if (!this.isLiveWallpaper) {
+			pathForScreenshot = Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName())
+					+ "/";
+		}
 
 		project = ProjectManager.getInstance().getCurrentProject();
 
@@ -249,7 +255,7 @@ public class StageListener implements ApplicationListener {
 	public void finish() {
 		finished = true;
 		SoundManager.getInstance().clear();
-		if (thumbnail != null) {
+		if (thumbnail != null && !this.isLiveWallpaper) {
 			prepareAutomaticScreenshotAndNoMeadiaFile();
 			saveScreenshot(thumbnail, SCREENSHOT_AUTOMATIC_FILE_NAME);
 		}

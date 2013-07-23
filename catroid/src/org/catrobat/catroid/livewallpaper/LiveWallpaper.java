@@ -22,7 +22,14 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
+import java.io.IOException;
+
+import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.stage.StageListener;
+
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -32,6 +39,24 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	public void onCreateApplication() {
 		super.getApplication();
+
+	}
+
+	@Override
+	public void onCreate() {
+		//android.os.Debug.waitForDebugger();
+		super.onCreate();
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
+		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
+		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
+
+		try {
+			StandardProjectHandler.createAndSaveStandardProject(getApplicationContext());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/*
