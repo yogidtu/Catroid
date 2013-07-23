@@ -423,13 +423,12 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	}
 
 	private void createTestProject(String projectToCreate) {
+		solo.waitForFragmentById(R.id.projectList);
 		File directory = new File(Constants.DEFAULT_ROOT + "/" + projectToCreate);
 		if (directory.exists()) {
 			UtilFile.deleteDirectory(directory);
 		}
 		assertFalse("testProject was not deleted!", directory.exists());
-
-		solo.waitForFragmentById(R.id.projectList);
 
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.enterText(0, projectToCreate);
