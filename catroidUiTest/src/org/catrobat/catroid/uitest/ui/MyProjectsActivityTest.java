@@ -105,9 +105,9 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 	@Override
 	public void tearDown() throws Exception {
 		UiTestUtils.goBackToHome(getInstrumentation());
-		UtilFile.deleteDirectory(new File(Utils.buildProjectPath(whitelistedCharacterString)));
-		UtilFile.deleteDirectory(new File(Utils.buildProjectPath(blacklistedCharacterString)));
-		UtilFile.deleteDirectory(new File(Utils.buildProjectPath(blacklistedOnlyCharacterString)));
+		UtilFile.deleteDirectory((Utils.buildProjectPath(whitelistedCharacterString)));
+		UtilFile.deleteDirectory((Utils.buildProjectPath(blacklistedCharacterString)));
+		UtilFile.deleteDirectory((Utils.buildProjectPath(blacklistedOnlyCharacterString)));
 
 		if (renameDirectory != null && renameDirectory.isDirectory()) {
 			UtilFile.deleteDirectory(renameDirectory);
@@ -115,7 +115,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		}
 		if (deleteCacheProjects) {
 			for (int i = 0; i < numberOfCacheProjects; i++) {
-				File directory = new File(Utils.buildProjectPath(cacheProjectName + i));
+				File directory = (Utils.buildProjectPath(cacheProjectName + i));
 				UtilFile.deleteDirectory(directory);
 			}
 			deleteCacheProjects = false;
@@ -1029,7 +1029,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		solo.goBack();
 		solo.clickOnText(solo.getString(R.string.ok));
 		solo.waitForDialogToClose(500);
-		renameDirectory = new File(Utils.buildProjectPath(whitelistedCharacterString));
+		renameDirectory = (Utils.buildProjectPath(whitelistedCharacterString));
 		assertTrue("Rename with whitelisted characters was not successfull", renameDirectory.isDirectory());
 	}
 
@@ -1049,7 +1049,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		solo.goBack();
 		solo.clickOnText(solo.getString(R.string.ok));
 		solo.waitForDialogToClose(500);
-		renameDirectory = new File(Utils.buildProjectPath(blacklistedCharacterString));
+		renameDirectory = (Utils.buildProjectPath(blacklistedCharacterString));
 		assertTrue("Rename with blacklisted characters was not successfull", renameDirectory.isDirectory());
 	}
 
@@ -1147,12 +1147,11 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		DateFormat mediumDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 		createProjects();
 
-		File projectCodeFile = new File(Utils.buildPath(Utils.buildProjectPath(UiTestUtils.DEFAULT_TEST_PROJECT_NAME),
-				Constants.PROJECTCODE_NAME));
+		File projectCodeFile = new File(Utils.buildProjectPath(UiTestUtils.DEFAULT_TEST_PROJECT_NAME),
+				Constants.PROJECTCODE_NAME);
 		projectCodeFile.setLastModified(date.getTime());
 
-		projectCodeFile = new File(Utils.buildPath(Utils.buildProjectPath(UiTestUtils.PROJECTNAME1),
-				Constants.PROJECTCODE_NAME));
+		projectCodeFile = new File(Utils.buildProjectPath(UiTestUtils.PROJECTNAME1), Constants.PROJECTCODE_NAME);
 		Date now = new Date();
 		projectCodeFile.setLastModified(now.getTime() - DateUtils.DAY_IN_MILLIS);
 

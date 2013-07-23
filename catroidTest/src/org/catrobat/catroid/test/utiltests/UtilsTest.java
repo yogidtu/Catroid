@@ -34,8 +34,8 @@ import java.util.Locale;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
@@ -101,7 +101,7 @@ public class UtilsTest extends AndroidTestCase {
 		File tempDir = new File(Constants.TMP_PATH);
 		tempDir.mkdirs();
 
-		File md5TestFile = new File(Utils.buildPath(Constants.TMP_PATH, "catroid.txt"));
+		File md5TestFile = (Utils.buildPath(Constants.TMP_PATH, "catroid.txt"));
 
 		if (md5TestFile.exists()) {
 			md5TestFile.delete();

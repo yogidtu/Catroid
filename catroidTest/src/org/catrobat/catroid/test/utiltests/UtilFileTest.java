@@ -109,7 +109,7 @@ public class UtilFileTest extends InstrumentationTestCase {
 
 		PrintWriter printWriter = null;
 
-		File testFile = new File(Utils.buildPath(testDirectory.getAbsolutePath(), "catroid.txt"));
+		File testFile = (Utils.buildPath(testDirectory.getAbsolutePath(), "catroid.txt"));
 
 		try {
 			testFile.createNewFile();

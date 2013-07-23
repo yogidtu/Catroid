@@ -78,8 +78,8 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 
 	@Override
 	public void tearDown() throws Exception {
-		UtilFile.deleteDirectory(new File(Utils.buildProjectPath(projectNameWithBlacklistedCharacters)));
-		UtilFile.deleteDirectory(new File(Utils.buildProjectPath(projectNameWithWhitelistedCharacters)));
+		UtilFile.deleteDirectory((Utils.buildProjectPath(projectNameWithBlacklistedCharacters)));
+		UtilFile.deleteDirectory((Utils.buildProjectPath(projectNameWithWhitelistedCharacters)));
 		super.tearDown();
 	}
 
@@ -133,7 +133,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 				solo.searchText(solo.getString(R.string.error_project_exists)));
 		solo.clickOnButton(0);
 
-		directory = new File(Utils.buildProjectPath("te?st"));
+		directory = (Utils.buildProjectPath("te?st"));
 		directory.mkdirs();
 		String name = "te/st:";
 		solo.sleep(50);
@@ -148,8 +148,8 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 	}
 
 	public void testCreateNewProjectWithBlacklistedCharacters() {
-		String directoryPath = Utils.buildProjectPath(projectNameWithBlacklistedCharacters);
-		File directory = new File(directoryPath);
+		File directoryPath = Utils.buildProjectPath(projectNameWithBlacklistedCharacters);
+		File directory = (directoryPath);
 		UtilFile.deleteDirectory(directory);
 
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
@@ -161,13 +161,13 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		solo.clickOnText(buttonOKText);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 
-		File file = new File(Utils.buildPath(directoryPath, Constants.PROJECTCODE_NAME));
+		File file = (Utils.buildPath(directoryPath, Constants.PROJECTCODE_NAME));
 		assertTrue("Project with blacklisted characters was not created!", file.exists());
 	}
 
 	public void testCreateNewProjectWithWhitelistedCharacters() {
-		String directoryPath = Utils.buildProjectPath(projectNameWithWhitelistedCharacters);
-		File directory = new File(directoryPath);
+		File directoryPath = Utils.buildProjectPath(projectNameWithWhitelistedCharacters);
+		File directory = (directoryPath);
 		UtilFile.deleteDirectory(directory);
 
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
@@ -179,7 +179,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		solo.clickOnText(buttonOKText);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 
-		File file = new File(Utils.buildPath(directoryPath, Constants.PROJECTCODE_NAME));
+		File file = (Utils.buildPath(directoryPath, Constants.PROJECTCODE_NAME));
 		assertTrue("Project file with whitelisted characters was not created!", file.exists());
 	}
 
