@@ -423,6 +423,8 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	}
 
 	private void createTestProject(String projectToCreate) {
+		solo.waitForActivity(MainMenuActivity_Shruti.class.getSimpleName());
+
 		solo.waitForFragmentById(R.id.projectList);
 		File directory = new File(Constants.DEFAULT_ROOT + "/" + projectToCreate);
 		if (directory.exists()) {
