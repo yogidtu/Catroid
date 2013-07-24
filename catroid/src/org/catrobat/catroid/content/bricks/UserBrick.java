@@ -257,10 +257,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			layout2.removeAllViews();
 		}
 
-		//FlowLayout layout2 = (FlowLayout) View.inflate(context, R.layout.brick_user_flow_layout_template, null);
-
-		//((LinearLayout) currentView).addView(layout2);
-
 		for (UserBrickUIComponent c : uiComponents) {
 			TextView currentTextView = null;
 			UserBrickUIData d = uiData.get(c.dataIndex);
@@ -332,10 +328,11 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		}
 	}
 
+	// this function is called when this brick's action is being placed into a sequence
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
 		SequenceAction userSequence = ExtendedActions.sequence();
-		Script userScript = getDefinitionBrick().initScript(sprite); // getScript
+		Script userScript = definitionBrick.initScript(sprite); // getScript
 		userScript.run(userSequence);
 
 		ArrayList<SequenceAction> returnActionList = new ArrayList<SequenceAction>();

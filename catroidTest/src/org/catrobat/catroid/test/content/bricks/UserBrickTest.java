@@ -20,13 +20,15 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.test.userbricks;
+package org.catrobat.catroid.test.content.bricks;
 
 import java.util.ArrayList;
 
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.UserScript;
+import org.catrobat.catroid.content.bricks.ChangeXByNBrick;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIComponent;
 import org.catrobat.catroid.content.bricks.UserBrickUIDataArray;
@@ -35,14 +37,81 @@ import org.catrobat.catroid.test.utils.Reflection;
 
 import android.test.AndroidTestCase;
 
-public class UserBrickCloneTest extends AndroidTestCase {
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+
+public class UserBrickTest extends AndroidTestCase {
 	private Sprite sprite;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		sprite = new Sprite("testSprite");
+		Reflection.invokeMethod(sprite, "init");
+	}
 
+	public void testSpriteInit() {
+
+		ArrayList<Script> array = (ArrayList<Script>) Reflection.getPrivateField(sprite, "userBricks");
+
+		assertTrue("the sprite should have zero user bricks after being created and initialized.", array.size() == 0);
+
+		Reflection.invokeMethod(sprite, "initUserBrickList");
+
+		array = (ArrayList<Script>) Reflection.getPrivateField(sprite, "userBricks");
+
+		assertTrue("the sprite should have one user brick after initUserBrickList()", array.size() == 1);
+
+	}
+
+	public void testSpriteHasOneUserBrickAfterAddingAUserBrick() {
+		UserBrick brick = new UserBrick(sprite);
+		brick.addUILocalizedString(R.string.about);
+		brick.addUIText("test0");
+		brick.addUIVariable("test1");
+
+		UserScriptDefinitionBrick definitionBrick = (UserScriptDefinitionBrick) Reflection.getPrivateField(brick,
+				"definitionBrick");
+		Script userScript = definitionBrick.initScript(sprite);
+
+		userScript.addBrick(new ChangeXByNBrick(sprite, 1));
+
+		ArrayList<Script> array = (ArrayList<Script>) Reflection.getPrivateField(sprite, "userBricks");
+
+		assertTrue("the sprite should have one user brick after we added a user brick to it, has " + array.size(),
+				array.size() == 1);
+	}
+
+	public void testSpriteMovedCorrectly() {
+		int moveValue = 6;
+
+		UserBrick brick = new UserBrick(sprite);
+		brick.addUILocalizedString(R.string.about);
+		brick.addUIText("test0");
+		brick.addUIVariable("test1");
+
+		UserScriptDefinitionBrick definitionBrick = (UserScriptDefinitionBrick) Reflection.getPrivateField(brick,
+				"definitionBrick");
+		Script userScript = definitionBrick.initScript(sprite);
+
+		userScript.addBrick(new ChangeXByNBrick(sprite, moveValue));
+
+		SequenceAction sequence = new SequenceAction();
+		brick.addActionToSequence(sequence);
+
+		float x = sprite.look.getXInUserInterfaceDimensionUnit();
+		float y = sprite.look.getYInUserInterfaceDimensionUnit();
+
+		assertEquals("Unexpected initial sprite x position: " + x, 0f, x);
+		assertEquals("Unexpected initial sprite y position: " + y, 0f, y);
+
+		sequence.act(1f);
+
+		x = sprite.look.getXInUserInterfaceDimensionUnit();
+		y = sprite.look.getYInUserInterfaceDimensionUnit();
+
+		assertEquals("Unexpected initial sprite x position: " + x, (float) moveValue,
+				sprite.look.getXInUserInterfaceDimensionUnit());
+		assertEquals("Unexpected initial sprite y position: " + y, 0f, sprite.look.getYInUserInterfaceDimensionUnit());
 	}
 
 	public void testBrickCloneWithFormula() {
@@ -50,10 +119,7 @@ public class UserBrickCloneTest extends AndroidTestCase {
 		brick.addUILocalizedString(R.string.about);
 		brick.addUIText("test0");
 		brick.addUIVariable("test1");
-		brickClone(brick);
-	}
 
-	private void brickClone(UserBrick brick) {
 		UserBrick cloneBrick = brick.clone();
 		UserBrickUIDataArray array = (UserBrickUIDataArray) Reflection.getPrivateField(brick, "uiData");
 		UserBrickUIDataArray clonedArray = (UserBrickUIDataArray) Reflection.getPrivateField(cloneBrick, "uiData");

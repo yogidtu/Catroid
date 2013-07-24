@@ -84,6 +84,9 @@ public class Sprite implements Serializable, Cloneable {
 		if (scriptList == null) {
 			scriptList = new ArrayList<Script>();
 		}
+		if (userBricks == null) {
+			userBricks = new ArrayList<Brick>();
+		}
 	}
 
 	public void resetSprite() {
@@ -115,12 +118,12 @@ public class Sprite implements Serializable, Cloneable {
 
 	public List<Brick> getUserBrickList() {
 		if (userBricks == null) {
-			initUserBricks();
+			initUserBrickList();
 		}
 		return userBricks;
 	}
 
-	void initUserBricks() {
+	void initUserBrickList() {
 		Log.d("FOREST", "Sprite.initUserBricks()");
 		userBricks = new ArrayList<Brick>();
 
