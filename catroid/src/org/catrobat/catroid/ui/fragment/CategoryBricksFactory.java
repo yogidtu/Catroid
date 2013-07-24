@@ -227,7 +227,7 @@ public class CategoryBricksFactory {
 
 	private List<Brick> setupUserBricksCategoryList(Sprite sprite) {
 		Log.d("FOREST", "CategoryBricksFactory.setupUserBricksCategoryList");
-		return ProjectManager.INSTANCE.getCurrentSprite().getUserBrickList();
+		return ProjectManager.getInstance().getCurrentSprite().getUserBrickList();
 	}
 
 	private List<Brick> setupLegoNxtCategoryList(Sprite sprite) {

@@ -70,12 +70,10 @@ public class AddBrickFragment extends SherlockListFragment {
 	public static final String ADD_BRICK_FRAGMENT_TAG = "add_brick_fragment";
 	private ScriptFragment scriptFragment;
 	private CharSequence previousActionBarTitle;
-	private int previousActionBarNavigationMode;
 	private PrototypeBrickAdapter adapter;
 	private CategoryBricksFactory categoryBricksFactory = new CategoryBricksFactory();
 	public static AddBrickFragment addButtonHandler = null;
 
-	// used for state machine
 	private static boolean cameFromScriptActivity = false;
 	private static UserBrick brickToFocus;
 	private static int listIndexToFocus = -1;
@@ -171,7 +169,7 @@ public class AddBrickFragment extends SherlockListFragment {
 	}
 
 	public void handleAddButton() {
-		Sprite currentSprite = ProjectManager.INSTANCE.getCurrentSprite();
+		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 		UserBrick newBrick = new UserBrick(currentSprite);
 		newBrick.addUIText(scriptFragment.getString(R.string.new_user_brick) + " "
 				+ currentSprite.getNextNewUserBrickId());
@@ -199,14 +197,11 @@ public class AddBrickFragment extends SherlockListFragment {
 		actionBar.setDisplayShowTitleEnabled(true);
 		previousActionBarTitle = actionBar.getTitle();
 		actionBar.setTitle(this.getArguments().getString(BUNDLE_ARGUMENTS_SELECTED_CATEGORY));
-		previousActionBarNavigationMode = actionBar.getNavigationMode();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 	}
 
 	private void resetActionBar() {
 		ActionBar actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setTitle(previousActionBarTitle);
-		actionBar.setNavigationMode(previousActionBarNavigationMode);
 	}
 
 	@Override

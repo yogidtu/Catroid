@@ -144,7 +144,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	@Override
 	public void onStart() {
 		super.onStart();
-		sprite = ProjectManager.INSTANCE.getCurrentSprite();
+		sprite = ProjectManager.getInstance().getCurrentSprite();
 		if (sprite == null) {
 			return;
 		}
@@ -182,7 +182,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	@Override
 	public void onPause() {
 		super.onPause();
-		ProjectManager projectManager = ProjectManager.INSTANCE;
+		ProjectManager projectManager = ProjectManager.getInstance();
 		if (brickAddedReceiver != null) {
 			getActivity().unregisterReceiver(brickAddedReceiver);
 		}
@@ -204,7 +204,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 			Object item = adapter.getItem(listView.getTouchedListPosition());
 			if (item instanceof ScriptBrick && !(item instanceof UserScriptDefinitionBrick)) {
-				scriptToEdit = ((ScriptBrick) item).initScript(ProjectManager.INSTANCE.getCurrentSprite());
+				scriptToEdit = ((ScriptBrick) item).initScript(ProjectManager.getInstance().getCurrentSprite());
 				MenuInflater inflater = getActivity().getMenuInflater();
 				inflater.inflate(R.menu.menu_script, menu);
 			}
@@ -275,7 +275,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	}
 
 	private void initListeners() {
-		sprite = ProjectManager.INSTANCE.getCurrentSprite();
+		sprite = ProjectManager.getInstance().getCurrentSprite();
 		if (sprite == null) {
 			return;
 		}
@@ -293,8 +293,8 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			adapter.setOnBrickEditListener(this);
 		}
 
-		if (ProjectManager.INSTANCE.getCurrentSprite().getNumberOfScripts() > 0) {
-			ProjectManager.INSTANCE.setCurrentScript(((ScriptBrick) adapter.getItem(0)).initScript(sprite));
+		if (ProjectManager.getInstance().getCurrentSprite().getNumberOfScripts() > 0) {
+			ProjectManager.getInstance().setCurrentScript(((ScriptBrick) adapter.getItem(0)).initScript(sprite));
 		}
 
 		listView.setOnCreateContextMenuListener(this);
@@ -542,7 +542,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	private void copyBrick(Brick brick) {
 
 		if (brick instanceof ScriptBrick) {
-			scriptToEdit = ((ScriptBrick) brick).initScript(ProjectManager.INSTANCE.getCurrentSprite());
+			scriptToEdit = ((ScriptBrick) brick).initScript(ProjectManager.getInstance().getCurrentSprite());
 
 			Script clonedScript = scriptToEdit.copyScriptForSprite(sprite);
 
@@ -573,7 +573,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	private void deleteBrick(Brick brick) {
 
 		if (brick instanceof ScriptBrick) {
-			scriptToEdit = ((ScriptBrick) brick).initScript(ProjectManager.INSTANCE.getCurrentSprite());
+			scriptToEdit = ((ScriptBrick) brick).initScript(ProjectManager.getInstance().getCurrentSprite());
 			adapter.handleScriptDelete(sprite, scriptToEdit);
 			return;
 		}

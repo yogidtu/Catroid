@@ -52,12 +52,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -99,14 +97,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	private boolean isLookFragmentFromSetLookBrickNew = false;
 	private boolean isLookFragmentHandleAddButtonHandled = false;
 
-	private LinearLayout btn_add = null;
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		Log.d("ScriptActivity", "ScriptActivityOnResume");
-	}
+	private LinearLayout buttonAdd = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -131,61 +122,26 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		setupActionBar();
 
-		btn_add = (LinearLayout) findViewById(R.id.button_add);
+		buttonAdd = (LinearLayout) findViewById(R.id.button_add);
 		updateHandleAddButtonClickListener();
 	}
 
 	private void setupActionBar() {
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setHomeButtonEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		actionBar.setDisplayShowTitleEnabled(true);
+		String currentSprite = ProjectManager.getInstance().getCurrentSprite().getName();
+		actionBar.setTitle(currentSprite);
 
-		final ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this,
-				R.layout.activity_script_spinner_item, getResources().getStringArray(
-						R.array.script_activity_spinner_items));
-
-		actionBar.setListNavigationCallbacks(spinnerAdapter, new OnNavigationListener() {
-			@Override
-			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-				if (isHoveringActive()) {
-					scriptFragment.getListView().animateHoveringBrick();
-					return true;
-				}
-				if (itemPosition != currentFragmentPosition) {
-
-					if (currentFragmentPosition == FRAGMENT_SOUNDS && soundFragment.isSoundPlaying()) {
-						soundFragment.stopSoundAndUpdateList();
-					}
-
-					if (currentFragmentPosition == FRAGMENT_SOUNDS && isSoundFragmentFromPlaySoundBrickNew) {
-						isSoundFragmentFromPlaySoundBrickNew = false;
-						isSoundFragmentHandleAddButtonHandled = false;
-					}
-
-					if (currentFragmentPosition == FRAGMENT_LOOKS && isLookFragmentFromSetLookBrickNew) {
-						isLookFragmentFromSetLookBrickNew = false;
-						isSoundFragmentHandleAddButtonHandled = false;
-					}
-
-					FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-					fragmentTransaction.hide(getFragment(currentFragmentPosition));
-					updateCurrentFragment(itemPosition, fragmentTransaction);
-
-					fragmentTransaction.commit();
-				}
-				return true;
-			}
-		});
-		actionBar.setSelectedNavigationItem(currentFragmentPosition);
+		buttonAdd = (LinearLayout) findViewById(R.id.button_add);
+		updateHandleAddButtonClickListener();
 	}
 
 	public void updateHandleAddButtonClickListener() {
-		if (btn_add == null) {
-			btn_add = (LinearLayout) findViewById(R.id.button_add);
+		if (buttonAdd == null) {
+			buttonAdd = (LinearLayout) findViewById(R.id.button_add);
 		}
-		btn_add.setOnClickListener(new OnClickListener() {
+		buttonAdd.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				handleAddButton(v);
@@ -197,7 +153,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		boolean fragmentExists = true;
 		currentFragmentPosition = fragmentPosition;
 
-		Log.d("CatroidFragmentTag", "ScriptActivity updateCurrentFragment");
 		switch (currentFragmentPosition) {
 			case FRAGMENT_SCRIPTS:
 				if (scriptFragment == null) {
@@ -583,7 +538,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	}
 
 	public void switchToFragmentFromScriptFragment(int fragmentPosition) {
-		ActionBar actionBar = getSupportActionBar();
 
 		ScriptActivityFragment scriptFragment = getFragment(ScriptActivity.FRAGMENT_SCRIPTS);
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -593,7 +547,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 
 		switch (fragmentPosition) {
 			case FRAGMENT_LOOKS:
-				actionBar.setSelectedNavigationItem(ScriptActivity.FRAGMENT_LOOKS);
 				isLookFragmentFromSetLookBrickNew = true;
 
 				fragmentTransaction.addToBackStack(LookFragment.TAG);
@@ -607,7 +560,6 @@ public class ScriptActivity extends SherlockFragmentActivity {
 				break;
 
 			case FRAGMENT_SOUNDS:
-				actionBar.setSelectedNavigationItem(ScriptActivity.FRAGMENT_SOUNDS);
 				isSoundFragmentFromPlaySoundBrickNew = true;
 
 				fragmentTransaction.addToBackStack(SoundFragment.TAG);
