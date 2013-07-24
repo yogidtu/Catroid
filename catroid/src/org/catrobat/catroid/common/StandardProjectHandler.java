@@ -55,6 +55,7 @@ import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageListener;
+import org.catrobat.catroid.utils.ImageEditing;
 import org.catrobat.catroid.utils.Utils;
 
 import android.content.Context;
@@ -160,6 +161,12 @@ public class StandardProjectHandler {
 		waitOneOrTwoSeconds.setLeftChild(new FormulaElement(ElementType.NUMBER, "1", waitOneOrTwoSeconds));
 		waitOneOrTwoSeconds.setRightChild(new FormulaElement(ElementType.NUMBER, "2", waitOneOrTwoSeconds));
 
+		int[] imageDimensions = new int[2];
+		imageDimensions = ImageEditing.getImageDimensions(backgroundFile.getAbsolutePath());
+
+		int moleFirstRowOffsetX = (int) (imageDimensions[0] / 2 * (2 / 5.0));
+		int moleFirstRowOffsetY = (int) (imageDimensions[1] / 2 * (1 / 5.0));
+		int moleSecondRowOffsetY = (int) (imageDimensions[1] / 2 * (1 / 2.0));
 		// Mole 1 sprite
 		Sprite mole1Sprite = new Sprite(context.getString(R.string.default_project_sprites_mole_name) + " 1");
 		mole1Sprite.getLookDataList().add(moleLookData1);
@@ -177,7 +184,7 @@ public class StandardProjectHandler {
 		ForeverBrick foreverBrick = new ForeverBrick(mole1Sprite);
 		mole1StartScript.addBrick(foreverBrick);
 
-		PlaceAtBrick placeAtBrick = new PlaceAtBrick(mole1Sprite, -160, -110);
+		PlaceAtBrick placeAtBrick = new PlaceAtBrick(mole1Sprite, -moleFirstRowOffsetX, -moleFirstRowOffsetY);
 		mole1StartScript.addBrick(placeAtBrick);
 
 		WaitBrick waitBrick = new WaitBrick(mole1Sprite, new Formula(waitOneOrTwoSeconds));
@@ -190,7 +197,7 @@ public class StandardProjectHandler {
 		setLookBrick.setLook(moleLookData1);
 		mole1StartScript.addBrick(setLookBrick);
 
-		GlideToBrick glideToBrick = new GlideToBrick(mole1Sprite, -160, -95, 100);
+		GlideToBrick glideToBrick = new GlideToBrick(mole1Sprite, -moleFirstRowOffsetX, -moleFirstRowOffsetY + 10, 100);
 		mole1StartScript.addBrick(glideToBrick);
 
 		setLookBrick = new SetLookBrick(mole1Sprite);
@@ -238,12 +245,12 @@ public class StandardProjectHandler {
 
 		Script tempScript = mole2Sprite.getScript(0);
 		placeAtBrick = (PlaceAtBrick) tempScript.getBrick(2);
-		placeAtBrick.setXPosition(new Formula(160));
-		placeAtBrick.setYPosition(new Formula(-110));
+		placeAtBrick.setXPosition(new Formula(moleFirstRowOffsetX));
+		placeAtBrick.setYPosition(new Formula(-moleFirstRowOffsetY));
 
 		glideToBrick = (GlideToBrick) tempScript.getBrick(6);
-		glideToBrick.setXDestination(new Formula(160));
-		glideToBrick.setYDestination(new Formula(-95));
+		glideToBrick.setXDestination(new Formula(moleFirstRowOffsetX));
+		glideToBrick.setYDestination(new Formula(-moleFirstRowOffsetY + 10));
 
 		// Mole 3 sprite
 		Sprite mole3Sprite = mole1Sprite.clone();
@@ -253,12 +260,12 @@ public class StandardProjectHandler {
 
 		tempScript = mole3Sprite.getScript(0);
 		placeAtBrick = (PlaceAtBrick) tempScript.getBrick(2);
-		placeAtBrick.setXPosition(new Formula(-160));
-		placeAtBrick.setYPosition(new Formula(-290));
+		placeAtBrick.setXPosition(new Formula(-moleFirstRowOffsetX));
+		placeAtBrick.setYPosition(new Formula(-moleSecondRowOffsetY));
 
 		glideToBrick = (GlideToBrick) tempScript.getBrick(6);
-		glideToBrick.setXDestination(new Formula(-160));
-		glideToBrick.setYDestination(new Formula(-275));
+		glideToBrick.setXDestination(new Formula(-moleFirstRowOffsetX));
+		glideToBrick.setYDestination(new Formula(-moleSecondRowOffsetY + 15));
 
 		// Mole 4 sprite
 		Sprite mole4Sprite = mole1Sprite.clone();
@@ -268,26 +275,26 @@ public class StandardProjectHandler {
 
 		tempScript = mole4Sprite.getScript(0);
 		placeAtBrick = (PlaceAtBrick) tempScript.getBrick(2);
-		placeAtBrick.setXPosition(new Formula(160));
-		placeAtBrick.setYPosition(new Formula(-290));
+		placeAtBrick.setXPosition(new Formula(moleFirstRowOffsetX));
+		placeAtBrick.setYPosition(new Formula(-moleSecondRowOffsetY));
 
 		glideToBrick = (GlideToBrick) tempScript.getBrick(6);
-		glideToBrick.setXDestination(new Formula(160));
-		glideToBrick.setYDestination(new Formula(-275));
+		glideToBrick.setXDestination(new Formula(moleFirstRowOffsetX));
+		glideToBrick.setYDestination(new Formula(-moleSecondRowOffsetY + 15));
 
 		StorageHandler.getInstance().saveProject(defaultProject);
 
 		return defaultProject;
 	}
 
-    public static Project createAndSaveEmptyProject(String projectName, Context context) {
-        Project emptyProject = new Project(context, projectName);
-        emptyProject.setDeviceData(context);
-        StorageHandler.getInstance().saveProject(emptyProject);
-        ProjectManager.getInstance().setProject(emptyProject);
+	public static Project createAndSaveEmptyProject(String projectName, Context context) {
+		Project emptyProject = new Project(context, projectName);
+		emptyProject.setDeviceData(context);
+		StorageHandler.getInstance().saveProject(emptyProject);
+		ProjectManager.getInstance().setProject(emptyProject);
 
-        return emptyProject;
-    }
+		return emptyProject;
+	}
 
 	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
 			int fileId, Context context) throws IOException {
@@ -297,6 +304,8 @@ public class StandardProjectHandler {
 	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
 			int fileId, Context context, boolean prependMd5) throws IOException {
 		final String filePath = Utils.buildPath(Utils.buildProjectPath(projectName), directoryName, outputName);
+		String directoryPath = Utils.buildPath(Utils.buildProjectPath(projectName), directoryName);
+
 		File copiedFile = new File(filePath);
 		if (!copiedFile.exists()) {
 			copiedFile.createNewFile();
@@ -313,16 +322,24 @@ public class StandardProjectHandler {
 		out.flush();
 		out.close();
 
-		if (!prependMd5) {
-			return copiedFile;
+		if (context.getResources().getResourceTypeName(fileId).compareTo("drawable") == 0) {
+			File newCopiedFile = StorageHandler.getInstance().copyImage(projectName, filePath, null);
+			String oldImageFileString = copiedFile.getAbsolutePath();
+			copiedFile.delete();
+			copiedFile = newCopiedFile;
+			if (!prependMd5) {
+				File renameNonMd5File = new File(oldImageFileString);
+				copiedFile.renameTo(renameNonMd5File);
+				copiedFile = renameNonMd5File;
+			}
+		} else if (prependMd5) {
+			String finalImageFileString = Utils.buildPath(directoryPath, Utils.md5Checksum(copiedFile)
+					+ FILENAME_SEPARATOR + copiedFile.getName());
+			File renameFile = new File(finalImageFileString);
+			copiedFile.renameTo(renameFile);
+			copiedFile = renameFile;
 		}
 
-		String directoryPath = Utils.buildPath(Utils.buildProjectPath(projectName), directoryName);
-		String finalImageFileString = Utils.buildPath(directoryPath, Utils.md5Checksum(copiedFile) + FILENAME_SEPARATOR
-				+ copiedFile.getName());
-		File copiedFileWithMd5 = new File(finalImageFileString);
-		copiedFile.renameTo(copiedFileWithMd5);
-
-		return copiedFileWithMd5;
+		return copiedFile;
 	}
 }
