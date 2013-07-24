@@ -22,10 +22,7 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
-import java.io.IOException;
-
 import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.stage.StageListener;
 
 import android.util.DisplayMetrics;
@@ -51,12 +48,12 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
 		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
 
-		try {
-			StandardProjectHandler.createAndSaveStandardProject(getApplicationContext());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//		try {
+		//			StandardProjectHandler.createAndSaveStandardProject(getApplicationContext());
+		//		} catch (IOException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 	}
 
 	/*
