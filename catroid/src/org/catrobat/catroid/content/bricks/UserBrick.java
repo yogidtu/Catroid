@@ -36,6 +36,7 @@ import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -148,7 +149,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	private void updateUIComponents() {
-		uiComponents = new ArrayList<UserBrickUIComponent>();
+		Log.d("FOREST", "UB.updateUIComponents");
+		ArrayList<UserBrickUIComponent> newUIComponents = new ArrayList<UserBrickUIComponent>();
 
 		for (int i = 0; i < uiData.size(); i++) {
 			UserBrickUIComponent c = new UserBrickUIComponent();
@@ -156,8 +158,10 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			if (uiData.get(i).isVariable) {
 				c.variableFormula = new Formula(0);
 			}
-			uiComponents.add(c);
+			newUIComponents.add(c);
 		}
+		uiComponents = newUIComponents;
+		lastDataVersion = uiData.version;
 	}
 
 	/**
@@ -220,7 +224,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		if (lastDataVersion < uiData.version) {
+		if (lastDataVersion < uiData.version || uiComponents == null) {
 			updateUIComponents();
 			onLayoutChanged(view);
 		}
@@ -233,7 +237,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			if (c != null && c.textView != null) {
 				UserBrickUIData d = uiData.get(c.dataIndex);
 				c.textView.setTextColor(c.textView.getTextColors().withAlpha(alphaValue));
-				if (d.isVariable) {
+				if (c.textView.getBackground() != null) {
 					c.textView.getBackground().setAlpha(alphaValue);
 				}
 			}
@@ -244,7 +248,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	public void onLayoutChanged(View currentView) {
-		if (lastDataVersion < uiData.version) {
+		Log.d("FOREST", "UB.onLayoutChanged");
+		if (lastDataVersion < uiData.version || uiComponents == null) {
 			updateUIComponents();
 		}
 
@@ -257,6 +262,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			layout2.removeAllViews();
 		}
 
+		int id = 0;
 		for (UserBrickUIComponent c : uiComponents) {
 			TextView currentTextView = null;
 			UserBrickUIData d = uiData.get(c.dataIndex);
@@ -267,10 +273,14 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 					currentTextView.setTextAppearance(context, R.style.BrickPrototypeTextView);
 					currentTextView.setText(String.valueOf(c.variableFormula.interpretInteger(sprite)));
 				} else {
+					currentTextView.setId(View.generateViewId());
 					currentTextView.setTextAppearance(context, R.style.BrickEditText);
 					currentTextView.setText(String.valueOf(c.variableFormula.interpretInteger(sprite)));
 					c.variableFormula.setTextFieldId(currentTextView.getId());
 					c.variableFormula.refreshTextField(view);
+					// This stuff isn't being included by the style when I use setTextAppearance.
+					currentTextView.setFocusable(false);
+					currentTextView.setFocusableInTouchMode(false);
 
 					currentTextView.setOnClickListener(this);
 				}
@@ -296,6 +306,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			} else {
 				c.textView = currentTextView;
 			}
+			id++;
 		}
 	}
 
@@ -317,6 +328,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public void onClick(View eventOrigin) {
+		Log.d("FOREST", "UB.onClick");
 		if (checkbox.getVisibility() == View.VISIBLE) {
 			return;
 		}

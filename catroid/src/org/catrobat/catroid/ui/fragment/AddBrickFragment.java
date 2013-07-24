@@ -240,6 +240,7 @@ public class AddBrickFragment extends SherlockListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		setupSelectedBrickCategory();
 		addButtonHandler = holdAddButtonHandlerWhilePaused;
 	}
 
@@ -300,6 +301,7 @@ public class AddBrickFragment extends SherlockListFragment {
 				if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_add_to_script))) {
 					addBrickToScript(clickedBrick);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
+					Log.d("FOREST", "ABF.launchBrickScriptActivityOnBrick");
 					launchBrickScriptActivityOnBrick(context, clickedBrick);
 				}
 			}

@@ -114,7 +114,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	}
 
 	public static void showFragment(View view, Brick brick, Formula formula) {
-
 		SherlockFragmentActivity activity = null;
 		activity = (SherlockFragmentActivity) view.getContext();
 
@@ -315,9 +314,9 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 
 		switch (mode) {
 			case SET_FORMULA_ON_CREATE_VIEW:
-				//currentFormula.removeTextFieldHighlighting(brickView, orientation);
+				currentFormula.removeTextFieldHighlighting(brickView, orientation);
 				formulaEditorEditText.enterNewFormula(currentFormula.getInternFormulaState());
-				//currentFormula.highlightTextField(brickView, orientation);
+				currentFormula.highlightTextField(brickView, orientation);
 				refreshFormulaPreviewString();
 				break;
 			case SET_FORMULA_ON_SWITCH_EDIT_TEXT:
@@ -339,9 +338,9 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 				}
 
 				formulaEditorEditText.endEdit();
-				//currentFormula.removeTextFieldHighlighting(brickView, orientation);
+				currentFormula.removeTextFieldHighlighting(brickView, orientation);
 				currentFormula = newFormula;
-				//currentFormula.highlightTextField(brickView, orientation);
+				currentFormula.highlightTextField(brickView, orientation);
 				formulaEditorEditText.enterNewFormula(newFormula.getInternFormulaState());
 				break;
 			default:

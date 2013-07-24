@@ -289,10 +289,10 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			}
 		});
 
-		if (adapter == null) {
-			adapter = new BrickAdapter(getActivity(), sprite, listView);
-			adapter.setOnBrickEditListener(this);
-		}
+		adapter = new BrickAdapter(getActivity(), sprite, listView);
+		adapter.setOnBrickEditListener(this);
+		ScriptActivity activity = (ScriptActivity) getActivity();
+		activity.setupBrickAdapter(adapter);
 
 		if (ProjectManager.getInstance().getCurrentSprite().getNumberOfScripts() > 0) {
 			ProjectManager.getInstance().setCurrentScript(((ScriptBrick) adapter.getItem(0)).initScript(sprite));

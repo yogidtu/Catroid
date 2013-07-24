@@ -529,6 +529,10 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		this.isLookFragmentHandleAddButtonHandled = isLookFragmentHandleAddButtonHandled;
 	}
 
+	public void setupBrickAdapter(BrickAdapter adapter) {
+
+	}
+
 	public ScriptFragment getScriptFragment() {
 		return scriptFragment;
 	}

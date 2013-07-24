@@ -180,9 +180,6 @@
 
     <style name="BrickEditText" parent="@style/BrickPrototypeTextView">
         <item name="android:maxLines">1</item>
-        <item name="android:focusable">true</item>
-        <item name="android:focusableInTouchMode">true</item>
-        <item name="android:clickable">true</item>
         <item name="android:visibility">gone</item>
     </style>
     

@@ -42,6 +42,7 @@ public class UserBrickScriptActivity extends ScriptActivity {
 	public static UserBrick userBrick;
 
 	public static void setUserBrick(Brick userBrick) {
+		Log.d("FOREST", "UBSA.setUserBrick");
 		UserBrickScriptActivity.userBrick = (UserBrick) userBrick;
 	}
 
@@ -50,8 +51,6 @@ public class UserBrickScriptActivity extends ScriptActivity {
 		super.onResume();
 
 		if (userBrick != null) {
-			setupBrickAdapter();
-
 			setupActionBar();
 		} else {
 			Log.d("FOREST", "UserBrickScriptActivity.onResume with null userBrick");
@@ -59,10 +58,8 @@ public class UserBrickScriptActivity extends ScriptActivity {
 
 	}
 
-	private void setupBrickAdapter() {
-
-		BrickAdapter adapter = getScriptFragment().getAdapter();
-
+	@Override
+	public void setupBrickAdapter(BrickAdapter adapter) {
 		adapter.setUserBrick(userBrick);
 		adapter.updateProjectBrickList();
 	}
