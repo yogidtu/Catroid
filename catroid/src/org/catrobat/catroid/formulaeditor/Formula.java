@@ -24,12 +24,10 @@ package org.catrobat.catroid.formulaeditor;
 
 import java.io.Serializable;
 
-import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.text.Layout;
 import android.view.View;
 import android.widget.EditText;
@@ -155,34 +153,6 @@ public class Formula implements Serializable {
 				formulaTextField.setText(formulaString.substring(start, end));
 			}
 		}
-	}
-
-	public void removeTextFieldHighlighting(View brickView, int orientation) {
-		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
-
-		int width = formulaTextField.getWidth();
-		formulaTextField.setBackgroundDrawable(originalEditTextDrawable);
-		formulaTextField.setWidth(width);
-		originalEditTextDrawable = null;
-	}
-
-	public void highlightTextField(View brickView, int orientation) {
-		Drawable highlightBackground = null;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			highlightBackground = brickView.getResources().getDrawable(R.drawable.textfield_pressed_android4);
-		} else {
-			highlightBackground = brickView.getResources().getDrawable(R.drawable.textfield_pressed);
-		}
-
-		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
-
-		if (originalEditTextDrawable == null) {
-			originalEditTextDrawable = formulaTextField.getBackground();
-		}
-		int width = formulaTextField.getWidth();
-		width = Math.max(width, 130);
-		formulaTextField.setBackgroundDrawable(highlightBackground);
-		formulaTextField.setWidth(width);
 	}
 
 	public void prepareToRemove() {

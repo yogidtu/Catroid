@@ -280,6 +280,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			return;
 		}
 
+		Log.d("FOREST", "initListeners" + getSherlockActivity().toString());
 		getSherlockActivity().findViewById(R.id.button_add).setOnClickListener(new OnClickListener() {
 
 			@Override

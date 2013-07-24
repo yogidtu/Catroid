@@ -268,6 +268,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 					currentTextView.setText(String.valueOf(c.variableFormula.interpretInteger(sprite)));
 				} else {
 					currentTextView.setTextAppearance(context, R.style.BrickEditText);
+					currentTextView.setText(String.valueOf(c.variableFormula.interpretInteger(sprite)));
 					c.variableFormula.setTextFieldId(currentTextView.getId());
 					c.variableFormula.refreshTextField(view);
 

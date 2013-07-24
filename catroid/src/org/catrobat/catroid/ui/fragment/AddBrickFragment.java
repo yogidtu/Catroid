@@ -73,6 +73,7 @@ public class AddBrickFragment extends SherlockListFragment {
 	private PrototypeBrickAdapter adapter;
 	private CategoryBricksFactory categoryBricksFactory = new CategoryBricksFactory();
 	public static AddBrickFragment addButtonHandler = null;
+	private AddBrickFragment holdAddButtonHandlerWhilePaused = null;
 
 	private static boolean cameFromScriptActivity = false;
 	private static UserBrick brickToFocus;
@@ -230,9 +231,16 @@ public class AddBrickFragment extends SherlockListFragment {
 	}
 
 	@Override
+	public void onPause() {
+		super.onPause();
+		holdAddButtonHandlerWhilePaused = addButtonHandler;
+		addButtonHandler = null;
+	}
+
+	@Override
 	public void onResume() {
 		super.onResume();
-
+		addButtonHandler = holdAddButtonHandlerWhilePaused;
 	}
 
 	@Override

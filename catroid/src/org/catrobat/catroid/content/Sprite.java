@@ -116,8 +116,8 @@ public class Sprite implements Serializable, Cloneable {
 		return b;
 	}
 
-	public List<Brick> getUserBrickList() {
-		if (userBricks == null) {
+	public List<Brick> getUserBrickListAtLeastOneBrick() {
+		if (userBricks == null || userBricks.size() == 0) {
 			initUserBrickList();
 		}
 		return userBricks;
