@@ -55,11 +55,11 @@ public class UserBrickTest extends AndroidTestCase {
 
 		assertTrue("the sprite should have zero user bricks after being created and initialized.", array.size() == 0);
 
-		Reflection.invokeMethod(sprite, "initUserBrickList");
+		Reflection.invokeMethod(sprite, "getUserBrickList");
 
 		array = (ArrayList<Script>) Reflection.getPrivateField(sprite, "userBricks");
 
-		assertTrue("the sprite should have one user brick after initUserBrickList()", array.size() == 1);
+		assertTrue("the sprite should have one user brick after getUserBrickList()", array.size() == 1);
 
 	}
 
