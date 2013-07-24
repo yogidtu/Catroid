@@ -31,8 +31,8 @@ import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Layout;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 public class Formula implements Serializable {
@@ -158,18 +158,6 @@ public class Formula implements Serializable {
 		}
 	}
 
-	public void removeTextFieldHighlighting(View brickView, int orientation) {
-		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
-
-		int width = formulaTextField.getWidth();
-		Log.d("FOREST", "a: " + (originalEditTextDrawable == null ? "null" : originalEditTextDrawable.toString()));
-		formulaTextField.setBackgroundDrawable(originalEditTextDrawable);
-		if (brickView.getId() != R.id.brick_user_main_layout) {
-			formulaTextField.setWidth(width);
-		}
-		originalEditTextDrawable = null;
-	}
-
 	public void highlightTextField(View brickView, int orientation) {
 		Drawable highlightBackground = null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -180,12 +168,9 @@ public class Formula implements Serializable {
 
 		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
 
-		if (originalEditTextDrawable == null) {
-			Log.d("FOREST", "WHAT1: " + formulaTextField.toString());
-			originalEditTextDrawable = formulaTextField.getBackground();
-			Log.d("FOREST", "WHAT: "
-					+ (originalEditTextDrawable == null ? "null" : originalEditTextDrawable.toString()));
-		}
+		// trying to do this here is futile, it will always return null.
+		//originalEditTextDrawable = formulaTextField.getBackground();
+
 		int width = formulaTextField.getWidth();
 		width = Math.max(width, 130);
 		formulaTextField.setBackground(highlightBackground);
@@ -194,8 +179,39 @@ public class Formula implements Serializable {
 		}
 	}
 
+	public void removeTextFieldHighlighting(View brickView, int orientation) {
+		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
+
+		int width = formulaTextField.getWidth();
+		originalEditTextDrawable = getDefaultBackgroundRecursively(brickView, formulaTextField);
+		formulaTextField.setBackground(originalEditTextDrawable);
+		if (brickView.getId() != R.id.brick_user_main_layout) {
+			formulaTextField.setWidth(width);
+		}
+		originalEditTextDrawable = null;
+	}
+
+	private Drawable getDefaultBackgroundRecursively(View brickView, EditText formulaTextField) {
+		if (brickView instanceof ViewGroup) {
+			ViewGroup brickViewIterable = ((ViewGroup) brickView);
+			for (int i = 0; i < brickViewIterable.getChildCount(); ++i) {
+				View nextChild = brickViewIterable.getChildAt(i);
+				Drawable recursiveCandidate = getDefaultBackgroundRecursively(nextChild, formulaTextField);
+				if (recursiveCandidate != null) {
+					return recursiveCandidate;
+				}
+			}
+		} else if (brickView instanceof EditText && brickView != formulaTextField) {
+			Drawable candidate = brickView.getBackground();
+			if (candidate != null) {
+				return candidate;
+			}
+		}
+
+		return null;
+	}
+
 	public void prepareToRemove() {
-		Log.d("FOREST", "GETTING RID OF : " + originalEditTextDrawable.toString());
 		originalEditTextDrawable = null;
 		formulaTextFieldId = null;
 	}
