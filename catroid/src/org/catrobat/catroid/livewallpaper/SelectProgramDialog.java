@@ -30,13 +30,13 @@ import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.UtilFile;
-import org.catrobat.catroid.utils.Utils;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -51,14 +51,18 @@ public class SelectProgramDialog extends Dialog {
 		this.context = context;
 	}
 
+	//	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dialog_lwp_select_program);
+		//		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 
 		final RadioGroup rg = new RadioGroup(context);
 		rg.setOrientation(RadioGroup.VERTICAL);
-		rg.setPadding(50, 0, 50, 50);
+		rg.setPadding(50, 50, 50, 50);
 
 		File rootDirectory = new File(Constants.DEFAULT_ROOT);
 		int num_of_projects = UtilFile.getProjectNames(rootDirectory).size();
@@ -88,34 +92,15 @@ public class SelectProgramDialog extends Dialog {
 				//				boolean test = ProjectManager.getInstance().loadProject(rbb.getText().toString(), context, false);
 				Project project = StorageHandler.getInstance().loadProject(rbb.getText().toString());
 				ProjectManager.getInstance().setProject(project);
+				StorageHandler.getInstance().saveProject(project);
+
 				//				ProjectManager.getInstance().saveProject();
-				boolean temp = Utils.isStandardProject(project, context);
-				Log.d("RGB", "is standard: " + temp);
+				//				boolean temp = Utils.isStandardProject(project, context);
+				//				Log.d("RGB", "is standard: " + temp);
 
 				//				SelectProgramDialog.this.dismiss();
 			}
 		});
 
-		//		for (String projectName : UtilFile.getProjectNames(rootDirectory)) {
-		//
-		//		}
-
-		//		final Button setProgram = new Button(context);
-		//		setProgram.setText("Set Program");
-		//		//		setProgram.setTextColor(Color.WHITE);
-		//		ll.addView(setProgram);
-		//
-		//		setProgram.setOnClickListener(new View.OnClickListener() {
-		//
-		//			@Override
-		//			public void onClick(View v) {
-		//				// TODO Auto-generated method stub
-		//				//				for (int i = 0; i < 5; i++) {
-		//				//					rg.removeView(rb[i]);//now the RadioButtons are in the RadioGroup
-		//				//				}
-		//				//				ll.removeView(setProgram);
-		//				SelectProgramDialog.this.dismiss();
-		//			}
-		//		});
 	}
 }
