@@ -268,6 +268,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 			Utils.saveToPreferences(getActivity(), Constants.PREF_PROJECTNAME_KEY, ProjectManager.INSTANCE
 					.getCurrentProject().getName());
 		}
+
 	}
 
 	// Code from Stackoverflow to reduce memory problems
@@ -277,6 +278,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		//new_project_dialog.dismiss();
 
 	}
 
@@ -322,6 +324,8 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		}
 	}
 
+	NewProjectDialog new_project_dialog;
+
 	public void handleNewButton(View v) {
 		if (!viewSwitchLock.tryLock()) {
 			return;
@@ -331,8 +335,8 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		 * showOrientationDialog();
 		 * // getActivity().showDialog(DIALOG_ALERT);
 		 */
-		NewProjectDialog dialog = new NewProjectDialog();
-		dialog.show(getFragmentManager(), NewProjectDialog.DIALOG_FRAGMENT_TAG);
+		new_project_dialog = new NewProjectDialog();
+		new_project_dialog.show(getFragmentManager(), NewProjectDialog.DIALOG_FRAGMENT_TAG);
 
 	}
 

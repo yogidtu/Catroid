@@ -40,12 +40,13 @@ public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
 
 		android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		listFragment = new MainMenuActivityFragment_Shruti();
-		Log.v("reached111111", "till here");
+
 		ft.add(R.id.projectList, listFragment, "List_Fragment");
+		Log.v("Loaded", "List_Fragment");
 		//ft.addToBackStack(null);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		ft.commit();
-		Log.v("reached", "till here");
+		//Log.v("reached", "till here");
 
 		actionBar = getSupportActionBar();
 		actionBar.setDisplayUseLogoEnabled(true);
