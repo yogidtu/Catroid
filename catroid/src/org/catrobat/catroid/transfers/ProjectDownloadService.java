@@ -109,6 +109,7 @@ public class ProjectDownloadService extends IntentService {
 	public void onDestroy() {
 
 		if (result && showOverwriteDialog) {
+<<<<<<< HEAD
 			// project name and zip file string are temporariliy saved in the
 			// StatusBarNotificationManager to create it later on in the right
 			// context
@@ -125,6 +126,16 @@ public class ProjectDownloadService extends IntentService {
 						activity, projectName, zipFileString);
 				renameDialog.show(activity.getSupportFragmentManager(),
 						OverwriteRenameDialog.DIALOG_FRAGMENT_TAG);
+=======
+			//project name and zip file string are temporariliy saved in the StatusBarNotificationManager to create it later on in the right context  
+			StatusBarNotificationManager.getInstance().downloadProjectName.add(projectName);
+			StatusBarNotificationManager.getInstance().downloadProjectZipFileString.add(zipFileString);
+			try {
+				//The context of the calling activity is needed, otherwise an exception occurs
+				MainMenuActivity activity = StatusBarNotificationManager.getInstance().getActivity(notificationId);
+				OverwriteRenameDialog renameDialog = new OverwriteRenameDialog(activity, projectName, zipFileString);
+				renameDialog.show(activity.getSupportFragmentManager(), OverwriteRenameDialog.DIALOG_FRAGMENT_TAG);
+>>>>>>> master
 			} catch (RuntimeException e) {
 				e.printStackTrace();
 			}

@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.uitest.ui;
+package org.catrobat.catroid.uitest.ui.activity;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +44,7 @@ import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
+import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
@@ -84,6 +85,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		super.tearDown();
 	}
 
+	@Device
 	public void testCreateNewProject() {
 		File directory = new File(Constants.DEFAULT_ROOT + "/" + testProject);
 		UtilFile.deleteDirectory(directory);
@@ -113,6 +115,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 				solo.searchText(solo.getString(R.string.new_project_dialog_title)));
 	}
 
+	@Device
 	public void testCreateNewProjectErrors() {
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.clearEditText(0);
@@ -148,6 +151,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		UtilFile.deleteDirectory(directory);
 	}
 
+	@Device
 	public void testCreateNewProjectWithBlacklistedCharacters() {
 		String directoryPath = Utils.buildProjectPath(projectNameWithBlacklistedCharacters);
 		File directory = new File(directoryPath);
@@ -166,6 +170,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		assertTrue("Project with blacklisted characters was not created!", file.exists());
 	}
 
+	@Device
 	public void testCreateNewProjectWithWhitelistedCharacters() {
 		String directoryPath = Utils.buildProjectPath(projectNameWithWhitelistedCharacters);
 		File directory = new File(directoryPath);
@@ -255,6 +260,12 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		assertEquals("Sprite at index 4 is not \"pig\"!", "pig", fourth.getName());
 	}
 
+	public void testRateAppMenuExists() {
+		solo.sendKey(Solo.MENU);
+		assertTrue("App rating menu not found in overflow menu!",
+				solo.searchText(solo.getString(R.string.main_menu_rate_app)));
+	}
+
 	public void testShouldDisplayDialogIfVersionNumberTooHigh() throws Throwable {
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 		// Prevent Utils from returning true in isApplicationDebuggable
@@ -266,7 +277,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 
 		runTestOnUiThread(new Runnable() {
 			public void run() {
-				ProjectManager.INSTANCE.loadProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME, getActivity(), true);
+				ProjectManager.getInstance().loadProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME, getActivity(), true);
 			}
 		});
 
@@ -331,7 +342,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		if (standardProject == null) {
 			fail("Could not create standard project");
 		}
-		ProjectManager.INSTANCE.setProject(standardProject);
+		ProjectManager.getInstance().setProject(standardProject);
 		StorageHandler.getInstance().saveProject(standardProject);
 
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
@@ -346,8 +357,8 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		startingScript.addBrick(new SetLookBrick(backgroundSprite));
 		startingScript.addBrick(new SetLookBrick(backgroundSprite));
 		assertEquals("Number of bricks in background sprite was wrong", 6, backgroundSprite.getNumberOfBricks());
-		ProjectManager.INSTANCE.setCurrentSprite(backgroundSprite);
-		ProjectManager.INSTANCE.setCurrentScript(startingScript);
+		ProjectManager.getInstance().setCurrentSprite(backgroundSprite);
+		ProjectManager.getInstance().setCurrentScript(startingScript);
 		StorageHandler.getInstance().saveProject(standardProject);
 
 		UiTestUtils.goBackToHome(getInstrumentation());
@@ -363,12 +374,12 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 				defaultSharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null));
 
 		Intent intent = new Intent(solo.getCurrentActivity(), ProjectActivity.class);
-		ProjectManager.INSTANCE.setProject(null);
+		ProjectManager.getInstance().setProject(null);
 		solo.getCurrentActivity().startActivity(intent);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		UiTestUtils.waitForText(solo, solo.getString(R.string.default_project_backgroundname));
 		assertEquals("Number of bricks in background sprite was wrong - standard project was overwritten", 6,
-				ProjectManager.INSTANCE.getCurrentProject().getSpriteList().get(0).getNumberOfBricks());
+				ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).getNumberOfBricks());
 	}
 
 	public void testProjectNameVisible() {
@@ -392,5 +403,27 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		solo.goBack();
 		assertTrue("The name of the current project is not displayed on the continue button", solo.getButton(0)
 				.getText().toString().endsWith(testProject2));
+	}
+
+	public void testCommunityDialog() {
+		String webButtonText = solo.getString(R.string.main_menu_web);
+		String cancelButtonText = solo.getString(R.string.cancel_button);
+		String dialogTitleText = solo.getString(R.string.main_menu_web_dialog_title);
+
+		solo.clickOnButton(webButtonText);
+		solo.sleep(300);
+		assertTrue("Alert dialog title not found", solo.searchText(dialogTitleText));
+		assertTrue("Alert dialog message not found",
+				solo.searchText(solo.getString(R.string.main_menu_web_dialog_message)));
+		assertTrue("OK button not found", solo.searchText(solo.getString(R.string.ok)));
+		assertTrue("Cancel button not found", solo.searchText(cancelButtonText));
+
+		solo.clickOnButton(cancelButtonText);
+		solo.sleep(200);
+		assertFalse("Dialog was not closed when pressing cancel", solo.searchText(dialogTitleText));
+		solo.clickOnButton(webButtonText);
+		solo.sleep(300);
+		solo.goBack();
+		assertFalse("Dialog was not closed when clicked back button", solo.searchText(dialogTitleText));
 	}
 }

@@ -33,6 +33,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
+import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
@@ -93,6 +94,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	}
 
 	@FlakyTest(tolerance = 4)
+	@Device
 	public void testUploadProjectSuccessAndTokenReplacementAfterUpload() throws Throwable {
 
 		setServerURLToTestUrl();
@@ -124,6 +126,314 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		//downloadProject();
 	}
 
+<<<<<<< HEAD
+=======
+	@FlakyTest(tolerance = 4)
+	@Device
+	public void testUploadProjectOldCatrobatLanguageVersion() throws Throwable {
+		setServerURLToTestUrl();
+
+		createTestProject(testProject);
+		solo.waitForFragmentById(R.id.fragment_sprites_list);
+		solo.sleep(1000);
+		UiTestUtils.clickOnHomeActionBarButton(solo);
+		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+
+		UiTestUtils.createValidUser(getActivity());
+
+		// change catrobatLanguage to a version that is not supported by web
+		// should lead to an errormessage after upload
+		Project testProject = ProjectManager.getInstance().getCurrentProject();
+		testProject.setCatrobatLanguageVersion(0.3f);
+		StorageHandler.getInstance().saveProject(testProject);
+
+		solo.clickOnText(solo.getString(R.string.main_menu_upload));
+		solo.waitForText(uploadDialogTitle);
+
+		// enter a new title
+		solo.clearEditText(0);
+		solo.clickOnEditText(0);
+		solo.enterText(0, newTestProject);
+		solo.goBack();
+
+		// enter a description
+		solo.clearEditText(1);
+		solo.clickOnEditText(1);
+		solo.enterText(1, newTestDescription);
+
+		solo.clickOnButton(solo.getString(R.string.upload_button));
+
+		boolean uploadErrorOccurred = solo.waitForText(solo.getString(R.string.error_project_upload));
+
+		int statusCode = 0;
+		int statusCodeWrongLanguageVersion = 518;
+		statusCode = (Integer) Reflection.getPrivateField(ServerCalls.getInstance(), "uploadStatusCode");
+		Log.v("statusCode=", "" + statusCode);
+
+		assertTrue("Upload did work, but error toastmessage should have been displayed", uploadErrorOccurred);
+		assertEquals("Wrong status code from Web", statusCodeWrongLanguageVersion, statusCode);
+		UiTestUtils.clearAllUtilTestProjects();
+	}
+
+	@FlakyTest(tolerance = 4)
+	@Device
+	public void testRenameProjectNameAndDescriptionWhenUploading() throws Throwable {
+		setServerURLToTestUrl();
+
+		String originalProjectName = testProject;
+		String originalProjectDescription = testDescription;
+		createTestProject(originalProjectName);
+		ProjectManager.getInstance().getCurrentProject().setDescription(originalProjectDescription);
+
+		//intent to the main activity is sent since changing activity orientation is not working
+		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
+		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		getActivity().startActivity(intent);
+
+		UiTestUtils.createValidUser(getActivity());
+
+		//Project name and description are renamed to testproject2 and testdescription2 in uploadProject()
+		String projectNameSetWhenUploading = newTestProject;
+		String projectDescriptionSetWhenUploading = newTestDescription;
+		uploadProject(newTestProject, newTestDescription);
+		solo.sleep(5000);
+
+		Project uploadProject = StorageHandler.getInstance().loadProject(newTestProject);
+
+		String DeserializedProjectName = uploadProject.getName();
+		String DeserializedProjectDescription = uploadProject.getDescription();
+		assertTrue("Deserialized project name was not renamed correctly",
+				DeserializedProjectName.equalsIgnoreCase(projectNameSetWhenUploading));
+		assertTrue("Deserialized project description was not renamed correctly",
+				DeserializedProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
+
+		UiTestUtils.clearAllUtilTestProjects();
+
+		//Download replaces project. Name and description should be testproject2 and testdescription2
+		downloadProjectAndReplace(newTestProject);
+		Project downloadedProject = StorageHandler.getInstance().loadProject(newTestProject);
+
+		String serverProjectName = downloadedProject.getName();
+		String serverProjectDescription = downloadedProject.getDescription();
+		assertTrue("Project name on server was not correctly renamed",
+				serverProjectName.equalsIgnoreCase(projectNameSetWhenUploading));
+		assertTrue("Project description on server was not correctly renamed",
+				serverProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
+	}
+
+	@FlakyTest(tolerance = 4)
+	@Device
+	public void testRenameProjectDescriptionWhenUploading() throws Throwable {
+		setServerURLToTestUrl();
+
+		String projectName = testProject;
+		String originalProjectDescription = testDescription;
+		createTestProject(projectName);
+		ProjectManager.getInstance().getCurrentProject().setDescription(originalProjectDescription);
+
+		//intent to the main activity is sent since changing activity orientation is not working
+		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
+		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		getActivity().startActivity(intent);
+
+		UiTestUtils.createValidUser(getActivity());
+
+		//Project description is changed to testdescription2 in uploadProject()
+		String projectDescriptionSetWhenUploading = newTestDescription;
+		uploadProject(projectName, newTestDescription);
+		solo.sleep(5000);
+
+		Project uploadProject = StorageHandler.getInstance().loadProject(projectName);
+
+		String DeserializedProjectName = uploadProject.getName();
+		String DeserializedProjectDescription = uploadProject.getDescription();
+		assertTrue("Deserialized project name was changed", DeserializedProjectName.equalsIgnoreCase(projectName));
+		assertTrue("Deserialized project description was not renamed correctly",
+				DeserializedProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
+
+		UiTestUtils.clearAllUtilTestProjects();
+
+		//Download replaces project. Name and description should be testproject1 and testdescription2
+		downloadProjectAndReplace(projectName);
+		Project downloadedProject = StorageHandler.getInstance().loadProject(projectName);
+
+		String serverProjectName = downloadedProject.getName();
+		String serverProjectDescription = downloadedProject.getDescription();
+		assertTrue("Project name on server was changed", serverProjectName.equalsIgnoreCase(projectName));
+		assertTrue("Project name on server was not correctly renamed",
+				serverProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
+	}
+
+	@FlakyTest(tolerance = 4)
+	@Device
+	public void testUpAndDownloadJapaneseUnicodeProject() throws Throwable {
+		setServerURLToTestUrl();
+
+		String testProject = UiTestUtils.JAPANESE_PROJECT_NAME;
+		createTestProject(testProject);
+
+		//intent to the main activity is sent since changing activity orientation is not working
+		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
+		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		getActivity().startActivity(intent);
+
+		UiTestUtils.createValidUser(getActivity());
+
+		uploadProject(testProject, "");
+		solo.sleep(5000);
+
+		Project uploadProject = StorageHandler.getInstance().loadProject(testProject);
+		String DeserializedProjectName = uploadProject.getName();
+		assertTrue("Deserialized project name was changed", DeserializedProjectName.equalsIgnoreCase(testProject));
+
+		downloadProjectAndReplace(testProject);
+		Project downloadedProject = StorageHandler.getInstance().loadProject(testProject);
+
+		String serverProjectName = downloadedProject.getName();
+		assertTrue("Project name on server was changed", serverProjectName.equalsIgnoreCase(testProject));
+	}
+
+	@FlakyTest(tolerance = 4)
+	@Device
+	public void testDownload() throws Throwable {
+		setServerURLToTestUrl();
+
+		String projectName = UiTestUtils.DEFAULT_TEST_PROJECT_NAME;
+		UiTestUtils.createTestProject();
+
+		//Adds a sufficient number of media files so that the project is big enough (5 files ~0.4MB) for download-testing
+		int numberMediaFiles = 5;
+		String soundName = "testSound";
+
+		ArrayList<SoundInfo> soundInfoList = ProjectManager.getInstance().getCurrentSprite().getSoundList();
+		for (int number = 0; number < numberMediaFiles; number++) {
+			File soundFile = UiTestUtils.saveFileToProject(projectName,
+					"longsound" + Integer.toString(number) + ".mp3", LONG_TEST_SOUND,
+					getInstrumentation().getContext(), UiTestUtils.FileTypes.SOUND);
+			SoundInfo soundInfo = new SoundInfo();
+			soundInfo.setSoundFileName(soundFile.getName());
+			soundInfo.setTitle(soundName + Integer.toString(number));
+			soundInfoList.add(soundInfo);
+			ProjectManager.getInstance().getFileChecksumContainer()
+					.addChecksum(soundInfo.getChecksum(), soundInfo.getAbsolutePath());
+		}
+		StorageHandler.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
+		Project newProject = StorageHandler.getInstance().loadProject(projectName);
+		ProjectManager.getInstance().setProject(newProject);
+
+		UiTestUtils.createValidUser(getActivity());
+		uploadProject(projectName, "");
+
+		Project uploadProject = StorageHandler.getInstance().loadProject(projectName);
+		String deserializedProjectName = uploadProject.getName();
+		assertTrue("Project was successfully uploaded", deserializedProjectName.equalsIgnoreCase(projectName));
+		UiTestUtils.clearAllUtilTestProjects();
+
+		downloadProjectAndReplace(projectName);
+		Project downloadedProject = StorageHandler.getInstance().loadProject(projectName);
+		String serverProjectName = downloadedProject.getName();
+		assertTrue("Project was successfully downloaded", serverProjectName.equalsIgnoreCase(projectName));
+	}
+
+	@FlakyTest(tolerance = 4)
+	@Device
+	public void testUploadStandardProject() throws Throwable {
+		if (!createAndSaveStandardProject() || this.standardProject == null) {
+			fail("Standard project not created");
+		}
+
+		setServerURLToTestUrl();
+		UiTestUtils.createValidUser(getActivity());
+
+		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
+
+		String uploadButtonText = solo.getString(R.string.upload_button);
+		assertTrue("Upload button not found within 5 secs!", solo.waitForText(uploadButtonText, 0, 5000));
+
+		solo.goBack();
+		solo.sleep(500);
+		solo.clickOnButton(uploadButtonText);
+
+		assertTrue("When uploading a project with the standard project name,  the error message should be shown",
+				solo.searchText(solo.getString(R.string.error_upload_project_with_default_name)));
+
+		solo.clickOnButton(solo.getString(R.string.close));
+
+		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
+		solo.waitForText(uploadButtonText);
+		solo.goBack();
+		solo.sleep(500);
+
+		while (solo.scrollUp()) {
+
+		}
+		solo.clearEditText(0);
+		solo.enterText(0, testProject);
+		solo.clickOnButton(uploadButtonText);
+		solo.waitForDialogToClose(10000);
+
+		assertTrue("Upload of unmodified standard project should not be possible, but succeeded",
+				solo.searchText(solo.getString(R.string.error_upload_default_project)));
+
+	}
+
+	@FlakyTest(tolerance = 4)
+	@Device
+	public void testUploadModifiedStandardProject() throws Throwable {
+		if (!createAndSaveStandardProject() || this.standardProject == null) {
+			fail("Standard project not created");
+		}
+
+		setServerURLToTestUrl();
+		UiTestUtils.createValidUser(getActivity());
+
+		solo.waitForText(solo.getString(R.string.main_menu_continue));
+		solo.clickOnText(solo.getString(R.string.main_menu_continue));
+
+		solo.waitForText(solo.getString(R.string.default_project_sprites_mole_name) + " 1");
+		solo.clickOnText(solo.getString(R.string.default_project_sprites_mole_name) + " 1");
+
+		solo.waitForText(solo.getString(R.string.looks));
+		solo.clickOnButton(solo.getString(R.string.looks));
+
+		String deleteLookText = solo.getString(R.string.delete);
+		solo.clickLongOnText(solo.getString(R.string.default_project_sprites_mole_whacked));
+		solo.waitForText(deleteLookText);
+		solo.clickOnText(deleteLookText);
+		solo.clickOnButton(solo.getString(R.string.yes));
+
+		solo.goBack();
+		solo.goBack();
+		solo.goBack();
+
+		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
+		String uploadButtonText = solo.getString(R.string.upload_button);
+		solo.waitForText(uploadButtonText);
+		solo.goBack();
+		solo.waitForText(uploadButtonText);
+		solo.clearEditText(0);
+		solo.enterText(0, testProject);
+		solo.clickOnButton(uploadButtonText);
+
+		assertTrue("Upload of the modified standard project should be possible, but did not succeed",
+				solo.waitForText(solo.getString(R.string.success_project_upload), 0, 10000));
+
+	}
+
+	private boolean createAndSaveStandardProject() {
+		try {
+			standardProject = StandardProjectHandler.createAndSaveStandardProject(
+					solo.getString(R.string.default_project_name), getInstrumentation().getTargetContext());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		ProjectManager.getInstance().setProject(standardProject);
+		StorageHandler.getInstance().saveProject(standardProject);
+		return true;
+	}
+
+>>>>>>> master
 	private void createTestProject(String projectToCreate) {
 		//solo.waitForFragmentByTag("List_Fragment");
 		//solo.assertCurrentActivity("It is not alive", MainMenuActivity_Shruti.class);
