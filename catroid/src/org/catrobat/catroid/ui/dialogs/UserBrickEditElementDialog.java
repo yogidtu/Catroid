@@ -52,6 +52,7 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 	private static boolean editMode;
 	private static int stringResourceOfTitle;
 	private static int stringResourceOfHintText;
+	private static ArrayList<String> takenVariables;
 
 	public UserBrickEditElementDialog() {
 		super();
@@ -73,6 +74,10 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 
 	public static void setHintText(int stringResource) {
 		stringResourceOfHintText = stringResource;
+	}
+
+	public static void setTakenVariables(ArrayList<String> variables) {
+		takenVariables = variables;
 	}
 
 	public static int getDefaultText() {
@@ -174,6 +179,13 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 				if (editable.length() == 0) {
 					positiveButton.setEnabled(false);
 				}
+				for (String s : takenVariables) {
+					if (editable.toString().equals(s)) {
+						positiveButton.setEnabled(false);
+						break;
+					}
+				}
+
 			}
 		});
 	}

@@ -38,7 +38,7 @@ public class UserBrickUIData implements Serializable {
 	public boolean isVariable;
 	public boolean hasLocalizedString;
 	public int localizedStringId;
-	public CharSequence userDefinedName = "";
+	public String userDefinedName = "";
 
 	public CharSequence getString(Context context) {
 		CharSequence text = null;

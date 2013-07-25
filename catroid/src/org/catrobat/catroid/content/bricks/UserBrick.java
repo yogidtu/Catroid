@@ -60,7 +60,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	private transient View prototypeView;
 
 	// belonging to brick instance
-	private transient ArrayList<UserBrickUIComponent> uiComponents;
+	private ArrayList<UserBrickUIComponent> uiComponents;
 
 	// belonging to stored brick
 	public UserBrickUIDataArray uiData;
@@ -71,14 +71,14 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		sprite.addUserBrick(this);
 		uiData = new UserBrickUIDataArray();
 		this.definitionBrick = new UserScriptDefinitionBrick(sprite, this);
-		updateUIComponents();
+		updateUIComponents(null);
 	}
 
 	public UserBrick(Sprite sprite, UserBrickUIDataArray uiData, UserScriptDefinitionBrick definitionBrick) {
 		this.sprite = sprite;
 		this.uiData = uiData;
 		this.definitionBrick = definitionBrick;
-		updateUIComponents();
+		updateUIComponents(null);
 	}
 
 	@Override
@@ -148,7 +148,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		return uiComponents.iterator();
 	}
 
-	private void updateUIComponents() {
+	private void updateUIComponents(Context context) {
 		Log.d("FOREST", "UB.updateUIComponents");
 		ArrayList<UserBrickUIComponent> newUIComponents = new ArrayList<UserBrickUIComponent>();
 
@@ -160,8 +160,29 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			}
 			newUIComponents.add(c);
 		}
+
+		if (context != null && uiComponents != null) {
+			copyFormulasMatchingNames(uiComponents, newUIComponents, context);
+		}
+
 		uiComponents = newUIComponents;
 		lastDataVersion = uiData.version;
+	}
+
+	private void copyFormulasMatchingNames(ArrayList<UserBrickUIComponent> from, ArrayList<UserBrickUIComponent> to,
+			Context context) {
+
+		for (UserBrickUIComponent fromElement : from) {
+			UserBrickUIData fromData = uiData.get(fromElement.dataIndex);
+			if (fromData.isVariable) {
+				for (UserBrickUIComponent toElement : to) {
+					UserBrickUIData toData = uiData.get(toElement.dataIndex);
+					if (fromData.getString(context).equals(toData.getString(context))) {
+						toElement.variableFormula = fromElement.variableFormula;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -189,7 +210,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
-
+		Log.d("FOREST", "UB.getView");
 		if (animationState) {
 			return view;
 		}
@@ -215,6 +236,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getPrototypeView(Context context) {
+		Log.d("FOREST", "UB.getPrototypeView");
 		prototypeView = View.inflate(context, R.layout.brick_user, null);
 
 		onLayoutChanged(prototypeView);
@@ -224,8 +246,9 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
+		Log.d("FOREST", "UB.getViewWithAlpha");
 		if (lastDataVersion < uiData.version || uiComponents == null) {
-			updateUIComponents();
+			updateUIComponents(view.getContext());
 			onLayoutChanged(view);
 		}
 
@@ -250,7 +273,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	public void onLayoutChanged(View currentView) {
 		Log.d("FOREST", "UB.onLayoutChanged");
 		if (lastDataVersion < uiData.version || uiComponents == null) {
-			updateUIComponents();
+			updateUIComponents(currentView.getContext());
 		}
 
 		boolean prototype = (currentView == prototypeView);
@@ -273,7 +296,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 					currentTextView.setTextAppearance(context, R.style.BrickPrototypeTextView);
 					currentTextView.setText(String.valueOf(c.variableFormula.interpretInteger(sprite)));
 				} else {
-					currentTextView.setId(View.generateViewId());
+					currentTextView.setId(id);
 					currentTextView.setTextAppearance(context, R.style.BrickEditText);
 					currentTextView.setText(String.valueOf(c.variableFormula.interpretInteger(sprite)));
 					c.variableFormula.setTextFieldId(currentTextView.getId());
@@ -328,13 +351,18 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public void onClick(View eventOrigin) {
-		Log.d("FOREST", "UB.onClick");
+		Log.d("FOREST", "UB.onClick - " + eventOrigin.getId());
 		if (checkbox.getVisibility() == View.VISIBLE) {
 			return;
 		}
 
 		for (UserBrickUIComponent c : uiComponents) {
 			UserBrickUIData d = uiData.get(c.dataIndex);
+
+			if (d.isVariable) {
+				Log.d("FOREST", "-" + c.textView.getId());
+			}
+
 			if (d.isVariable && c.textView.getId() == eventOrigin.getId()) {
 				FormulaEditorFragment.showFragment(view, this, c.variableFormula);
 			}

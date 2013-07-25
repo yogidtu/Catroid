@@ -114,6 +114,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	}
 
 	public static void showFragment(View view, Brick brick, Formula formula) {
+		Log.d("FOREST", "wt1");
 		SherlockFragmentActivity activity = null;
 		activity = (SherlockFragmentActivity) view.getContext();
 
@@ -124,6 +125,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
 
 		if (formulaEditorFragment == null) {
+			Log.d("FOREST", "woof");
 			formulaEditorFragment = new FormulaEditorFragment();
 			Bundle bundle = new Bundle();
 			bundle.putSerializable(BRICK_BUNDLE_ARGUMENT, brick);
@@ -135,11 +137,13 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 			fragTransaction.show(formulaEditorFragment);
 			activity.findViewById(R.id.bottom_bar).setVisibility(View.GONE);
 		} else if (formulaEditorFragment.isHidden()) {
+			Log.d("FOREST", "woof1");
 			formulaEditorFragment.updateBrickViewAndFormula(brick, formula);
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(formulaEditorFragment);
 			activity.findViewById(R.id.bottom_bar).setVisibility(View.GONE);
 		} else {
+			Log.d("FOREST", "arf");
 			formulaEditorFragment.setInputFormula(formula, SET_FORMULA_ON_SWITCH_EDIT_TEXT);
 		}
 		fragTransaction.commit();
@@ -150,6 +154,8 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	}
 
 	private void updateBrickView(Brick newBrick) {
+		Log.d("FOREST", "FEF.updateBrickView");
+
 		currentBrick = newBrick;
 		formulaEditorBrick.removeAllViews();
 		View newBrickView = newBrick.getView(context, 0, null);
@@ -189,6 +195,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		Log.d("FOREST", "FEF.onCreateView");
 
 		fragmentView = inflater.inflate(R.layout.fragment_formula_editor, container, false);
 		fragmentView.setFocusableInTouchMode(true);

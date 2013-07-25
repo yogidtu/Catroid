@@ -143,6 +143,7 @@ public class AddBrickFragment extends SherlockListFragment {
 	}
 
 	private void animateBrick(final Brick b, PrototypeBrickAdapter adapter) {
+		Log.d("FOREST", "ABF.animateBrick");
 		Context context = getActivity();
 		Animation animation = AnimationUtils.loadAnimation(context, R.anim.blink);
 

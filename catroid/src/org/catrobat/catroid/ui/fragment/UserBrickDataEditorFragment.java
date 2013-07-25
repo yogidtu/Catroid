@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.ui.fragment;
 
+import java.util.ArrayList;
+
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIData;
@@ -188,10 +190,20 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	}
 
 	public void editElementDialog(int id, CharSequence text, boolean editMode, int title, int defaultText) {
+		ArrayList<String> takenVariables = new ArrayList<String>();
+		int i = 0;
+		for (UserBrickUIData d : currentBrick.uiData) {
+			if (i != id && d.isVariable) {
+				takenVariables.add(d.getString(getActivity()).toString());
+			}
+			i++;
+		}
+
 		UserBrickEditElementDialog dialog = new UserBrickEditElementDialog();
 		dialog.addDialogListener(this);
 		dialog.show(((SherlockFragmentActivity) getActivity()).getSupportFragmentManager(),
 				UserBrickEditElementDialog.DIALOG_FRAGMENT_TAG);
+		UserBrickEditElementDialog.setTakenVariables(takenVariables);
 		UserBrickEditElementDialog.setTitle(title);
 		UserBrickEditElementDialog.setText(text);
 		UserBrickEditElementDialog.setHintText(defaultText);
@@ -200,11 +212,13 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	@Override
 	public void onFinishDialog(CharSequence text) {
+		Log.d("FOREST", "onFinishDialog()");
 		UserBrickUIData d = currentBrick.uiData.get(indexOfCurrentlyEditedElement);
 		if (d != null) {
 			String emptyString = ("").toString();
 			if (text != null) {
-				d.userDefinedName = text;
+				d.hasLocalizedString = false;
+				d.userDefinedName = text.toString();
 			} else if (d.userDefinedName.toString().equals(emptyString)) {
 				currentBrick.uiData.remove(d);
 			}

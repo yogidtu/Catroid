@@ -848,6 +848,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		Log.d("FOREST", "BA.getView");
 		if (draggedBrick != null && dragTargetPosition == position) {
 			return insertionView;
 		}
@@ -1299,6 +1300,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	private void animateSelectedBricks() {
+		Log.d("FOREST", "BA.animateSelectedBricks");
 		if (!animatedBricks.isEmpty()) {
 
 			for (final Brick animationBrick : animatedBricks) {
