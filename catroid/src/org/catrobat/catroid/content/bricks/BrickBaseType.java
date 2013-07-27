@@ -145,4 +145,5 @@ public class BrickBaseType implements Brick {
 	public void setAlpha(int a) {
 		alphaValue = a;
 	}
+
 }
