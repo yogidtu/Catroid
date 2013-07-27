@@ -24,13 +24,17 @@ package org.catrobat.catroid.content.bricks;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.UserVariable;
+import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.ui.BrickLayout;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
@@ -66,15 +70,17 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	public UserBrickUIDataArray uiData;
 	private int lastDataVersion = 0;
 
-	public UserBrick(Sprite sprite) {
+	public UserBrick(Context context, Sprite sprite) {
 		this.sprite = sprite;
 		sprite.addUserBrick(this);
 		uiData = new UserBrickUIDataArray();
 		this.definitionBrick = new UserScriptDefinitionBrick(sprite, this);
+
 		updateUIComponents(null);
 	}
 
-	public UserBrick(Sprite sprite, UserBrickUIDataArray uiData, UserScriptDefinitionBrick definitionBrick) {
+	public UserBrick(Context context, Sprite sprite, UserBrickUIDataArray uiData,
+			UserScriptDefinitionBrick definitionBrick) {
 		this.sprite = sprite;
 		this.uiData = uiData;
 		this.definitionBrick = definitionBrick;
@@ -89,8 +95,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	@Override
-	public UserBrick copyBrickForSprite(Sprite sprite, Script script) {
-		UserBrick copyBrick = clone();
+	public UserBrick copyBrickForSprite(Context context, Sprite sprite, Script script) {
+		UserBrick copyBrick = clone(context);
 		copyBrick.sprite = sprite;
 		return copyBrick;
 	}
@@ -115,11 +121,16 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		return uiData.size() - 1;
 	}
 
-	public int addUILocalizedVariable(int id) {
+	public int addUILocalizedVariable(Context context, int id) {
 		UserBrickUIData comp = new UserBrickUIData();
 		comp.isVariable = true;
 		comp.hasLocalizedString = true;
 		comp.localizedStringId = id;
+
+		UserVariablesContainer variablesContainer = null;
+		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+		variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, comp.getString(context).toString());
+
 		uiData.add(comp);
 		uiData.version++;
 		return uiData.size() - 1;
@@ -130,9 +141,31 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		comp.isVariable = true;
 		comp.userDefinedName = id;
 		comp.hasLocalizedString = false;
+
+		UserVariablesContainer variablesContainer = null;
+		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+		variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, comp.userDefinedName);
+
 		uiData.add(comp);
 		uiData.version++;
 		return uiData.size() - 1;
+	}
+
+	public void renameUIVariable(String oldName, String newName, Context context) {
+		UserBrickUIData variable = null;
+		for (UserBrickUIData data : uiData) {
+			if (data.getString(context).toString().equals(oldName)) {
+				variable = data;
+			}
+		}
+
+		variable.hasLocalizedString = false;
+		variable.userDefinedName = newName;
+
+		UserVariablesContainer variablesContainer = null;
+		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+		variablesContainer.deleteUserVariableFromUserBrick(definitionBrick, oldName);
+		variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, newName);
 	}
 
 	public void removeDataAt(int id) {
@@ -157,6 +190,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			c.dataIndex = i;
 			if (uiData.get(i).isVariable) {
 				c.variableFormula = new Formula(0);
+				c.variableName = uiData.get(i).getString(context).toString();
 			}
 			newUIComponents.add(c);
 		}
@@ -179,8 +213,11 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 					for (UserBrickUIComponent toElement : to) {
 						if (toElement.dataIndex < uiData.size()) {
 							UserBrickUIData toData = uiData.get(toElement.dataIndex);
-							if (fromData.getString(context).equals(toData.getString(context))) {
+							String fromName = fromData.getString(context).toString();
+							String toName = toData.getString(context).toString();
+							if (fromName.equals(toName)) {
 								toElement.variableFormula = fromElement.variableFormula;
+								toElement.variableName = toName;
 							}
 						}
 					}
@@ -349,8 +386,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	@Override
-	public UserBrick clone() {
-		return new UserBrick(getSprite(), uiData, definitionBrick);
+	public UserBrick clone(Context context) {
+		return new UserBrick(context, getSprite(), uiData, definitionBrick);
 	}
 
 	@Override
@@ -376,6 +413,9 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	// this function is called when this brick's action is being placed into a sequence
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
+
+		List<UserBrickVariable> variables = getBrickVariables();
+
 		SequenceAction userSequence = ExtendedActions.sequence();
 		Script userScript = definitionBrick.initScript(sprite); // getScript
 		userScript.run(userSequence);
@@ -383,9 +423,23 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		ArrayList<SequenceAction> returnActionList = new ArrayList<SequenceAction>();
 		returnActionList.add(userSequence);
 
-		Action action = ExtendedActions.userBrick(sprite, userSequence);
+		Action action = ExtendedActions.userBrick(sprite, userSequence, variables);
 		sequence.addAction(action);
 		return returnActionList;
+	}
+
+	private List<UserBrickVariable> getBrickVariables() {
+		LinkedList<UserBrickVariable> theList = new LinkedList<UserBrickVariable>();
+		UserVariablesContainer variablesContainer = null;
+		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+
+		for (UserBrickUIComponent component : uiComponents) {
+
+			List<UserVariable> variables = variablesContainer.getOrCreateVariableListForUserBrick(definitionBrick);
+			UserVariable variable = variablesContainer.findUserVariable(component.variableName, variables);
+			theList.add(new UserBrickVariable(variable, component.variableFormula));
+		}
+		return theList;
 	}
 
 	public UserScriptDefinitionBrick getDefinitionBrick() {

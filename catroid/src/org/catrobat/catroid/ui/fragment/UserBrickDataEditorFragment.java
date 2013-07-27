@@ -23,10 +23,15 @@
 package org.catrobat.catroid.ui.fragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIData;
+import org.catrobat.catroid.formulaeditor.UserVariable;
+import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.ui.DragAndDropBrickLayoutListener;
 import org.catrobat.catroid.ui.DragNDropBrickLayout;
 import org.catrobat.catroid.ui.ScriptActivity;
@@ -190,6 +195,13 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	}
 
 	public void editElementDialog(int id, CharSequence text, boolean editMode, int title, int defaultText) {
+		UserVariablesContainer variablesContainer = null;
+		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+
+		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
+		List<UserVariable> spriteVars = variablesContainer.getOrCreateVariableListForSprite(currentSprite);
+		List<UserVariable> globalVars = variablesContainer.getProjectVariables();
+
 		ArrayList<String> takenVariables = new ArrayList<String>();
 		int i = 0;
 		for (UserBrickUIData d : currentBrick.uiData) {
@@ -197,6 +209,12 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 				takenVariables.add(d.getString(getActivity()).toString());
 			}
 			i++;
+		}
+		for (UserVariable v : spriteVars) {
+			takenVariables.add(v.getName());
+		}
+		for (UserVariable v : globalVars) {
+			takenVariables.add(v.getName());
 		}
 
 		UserBrickEditElementDialog dialog = new UserBrickEditElementDialog();
@@ -211,14 +229,15 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	}
 
 	@Override
-	public void onFinishDialog(CharSequence text) {
+	public void onFinishDialog(CharSequence text, boolean editMode) {
 		Log.d("FOREST", "onFinishDialog()");
 		UserBrickUIData d = currentBrick.uiData.get(indexOfCurrentlyEditedElement);
 		if (d != null) {
 			String emptyString = ("").toString();
 			if (text != null) {
-				d.hasLocalizedString = false;
-				d.userDefinedName = text.toString();
+				String oldString = d.getString(getActivity()).toString();
+				String newString = text.toString();
+				currentBrick.renameUIVariable(oldString, newString, getActivity());
 			} else if (d.userDefinedName.toString().equals(emptyString)) {
 				currentBrick.uiData.remove(d);
 			}

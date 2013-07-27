@@ -59,7 +59,7 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 	}
 
 	public interface DialogListener {
-		void onFinishDialog(CharSequence text);
+		void onFinishDialog(CharSequence text, boolean editMode);
 	}
 
 	private List<DialogListener> listenerList = new ArrayList<UserBrickEditElementDialog.DialogListener>();
@@ -138,7 +138,7 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 
 	private void finishDialog(CharSequence text) {
 		for (DialogListener newVariableDialogListener : listenerList) {
-			newVariableDialogListener.onFinishDialog(text);
+			newVariableDialogListener.onFinishDialog(text, editMode);
 		}
 	}
 

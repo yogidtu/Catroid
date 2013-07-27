@@ -32,6 +32,7 @@ import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.Utils;
 
@@ -45,6 +46,7 @@ public class ProjectManager {
 	private Project project;
 	private Script currentScript;
 	private Sprite currentSprite;
+	private UserBrick currentUserBrick;
 
 	private FileChecksumContainer fileChecksumContainer = new FileChecksumContainer();
 
@@ -264,6 +266,14 @@ public class ProjectManager {
 		} else if (currentSprite.getScriptIndex(script) != -1) {
 			currentScript = script;
 		}
+	}
+
+	public UserBrick getCurrentUserBrick() {
+		return currentUserBrick;
+	}
+
+	public void setCurrentUserBrick(UserBrick brick) {
+		currentUserBrick = brick;
 	}
 
 	public void addSprite(Sprite sprite) {

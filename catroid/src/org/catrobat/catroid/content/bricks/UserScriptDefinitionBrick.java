@@ -71,8 +71,8 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 	}
 
 	@Override
-	public Brick copyBrickForSprite(Sprite sprite, Script script) {
-		UserScriptDefinitionBrick copyBrick = (UserScriptDefinitionBrick) clone();
+	public Brick copyBrickForSprite(Context context, Sprite sprite, Script script) {
+		UserScriptDefinitionBrick copyBrick = (UserScriptDefinitionBrick) clone(context);
 		copyBrick.sprite = sprite;
 		copyBrick.setUserScript((UserScript) script);
 		return copyBrick;
@@ -193,7 +193,7 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 	}
 
 	@Override
-	public Brick clone() {
+	public Brick clone(Context context) {
 		return new UserScriptDefinitionBrick(getSprite(), brick);
 	}
 

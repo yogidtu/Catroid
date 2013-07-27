@@ -22,12 +22,15 @@
  */
 package org.catrobat.catroid.content.actions;
 
+import java.util.List;
+
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.content.BroadcastEvent;
 import org.catrobat.catroid.content.BroadcastEvent.BroadcastType;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.SpeakBrick;
+import org.catrobat.catroid.content.bricks.UserBrickVariable;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 
@@ -350,9 +353,11 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	static public UserBrickAction userBrick(Sprite sprite, Action repeatedAction) {
+	static public UserBrickAction userBrick(Sprite sprite, Action repeatedAction, List<UserBrickVariable> variables) {
 		UserBrickAction action = action(UserBrickAction.class);
 		action.setAction(repeatedAction);
+		action.setVariables(variables);
+		action.setSprite(sprite);
 		return action;
 	}
 }

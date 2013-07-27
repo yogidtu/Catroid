@@ -116,7 +116,7 @@ public class CategoryBricksFactory {
 		} else if (category.equals(context.getString(R.string.category_variables))) {
 			tempList = setupVariablesCategoryList(sprite);
 		} else if (category.equals(context.getString(R.string.category_user_bricks))) {
-			return setupUserBricksCategoryList(sprite);
+			return setupUserBricksCategoryList(sprite, context);
 		} else if (category.equals(context.getString(R.string.category_lego_nxt))) {
 			tempList = setupLegoNxtCategoryList(sprite);
 		}
@@ -225,9 +225,9 @@ public class CategoryBricksFactory {
 		return userVariablesBrickList;
 	}
 
-	private List<Brick> setupUserBricksCategoryList(Sprite sprite) {
+	private List<Brick> setupUserBricksCategoryList(Sprite sprite, Context context) {
 		Log.d("FOREST", "CategoryBricksFactory.setupUserBricksCategoryList");
-		return ProjectManager.getInstance().getCurrentSprite().getUserBrickListAtLeastOneBrick();
+		return ProjectManager.getInstance().getCurrentSprite().getUserBrickListAtLeastOneBrick(context);
 	}
 
 	private List<Brick> setupLegoNxtCategoryList(Sprite sprite) {

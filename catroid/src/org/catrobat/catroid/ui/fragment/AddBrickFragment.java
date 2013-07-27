@@ -172,10 +172,11 @@ public class AddBrickFragment extends SherlockListFragment {
 
 	public void handleAddButton() {
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
-		UserBrick newBrick = new UserBrick(currentSprite);
+		Context context = getActivity();
+		UserBrick newBrick = new UserBrick(context, currentSprite);
 		newBrick.addUIText(scriptFragment.getString(R.string.new_user_brick) + " "
 				+ currentSprite.getNextNewUserBrickId());
-		newBrick.addUILocalizedVariable(R.string.new_user_brick_variable);
+		newBrick.addUILocalizedVariable(getActivity(), R.string.new_user_brick_variable);
 
 		setupSelectedBrickCategory();
 
@@ -313,7 +314,7 @@ public class AddBrickFragment extends SherlockListFragment {
 	}
 
 	public void addBrickToScript(Brick brickToBeAdded) {
-		scriptFragment.updateAdapterAfterAddNewBrick(brickToBeAdded.clone());
+		scriptFragment.updateAdapterAfterAddNewBrick(brickToBeAdded.clone(getActivity()));
 
 		if (brickToBeAdded instanceof ScriptBrick) {
 			Script script = ((ScriptBrick) brickToBeAdded).initScript(ProjectManager.getInstance().getCurrentSprite());

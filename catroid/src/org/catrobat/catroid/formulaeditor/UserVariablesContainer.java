@@ -31,6 +31,8 @@ import java.util.Map;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.UserBrick;
+import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 import org.catrobat.catroid.ui.adapter.UserVariableAdapter;
 
 import android.content.Context;
@@ -44,10 +46,13 @@ public class UserVariablesContainer implements Serializable {
 	private List<UserVariable> projectVariables;
 	@XStreamAlias("objectVariableList")
 	private Map<Sprite, List<UserVariable>> spriteVariables;
+	@XStreamAlias("userBrickVariableList")
+	private Map<UserScriptDefinitionBrick, List<UserVariable>> userBrickVariables;
 
 	public UserVariablesContainer() {
 		projectVariables = new ArrayList<UserVariable>();
 		spriteVariables = new HashMap<Sprite, List<UserVariable>>();
+		userBrickVariables = new HashMap<UserScriptDefinitionBrick, List<UserVariable>>();
 	}
 
 	public UserVariableAdapter createUserVariableAdapter(Context context, Sprite sprite) {
@@ -63,37 +68,79 @@ public class UserVariablesContainer implements Serializable {
 		return var;
 	}
 
+	public List<UserVariable> getProjectVariables() {
+		return projectVariables;
+	}
+
+	public UserVariable addUserBrickUserVariable(String userVariableName) {
+		UserScriptDefinitionBrick currentBrick = null;
+		currentBrick = ProjectManager.getInstance().getCurrentUserBrick().getDefinitionBrick();
+		return addUserBrickUserVariableToUserBrick(currentBrick, userVariableName);
+	}
+
+	public UserVariable addUserBrickUserVariableToUserBrick(UserScriptDefinitionBrick brick, String userVariableName) {
+		List<UserVariable> varList = getOrCreateVariableListForUserBrick(brick);
+		UserVariable userVariableToAdd = new UserVariable(userVariableName, varList);
+		varList.add(userVariableToAdd);
+		return userVariableToAdd;
+	}
+
 	public UserVariable addSpriteUserVariable(String userVariableName) {
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 		return addSpriteUserVariableToSprite(currentSprite, userVariableName);
 	}
 
 	public UserVariable addSpriteUserVariableToSprite(Sprite sprite, String userVariableName) {
-		UserVariable userVariableToAdd = new UserVariable(userVariableName);
 		List<UserVariable> varList = getOrCreateVariableListForSprite(sprite);
+		UserVariable userVariableToAdd = new UserVariable(userVariableName, varList);
 		varList.add(userVariableToAdd);
 		return userVariableToAdd;
 	}
 
 	public UserVariable addProjectUserVariable(String userVariableName) {
-		UserVariable userVariableToAdd = new UserVariable(userVariableName);
+		UserVariable userVariableToAdd = new UserVariable(userVariableName, projectVariables);
 		projectVariables.add(userVariableToAdd);
 		return userVariableToAdd;
 	}
 
+	/**
+	 * This function deletes the user variable with userVariableName in the current context.
+	 * 
+	 * The current context consists of all global variables, the sprite variables for the current sprite,
+	 * and the user brick variables for the current user brick.
+	 */
 	public void deleteUserVariableByName(String userVariableName) {
-		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
-		UserVariable variableToDelete;
-		List<UserVariable> spriteVariables = getOrCreateVariableListForSprite(currentSprite);
-		variableToDelete = findUserVariable(userVariableName, spriteVariables);
+		UserVariable variableToDelete = findUserVariable(userVariableName);
 		if (variableToDelete != null) {
-			spriteVariables.remove(variableToDelete);
+			List<UserVariable> context = variableToDelete.getContext();
+			context.remove(variableToDelete);
+		}
+	}
+
+	public void deleteUserVariableFromUserBrick(UserScriptDefinitionBrick brick, String userVariableName) {
+		List<UserVariable> context = userBrickVariables.get(brick);
+		UserVariable variableToDelete = findUserVariable(userVariableName, context);
+		if (variableToDelete != null) {
+			context.remove(variableToDelete);
 		}
 
-		variableToDelete = findUserVariable(userVariableName, projectVariables);
-		if (variableToDelete != null) {
-			projectVariables.remove(variableToDelete);
+	}
+
+	public List<UserVariable> getOrCreateVariableListForUserBrick(UserScriptDefinitionBrick definitionBrick) {
+		List<UserVariable> variables = userBrickVariables.get(definitionBrick);
+		if (variables == null) {
+			variables = new ArrayList<UserVariable>();
+			userBrickVariables.put(definitionBrick, variables);
 		}
+		return variables;
+	}
+
+	public void cleanVariableListForUserBrick(UserScriptDefinitionBrick definitionBrick) {
+		List<UserVariable> vars = userBrickVariables.get(definitionBrick);
+		if (vars != null) {
+			vars.clear();
+		}
+		userBrickVariables.remove(definitionBrick);
 	}
 
 	public List<UserVariable> getOrCreateVariableListForSprite(Sprite sprite) {
@@ -117,7 +164,37 @@ public class UserVariablesContainer implements Serializable {
 		spriteVariables.remove(sprite);
 	}
 
-	private UserVariable findUserVariable(String name, List<UserVariable> variables) {
+	/**
+	 * This function finds the user variable with userVariableName in the current context.
+	 * 
+	 * The current context consists of all global variables, the sprite variables for the current sprite,
+	 * and the user brick variables for the current user brick.
+	 */
+	public UserVariable findUserVariable(String name) {
+		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
+		UserBrick currentUserBrick = ProjectManager.getInstance().getCurrentUserBrick();
+		UserVariable variableToReturn;
+		List<UserVariable> spriteVariables = getOrCreateVariableListForSprite(currentSprite);
+		variableToReturn = findUserVariable(name, spriteVariables);
+		if (variableToReturn != null) {
+			return variableToReturn;
+		}
+
+		UserScriptDefinitionBrick definitionBrick = currentUserBrick.getDefinitionBrick();
+		List<UserVariable> userBrickVariables = getOrCreateVariableListForUserBrick(definitionBrick);
+		variableToReturn = findUserVariable(name, userBrickVariables);
+		if (variableToReturn != null) {
+			return variableToReturn;
+		}
+
+		variableToReturn = findUserVariable(name, projectVariables);
+		if (variableToReturn != null) {
+			return variableToReturn;
+		}
+		return null;
+	}
+
+	public UserVariable findUserVariable(String name, List<UserVariable> variables) {
 		if (variables == null) {
 			return null;
 		}
@@ -137,6 +214,11 @@ public class UserVariablesContainer implements Serializable {
 		while (spriteIterator.hasNext()) {
 			Sprite currentSprite = spriteIterator.next();
 			resetUserVariables(spriteVariables.get(currentSprite));
+		}
+		Iterator<UserScriptDefinitionBrick> brickIterator = userBrickVariables.keySet().iterator();
+		while (spriteIterator.hasNext()) {
+			UserScriptDefinitionBrick currentBrick = brickIterator.next();
+			resetUserVariables(userBrickVariables.get(currentBrick));
 		}
 	}
 

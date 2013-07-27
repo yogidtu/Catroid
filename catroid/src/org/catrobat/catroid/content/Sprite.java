@@ -35,6 +35,7 @@ import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.UserBrick;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
@@ -116,21 +117,21 @@ public class Sprite implements Serializable, Cloneable {
 		return b;
 	}
 
-	public List<Brick> getUserBrickListAtLeastOneBrick() {
+	public List<Brick> getUserBrickListAtLeastOneBrick(Context context) {
 		if (userBricks == null || userBricks.size() == 0) {
-			initUserBrickList();
+			initUserBrickList(context);
 		}
 		return userBricks;
 	}
 
-	void initUserBrickList() {
+	void initUserBrickList(Context context) {
 		Log.d("FOREST", "Sprite.initUserBricks()");
 		userBricks = new ArrayList<Brick>();
 
 		// the UserBrick constructor will insert the UserBrick into this Sprite's userBricks list.
 		UserBrick exampleBrick = new UserBrick(this);
 		exampleBrick.addUILocalizedString(R.string.example_user_brick);
-		exampleBrick.addUILocalizedVariable(R.string.example_user_brick_variable);
+		exampleBrick.addUILocalizedVariable(context, R.string.example_user_brick_variable);
 
 	}
 

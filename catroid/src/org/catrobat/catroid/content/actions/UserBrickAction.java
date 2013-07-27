@@ -22,18 +22,33 @@
  */
 package org.catrobat.catroid.content.actions;
 
+import java.util.List;
+
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.UserBrickVariable;
+
 import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
 
 public class UserBrickAction extends DelegateAction {
 
-	//private Sprite sprite;
+	private Sprite sprite;
+	private List<UserBrickVariable> variables;
 
-	//public void setSprite(Sprite sprite) {
-	//	this.sprite = sprite;
-	//}
+	public void setSprite(Sprite sprite) {
+		this.sprite = sprite;
+	}
+
+	public void setVariables(List<UserBrickVariable> variables) {
+		this.variables = variables;
+	}
 
 	@Override
 	public boolean act(float delta) {
+		for (UserBrickVariable variable : variables) {
+			double value = variable.formula.interpretDouble(sprite);
+			variable.variable.setValue(value);
+		}
+
 		return action.act(delta);
 	}
 

@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.ui;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
@@ -39,6 +40,7 @@ public class UserBrickScriptActivity extends ScriptActivity {
 	public static void setUserBrick(Brick userBrick) {
 		Log.d("FOREST", "UBSA.setUserBrick");
 		UserBrickScriptActivity.userBrick = (UserBrick) userBrick;
+		ProjectManager.getInstance().setCurrentUserBrick((UserBrick) userBrick);
 	}
 
 	@Override
