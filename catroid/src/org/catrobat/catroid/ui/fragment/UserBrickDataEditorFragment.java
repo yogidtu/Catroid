@@ -29,7 +29,7 @@ import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIData;
 import org.catrobat.catroid.ui.DragAndDropBrickLayoutListener;
 import org.catrobat.catroid.ui.DragNDropBrickLayout;
-import org.catrobat.catroid.ui.UserBrickScriptActivity;
+import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.dialogs.UserBrickEditElementDialog;
 
 import android.content.Context;
@@ -120,8 +120,8 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		FragmentManager fragmentManager = activity.getSupportFragmentManager();
 		fragmentManager.popBackStack();
 
-		if (activity instanceof UserBrickScriptActivity) {
-			((UserBrickScriptActivity) activity).setupActionBar();
+		if (activity instanceof ScriptActivity) {
+			((ScriptActivity) activity).setupActionBar();
 		} else {
 			Log.e("userbricks",
 					"UserBrickDataEditor.onUserDismiss() called when the parent activity is not a UserBrickScriptActivity!\n"

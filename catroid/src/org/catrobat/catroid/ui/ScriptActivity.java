@@ -121,20 +121,32 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		fragmentTransaction.commit();
 
 		setupActionBar();
+		setupBottomBar();
 
 		buttonAdd = (LinearLayout) findViewById(R.id.button_add);
 		updateHandleAddButtonClickListener();
 	}
 
-	private void setupActionBar() {
+	public void setupActionBar() {
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(true);
 		String currentSprite = ProjectManager.getInstance().getCurrentSprite().getName();
 		actionBar.setTitle(currentSprite);
+	}
 
+	public void setupBottomBar() {
+		BottomBar.enableButtons(this);
+		BottomBar.setButtonVisible(this, true);
 		buttonAdd = (LinearLayout) findViewById(R.id.button_add);
 		updateHandleAddButtonClickListener();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		setupActionBar();
+		setupBottomBar();
 	}
 
 	public void updateHandleAddButtonClickListener() {

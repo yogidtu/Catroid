@@ -22,16 +22,11 @@
  */
 package org.catrobat.catroid.ui;
 
-import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
 
 import android.util.Log;
-import android.widget.ArrayAdapter;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 
 /**
  * @author forestjohnson
@@ -47,52 +42,8 @@ public class UserBrickScriptActivity extends ScriptActivity {
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-
-		if (userBrick != null) {
-			setupActionBar();
-		} else {
-			Log.d("FOREST", "UserBrickScriptActivity.onResume with null userBrick");
-		}
-
-	}
-
-	@Override
 	public void setupBrickAdapter(BrickAdapter adapter) {
 		adapter.setUserBrick(userBrick);
 		adapter.updateProjectBrickList();
 	}
-
-	public void setupActionBar() {
-
-		final ActionBar actionBar = getSupportActionBar();
-		actionBar.setHomeButtonEnabled(true);
-		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
-		CharSequence[] items = new String[2];
-		items[0] = getResources().getString(R.string.scripts);
-
-		items[1] = userBrick.getName(this);
-
-		final ArrayAdapter<CharSequence> spinnerAdapter = new ArrayAdapter<CharSequence>(this,
-				R.layout.activity_script_spinner_item, items);
-
-		actionBar.setListNavigationCallbacks(spinnerAdapter, new OnNavigationListener() {
-			@Override
-			public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-				if (isHoveringActive()) {
-					getScriptFragment().getListView().animateHoveringBrick();
-					return true;
-				}
-
-				// TODO handle back
-
-				return true;
-			}
-		});
-		actionBar.setSelectedNavigationItem(1);
-	}
-
 }

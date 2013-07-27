@@ -32,7 +32,6 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
-import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.utils.Utils;
 
@@ -179,16 +178,6 @@ public class DragAndDropListView extends ListView implements OnLongClickListener
 
 		int itemPosition = pointToPosition(x, y);
 		itemPosition = itemPosition < 0 ? ((BrickAdapter) dragAndDropListener).getCount() - 1 : itemPosition;
-
-		if (event.getAction() == MotionEvent.ACTION_UP) {
-			BrickAdapter adapter = ((BrickAdapter) dragAndDropListener);
-			final Brick brick = (Brick) adapter.getItem(itemPosition);
-
-			if (brick instanceof UserScriptDefinitionBrick) {
-				((UserScriptDefinitionBrick) brick).onClick(null);
-				return true;
-			}
-		}
 
 		if (touchedListPosition != itemPosition) {
 			touchedListPosition = itemPosition;

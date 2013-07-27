@@ -117,7 +117,15 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 		// This stuff isn't being included by the style when I use setTextAppearance.
 		define.setFocusable(false);
 		define.setFocusableInTouchMode(false);
-		define.setClickable(false);
+		define.setClickable(true);
+
+		layout.setFocusable(false);
+		layout.setFocusableInTouchMode(false);
+		layout.setClickable(true);
+		preview.setClickable(true);
+		preview.setOnClickListener(this);
+		layout.setOnClickListener(this);
+		define.setOnClickListener(this);
 
 		layout.addView(define);
 

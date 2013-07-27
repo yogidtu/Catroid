@@ -173,12 +173,16 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			Context context) {
 
 		for (UserBrickUIComponent fromElement : from) {
-			UserBrickUIData fromData = uiData.get(fromElement.dataIndex);
-			if (fromData.isVariable) {
-				for (UserBrickUIComponent toElement : to) {
-					UserBrickUIData toData = uiData.get(toElement.dataIndex);
-					if (fromData.getString(context).equals(toData.getString(context))) {
-						toElement.variableFormula = fromElement.variableFormula;
+			if (fromElement.dataIndex < uiData.size()) {
+				UserBrickUIData fromData = uiData.get(fromElement.dataIndex);
+				if (fromData.isVariable) {
+					for (UserBrickUIComponent toElement : to) {
+						if (toElement.dataIndex < uiData.size()) {
+							UserBrickUIData toData = uiData.get(toElement.dataIndex);
+							if (fromData.getString(context).equals(toData.getString(context))) {
+								toElement.variableFormula = fromElement.variableFormula;
+							}
+						}
 					}
 				}
 			}
