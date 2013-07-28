@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.UserBrick;
 
 import android.util.Log;
 
@@ -131,24 +132,24 @@ public class FormulaElement implements Serializable {
 		return root;
 	}
 
-	public Double interpretRecursive(Sprite sprite) {
+	public Double interpretRecursive(UserBrick userBrick, Sprite sprite) {
 
 		Double returnValue = 0d;
 
 		switch (type) {
 			case BRACKET:
-				returnValue = rightChild.interpretRecursive(sprite);
+				returnValue = rightChild.interpretRecursive(userBrick, sprite);
 				break;
 			case NUMBER:
 				returnValue = Double.parseDouble(value);
 				break;
 			case OPERATOR:
 				Operators operator = Operators.getOperatorByValue(value);
-				returnValue = interpretOperator(operator, sprite);
+				returnValue = interpretOperator(operator, userBrick, sprite);
 				break;
 			case FUNCTION:
 				Functions function = Functions.getFunctionByValue(value);
-				returnValue = interpretFunction(function, sprite);
+				returnValue = interpretFunction(function, userBrick, sprite);
 				break;
 			case SENSOR:
 				Sensors sensor = Sensors.getSensorByValue(value);
@@ -161,12 +162,14 @@ public class FormulaElement implements Serializable {
 			case USER_VARIABLE:
 				UserVariablesContainer userVariables = ProjectManager.getInstance().getCurrentProject()
 						.getUserVariables();
-				UserVariable userVariable = userVariables.getUserVariable(value, sprite);
+
+				Log.d("FOREST", value + ", " + userBrick.toString() + ", " + sprite.toString());
+				UserVariable userVariable = userVariables.getUserVariable(value, userBrick, sprite);
 				if (userVariable == null) {
 					returnValue = NOT_EXISTING_USER_VARIABLE_INTERPRETATION_VALUE;
 					break;
 				}
-				returnValue = userVariable.getValue();
+				returnValue = checkDegeneratedDoubleValues(userVariable.getValue());
 				break;
 
 		}
@@ -177,12 +180,12 @@ public class FormulaElement implements Serializable {
 
 	}
 
-	private Double interpretFunction(Functions function, Sprite sprite) {
+	private Double interpretFunction(Functions function, UserBrick userBrick, Sprite sprite) {
 		Double left = null;
 		Double right = null;
 
 		if (leftChild != null) {
-			left = leftChild.interpretRecursive(sprite);
+			left = leftChild.interpretRecursive(userBrick, sprite);
 		}
 
 		switch (function) {
@@ -205,7 +208,7 @@ public class FormulaElement implements Serializable {
 				return java.lang.Math.sqrt(left);
 
 			case RAND:
-				right = rightChild.interpretRecursive(sprite);
+				right = rightChild.interpretRecursive(userBrick, sprite);
 				Double minimum = java.lang.Math.min(left, right);
 				Double maximum = java.lang.Math.max(left, right);
 
@@ -237,7 +240,7 @@ public class FormulaElement implements Serializable {
 
 			case MOD:
 				double dividend = left;
-				double divisor = rightChild.interpretRecursive(sprite);
+				double divisor = rightChild.interpretRecursive(userBrick, sprite);
 
 				if (dividend == 0 || divisor == 0) {
 					return dividend;
@@ -264,10 +267,10 @@ public class FormulaElement implements Serializable {
 			case EXP:
 				return java.lang.Math.exp(left);
 			case MAX:
-				right = rightChild.interpretRecursive(sprite);
+				right = rightChild.interpretRecursive(userBrick, sprite);
 				return java.lang.Math.max(left, right);
 			case MIN:
-				right = rightChild.interpretRecursive(sprite);
+				right = rightChild.interpretRecursive(userBrick, sprite);
 				return java.lang.Math.min(left, right);
 
 			case TRUE:
@@ -281,11 +284,11 @@ public class FormulaElement implements Serializable {
 		return 0d;
 	}
 
-	private Double interpretOperator(Operators operator, Sprite sprite) {
+	private Double interpretOperator(Operators operator, UserBrick userBrick, Sprite sprite) {
 
 		if (leftChild != null) {// binary operator
-			Double left = leftChild.interpretRecursive(sprite);
-			Double right = rightChild.interpretRecursive(sprite);
+			Double left = leftChild.interpretRecursive(userBrick, sprite);
+			Double right = rightChild.interpretRecursive(userBrick, sprite);
 
 			switch (operator) {
 				case PLUS:
@@ -317,7 +320,7 @@ public class FormulaElement implements Serializable {
 			}
 
 		} else {//unary operators
-			Double right = rightChild.interpretRecursive(sprite);
+			Double right = rightChild.interpretRecursive(userBrick, sprite);
 
 			switch (operator) {
 				case MINUS:
@@ -360,6 +363,9 @@ public class FormulaElement implements Serializable {
 	}
 
 	private Double checkDegeneratedDoubleValues(Double valueToCheck) {
+		if (valueToCheck == null) {
+			return 1.0;
+		}
 		if (valueToCheck.doubleValue() == Double.NEGATIVE_INFINITY) {
 			return -Double.MAX_VALUE;
 		}

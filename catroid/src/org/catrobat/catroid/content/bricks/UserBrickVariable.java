@@ -22,17 +22,19 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import java.io.Serializable;
+import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.UserVariable;
 
 /**
  * @author forestjohnson
  * 
  */
-public class UserBrickUIData implements Serializable {
+public class UserBrickVariable {
+	public UserVariable variable;
+	public Formula formula;
 
-	private static final long serialVersionUID = 1L;
-
-	public int key;
-	public boolean isVariable;
-	public String name = "";
+	public UserBrickVariable(UserVariable variable, Formula variableFormula) {
+		this.formula = variableFormula;
+		this.variable = variable;
+	}
 }

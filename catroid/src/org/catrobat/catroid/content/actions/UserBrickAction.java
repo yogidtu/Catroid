@@ -44,9 +44,9 @@ public class UserBrickAction extends DelegateAction {
 
 	@Override
 	public boolean act(float delta) {
-		for (UserBrickVariable variable : variables) {
-			double value = variable.formula.interpretDouble(sprite);
-			variable.variable.setValue(value);
+		for (UserBrickVariable userBrickVariable : variables) {
+			double value = userBrickVariable.formula.interpretDouble(sprite);
+			userBrickVariable.variable.setValue(value);
 		}
 
 		return action.act(delta);

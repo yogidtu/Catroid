@@ -42,6 +42,7 @@ import android.widget.TextView;
 
 public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAdapterInterface {
 	private Context context;
+	private List<UserVariable> brickVariables;
 	private List<UserVariable> spriteVariables;
 	private List<UserVariable> projectVariables;
 	private int selectMode;
@@ -59,7 +60,9 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 		private TextView text2;
 	}
 
-	public UserVariableAdapter(Context context, List<UserVariable> spriteVariables, List<UserVariable> projectVariables) {
+	public UserVariableAdapter(Context context, List<UserVariable> brickVariables, List<UserVariable> spriteVariables,
+			List<UserVariable> projectVariables) {
+		this.brickVariables = brickVariables;
 		this.spriteVariables = spriteVariables;
 		this.projectVariables = projectVariables;
 		this.context = context;
@@ -81,15 +84,17 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 
 	@Override
 	public int getCount() {
-		return spriteVariables.size() + projectVariables.size();
+		return brickVariables.size() + spriteVariables.size() + projectVariables.size();
 	}
 
 	@Override
 	public UserVariable getItem(int position) {
-		if (position < spriteVariables.size()) {
-			return spriteVariables.get(position);
+		if (position < brickVariables.size()) {
+			return brickVariables.get(position);
+		} else if (position < brickVariables.size() + spriteVariables.size()) {
+			return spriteVariables.get(position - brickVariables.size());
 		} else {
-			return projectVariables.get(position - spriteVariables.size());
+			return projectVariables.get(position - (brickVariables.size() + spriteVariables.size()));
 		}
 	}
 

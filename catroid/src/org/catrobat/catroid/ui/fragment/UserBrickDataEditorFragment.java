@@ -206,7 +206,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		int i = 0;
 		for (UserBrickUIData d : currentBrick.uiData) {
 			if (i != id && d.isVariable) {
-				takenVariables.add(d.getString(getActivity()).toString());
+				takenVariables.add(d.name);
 			}
 			i++;
 		}
@@ -235,10 +235,10 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		if (d != null) {
 			String emptyString = ("").toString();
 			if (text != null) {
-				String oldString = d.getString(getActivity()).toString();
+				String oldString = d.name;
 				String newString = text.toString();
 				currentBrick.renameUIVariable(oldString, newString, getActivity());
-			} else if (d.userDefinedName.toString().equals(emptyString)) {
+			} else if (d.name.toString().equals(emptyString)) {
 				currentBrick.uiData.remove(d);
 			}
 		}
@@ -260,7 +260,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			Log.d("FOREST", "d != null");
 			int title = d.isVariable ? R.string.edit_variable : R.string.edit_text;
 			int defaultText = d.isVariable ? R.string.edit_variable : R.string.edit_text;
-			editElementDialog(id, d.getString(getActivity()), true, title, defaultText);
+			editElementDialog(id, d.name, true, title, defaultText);
 			indexOfCurrentlyEditedElement = id;
 		}
 	}
@@ -300,7 +300,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			}
 			TextView textView = (TextView) dataView.findViewById(R.id.text_view);
 
-			textView.setText(d.getString(context));
+			textView.setText(d.name);
 			Button button = (Button) dataView.findViewById(R.id.button);
 			button.setOnClickListener(new View.OnClickListener() {
 				@Override

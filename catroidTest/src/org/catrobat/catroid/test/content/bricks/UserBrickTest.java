@@ -24,7 +24,6 @@ package org.catrobat.catroid.test.content.bricks;
 
 import java.util.ArrayList;
 
-import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.UserScript;
@@ -65,7 +64,6 @@ public class UserBrickTest extends AndroidTestCase {
 
 	public void testSpriteHasOneUserBrickAfterAddingAUserBrick() {
 		UserBrick brick = new UserBrick(sprite);
-		brick.addUILocalizedString(R.string.about);
 		brick.addUIText("test0");
 		brick.addUIVariable("test1");
 
@@ -85,7 +83,6 @@ public class UserBrickTest extends AndroidTestCase {
 		int moveValue = 6;
 
 		UserBrick brick = new UserBrick(sprite);
-		brick.addUILocalizedString(R.string.about);
 		brick.addUIText("test0");
 		brick.addUIVariable("test1");
 
@@ -116,7 +113,6 @@ public class UserBrickTest extends AndroidTestCase {
 
 	public void testBrickCloneWithFormula() {
 		UserBrick brick = new UserBrick(sprite);
-		brick.addUILocalizedString(R.string.about);
 		brick.addUIText("test0");
 		brick.addUIVariable("test1");
 

@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.UserBrick;
 
 public class InternFormulaParser {
 
@@ -247,9 +248,10 @@ public class InternFormulaParser {
 	private FormulaElement userVariable() throws InternFormulaParserException {
 		UserVariablesContainer userVariables = ProjectManager.getInstance().getCurrentProject().getUserVariables();
 
+		UserBrick currentUserBrick = ProjectManager.getInstance().getCurrentUserBrick();
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 
-		if (userVariables.getUserVariable(currentToken.getTokenStringValue(), currentSprite) == null) {
+		if (userVariables.getUserVariable(currentToken.getTokenStringValue(), currentUserBrick, currentSprite) == null) {
 			throw new InternFormulaParserException("Parse Error");
 		}
 

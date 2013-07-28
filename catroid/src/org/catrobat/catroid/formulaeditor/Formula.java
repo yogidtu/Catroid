@@ -24,8 +24,10 @@ package org.catrobat.catroid.formulaeditor;
 
 import java.io.Serializable;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 
 import android.graphics.drawable.Drawable;
@@ -88,23 +90,43 @@ public class Formula implements Serializable {
 	}
 
 	public boolean interpretBoolean(Sprite sprite) {
-		int result = interpretInteger(sprite);
+		UserBrick userBrick = ProjectManager.getInstance().getCurrentUserBrick();
+		return interpretBoolean(userBrick, sprite);
+	}
+
+	public int interpretInteger(Sprite sprite) {
+		UserBrick userBrick = ProjectManager.getInstance().getCurrentUserBrick();
+		return interpretInteger(userBrick, sprite);
+	}
+
+	public double interpretDouble(Sprite sprite) {
+		UserBrick userBrick = ProjectManager.getInstance().getCurrentUserBrick();
+		return interpretDouble(userBrick, sprite);
+	}
+
+	public float interpretFloat(Sprite sprite) {
+		UserBrick userBrick = ProjectManager.getInstance().getCurrentUserBrick();
+		return interpretFloat(userBrick, sprite);
+	}
+
+	public boolean interpretBoolean(UserBrick userBrick, Sprite sprite) {
+		int result = interpretInteger(userBrick, sprite);
 
 		return result != 0 ? true : false;
 
 	}
 
-	public int interpretInteger(Sprite sprite) {
-		Double interpretedValue = formulaTree.interpretRecursive(sprite);
+	public int interpretInteger(UserBrick userBrick, Sprite sprite) {
+		Double interpretedValue = formulaTree.interpretRecursive(userBrick, sprite);
 		return interpretedValue.intValue();
 	}
 
-	public double interpretDouble(Sprite sprite) {
-		return formulaTree.interpretRecursive(sprite);
+	public double interpretDouble(UserBrick userBrick, Sprite sprite) {
+		return this.formulaTree.interpretRecursive(userBrick, sprite);
 	}
 
-	public float interpretFloat(Sprite sprite) {
-		return (float) interpretDouble(sprite);
+	public float interpretFloat(UserBrick userBrick, Sprite sprite) {
+		return (float) interpretDouble(userBrick, sprite);
 	}
 
 	public void setRoot(FormulaElement formula) {

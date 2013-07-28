@@ -560,7 +560,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 		int newPosition = adapter.getCount();
 
-		Brick copy = brick.clone(getActivity());
+		Brick copy = brick.clone();
 
 		Script scriptList;
 		scriptList = ProjectManager.getInstance().getCurrentScript();

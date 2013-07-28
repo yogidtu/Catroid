@@ -120,8 +120,12 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 		edit_text.setOnClickListener(this);
 
 		Spinner variableSpinner = (Spinner) view.findViewById(R.id.set_variable_spinner);
+
+		UserBrick currentBrick = ProjectManager.getInstance().getCurrentUserBrick();
+		UserScriptDefinitionBrick definitionBrick = (currentBrick == null ? null : currentBrick.getDefinitionBrick());
+
 		UserVariableAdapter userVariableAdapter = ProjectManager.getInstance().getCurrentProject().getUserVariables()
-				.createUserVariableAdapter(context, sprite);
+				.createUserVariableAdapter(context, definitionBrick, sprite);
 		UserVariableAdapterWrapper userVariableAdapterWrapper = new UserVariableAdapterWrapper(context,
 				userVariableAdapter);
 		userVariableAdapterWrapper.setItemLayout(android.R.layout.simple_spinner_item, android.R.id.text1);
@@ -183,8 +187,12 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 		Spinner variableSpinner = (Spinner) prototypeView.findViewById(R.id.set_variable_spinner);
 		variableSpinner.setFocusableInTouchMode(false);
 		variableSpinner.setFocusable(false);
+
+		UserBrick currentBrick = ProjectManager.getInstance().getCurrentUserBrick();
+		UserScriptDefinitionBrick definitionBrick = (currentBrick == null ? null : currentBrick.getDefinitionBrick());
+
 		UserVariableAdapter userVariableAdapter = ProjectManager.getInstance().getCurrentProject().getUserVariables()
-				.createUserVariableAdapter(context, sprite);
+				.createUserVariableAdapter(context, definitionBrick, sprite);
 
 		UserVariableAdapterWrapper userVariableAdapterWrapper = new UserVariableAdapterWrapper(context,
 				userVariableAdapter);

@@ -70,7 +70,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	public UserBrickUIDataArray uiData;
 	private int lastDataVersion = 0;
 
-	public UserBrick(Context context, Sprite sprite) {
+	public UserBrick(Sprite sprite) {
 		this.sprite = sprite;
 		sprite.addUserBrick(this);
 		uiData = new UserBrickUIDataArray();
@@ -79,8 +79,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		updateUIComponents(null);
 	}
 
-	public UserBrick(Context context, Sprite sprite, UserBrickUIDataArray uiData,
-			UserScriptDefinitionBrick definitionBrick) {
+	public UserBrick(Sprite sprite, UserBrickUIDataArray uiData, UserScriptDefinitionBrick definitionBrick) {
 		this.sprite = sprite;
 		this.uiData = uiData;
 		this.definitionBrick = definitionBrick;
@@ -95,43 +94,40 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	@Override
-	public UserBrick copyBrickForSprite(Context context, Sprite sprite, Script script) {
-		UserBrick copyBrick = clone(context);
+	public UserBrick copyBrickForSprite(Sprite sprite, Script script) {
+		UserBrick copyBrick = clone();
 		copyBrick.sprite = sprite;
 		return copyBrick;
 	}
 
-	public int addUILocalizedString(int id) {
-		UserBrickUIData comp = new UserBrickUIData();
-		comp.isVariable = false;
-		comp.hasLocalizedString = true;
-		comp.localizedStringId = id;
-		uiData.add(comp);
+	public int addUILocalizedString(Context context, int id) {
+		UserBrickUIData data = new UserBrickUIData();
+		data.isVariable = false;
+		data.name = context.getResources().getString(id);
+		uiData.add(data);
 		uiData.version++;
 		return uiData.size() - 1;
 	}
 
 	public int addUIText(String text) {
-		UserBrickUIData comp = new UserBrickUIData();
-		comp.isVariable = false;
-		comp.hasLocalizedString = false;
-		comp.userDefinedName = text;
-		uiData.add(comp);
+		UserBrickUIData data = new UserBrickUIData();
+		data.isVariable = false;
+		data.name = text;
+		uiData.add(data);
 		uiData.version++;
 		return uiData.size() - 1;
 	}
 
 	public int addUILocalizedVariable(Context context, int id) {
-		UserBrickUIData comp = new UserBrickUIData();
-		comp.isVariable = true;
-		comp.hasLocalizedString = true;
-		comp.localizedStringId = id;
+		UserBrickUIData data = new UserBrickUIData();
+		data.isVariable = true;
+		data.name = context.getResources().getString(id);
 
 		UserVariablesContainer variablesContainer = null;
 		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
-		variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, comp.getString(context).toString());
+		variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, data.name);
 
-		uiData.add(comp);
+		uiData.add(data);
 		uiData.version++;
 		return uiData.size() - 1;
 	}
@@ -139,12 +135,11 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	public int addUIVariable(String id) {
 		UserBrickUIData comp = new UserBrickUIData();
 		comp.isVariable = true;
-		comp.userDefinedName = id;
-		comp.hasLocalizedString = false;
+		comp.name = id;
 
 		UserVariablesContainer variablesContainer = null;
 		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
-		variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, comp.userDefinedName);
+		variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, comp.name);
 
 		uiData.add(comp);
 		uiData.version++;
@@ -154,13 +149,12 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	public void renameUIVariable(String oldName, String newName, Context context) {
 		UserBrickUIData variable = null;
 		for (UserBrickUIData data : uiData) {
-			if (data.getString(context).toString().equals(oldName)) {
+			if (data.name.equals(oldName)) {
 				variable = data;
 			}
 		}
 
-		variable.hasLocalizedString = false;
-		variable.userDefinedName = newName;
+		variable.name = newName;
 
 		UserVariablesContainer variablesContainer = null;
 		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
@@ -190,7 +184,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			c.dataIndex = i;
 			if (uiData.get(i).isVariable) {
 				c.variableFormula = new Formula(0);
-				c.variableName = uiData.get(i).getString(context).toString();
+				c.variableName = uiData.get(i).name;
 			}
 			newUIComponents.add(c);
 		}
@@ -213,11 +207,9 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 					for (UserBrickUIComponent toElement : to) {
 						if (toElement.dataIndex < uiData.size()) {
 							UserBrickUIData toData = uiData.get(toElement.dataIndex);
-							String fromName = fromData.getString(context).toString();
-							String toName = toData.getString(context).toString();
-							if (fromName.equals(toName)) {
+							if (fromData.name.equals(toData.name)) {
 								toElement.variableFormula = fromElement.variableFormula;
-								toElement.variableName = toName;
+								toElement.variableName = toData.name;
 							}
 						}
 					}
@@ -353,7 +345,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 				currentTextView = new TextView(context);
 				currentTextView.setTextAppearance(context, R.style.BrickText_Multiple);
 
-				currentTextView.setText(d.getString(context));
+				currentTextView.setText(d.name);
 			}
 
 			// This stuff isn't being included by the style when I use setTextAppearance.
@@ -378,7 +370,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		CharSequence name = "";
 		for (UserBrickUIData d : uiData) {
 			if (!d.isVariable) {
-				name = d.getString(context);
+				name = d.name;
 				break;
 			}
 		}
@@ -386,8 +378,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	@Override
-	public UserBrick clone(Context context) {
-		return new UserBrick(context, getSprite(), uiData, definitionBrick);
+	public UserBrick clone() {
+		return new UserBrick(getSprite(), uiData, definitionBrick);
 	}
 
 	@Override
@@ -433,11 +425,13 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		UserVariablesContainer variablesContainer = null;
 		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
 
-		for (UserBrickUIComponent component : uiComponents) {
+		for (UserBrickUIComponent uiComponent : uiComponents) {
+			if (uiComponent.variableFormula != null && uiComponent.variableName != null) {
+				List<UserVariable> variables = variablesContainer.getOrCreateVariableListForUserBrick(definitionBrick);
+				UserVariable variable = variablesContainer.findUserVariable(uiComponent.variableName, variables);
 
-			List<UserVariable> variables = variablesContainer.getOrCreateVariableListForUserBrick(definitionBrick);
-			UserVariable variable = variablesContainer.findUserVariable(component.variableName, variables);
-			theList.add(new UserBrickVariable(variable, component.variableFormula));
+				theList.add(new UserBrickVariable(variable, uiComponent.variableFormula));
+			}
 		}
 		return theList;
 	}

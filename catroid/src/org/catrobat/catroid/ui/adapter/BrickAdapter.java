@@ -1066,7 +1066,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 		Brick origin = (Brick) (dragAndDropListView.getItemAtPosition(itemPosition));
 
-		copy = origin.clone(getContext());
+		copy = origin.clone();
 
 		addNewBrick((brickList.size() - 1), copy);
 
