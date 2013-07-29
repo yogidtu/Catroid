@@ -991,12 +991,13 @@ public class UiTestUtils {
 	}
 
 	public static void createValidUser(Context context) {
-		try {
-			String testUser = "testUser" + System.currentTimeMillis();
-			String testPassword = "pwspws";
-			String testEmail = testUser + "@gmail.com";
 
-			String token = Constants.NO_TOKEN;
+		String testUser = "testUser" + System.currentTimeMillis();
+		String testPassword = "pwspws";
+		String testEmail = testUser + "@gmail.com";
+
+		String token = Constants.NO_TOKEN;
+		try {
 			boolean userRegistered = ServerCalls.getInstance().registerOrCheckToken(testUser, testPassword, testEmail,
 					"de", "at", token, context);
 
