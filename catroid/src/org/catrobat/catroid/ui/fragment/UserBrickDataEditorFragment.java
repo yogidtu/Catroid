@@ -72,6 +72,8 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	private View fragmentView;
 
+	//blah
+
 	public UserBrickDataEditorFragment() {
 	}
 
