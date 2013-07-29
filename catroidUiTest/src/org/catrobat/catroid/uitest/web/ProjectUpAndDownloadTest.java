@@ -229,7 +229,10 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	@Device
 	public void testRenameProjectDescriptionWhenUploading() throws Throwable {
 		setServerURLToTestUrl();
-
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
+		getActivity().startActivity(intent);
+		solo.waitForActivity(MainMenuActivity_Shruti.class.getSimpleName());
+		solo.waitForFragmentByTag("List_Fragment");
 		String projectName = testProject;
 		String originalProjectDescription = testDescription;
 		createTestProject(projectName);
