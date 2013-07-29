@@ -449,7 +449,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 			UtilFile.deleteDirectory(directory);
 		}
 		assertFalse("testProject was not deleted!", directory.exists());
-		//solo.waitForFragmentByTag("List_Fragment");
+		solo.waitForFragmentByTag("List_Fragment");
 
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.enterText(0, projectToCreate);
