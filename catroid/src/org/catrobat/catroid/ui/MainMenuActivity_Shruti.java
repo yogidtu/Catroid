@@ -133,8 +133,8 @@ public class MainMenuActivity_Shruti extends SherlockFragmentActivity implements
 				getFragmentManager().popBackStack();
 				WebViewFragment_Shruti f5 = new WebViewFragment_Shruti();
 				android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				ft.replace(R.id.projectList, f5); // f2_container is your
-													// FrameLayout container
+				ft.replace(R.id.projectList, f5, "Web_Fragment"); // f2_container is your
+				// FrameLayout container
 				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 				ft.addToBackStack(null);
 				ft.commit();

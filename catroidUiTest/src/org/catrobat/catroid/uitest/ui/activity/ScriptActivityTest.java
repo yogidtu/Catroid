@@ -26,11 +26,8 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
-<<<<<<< HEAD:catroidUiTest/src/org/catrobat/catroid/uitest/ui/ScriptActivityTest.java
 import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
-=======
 import org.catrobat.catroid.ui.ProgramMenuActivity;
->>>>>>> master:catroidUiTest/src/org/catrobat/catroid/uitest/ui/activity/ScriptActivityTest.java
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.SettingsActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;

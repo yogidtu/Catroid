@@ -42,12 +42,8 @@ import org.catrobat.catroid.content.bricks.LoopEndlessBrick;
 import org.catrobat.catroid.content.bricks.NestingBrick;
 import org.catrobat.catroid.content.bricks.RepeatBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
-<<<<<<< HEAD
 import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
-=======
-import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.annotation.Device;
->>>>>>> master
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 

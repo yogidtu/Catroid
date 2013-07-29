@@ -23,14 +23,19 @@
 package org.catrobat.catroid.uitest.web;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.common.SoundInfo;
+import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.WaitBrick;
+import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.uitest.annotation.Device;
@@ -44,6 +49,7 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.test.FlakyTest;
 import android.test.UiThreadTest;
@@ -126,8 +132,6 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		//downloadProject();
 	}
 
-<<<<<<< HEAD
-=======
 	@FlakyTest(tolerance = 4)
 	@Device
 	public void testUploadProjectOldCatrobatLanguageVersion() throws Throwable {
@@ -137,7 +141,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 		solo.sleep(1000);
 		UiTestUtils.clickOnHomeActionBarButton(solo);
-		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		solo.waitForActivity(MainMenuActivity_Shruti.class.getSimpleName());
 
 		UiTestUtils.createValidUser(getActivity());
 
@@ -187,7 +191,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
 
 		UiTestUtils.createValidUser(getActivity());
@@ -233,7 +237,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
 
 		UiTestUtils.createValidUser(getActivity());
@@ -274,7 +278,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
 
 		UiTestUtils.createValidUser(getActivity());
@@ -322,17 +326,19 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		ProjectManager.getInstance().setProject(newProject);
 
 		UiTestUtils.createValidUser(getActivity());
-		uploadProject(projectName, "");
-
-		Project uploadProject = StorageHandler.getInstance().loadProject(projectName);
-		String deserializedProjectName = uploadProject.getName();
-		assertTrue("Project was successfully uploaded", deserializedProjectName.equalsIgnoreCase(projectName));
-		UiTestUtils.clearAllUtilTestProjects();
-
-		downloadProjectAndReplace(projectName);
-		Project downloadedProject = StorageHandler.getInstance().loadProject(projectName);
-		String serverProjectName = downloadedProject.getName();
-		assertTrue("Project was successfully downloaded", serverProjectName.equalsIgnoreCase(projectName));
+		/*
+		 * uploadProject(projectName, "");
+		 * 
+		 * Project uploadProject = StorageHandler.getInstance().loadProject(projectName);
+		 * String deserializedProjectName = uploadProject.getName();
+		 * assertTrue("Project was successfully uploaded", deserializedProjectName.equalsIgnoreCase(projectName));
+		 * UiTestUtils.clearAllUtilTestProjects();
+		 * 
+		 * downloadProjectAndReplace(projectName);
+		 * Project downloadedProject = StorageHandler.getInstance().loadProject(projectName);
+		 * String serverProjectName = downloadedProject.getName();
+		 * assertTrue("Project was successfully downloaded", serverProjectName.equalsIgnoreCase(projectName));
+		 */
 	}
 
 	@FlakyTest(tolerance = 4)
@@ -433,7 +439,6 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		return true;
 	}
 
->>>>>>> master
 	private void createTestProject(String projectToCreate) {
 		//solo.waitForFragmentByTag("List_Fragment");
 		//solo.assertCurrentActivity("It is not alive", MainMenuActivity_Shruti.class);
@@ -512,6 +517,32 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		} catch (JSONException e) {
 			fail("JSON exception orrured");
 		}
+	}
+
+	private void downloadProjectAndReplace(String projectName) {
+		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENTION;
+		downloadUrl += "?fname=" + projectName;
+
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
+		intent.setAction(Intent.ACTION_VIEW);
+		intent.setData(Uri.parse(downloadUrl));
+		solo.goBack();
+		launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity_Shruti.class, intent);
+		solo.sleep(500);
+		assertTrue("OverwriteRenameDialog not shown.", solo.searchText(solo.getString(R.string.overwrite_text)));
+		solo.clickOnText(solo.getString(R.string.overwrite_replace));
+		solo.clickOnButton(solo.getString(R.string.ok));
+
+		boolean waitResult = solo.waitForActivity("MainMenuActivity_Shruti", 10000);
+		assertTrue("Download takes too long.", waitResult);
+		assertTrue("Download not successful.", solo.searchText(solo.getString(R.string.success_project_download)));
+		assertEquals("Testproject not loaded.", projectName, ProjectManager.getInstance().getCurrentProject().getName());
+
+		String projectPath = Constants.DEFAULT_ROOT + "/" + projectName;
+		File downloadedDirectory = new File(projectPath);
+		File downloadedProjectFile = new File(projectPath + "/" + Constants.PROJECTCODE_NAME);
+		assertTrue("Original Directory does not exist.", downloadedDirectory.exists());
+		assertTrue("Original Project File does not exist.", downloadedProjectFile.exists());
 	}
 
 	/*
@@ -814,33 +845,6 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	 * return true;
 	 * }
 	 * 
-	 * 
-	 * private void downloadProjectAndReplace(String projectName) {
-	 * String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENTION;
-	 * downloadUrl += "?fname=" + projectName;
-	 * 
-	 * Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
-	 * intent.setAction(Intent.ACTION_VIEW);
-	 * intent.setData(Uri.parse(downloadUrl));
-	 * solo.goBack();
-	 * launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity_Shruti.class, intent);
-	 * solo.sleep(500);
-	 * assertTrue("OverwriteRenameDialog not shown.", solo.searchText(solo.getString(R.string.overwrite_text)));
-	 * solo.clickOnText(solo.getString(R.string.overwrite_replace));
-	 * solo.clickOnButton(solo.getString(R.string.ok));
-	 * 
-	 * boolean waitResult = solo.waitForActivity("MainMenuActivity_Shruti", 10000);
-	 * assertTrue("Download takes too long.", waitResult);
-	 * assertTrue("Download not successful.", solo.searchText(solo.getString(R.string.success_project_download)));
-	 * assertEquals("Testproject not loaded.", projectName, ProjectManager.getInstance().getCurrentProject().getName());
-	 * 
-	 * String projectPath = Constants.DEFAULT_ROOT + "/" + projectName;
-	 * File downloadedDirectory = new File(projectPath);
-	 * File downloadedProjectFile = new File(projectPath + "/" + Constants.PROJECTCODE_NAME);
-	 * assertTrue("Original Directory does not exist.", downloadedDirectory.exists());
-	 * assertTrue("Original Project File does not exist.", downloadedProjectFile.exists());
-	 * }
-	 * 
 	 * @SuppressWarnings("unused")
 	 * private void downloadProject() {
 	 * String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENTION;
@@ -856,15 +860,13 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	 * solo.clickOnText(solo.getString(R.string.overwrite_rename));
 	 * assertTrue("No text field to enter new name.", solo.searchEditText(newTestProject));
 	 * 
-	 * /*
-	 * TODO: Does not work when testing, but it works in practice
+	 * // TODO: Does not work when testing, but it works in practice
 	 * solo.clickOnButton(solo.getString(R.string.ok));
 	 * solo.sleep(500);
 	 * assertTrue("No error shown because of duplicate names.",
 	 * solo.searchText(solo.getString(R.string.error_project_exists)));
 	 * solo.sleep(500);
 	 * solo.clickOnButton(solo.getString(R.string.close));
-	 * 
 	 * 
 	 * solo.sleep(500);
 	 * solo.clearEditText(0);
@@ -889,4 +891,5 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	 * assertTrue("Original Project File does not exist.", downloadedProjectFile.exists());
 	 * }
 	 */
+
 }

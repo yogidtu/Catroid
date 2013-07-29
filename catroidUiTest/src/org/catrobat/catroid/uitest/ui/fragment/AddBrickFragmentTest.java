@@ -24,12 +24,8 @@ package org.catrobat.catroid.uitest.ui.fragment;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
-<<<<<<< HEAD
 import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
-=======
-import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
->>>>>>> master
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 

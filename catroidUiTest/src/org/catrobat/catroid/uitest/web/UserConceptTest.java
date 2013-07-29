@@ -28,11 +28,8 @@ import java.util.Locale;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.ui.MainMenuActivity;
-<<<<<<< HEAD
 import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
-=======
 import org.catrobat.catroid.uitest.annotation.Device;
->>>>>>> master
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
