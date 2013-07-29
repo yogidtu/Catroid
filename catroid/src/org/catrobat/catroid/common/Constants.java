@@ -39,6 +39,7 @@ public final class Constants {
 	public static final String TMP_PATH = DEFAULT_ROOT + "/tmp";
 	public static final String IMAGE_DIRECTORY = "images";
 	public static final String SOUND_DIRECTORY = "sounds";
+	public static final String SOUND_RECOGNITION_DIRECTORY = SOUND_DIRECTORY + "/" + "recognitions";
 
 	public static final String NO_MEDIA_FILE = ".nomedia";
 
