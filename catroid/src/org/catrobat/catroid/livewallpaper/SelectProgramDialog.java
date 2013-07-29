@@ -35,7 +35,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -51,54 +50,43 @@ public class SelectProgramDialog extends Dialog {
 		this.context = context;
 	}
 
-	//	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dialog_lwp_select_program);
-		//		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 
-		final RadioGroup rg = new RadioGroup(context);
-		rg.setOrientation(RadioGroup.VERTICAL);
-		rg.setPadding(50, 50, 50, 50);
+		RadioGroup radioGroup = new RadioGroup(context);
+		radioGroup.setOrientation(RadioGroup.VERTICAL);
+		radioGroup.setPadding(50, 50, 50, 50);
 
 		File rootDirectory = new File(Constants.DEFAULT_ROOT);
-		int num_of_projects = UtilFile.getProjectNames(rootDirectory).size();
+		int numOfProjects = UtilFile.getProjectNames(rootDirectory).size();
 
-		//		Log.d("RGB", "Number of projects: " + num_of_projects);
-		final RadioButton[] rb = new RadioButton[num_of_projects];
+		RadioButton[] radioButton = new RadioButton[numOfProjects];
 		int i = 0;
 		for (String projectName : UtilFile.getProjectNames(rootDirectory)) {
-			rb[i] = new RadioButton(context);
-			rb[i].setText(projectName);
-			rb[i].setTextColor(Color.WHITE);
-			rg.addView(rb[i], i); //the RadioButtons are added to the radioGroup instead of the layout			
+			radioButton[i] = new RadioButton(context);
+			radioButton[i].setText(projectName);
+			radioButton[i].setTextColor(Color.WHITE);
+			radioGroup.addView(radioButton[i], i);
 			i++;
 		}
 
-		final LinearLayout ll = (LinearLayout) findViewById(R.id.lwp_linear_layout_rg);
-		ll.addView(rg);
+		final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.lwp_linear_layout_rg);
+		linearLayout.addView(radioGroup);
+		//		context = this.getContext();
 
-		rg.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				//TODO: Implement me
-				RadioButton rbb = (RadioButton) group.getChildAt(checkedId - 1);
-				Log.d("RGB", "Radio Button Selected: " + checkedId);
-				Log.d("RGB", "Text: " + rbb.getText());
-				//				boolean test = ProjectManager.getInstance().loadProject(rbb.getText().toString(), context, false);
-				Project project = StorageHandler.getInstance().loadProject(rbb.getText().toString());
+				RadioButton checkedRadioButton = (RadioButton) findViewById(checkedId);
+				Project project = StorageHandler.getInstance().loadProject(checkedRadioButton.getText().toString());
+				//				project.setDeviceData(context);
 				ProjectManager.getInstance().setProject(project);
 				StorageHandler.getInstance().saveProject(project);
-
-				//				ProjectManager.getInstance().saveProject();
-				//				boolean temp = Utils.isStandardProject(project, context);
-				//				Log.d("RGB", "is standard: " + temp);
-
-				//				SelectProgramDialog.this.dismiss();
 			}
 		});
 
