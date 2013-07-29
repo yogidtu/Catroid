@@ -240,8 +240,10 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
-		getActivity().startActivity(intent);
+		/*
+		 * Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
+		 * getActivity().startActivity(intent);
+		 */
 
 		UiTestUtils.createValidUser(getActivity());
 
