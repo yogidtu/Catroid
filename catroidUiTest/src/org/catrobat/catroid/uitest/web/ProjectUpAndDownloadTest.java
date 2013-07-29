@@ -249,6 +249,9 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//Project description is changed to testdescription2 in uploadProject()
 		String projectDescriptionSetWhenUploading = newTestDescription;
+		solo.waitForActivity(MainMenuActivity_Shruti.class.getSimpleName());
+		solo.waitForFragmentByTag("List_Fragment");
+
 		uploadProject(projectName, newTestDescription);
 		solo.sleep(5000);
 
@@ -454,7 +457,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 			UtilFile.deleteDirectory(directory);
 		}
 		assertFalse("testProject was not deleted!", directory.exists());
-		solo.waitForFragmentByTag("List_Fragment");
+		//solo.waitForFragmentByTag("List_Fragment");
 
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.enterText(0, projectToCreate);
@@ -491,7 +494,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		firstScript.addBrick(new WaitBrick(firstSprite, 1000));
 
 		//solo.waitForFragmentByTag("List_Fragment");
-		solo.waitForText(solo.getString(R.string.main_menu_upload));
+		//solo.waitForText(solo.getString(R.string.main_menu_upload));
 
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(uploadDialogTitle);
