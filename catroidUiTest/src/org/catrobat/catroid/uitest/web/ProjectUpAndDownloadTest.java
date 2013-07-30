@@ -402,7 +402,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		setServerURLToTestUrl();
 		UiTestUtils.createValidUser(getActivity());
-
+		solo.waitForFragmentByTag("List_Fragment");
 		solo.waitForText(solo.getString(R.string.main_menu_continue));
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 
@@ -459,7 +459,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 			UtilFile.deleteDirectory(directory);
 		}
 		assertFalse("testProject was not deleted!", directory.exists());
-		//solo.waitForFragmentByTag("List_Fragment");
+		solo.waitForFragmentByTag("List_Fragment");
 
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.enterText(0, projectToCreate);
@@ -470,7 +470,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		/*
 		 * UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		 * solo.enterText(0, "new sprite");
+		 * 17 * solo.enterText(0, "new sprite");
 		 * solo.goBack();
 		 * solo.clickOnButton(solo.getString(R.string.ok));
 		 * solo.sleep(2000);
