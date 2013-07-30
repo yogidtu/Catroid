@@ -104,35 +104,15 @@ public class ProjectDownloadService extends IntentService {
 	public void onDestroy() {
 
 		if (result && showOverwriteDialog) {
-
-			// project name and zip file string are temporariliy saved in the
-			// StatusBarNotificationManager to create it later on in the right
-			// context
-			StatusBarNotificationManager.INSTANCE.downloadProjectName.add(projectName);
-			StatusBarNotificationManager.INSTANCE.downloadProjectZipFileString.add(zipFileString);
+			//project name and zip file string are temporariliy saved in the StatusBarNotificationManager to create it later on in the right context  
+			StatusBarNotificationManager.getInstance().downloadProjectName.add(projectName);
+			StatusBarNotificationManager.getInstance().downloadProjectZipFileString.add(zipFileString);
 			try {
-				// The context of the calling activity is needed, otherwise an
-				// exception occurs
-				MainMenuActivity_Shruti activity = StatusBarNotificationManager.INSTANCE.getActivity(notificationId);
+				//The context of the calling activity is needed, otherwise an exception occurs
+				MainMenuActivity_Shruti activity = StatusBarNotificationManager.getInstance().getActivity(
+						notificationId);
 				OverwriteRenameDialog renameDialog = new OverwriteRenameDialog(activity, projectName, zipFileString);
 				renameDialog.show(activity.getSupportFragmentManager(), OverwriteRenameDialog.DIALOG_FRAGMENT_TAG);
-
-				//project name and zip file string are temporariliy saved in the StatusBarNotificationManager to create it later on in the right context  
-				StatusBarNotificationManager.getInstance().downloadProjectName.add(projectName);
-				StatusBarNotificationManager.getInstance().downloadProjectZipFileString.add(zipFileString);
-				try {
-					//The context of the calling activity is needed, otherwise an exception occurs
-					MainMenuActivity_Shruti activity1 = StatusBarNotificationManager.getInstance().getActivity(
-							notificationId);
-					OverwriteRenameDialog renameDialog1 = new OverwriteRenameDialog(activity1, projectName,
-							zipFileString);
-					renameDialog1
-							.show(activity1.getSupportFragmentManager(), OverwriteRenameDialog.DIALOG_FRAGMENT_TAG);
-
-				} catch (RuntimeException e) {
-					e.printStackTrace();
-				}
-
 			} catch (RuntimeException e) {
 				e.printStackTrace();
 			}
@@ -145,9 +125,8 @@ public class ProjectDownloadService extends IntentService {
 		}
 
 		Toast.makeText(this, R.string.success_project_download, Toast.LENGTH_SHORT).show();
+		super.onDestroy();
 	}
-
-	//super.onDestroy();
 
 	private void showDialog(int messageId) {
 		Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show();

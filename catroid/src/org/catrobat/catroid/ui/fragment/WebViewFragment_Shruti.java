@@ -51,19 +51,16 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 			super.onReceiveResult(resultCode, resultData);
 			if (resultCode == Constants.UPDATE_DOWNLOAD_PROGRESS) {
 				long progress = resultData.getLong("currentDownloadProgress");
-				boolean endOfFileReached = resultData
-						.getBoolean("endOfFileReached");
+				boolean endOfFileReached = resultData.getBoolean("endOfFileReached");
 				Integer notificationId = resultData.getInt("notificationId");
 				String projectName = resultData.getString("projectName");
 				if (endOfFileReached) {
 					progress = 100;
 				}
 				String notificationMessage = "Download " + progress + "% "
-						+ getString(R.string.notification_percent_completed)
-						+ ":" + projectName;
+						+ getString(R.string.notification_percent_completed) + ":" + projectName;
 
-				StatusBarNotificationManager.INSTANCE.updateNotification(
-						notificationId, notificationMessage,
+				StatusBarNotificationManager.getInstance().updateNotification(notificationId, notificationMessage,
 						Constants.DOWNLOAD_NOTIFICATION, endOfFileReached);
 			}
 		}
@@ -94,8 +91,7 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 				public void onPageFinished(WebView view, String url) {
 
 					theUrl = url;
-					Toast.makeText(getActivity(), theUrl, Toast.LENGTH_LONG)
-							.show();
+					Toast.makeText(getActivity(), theUrl, Toast.LENGTH_LONG).show();
 					loadExternalProjectUri = Uri.parse(theUrl);
 					if (loadExternalProjectUri != null) {
 						if (theUrl.contains("download")) {
@@ -118,9 +114,8 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 	}
 
 	public int createNotification(String downloadName) {
-		StatusBarNotificationManager manager = StatusBarNotificationManager.INSTANCE;
-		int notificationId = manager.createNotification(downloadName,
-				getActivity(), Constants.DOWNLOAD_NOTIFICATION);
+		StatusBarNotificationManager manager = StatusBarNotificationManager.getInstance();
+		int notificationId = manager.createNotification(downloadName, getActivity(), Constants.DOWNLOAD_NOTIFICATION);
 		return notificationId;
 	}
 
@@ -128,8 +123,7 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 		String scheme = loadExternalProjectUri.getScheme();
 		if (scheme.startsWith((TYPE_HTTP))) {
 			String url = loadExternalProjectUri.toString();
-			int projectNameIndex = url.lastIndexOf(PROJECTNAME_TAG)
-					+ PROJECTNAME_TAG.length();
+			int projectNameIndex = url.lastIndexOf(PROJECTNAME_TAG) + PROJECTNAME_TAG.length();
 			String projectName = url.substring(projectNameIndex);
 			try {
 				projectName = URLDecoder.decode(projectName, "UTF-8");
@@ -137,10 +131,8 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 				Log.e(TAG, "Could not decode project name: " + projectName, e);
 			}
 
-			Intent downloadIntent = new Intent(getActivity(),
-					ProjectDownloadService.class);
-			downloadIntent.putExtra("receiver", new DownloadReceiver(
-					new Handler()));
+			Intent downloadIntent = new Intent(getActivity(), ProjectDownloadService.class);
+			downloadIntent.putExtra("receiver", new DownloadReceiver(new Handler()));
 			downloadIntent.putExtra("downloadName", projectName);
 			downloadIntent.putExtra("url", url);
 			int notificationId = createNotification(projectName);
@@ -154,8 +146,7 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 			int b = path.lastIndexOf('.');
 			String projectName = path.substring(a, b);
 			if (!UtilZip.unZipFile(path, Utils.buildProjectPath(projectName))) {
-				Utils.showErrorDialog(getActivity(),
-						getResources().getString(R.string.error_load_project));
+				Utils.showErrorDialog(getActivity(), getResources().getString(R.string.error_load_project));
 			}
 		}
 	}
@@ -167,11 +158,9 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		View view = inflater.inflate(R.layout.fragment_webview_shruti,
-				container, false);
+		View view = inflater.inflate(R.layout.fragment_webview_shruti, container, false);
 		return view;
 	}
 
@@ -195,8 +184,7 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 		try {
 			mCallback = (OnHeadlineSelectedListener) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnHeadlineSelectedListener");
+			throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
 		}
 	}
 

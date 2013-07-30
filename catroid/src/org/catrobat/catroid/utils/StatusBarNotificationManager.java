@@ -32,13 +32,13 @@ import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.dialogs.OverwriteRenameDialog;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.util.SparseArray;
 
 public class StatusBarNotificationManager {
@@ -61,19 +61,7 @@ public class StatusBarNotificationManager {
 	public List<String> downloadProjectName = new ArrayList<String>();
 	public List<String> downloadProjectZipFileString = new ArrayList<String>();
 
-	@SuppressLint("UseSparseArrays")
 	private StatusBarNotificationManager() {
-		this.uploadId = 0;
-		this.downloadId = 0;
-		this.copyId = 0;
-		this.uploadNotification = null;
-		this.downloadNotification = null;
-		this.copyNotification = null;
-		this.copyNotificationDataMap = new HashMap<Integer, NotificationData>();
-		this.uploadNotificationDataMap = new HashMap<Integer, NotificationData>();
-		this.downloadNotificationDataMap = new HashMap<Integer, NotificationData>();
-		this.downloadProjectName = new ArrayList<String>();
-		this.downloadProjectZipFileString = new ArrayList<String>();
 	}
 
 	public static StatusBarNotificationManager getInstance() {
@@ -81,7 +69,7 @@ public class StatusBarNotificationManager {
 	}
 
 	public MainMenuActivity_Shruti getActivity(int id) {
-		MainMenuActivity_Shruti activity = downloadNotificationDataMap.get(id).getActivity();
+		MainMenuActivity_Shruti activity = downloadNotificationDataArray.get(id).getActivity();
 		return activity;
 	}
 
@@ -112,7 +100,7 @@ public class StatusBarNotificationManager {
 		intent = intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		NotificationData data = new NotificationData(pendingIntent, context, name, notificationTitle,
-				(MainMenuActivity) context);
+				(MainMenuActivity_Shruti) context);
 		uploadNotificationDataArray.put(uploadId, data);
 
 		if (newUploadNotification) {
@@ -174,7 +162,7 @@ public class StatusBarNotificationManager {
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 		NotificationData data = new NotificationData(pendingIntent, context, name, notificationTitle,
 				(MainMenuActivity_Shruti) context);
-		downloadNotificationDataMap.put(downloadId, data);
+		downloadNotificationDataArray.put(downloadId, data);
 
 		if (newDownloadNotification) {
 			downloadNotification = new Notification(R.drawable.ic_stat_download_notification, notificationTitle,
@@ -191,7 +179,7 @@ public class StatusBarNotificationManager {
 		return downloadId;
 	}
 
-	public void updateNotification(Integer id, String message, int notificationCode, boolean finished) {
+	public void updateNotification(int id, String message, int notificationCode, boolean finished) {
 		if (notificationCode == Constants.UPLOAD_NOTIFICATION) {
 			updateUploadNotification(id, message, notificationCode, finished);
 		} else if (notificationCode == Constants.DOWNLOAD_NOTIFICATION) {
@@ -200,10 +188,10 @@ public class StatusBarNotificationManager {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void updateUploadNotification(Integer id, String message, int notificationCode, boolean finished) {
-		Context context = uploadNotificationDataMap.get(id).getContext();
-		String notificationTitle = uploadNotificationDataMap.get(id).getNotificationTitle();
-		PendingIntent pendingIntent = uploadNotificationDataMap.get(id).getPendingIntent();
+	private void updateUploadNotification(int id, String message, int notificationCode, boolean finished) {
+		Context context = uploadNotificationDataArray.get(id).getContext();
+		String notificationTitle = uploadNotificationDataArray.get(id).getNotificationTitle();
+		PendingIntent pendingIntent = uploadNotificationDataArray.get(id).getPendingIntent();
 
 		if (finished) {
 			uploadNotification.number--;
@@ -231,11 +219,11 @@ public class StatusBarNotificationManager {
 		downloadNotificationManager.notify(notificationCode, downloadNotification);
 	}
 
-	public void displayDialogs(MainMenuActivity activity) {
+	public void displayDialogs(FragmentActivity fragmentActivity) {
 		for (int i = 0; i < downloadProjectName.size() && i < downloadProjectZipFileString.size(); i++) {
-			OverwriteRenameDialog renameDialog = new OverwriteRenameDialog(activity, downloadProjectName.get(i),
-					downloadProjectZipFileString.get(i));
-			renameDialog.show(activity.getSupportFragmentManager(), OverwriteRenameDialog.DIALOG_FRAGMENT_TAG);
+			OverwriteRenameDialog renameDialog = new OverwriteRenameDialog(fragmentActivity,
+					downloadProjectName.get(i), downloadProjectZipFileString.get(i));
+			renameDialog.show(fragmentActivity.getSupportFragmentManager(), OverwriteRenameDialog.DIALOG_FRAGMENT_TAG);
 		}
 		downloadProjectName.clear();
 		downloadProjectZipFileString.clear();

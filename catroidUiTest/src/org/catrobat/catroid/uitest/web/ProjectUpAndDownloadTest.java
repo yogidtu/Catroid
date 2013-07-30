@@ -24,12 +24,10 @@ package org.catrobat.catroid.uitest.web;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
@@ -37,6 +35,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
@@ -56,7 +55,7 @@ import android.test.UiThreadTest;
 import android.util.Log;
 import android.widget.EditText;
 
-public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
 	private static final String TEST_FILE_DOWNLOAD_URL = "http://catroidtest.ist.tugraz.at/catroid/download/";
 
 	// TODO
@@ -231,41 +230,43 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	//				serverProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
 	//	}
 
-		//intent to the main activity is sent since changing activity orientation is not working
-		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
-		getActivity().startActivity(intent);
-
-		UiTestUtils.createValidUser(getActivity());
-
-		//Project name and description are renamed to testproject2 and testdescription2 in uploadProject()
-		String projectNameSetWhenUploading = newTestProject;
-		String projectDescriptionSetWhenUploading = newTestDescription;
-		uploadProject(newTestProject, newTestDescription);
-		solo.sleep(5000);
-
-		Project uploadProject = StorageHandler.getInstance().loadProject(newTestProject);
-
-		String DeserializedProjectName = uploadProject.getName();
-		String DeserializedProjectDescription = uploadProject.getDescription();
-		assertTrue("Deserialized project name was not renamed correctly",
-				DeserializedProjectName.equalsIgnoreCase(projectNameSetWhenUploading));
-		assertTrue("Deserialized project description was not renamed correctly",
-				DeserializedProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
-
-		UiTestUtils.clearAllUtilTestProjects();
-
-		//Download replaces project. Name and description should be testproject2 and testdescription2
-		downloadProjectAndReplace(newTestProject);
-		Project downloadedProject = StorageHandler.getInstance().loadProject(newTestProject);
-
-		String serverProjectName = downloadedProject.getName();
-		String serverProjectDescription = downloadedProject.getDescription();
-		assertTrue("Project name on server was not correctly renamed",
-				serverProjectName.equalsIgnoreCase(projectNameSetWhenUploading));
-		assertTrue("Project description on server was not correctly renamed",
-				serverProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
-	}
+	//intent to the main activity is sent since changing activity orientation is not working
+	//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
+	/*
+	 * Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
+	 * getActivity().startActivity(intent);
+	 * 
+	 * UiTestUtils.createValidUser(getActivity());
+	 * 
+	 * //Project name and description are renamed to testproject2 and testdescription2 in uploadProject()
+	 * String projectNameSetWhenUploading = newTestProject;
+	 * String projectDescriptionSetWhenUploading = newTestDescription;
+	 * uploadProject(newTestProject, newTestDescription);
+	 * solo.sleep(5000);
+	 * 
+	 * Project uploadProject = StorageHandler.getInstance().loadProject(newTestProject);
+	 * 
+	 * String DeserializedProjectName = uploadProject.getName();
+	 * String DeserializedProjectDescription = uploadProject.getDescription();
+	 * assertTrue("Deserialized project name was not renamed correctly",
+	 * DeserializedProjectName.equalsIgnoreCase(projectNameSetWhenUploading));
+	 * assertTrue("Deserialized project description was not renamed correctly",
+	 * DeserializedProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
+	 * 
+	 * UiTestUtils.clearAllUtilTestProjects();
+	 * 
+	 * //Download replaces project. Name and description should be testproject2 and testdescription2
+	 * downloadProjectAndReplace(newTestProject);
+	 * Project downloadedProject = StorageHandler.getInstance().loadProject(newTestProject);
+	 * 
+	 * String serverProjectName = downloadedProject.getName();
+	 * String serverProjectDescription = downloadedProject.getDescription();
+	 * assertTrue("Project name on server was not correctly renamed",
+	 * serverProjectName.equalsIgnoreCase(projectNameSetWhenUploading));
+	 * assertTrue("Project description on server was not correctly renamed",
+	 * serverProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
+	 * }
+	 */
 
 	@FlakyTest(tolerance = 4)
 	@Device
@@ -275,12 +276,12 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		String projectName = testProject;
 		String originalProjectDescription = testDescription;
 		createTestProject(projectName);
-		ProjectManager.getInstance().getCurrentProject().setDescription(originalProjectDescription);
 
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
-		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
+		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
+		ProjectManager.getInstance().getCurrentProject().setDescription(originalProjectDescription);
 
 		UiTestUtils.createValidUser(getActivity());
 
@@ -383,39 +384,41 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	//		assertTrue("Project was successfully downloaded", serverProjectName.equalsIgnoreCase(projectName));
 	//	}
 
-		//Adds a sufficient number of media files so that the project is big enough (5 files ~0.4MB) for download-testing
-		int numberMediaFiles = 5;
-		String soundName = "testSound";
-
-		ArrayList<SoundInfo> soundInfoList = ProjectManager.getInstance().getCurrentSprite().getSoundList();
-		for (int number = 0; number < numberMediaFiles; number++) {
-			File soundFile = UiTestUtils.saveFileToProject(projectName,
-					"longsound" + Integer.toString(number) + ".mp3", LONG_TEST_SOUND,
-					getInstrumentation().getContext(), UiTestUtils.FileTypes.SOUND);
-			SoundInfo soundInfo = new SoundInfo();
-			soundInfo.setSoundFileName(soundFile.getName());
-			soundInfo.setTitle(soundName + Integer.toString(number));
-			soundInfoList.add(soundInfo);
-			ProjectManager.getInstance().getFileChecksumContainer()
-					.addChecksum(soundInfo.getChecksum(), soundInfo.getAbsolutePath());
-		}
-		StorageHandler.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
-		Project newProject = StorageHandler.getInstance().loadProject(projectName);
-		ProjectManager.getInstance().setProject(newProject);
-
-		UiTestUtils.createValidUser(getActivity());
-		uploadProject(projectName, "");
-
-		Project uploadProject = StorageHandler.getInstance().loadProject(projectName);
-		String deserializedProjectName = uploadProject.getName();
-		assertTrue("Project was successfully uploaded", deserializedProjectName.equalsIgnoreCase(projectName));
-		UiTestUtils.clearAllUtilTestProjects();
-
-		downloadProjectAndReplace(projectName);
-		Project downloadedProject = StorageHandler.getInstance().loadProject(projectName);
-		String serverProjectName = downloadedProject.getName();
-		assertTrue("Project was successfully downloaded", serverProjectName.equalsIgnoreCase(projectName));
-	}
+	//Adds a sufficient number of media files so that the project is big enough (5 files ~0.4MB) for download-testing
+	/*
+	 * int numberMediaFiles = 5;
+	 * String soundName = "testSound";
+	 * 
+	 * ArrayList<SoundInfo> soundInfoList = ProjectManager.getInstance().getCurrentSprite().getSoundList();
+	 * for (int number = 0; number < numberMediaFiles; number++) {
+	 * File soundFile = UiTestUtils.saveFileToProject(projectName,
+	 * "longsound" + Integer.toString(number) + ".mp3", LONG_TEST_SOUND,
+	 * getInstrumentation().getContext(), UiTestUtils.FileTypes.SOUND);
+	 * SoundInfo soundInfo = new SoundInfo();
+	 * soundInfo.setSoundFileName(soundFile.getName());
+	 * soundInfo.setTitle(soundName + Integer.toString(number));
+	 * soundInfoList.add(soundInfo);
+	 * ProjectManager.getInstance().getFileChecksumContainer()
+	 * .addChecksum(soundInfo.getChecksum(), soundInfo.getAbsolutePath());
+	 * }
+	 * StorageHandler.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
+	 * Project newProject = StorageHandler.getInstance().loadProject(projectName);
+	 * ProjectManager.getInstance().setProject(newProject);
+	 * 
+	 * UiTestUtils.createValidUser(getActivity());
+	 * uploadProject(projectName, "");
+	 * 
+	 * Project uploadProject = StorageHandler.getInstance().loadProject(projectName);
+	 * String deserializedProjectName = uploadProject.getName();
+	 * assertTrue("Project was successfully uploaded", deserializedProjectName.equalsIgnoreCase(projectName));
+	 * UiTestUtils.clearAllUtilTestProjects();
+	 * 
+	 * downloadProjectAndReplace(projectName);
+	 * Project downloadedProject = StorageHandler.getInstance().loadProject(projectName);
+	 * String serverProjectName = downloadedProject.getName();
+	 * assertTrue("Project was successfully downloaded", serverProjectName.equalsIgnoreCase(projectName));
+	 * }
+	 */
 
 	@FlakyTest(tolerance = 4)
 	@Device
@@ -522,20 +525,23 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		}
 		assertFalse("testProject was not deleted!", directory.exists());
 
+		solo.waitForFragmentByTag("List_Fragment");
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.enterText(0, projectToCreate);
-		solo.goBack();
+		//solo.goBack();
+		solo.waitForActivity(MainMenuActivity_Shruti.class);
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		solo.enterText(0, "new sprite");
-		solo.goBack();
+		//solo.goBack();
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.sleep(2000);
 
 		File file = new File(Constants.DEFAULT_ROOT + "/" + projectToCreate + "/" + Constants.PROJECTCODE_NAME);
 		assertTrue(projectToCreate + " was not created!", file.exists());
+
 	}
 
 	private void addABrickToProject() {

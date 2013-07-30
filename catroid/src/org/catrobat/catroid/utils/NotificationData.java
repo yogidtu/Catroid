@@ -35,8 +35,7 @@ public class NotificationData {
 	private String notificationTitle;
 	private MainMenuActivity_Shruti activity;
 
-	public NotificationData(PendingIntent pendingIntent, Context context,
-			String name, String notificationTitle,
+	public NotificationData(PendingIntent pendingIntent, Context context, String name, String notificationTitle,
 			MainMenuActivity_Shruti context2) {
 		this.pendingIntent = pendingIntent;
 		this.context = context;

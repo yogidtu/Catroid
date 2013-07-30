@@ -103,7 +103,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 				String notificationMessage = "Download " + progress + "% "
 						+ getString(R.string.notification_percent_completed) + ":" + projectName;
 
-				StatusBarNotificationManager.INSTANCE.updateNotification(notificationId, notificationMessage,
+				StatusBarNotificationManager.getInstance().updateNotification(notificationId, notificationMessage,
 						Constants.DOWNLOAD_NOTIFICATION, endOfFileReached);
 			}
 		}
@@ -253,7 +253,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		Utils.loadProjectIfNeeded(getActivity());
 		setMainMenuButtonContinueText();
 		getActivity().findViewById(R.id.main_menu_button_continue).setEnabled(true);
-		StatusBarNotificationManager.INSTANCE.displayDialogs(getActivity());
+		StatusBarNotificationManager.getInstance().displayDialogs(getActivity());
 	}
 
 	@Override
@@ -428,7 +428,7 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 	}
 
 	public int createNotification(String downloadName) {
-		StatusBarNotificationManager manager = StatusBarNotificationManager.INSTANCE;
+		StatusBarNotificationManager manager = StatusBarNotificationManager.getInstance();
 		int notificationId = manager.createNotification(downloadName, getActivity(), Constants.DOWNLOAD_NOTIFICATION);
 		return notificationId;
 	}

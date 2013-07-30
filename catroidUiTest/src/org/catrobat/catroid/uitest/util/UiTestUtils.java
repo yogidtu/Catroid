@@ -260,6 +260,7 @@ public class UiTestUtils {
 	}
 
 	/**
+	 * solo.waitForActivity(MainMenuActivity_Shruti.class);
 	 * For bricks using the FormulaEditor. Tests starting the FE, entering a new number/formula and
 	 * ensures its set correctly to the brick´s edit text field
 	 */
