@@ -494,8 +494,8 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		Sprite firstSprite = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0);
 		Script firstScript = firstSprite.getScript(0);
 		firstScript.addBrick(new WaitBrick(firstSprite, 1000));
-
-		solo.waitForFragmentByTag("List_Fragment");
+		Log.d(getActivity().toString(), "shruti");
+		//solo.waitForFragmentByTag("List_Fragment");
 		//solo.waitForText(solo.getString(R.string.main_menu_upload));
 
 		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
