@@ -49,19 +49,23 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 
 	private final int frameByteSize = MicrophoneGrabber.frameByteSize;
 	private final int fileHeaderOffset = 44;
-	private final int preVoiceFramesForActivityDetection = 20;
+	private final int preVoiceFramesForActivityDetection = 40;
 	private final int preSilentFramesInVoiceFile = 10;
 
 	private final int maxSilentFramesToIgnore = 5;
-	private final int minVoiceFrames = 5;
+	private final int minVoiceFrames = 3;
 
 	private int totalReadBytes = fileHeaderOffset;
 	private int ignoredFrames = 0;
+	private int recordedPreFrames = 0;
+	private byte[] silentFrame;
 
 	public VoiceTriggeredRecorder(VoiceTriggeredRecorderListener listener) {
 		voiceDetection = new VoiceActivityDetection();
 		preVoiceBuffer = new byte[preVoiceFramesForActivityDetection * frameByteSize];
 		totalByteBuffer = new byte[60 * 44100 * 2];
+		silentFrame = new byte[frameByteSize];
+
 		this.listener = listener;
 		resetRecordState();
 	}
@@ -77,36 +81,48 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 
 	@Override
 	public void onMicrophoneData(byte[] recievedBuffer) {
-		boolean voiceDetected = voiceDetection.isFrameWithVoice(audioByteToDouble(recievedBuffer));
+		boolean voiceDetected = voiceDetection.isFrameWithVoice(MicrophoneGrabber.audioByteToDouble(recievedBuffer));
 
 		if (!voiceDetected && !recordForFile) {
-			// Fill silent buffer.
 			System.arraycopy(preVoiceBuffer, frameByteSize, preVoiceBuffer, 0, (preVoiceFramesForActivityDetection - 1)
 					* frameByteSize);
 			System.arraycopy(recievedBuffer, 0, preVoiceBuffer, frameByteSize
 					* (preVoiceFramesForActivityDetection - 1), frameByteSize);
+			recordedPreFrames++;
+			if (recordedPreFrames > preSilentFramesInVoiceFile) {
+				recordedPreFrames = preSilentFramesInVoiceFile;
+			}
 			return;
 		}
 
 		if (voiceDetected && !recordForFile) {
 
-			System.arraycopy(preVoiceBuffer, (preVoiceFramesForActivityDetection - preSilentFramesInVoiceFile)
-					* frameByteSize, totalByteBuffer, 0, preSilentFramesInVoiceFile * frameByteSize);
-			totalReadBytes += preSilentFramesInVoiceFile * frameByteSize;
+			for (int i = 0; i < preVoiceFramesForActivityDetection - recordedPreFrames; i++) {
+				System.arraycopy(silentFrame, 0, totalByteBuffer, i * frameByteSize, frameByteSize);
+			}
+			System.arraycopy(preVoiceBuffer, (preVoiceFramesForActivityDetection - recordedPreFrames) * frameByteSize,
+					totalByteBuffer, (preVoiceFramesForActivityDetection - recordedPreFrames) * frameByteSize,
+					recordedPreFrames * frameByteSize);
 
-			recordForFile = true;
+			totalReadBytes += preVoiceFramesForActivityDetection * frameByteSize;
+
 			voiceDetection.setSensibility(VoiceActivityDetection.SENSIBILITY_HIGH);
+			recordForFile = true;
 		}
 
 		if (!voiceDetected && recordForFile) {
-			if (ignoredFrames <= maxSilentFramesToIgnore) {
+			if (ignoredFrames < maxSilentFramesToIgnore) {
 				System.arraycopy(recievedBuffer, 0, totalByteBuffer, totalReadBytes, frameByteSize);
 				totalReadBytes += frameByteSize;
 				ignoredFrames++;
 				return;
+			} else {
+				for (int i = 1; i <= maxSilentFramesToIgnore; i++) {
+					System.arraycopy(silentFrame, 0, totalByteBuffer, totalReadBytes - i * frameByteSize, frameByteSize);
+				}
 			}
 
-			if ((totalReadBytes - fileHeaderOffset) / frameByteSize - ignoredFrames - preSilentFramesInVoiceFile < minVoiceFrames) {
+			if ((totalReadBytes - fileHeaderOffset) / frameByteSize - ignoredFrames - recordedPreFrames < minVoiceFrames) {
 				resetRecordState();
 				return;
 			}
@@ -130,32 +146,12 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 		recordForFile = false;
 		totalReadBytes = fileHeaderOffset;
 		ignoredFrames = 0;
-		voiceDetection.setSensibility(VoiceActivityDetection.SENSIBILITY_LOW);
+		voiceDetection.setSensibility(VoiceActivityDetection.SENSIBILITY_HIGH);
+		recordedPreFrames = 0;
 	}
 
 	@Override
 	public void onPauseStateChanged(boolean isPaused) {
-	}
-
-	private double[] audioByteToDouble(byte[] samples) {
-		int bytesPerSample = 2;
-
-		double[] micBufferData = new double[samples.length / bytesPerSample];
-
-		final double amplification = 1000.0;
-		for (int index = 0, floatIndex = 0; index < samples.length - bytesPerSample + 1; index += bytesPerSample, floatIndex++) {
-			double sample = 0;
-			for (int b = 0; b < bytesPerSample; b++) {
-				int v = samples[index + b];
-				if (b < bytesPerSample - 1 || bytesPerSample == 1) {
-					v &= 0xFF;
-				}
-				sample += v << (b * 8);
-			}
-			double sample32 = amplification * (sample / 32768.0);
-			micBufferData[floatIndex] = sample32;
-		}
-		return micBufferData;
 	}
 
 	private String saveRecordingToNewFile() {

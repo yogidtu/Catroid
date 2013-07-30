@@ -26,12 +26,18 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class VoiceActivityDetection {
+	/*
+	 * Implemented after
+	 * Sangwan, A.; Chiranth, M.C.; Jamadagni, H.S.; Sah, R.; Venkatesha Prasad, R.; Gaurav, V.,
+	 * "VAD techniques for real-time speech transmission on the Internet"
+	 * High Speed Networks and Multimedia Communications 5th IEEE International Conference, pp.46,50, 2002
+	 */
 
 	public static final float SENSIBILITY_LOW = 1.8f;
 	public static final float SENSIBILITY_NORMAL = 1.5f;
 	public static final float SENSIBILITY_HIGH = 1.3f;
 
-	public final int samplesPerFrame = 512; //to get ~10ms by 16kHz with 16bit PCM
+	public final int samplesPerFrame = 256;
 	private double energyThreshold = 0.0d;
 	private int framesForThreshold = 20;
 	private float weightFactor = 0.1f;
@@ -62,6 +68,11 @@ public class VoiceActivityDetection {
 		energyThreshold = (1 - weightFactor) * energyThreshold + weightFactor * frameEnergy;
 
 		if (frameEnergy > thresholdFactor * energyThreshold) {
+			return true;
+		}
+
+		int crossings = countZeroCrossings(frame);
+		if (crossings >= 5 && crossings <= 20) {
 			return true;
 		}
 
@@ -107,6 +118,18 @@ public class VoiceActivityDetection {
 		}
 
 		return sum / (recentEnergyRingQueqe.size() - 1);
+	}
+
+	private int countZeroCrossings(double[] frames) {
+		double preFrame = frames[0];
+		int crossings = 0;
+		for (double value : frames) {
+			if ((preFrame > 0 && value < 0) || preFrame < 0 && value > 0) {
+				crossings++;
+			}
+			preFrame = value;
+		}
+		return crossings;
 	}
 
 	public void resetState() {
