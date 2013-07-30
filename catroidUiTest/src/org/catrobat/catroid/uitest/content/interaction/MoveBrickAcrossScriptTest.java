@@ -45,13 +45,13 @@ import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.suitebuilder.annotation.Smoke;
 
-public class MoveBrickAcrossScriptTest extends BaseActivityInstrumentationTestCase<MainMenuActivity_Shruti> {
+public class MoveBrickAcrossScriptTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private ArrayList<Brick> brickListToCheck;
 	private ArrayList<Brick> secondBrickListForMoving;
 	private Sprite firstSprite;
 
 	public MoveBrickAcrossScriptTest() {
-		super(MainMenuActivity_Shruti.class);
+		super(MainMenuActivity.class);
 	}
 
 	@Override
