@@ -249,8 +249,10 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//Project description is changed to testdescription2 in uploadProject()
 		String projectDescriptionSetWhenUploading = newTestDescription;
-		solo.waitForActivity(MainMenuActivity_Shruti.class.getSimpleName());
-		solo.waitForFragmentByTag("List_Fragment");
+		/*
+		 * solo.waitForActivity(MainMenuActivity_Shruti.class.getSimpleName());
+		 * solo.waitForFragmentByTag("List_Fragment");
+		 */
 
 		uploadProject(projectName, newTestDescription);
 		solo.sleep(5000);
