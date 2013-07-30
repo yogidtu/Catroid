@@ -36,7 +36,8 @@ public class MicrophoneGrabber extends Thread {
 	public static final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
 	public static final int channelConfiguration = AudioFormat.CHANNEL_IN_MONO;
 	public static final int sampleRate = 16000;
-	public static final int frameByteSize = 2048;
+	public static final int frameByteSize = 1024;
+	public static final int bytesPerSample = 2;
 
 	private ArrayList<microphoneListener> microphoneListenerList = new ArrayList<microphoneListener>();
 	private boolean isRecording;
@@ -61,7 +62,11 @@ public class MicrophoneGrabber extends Thread {
 	public void registerListener(microphoneListener litener) {
 		synchronized (microphoneListenerList) {
 			if (!isRecording && !isPaused) {
-				this.start();
+				if (this.isAlive()) {
+					isRecording = true;
+				} else {
+					this.start();
+				}
 			}
 			microphoneListenerList.add(litener);
 		}
@@ -94,7 +99,7 @@ public class MicrophoneGrabber extends Thread {
 			int shortRead = 0;
 
 			while (offset < frameByteSize) {
-				shortRead = audioRecord.read(buffer, 0, frameByteSize);
+				shortRead = audioRecord.read(buffer, offset, frameByteSize - offset);
 				offset += shortRead;
 			}
 
@@ -110,6 +115,26 @@ public class MicrophoneGrabber extends Thread {
 
 	public boolean isRecording() {
 		return this.isAlive() && isRecording;
+	}
+
+	public static double[] audioByteToDouble(byte[] samples) {
+
+		double[] micBufferData = new double[samples.length / bytesPerSample];
+
+		final double amplification = 1000.0;
+		for (int index = 0, floatIndex = 0; index < samples.length - bytesPerSample + 1; index += bytesPerSample, floatIndex++) {
+			double sample = 0;
+			for (int b = 0; b < bytesPerSample; b++) {
+				int v = samples[index + b];
+				if (b < bytesPerSample - 1 || bytesPerSample == 1) {
+					v &= 0xFF;
+				}
+				sample += v << (b * 8);
+			}
+			double sample32 = amplification * (sample / 32768.0);
+			micBufferData[floatIndex] = sample32;
+		}
+		return micBufferData;
 	}
 
 	public void pauseRecording() {
