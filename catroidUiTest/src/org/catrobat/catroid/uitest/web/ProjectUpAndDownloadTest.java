@@ -493,10 +493,10 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		Script firstScript = firstSprite.getScript(0);
 		firstScript.addBrick(new WaitBrick(firstSprite, 1000));
 
-		//solo.waitForFragmentByTag("List_Fragment");
-		//solo.waitForText(solo.getString(R.string.main_menu_upload));
+		solo.waitForFragmentByTag("List_Fragment");
+		solo.waitForText(solo.getString(R.string.main_menu_upload));
 
-		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
+		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(uploadDialogTitle);
 
 		// enter a new title
