@@ -210,7 +210,7 @@ public class AddBrickFragment extends SherlockListFragment {
 		addButtonHandler = null;
 
 		Log.d("FOREST", "ABF.onDestroy: ");
-		BottomBar.setButtonsVisible(getActivity(), true);
+		BottomBar.setButtonsVisible(getActivity(), false);
 
 		super.onDestroy();
 	}
