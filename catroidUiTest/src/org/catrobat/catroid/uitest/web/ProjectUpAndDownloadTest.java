@@ -187,7 +187,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	 * }
 	 */
 
-	@FlakyTest(tolerance = 4)
+	@FlakyTest(tolerance = 1)
 	@Device
 	public void testRenameProjectDescriptionWhenUploading() throws Throwable {
 		setServerURLToTestUrl();
@@ -379,7 +379,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		//solo.waitForActivity(MainMenuActivity_Shruti.class);
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
-
+		solo.sleep(500);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		solo.enterText(0, "new sprite");
 		//solo.goBack();
