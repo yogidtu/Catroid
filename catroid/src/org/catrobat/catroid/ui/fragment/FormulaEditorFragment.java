@@ -188,7 +188,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 
 		Log.d("FOREST", "FEF.onUserDismiss");
 		BottomBar.setButtonsVisible(activity, true);
-		BottomBar.disableAddButton(activity);
 
 	}
 
