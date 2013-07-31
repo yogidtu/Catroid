@@ -121,6 +121,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		fragmentTransaction.commit();
 
 		setupActionBar();
+		Log.d("FOREST", "SA.onCreate");
 		setupBottomBar();
 
 		buttonAdd = (LinearLayout) findViewById(R.id.button_add);
@@ -136,8 +137,8 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	}
 
 	public void setupBottomBar() {
-		BottomBar.enableButtons(this);
-		BottomBar.setButtonVisible(this, true);
+		BottomBar.setButtonsClickable(this, true);
+		BottomBar.setButtonsVisible(this, true);
 		buttonAdd = (LinearLayout) findViewById(R.id.button_add);
 		updateHandleAddButtonClickListener();
 	}
@@ -146,6 +147,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	public void onResume() {
 		super.onResume();
 		setupActionBar();
+		Log.d("FOREST", "SA.onResume");
 		setupBottomBar();
 	}
 

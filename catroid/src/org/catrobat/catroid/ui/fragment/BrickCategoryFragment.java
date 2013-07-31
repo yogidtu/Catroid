@@ -27,12 +27,14 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ViewSwitchLock;
 import org.catrobat.catroid.ui.adapter.BrickCategoryAdapter;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +71,8 @@ public class BrickCategoryFragment extends SherlockListFragment {
 		View rootView = inflater.inflate(R.layout.fragment_brick_categories, null);
 
 		setUpActionBar();
-		getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+		Log.d("FOREST", "BCF.onCreateView");
+		BottomBar.setButtonsVisible(getActivity(), false);
 		setupBrickCategories();
 
 		return rootView;
@@ -102,7 +105,8 @@ public class BrickCategoryFragment extends SherlockListFragment {
 	@Override
 	public void onDestroy() {
 		resetActionBar();
-		getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
+		Log.d("FOREST", "BCF.onDestroy");
+		BottomBar.setButtonsVisible(getActivity(), true);
 		super.onDestroy();
 	}
 

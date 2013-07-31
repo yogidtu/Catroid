@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -118,8 +117,6 @@ public class DragNDropBrickLayout extends BrickLayout {
 	private void beginDrag(int x, int y, int itemIndex) {
 		dragBeganMillis = System.currentTimeMillis();
 
-		Log.d("FOREST", "beginDrag");
-
 		// frequent dragdrops can cause a null reference when the event for the new drag happens before the drop finishes.
 		if (dragging || dragBeganMillis - dragEndMillis < 200) {
 			return;
@@ -178,8 +175,7 @@ public class DragNDropBrickLayout extends BrickLayout {
 		dragEndMillis = System.currentTimeMillis();
 
 		long difference = dragEndMillis - dragBeganMillis;
-		Log.d("FOREST", "difference: " + difference + " & "
-				+ (draggedItemIndex == lastInsertableSpaceIndex ? "true" : "false"));
+
 		if (difference < 400
 				&& (draggedItemIndex == lastInsertableSpaceIndex || draggedItemIndex == lastInsertableSpaceIndex + 1)) {
 

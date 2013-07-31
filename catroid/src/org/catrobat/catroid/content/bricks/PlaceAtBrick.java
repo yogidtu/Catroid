@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.catrobat.catroid.R;
@@ -44,7 +45,7 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class PlaceAtBrick extends BrickBaseType implements OnClickListener, FormulaBrick {
+public class PlaceAtBrick extends BrickBaseType implements OnClickListener, MultiFormulaBrick {
 	private static final long serialVersionUID = 1L;
 	private Formula xPosition;
 	private Formula yPosition;
@@ -70,8 +71,11 @@ public class PlaceAtBrick extends BrickBaseType implements OnClickListener, Form
 	}
 
 	@Override
-	public Formula getFormula() {
-		return xPosition;
+	public List<Formula> getFormulas() {
+		List<Formula> list = new LinkedList<Formula>();
+		list.add(xPosition);
+		list.add(yPosition);
+		return list;
 	}
 
 	public void setXPosition(Formula xPosition) {

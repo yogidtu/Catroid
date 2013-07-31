@@ -279,7 +279,7 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 			stopSoundAndUpdateList();
 			actionMode = getSherlockActivity().startActionMode(copyModeCallBack);
 			unregisterForContextMenu(listView);
-			BottomBar.disableButtons(getActivity());
+			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = false;
 		}
 
@@ -291,7 +291,7 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 			stopSoundAndUpdateList();
 			actionMode = getSherlockActivity().startActionMode(renameModeCallBack);
 			unregisterForContextMenu(listView);
-			BottomBar.disableButtons(getActivity());
+			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = true;
 		}
 	}
@@ -303,7 +303,7 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 			stopSoundAndUpdateList();
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
 			unregisterForContextMenu(listView);
-			BottomBar.disableButtons(getActivity());
+			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = false;
 		}
 	}
@@ -900,7 +900,7 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 		setActionModeActive(false);
 
 		registerForContextMenu(listView);
-		BottomBar.enableButtons(getActivity());
+		BottomBar.setButtonsClickable(getActivity(), true);
 	}
 
 	private void handleAddButtonFromNew() {

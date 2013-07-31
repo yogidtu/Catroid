@@ -32,6 +32,7 @@ import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIData;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
+import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.DragAndDropBrickLayoutListener;
 import org.catrobat.catroid.ui.DragNDropBrickLayout;
 import org.catrobat.catroid.ui.ScriptActivity;
@@ -108,13 +109,15 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			fragTransaction.add(R.id.script_fragment_container, dataEditorFragment, BRICK_DATA_EDITOR_FRAGMENT_TAG);
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(dataEditorFragment);
-			activity.findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+			Log.d("FOREST", "UBDEF.showFragment");
+			BottomBar.setButtonsVisible(activity, false);
 
 		} else if (dataEditorFragment.isHidden()) {
 			dataEditorFragment.updateBrickView();
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(dataEditorFragment);
-			activity.findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+			Log.d("FOREST", "UBDEF.showFragment");
+			BottomBar.setButtonsVisible(activity, false);
 		} else {
 			// ??
 		}
@@ -135,9 +138,8 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 							+ "This should never happen, afaik. I don't know how to correctly reset the action bar...");
 		}
 
-		activity.findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
-		activity.findViewById(R.id.bottom_bar_separator).setVisibility(View.VISIBLE);
-		activity.findViewById(R.id.button_play).setVisibility(View.VISIBLE);
+		Log.d("FOREST", "UBDEF.onUserDismiss");
+		BottomBar.setButtonsVisible(getActivity(), true);
 	}
 
 	@Override
@@ -232,7 +234,6 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	@Override
 	public void onFinishDialog(CharSequence text, boolean editMode) {
-		Log.d("FOREST", "onFinishDialog()");
 		UserBrickUIData d = currentBrick.uiData.get(indexOfCurrentlyEditedElement);
 		if (d != null) {
 			String emptyString = ("").toString();
@@ -256,10 +257,8 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	@Override
 	public void click(int id) {
-		Log.d("FOREST", "click()");
 		UserBrickUIData d = currentBrick.uiData.get(id);
 		if (d != null) {
-			Log.d("FOREST", "d != null");
 			int title = d.isVariable ? R.string.edit_variable : R.string.edit_text;
 			int defaultText = d.isVariable ? R.string.edit_variable : R.string.edit_text;
 			editElementDialog(id, d.name, true, title, defaultText);
@@ -278,8 +277,6 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		if (found > -1) {
 			currentBrick.removeDataAt(found);
 			updateBrickView();
-		} else {
-			Log.d("FOREST", "UserBrickDataEditorFragment.deleteButtonClicked() Unable to find view to remove!! ");
 		}
 	}
 

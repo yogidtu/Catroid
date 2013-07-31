@@ -73,14 +73,11 @@ public class AddBrickFragment extends SherlockListFragment {
 	private PrototypeBrickAdapter adapter;
 	private CategoryBricksFactory categoryBricksFactory = new CategoryBricksFactory();
 	public static AddBrickFragment addButtonHandler = null;
-	private AddBrickFragment holdAddButtonHandlerWhilePaused = null;
 
-	private static boolean cameFromScriptActivity = false;
 	private static UserBrick brickToFocus;
 	private static int listIndexToFocus = -1;
 
 	public static void setBrickFocus(UserBrick b) {
-		cameFromScriptActivity = true;
 		brickToFocus = b;
 	}
 
@@ -107,26 +104,20 @@ public class AddBrickFragment extends SherlockListFragment {
 		Context context = getActivity();
 		Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
 		String selectedCategory = getArguments().getString(BUNDLE_ARGUMENTS_SELECTED_CATEGORY);
-		Log.d("a", "setupSelectedBrickCategory(): selectedCategory = " + selectedCategory);
 
 		List<Brick> brickList = categoryBricksFactory.getBricks(selectedCategory, sprite, context);
 		adapter = new PrototypeBrickAdapter(context, brickList);
 		setListAdapter(adapter);
 
-		Log.d("a", "setupSelectedBrickCategory(): selectedCategory = " + getActivity().toString());
-
 		if (selectedCategory.equals(context.getString(R.string.category_user_bricks))) {
 			addButtonHandler = this;
 
-			Log.d("FOREST", "asd0");
 			if (brickToFocus != null) {
-				Log.d("FOREST", "asd1");
 				int i = 0;
 				for (Brick brick : brickList) {
 					UserBrick b = ((UserBrick) brick);
 					if (brickToFocus.isInstanceOf(b)) {
 
-						Log.d("FOREST", "asd");
 						listIndexToFocus = i;
 						animateBrick(b, adapter);
 
@@ -137,13 +128,13 @@ public class AddBrickFragment extends SherlockListFragment {
 				}
 			}
 
+			Log.d("FOREST", "ABF.setupSelectedCategory: // enable add button");
 			// enable add button
 			BottomBar.disablePlayButton(getActivity());
 		}
 	}
 
 	private void animateBrick(final Brick b, PrototypeBrickAdapter adapter) {
-		Log.d("FOREST", "ABF.animateBrick");
 		Context context = getActivity();
 		Animation animation = AnimationUtils.loadAnimation(context, R.anim.blink);
 
@@ -218,16 +209,8 @@ public class AddBrickFragment extends SherlockListFragment {
 		resetActionBar();
 		addButtonHandler = null;
 
-		// enable both buttons
-		BottomBar.setButtonVisible(getActivity(), true);
-
-		if (!cameFromScriptActivity) {
-			// we came from the category fragment, and we are going back there, so disable the buttons entirely
-			getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.GONE);
-		} else {
-			// leave the buttons visible if we are going back to the script activity
-			cameFromScriptActivity = false;
-		}
+		Log.d("FOREST", "ABF.onDestroy: ");
+		BottomBar.setButtonsVisible(getActivity(), true);
 
 		super.onDestroy();
 	}
@@ -235,15 +218,16 @@ public class AddBrickFragment extends SherlockListFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		holdAddButtonHandlerWhilePaused = addButtonHandler;
 		addButtonHandler = null;
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		Log.d("FOREST", "ABF.onResume: ");
 		setupSelectedBrickCategory();
-		addButtonHandler = holdAddButtonHandlerWhilePaused;
+		addButtonHandler = this;
+
 	}
 
 	@Override
@@ -334,6 +318,9 @@ public class AddBrickFragment extends SherlockListFragment {
 			getFragmentManager().popBackStack();
 		}
 		fragmentTransaction.commit();
+
+		Log.d("FOREST", "ABF.addBrickToScript");
+		BottomBar.setButtonsVisible(getActivity(), true);
 	}
 
 	public void launchBrickScriptActivityOnBrick(Context context, Brick brick) {

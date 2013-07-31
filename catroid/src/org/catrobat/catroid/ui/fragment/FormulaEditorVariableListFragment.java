@@ -239,11 +239,11 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 				.findFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
 		fragTransaction.hide(formulaEditorFragment);
 
-		activity.findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
-		activity.findViewById(R.id.bottom_bar_separator).setVisibility(View.GONE);
-		activity.findViewById(R.id.button_play).setVisibility(View.GONE);
+		Log.d("FOREST", "FEVLF.showFragment");
+		BottomBar.setButtonsVisible(getActivity(), true);
+		BottomBar.disablePlayButton(getActivity());
 
-		BottomBar.enableButtons(activity);
+		BottomBar.setButtonsClickable(activity, true);
 		fragTransaction.show(this);
 		fragTransaction.commit();
 
@@ -271,7 +271,8 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 	public boolean onKey(DialogInterface d, int keyCode, KeyEvent event) {
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
-				getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+				Log.d("FOREST", "FEVLF.onKey");
+				BottomBar.setButtonsVisible(getActivity(), false);
 				((ScriptActivity) getSherlockActivity()).updateHandleAddButtonClickListener();
 
 				FragmentTransaction fragmentTransaction = getSherlockActivity().getSupportFragmentManager()
@@ -299,7 +300,9 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 			mode.setTitle("0 "
 					+ getActivity().getResources().getQuantityString(
 							R.plurals.formula_editor_variable_context_action_item_selected, 0));
-			getSherlockActivity().findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+
+			Log.d("FOREST", "FEVLF.mContextModeCallback");
+			BottomBar.setButtonsVisible(getActivity(), false);
 			return true;
 		}
 

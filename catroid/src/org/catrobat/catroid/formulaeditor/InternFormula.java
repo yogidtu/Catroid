@@ -138,6 +138,13 @@ public class InternFormula {
 
 	}
 
+	public void updateVariableReferences(String oldName, String newName, Context context) {
+		for (InternToken internToken : internTokenFormulaList) {
+			internToken.replaceVariableReferences(oldName, newName);
+		}
+		generateExternFormulaStringAndInternExternMapping(context);
+	}
+
 	public void updateInternCursorPosition() {
 		Integer cursorPositionTokenIndex = externInternRepresentationMapping
 				.getInternTokenByExternIndex(externCursorPosition);

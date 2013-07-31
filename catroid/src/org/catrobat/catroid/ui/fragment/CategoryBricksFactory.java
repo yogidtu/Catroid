@@ -86,13 +86,10 @@ import org.catrobat.catroid.formulaeditor.Operators;
 import org.catrobat.catroid.ui.UserBrickScriptActivity;
 
 import android.content.Context;
-import android.util.Log;
 
 public class CategoryBricksFactory {
 
 	public List<Brick> getBricks(String category, Sprite sprite, Context context) {
-
-		Log.d("FOREST", category + ", " + context.getString(R.string.category_user_bricks));
 
 		UserBrickScriptActivity activity;
 		try {
@@ -226,8 +223,10 @@ public class CategoryBricksFactory {
 	}
 
 	private List<Brick> setupUserBricksCategoryList(Sprite sprite, Context context) {
-		Log.d("FOREST", "CategoryBricksFactory.setupUserBricksCategoryList");
-		return ProjectManager.getInstance().getCurrentSprite().getUserBrickListAtLeastOneBrick(context);
+		String defaultText = context.getString(R.string.example_user_brick);
+		String defaultVariable = context.getString(R.string.example_user_brick_variable);
+		return ProjectManager.getInstance().getCurrentSprite()
+				.getUserBrickListAtLeastOneBrick(defaultText, defaultVariable);
 	}
 
 	private List<Brick> setupLegoNxtCategoryList(Sprite sprite) {

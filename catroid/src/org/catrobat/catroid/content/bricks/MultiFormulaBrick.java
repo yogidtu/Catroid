@@ -22,10 +22,11 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.List;
+
 import org.catrobat.catroid.formulaeditor.Formula;
 
-public interface FormulaBrick {
+public interface MultiFormulaBrick {
 
-	public Formula getFormula();
-
+	public List<Formula> getFormulas();
 }

@@ -30,6 +30,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.UserBrick;
 
+import android.content.Context;
 import android.util.Log;
 
 public class FormulaElement implements Serializable {
@@ -132,6 +133,20 @@ public class FormulaElement implements Serializable {
 		return root;
 	}
 
+	public void updateVariableReferences(String oldName, String newName, Context context) {
+		if (leftChild != null) {
+			leftChild.updateVariableReferences(oldName, newName, context);
+		}
+		if (rightChild != null) {
+			rightChild.updateVariableReferences(oldName, newName, context);
+		}
+		if (type == ElementType.USER_VARIABLE) {
+			if (value.equals(oldName)) {
+				value = newName;
+			}
+		}
+	}
+
 	public Double interpretRecursive(UserBrick userBrick, Sprite sprite) {
 
 		Double returnValue = 0d;
@@ -163,7 +178,6 @@ public class FormulaElement implements Serializable {
 				UserVariablesContainer userVariables = ProjectManager.getInstance().getCurrentProject()
 						.getUserVariables();
 
-				Log.d("FOREST", value + ", " + userBrick.toString() + ", " + sprite.toString());
 				UserVariable userVariable = userVariables.getUserVariable(value, userBrick, sprite);
 				if (userVariable == null) {
 					returnValue = NOT_EXISTING_USER_VARIABLE_INTERPRETATION_VALUE;

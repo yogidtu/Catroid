@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.catrobat.catroid.R;
@@ -45,7 +46,7 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class GlideToBrick extends BrickBaseType implements OnClickListener, FormulaBrick {
+public class GlideToBrick extends BrickBaseType implements OnClickListener, MultiFormulaBrick {
 	private static final long serialVersionUID = 1L;
 
 	private Formula xDestination;
@@ -75,8 +76,12 @@ public class GlideToBrick extends BrickBaseType implements OnClickListener, Form
 	}
 
 	@Override
-	public Formula getFormula() {
-		return durationInSeconds;
+	public List<Formula> getFormulas() {
+		List<Formula> list = new LinkedList<Formula>();
+		list.add(xDestination);
+		list.add(yDestination);
+		list.add(durationInSeconds);
+		return list;
 	}
 
 	public void setXDestination(Formula xDestination) {

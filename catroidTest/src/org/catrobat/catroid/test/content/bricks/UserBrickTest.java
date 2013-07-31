@@ -33,6 +33,7 @@ import org.catrobat.catroid.content.bricks.UserBrickUIComponent;
 import org.catrobat.catroid.content.bricks.UserBrickUIDataArray;
 import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 import org.catrobat.catroid.test.utils.Reflection;
+import org.catrobat.catroid.test.utils.Reflection.ParameterList;
 
 import android.test.AndroidTestCase;
 
@@ -54,7 +55,7 @@ public class UserBrickTest extends AndroidTestCase {
 
 		assertTrue("the sprite should have zero user bricks after being created and initialized.", array.size() == 0);
 
-		Reflection.invokeMethod(sprite, "getUserBrickList");
+		Reflection.invokeMethod(sprite, "getUserBrickListAtLeastOneBrick", new ParameterList("Example", "Variable 1"));
 
 		array = (ArrayList<Script>) Reflection.getPrivateField(sprite, "userBricks");
 

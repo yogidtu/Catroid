@@ -307,21 +307,24 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 	public void startRenameActionMode() {
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(renameModeCallBack);
-			BottomBar.disableButtons(getActivity());
+			Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
+			BottomBar.setButtonsClickable(getActivity(), false);
 		}
 	}
 
 	public void startDeleteActionMode() {
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
-			BottomBar.disableButtons(getActivity());
+			Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
+			BottomBar.setButtonsClickable(getActivity(), false);
 		}
 	}
 
 	public void startCopyActionMode() {
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(copyModeCallBack);
-			BottomBar.disableButtons(getActivity());
+			Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
+			BottomBar.setButtonsClickable(getActivity(), false);
 		}
 	}
 
@@ -421,7 +424,8 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 		actionMode = null;
 		actionModeActive = false;
 
-		BottomBar.enableButtons(getActivity());
+		Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
+		BottomBar.setButtonsClickable(getActivity(), true);
 	}
 
 	public static class ProjectData implements Serializable {

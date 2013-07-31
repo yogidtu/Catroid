@@ -22,11 +22,14 @@
  */
 package org.catrobat.catroid.content.bricks;
 
+import java.util.List;
+
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.UserScript;
+import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.ui.fragment.UserBrickDataEditorFragment;
 import org.catrobat.catroid.utils.Utils;
 
@@ -76,6 +79,22 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 		copyBrick.sprite = sprite;
 		copyBrick.setUserScript((UserScript) script);
 		return copyBrick;
+	}
+
+	public void renameVariablesInFormulas(String oldName, String newName, Context context) {
+		List<Brick> brickList = userScript.getBrickList();
+		for (Brick b : brickList) {
+			if (b instanceof MultiFormulaBrick) {
+				List<Formula> formulaList = ((MultiFormulaBrick) b).getFormulas();
+				for (Formula formula : formulaList) {
+					formula.updateVariableReferences(oldName, newName, context);
+				}
+			}
+			if (b instanceof FormulaBrick) {
+				Formula formula = ((FormulaBrick) b).getFormula();
+				formula.updateVariableReferences(oldName, newName, context);
+			}
+		}
 	}
 
 	@Override

@@ -45,7 +45,6 @@ import android.graphics.Paint.Style;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -109,8 +108,6 @@ public class DragAndDropListView extends ListView implements OnLongClickListener
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent event) {
-		Log.d("FOREST", "DNDLIST.onInterceptTouchEvent");
-		//Log.d("FOREST", "onInterceptTouchEvent ddlv" + event.getAction() + ", " + MotionEvent.ACTION_UP);
 
 		//hack: on Android 2.x getView() is not always called when checkbox is checked.
 		//Therefore the action is catched here and does exactly the same as otherwise the

@@ -40,7 +40,6 @@ import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -57,7 +56,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
  * 
  */
 
-public class UserBrick extends BrickBaseType implements OnClickListener {
+public class UserBrick extends BrickBaseType implements OnClickListener, MultiFormulaBrick {
 	private static final long serialVersionUID = 1L;
 
 	private UserScriptDefinitionBrick definitionBrick;
@@ -123,9 +122,11 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		data.isVariable = true;
 		data.name = context.getResources().getString(id);
 
-		UserVariablesContainer variablesContainer = null;
-		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
-		variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, data.name);
+		if (ProjectManager.getInstance().getCurrentProject() != null) {
+			UserVariablesContainer variablesContainer = null;
+			variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+			variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, data.name);
+		}
 
 		uiData.add(data);
 		uiData.version++;
@@ -137,9 +138,11 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 		comp.isVariable = true;
 		comp.name = id;
 
-		UserVariablesContainer variablesContainer = null;
-		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
-		variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, comp.name);
+		if (ProjectManager.getInstance().getCurrentProject() != null) {
+			UserVariablesContainer variablesContainer = null;
+			variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+			variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, comp.name);
+		}
 
 		uiData.add(comp);
 		uiData.version++;
@@ -154,12 +157,16 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 			}
 		}
 
+		definitionBrick.renameVariablesInFormulas(oldName, newName, context);
+
 		variable.name = newName;
 
-		UserVariablesContainer variablesContainer = null;
-		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
-		variablesContainer.deleteUserVariableFromUserBrick(definitionBrick, oldName);
-		variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, newName);
+		if (ProjectManager.getInstance().getCurrentProject() != null) {
+			UserVariablesContainer variablesContainer = null;
+			variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+			variablesContainer.deleteUserVariableFromUserBrick(definitionBrick, oldName);
+			variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, newName);
+		}
 	}
 
 	public void removeDataAt(int id) {
@@ -176,7 +183,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	private void updateUIComponents(Context context) {
-		Log.d("FOREST", "UB.updateUIComponents");
 		ArrayList<UserBrickUIComponent> newUIComponents = new ArrayList<UserBrickUIComponent>();
 
 		for (int i = 0; i < uiData.size(); i++) {
@@ -195,6 +201,17 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 		uiComponents = newUIComponents;
 		lastDataVersion = uiData.version;
+	}
+
+	@Override
+	public List<Formula> getFormulas() {
+		List<Formula> list = new LinkedList<Formula>();
+		for (UserBrickUIComponent uiComponent : uiComponents) {
+			if (uiComponent.variableFormula != null && uiComponent.variableName != null) {
+				list.add(uiComponent.variableFormula);
+			}
+		}
+		return list;
 	}
 
 	private void copyFormulasMatchingNames(ArrayList<UserBrickUIComponent> from, ArrayList<UserBrickUIComponent> to,
@@ -243,7 +260,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
-		Log.d("FOREST", "UB.getView");
 		if (animationState) {
 			return view;
 		}
@@ -269,7 +285,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getPrototypeView(Context context) {
-		Log.d("FOREST", "UB.getPrototypeView");
 		prototypeView = View.inflate(context, R.layout.brick_user, null);
 
 		onLayoutChanged(prototypeView);
@@ -279,7 +294,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		Log.d("FOREST", "UB.getViewWithAlpha");
 		if (lastDataVersion < uiData.version || uiComponents == null) {
 			updateUIComponents(view.getContext());
 			onLayoutChanged(view);
@@ -304,7 +318,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 	}
 
 	public void onLayoutChanged(View currentView) {
-		Log.d("FOREST", "UB.onLayoutChanged");
 		if (lastDataVersion < uiData.version || uiComponents == null) {
 			updateUIComponents(currentView.getContext());
 		}
@@ -384,17 +397,12 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	@Override
 	public void onClick(View eventOrigin) {
-		Log.d("FOREST", "UB.onClick - " + eventOrigin.getId());
 		if (checkbox.getVisibility() == View.VISIBLE) {
 			return;
 		}
 
 		for (UserBrickUIComponent c : uiComponents) {
 			UserBrickUIData d = uiData.get(c.dataIndex);
-
-			if (d.isVariable) {
-				Log.d("FOREST", "-" + c.textView.getId());
-			}
 
 			if (d.isVariable && c.textView.getId() == eventOrigin.getId()) {
 				FormulaEditorFragment.showFragment(view, this, c.variableFormula);
@@ -422,6 +430,11 @@ public class UserBrick extends BrickBaseType implements OnClickListener {
 
 	private List<UserBrickVariable> getBrickVariables() {
 		LinkedList<UserBrickVariable> theList = new LinkedList<UserBrickVariable>();
+
+		if (ProjectManager.getInstance().getCurrentProject() == null) {
+			return theList;
+		}
+
 		UserVariablesContainer variablesContainer = null;
 		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
 

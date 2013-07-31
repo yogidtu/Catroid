@@ -424,15 +424,14 @@ public class UiTestUtils {
 		Log.d("FOREST", "add brick fragment appeared");
 
 		if (solo.searchText(brickName, nThElement, true)) {
-			clickOnBrickInAddBrickFragment(solo, brickName);
-
+			clickOnBrickInAddBrickFragment(solo, brickName, true);
 		} else {
 			fail("add brick named " + brickName + " should appear");
 		}
 		solo.sleep(600);
 	}
 
-	private static void clickOnBrickInAddBrickFragment(Solo solo, String brickName) {
+	public static void clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
 		ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
 		for (TextView v : array) {
 			if (v.getText().toString().equals(brickName)) {
@@ -446,6 +445,18 @@ public class UiTestUtils {
 					solo.clickOnView(v);
 				}
 			}
+		}
+		if (addToScript) {
+			Log.d("FOREST", "dunkey1");
+			String addBrick = solo.getCurrentActivity().getString(R.string.brick_context_dialog_add_to_script);
+			boolean foundAddBrickText = solo.waitForText(addBrick, 0, 200);
+
+			if (foundAddBrickText) {
+				Log.d("FOREST", "dunkey4");
+				solo.clickOnText(addBrick);
+			}
+
+			solo.sleep(50);
 		}
 	}
 

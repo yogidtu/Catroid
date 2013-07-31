@@ -286,7 +286,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 	public void startRenameActionMode() {
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(renameModeCallBack);
-			BottomBar.disableButtons(getActivity());
+			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = true;
 		}
 	}
@@ -294,7 +294,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 	public void startDeleteActionMode() {
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
-			BottomBar.disableButtons(getActivity());
+			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = false;
 		}
 	}
@@ -302,7 +302,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 	public void startCopyActionMode() {
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(copyModeCallBack);
-			BottomBar.disableButtons(getActivity());
+			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = false;
 		}
 	}
@@ -440,7 +440,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 		actionMode = null;
 		actionModeActive = false;
 
-		BottomBar.enableButtons(getActivity());
+		BottomBar.setButtonsClickable(getActivity(), true);
 	}
 
 	public void setSelectMode(int selectMode) {

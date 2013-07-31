@@ -28,6 +28,7 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaEditorEditText;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.InternFormulaParser;
+import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.dialogs.FormulaEditorComputeDialog;
 
@@ -114,7 +115,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	}
 
 	public static void showFragment(View view, Brick brick, Formula formula) {
-		Log.d("FOREST", "wt1");
 		SherlockFragmentActivity activity = null;
 		activity = (SherlockFragmentActivity) view.getContext();
 
@@ -125,7 +125,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
 
 		if (formulaEditorFragment == null) {
-			Log.d("FOREST", "woof");
 			formulaEditorFragment = new FormulaEditorFragment();
 			Bundle bundle = new Bundle();
 			bundle.putSerializable(BRICK_BUNDLE_ARGUMENT, brick);
@@ -135,15 +134,15 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 			fragTransaction.add(R.id.script_fragment_container, formulaEditorFragment, FORMULA_EDITOR_FRAGMENT_TAG);
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(formulaEditorFragment);
-			activity.findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+			Log.d("FOREST", "FEF.showFragment");
+			BottomBar.setButtonsVisible(activity, false);
 		} else if (formulaEditorFragment.isHidden()) {
-			Log.d("FOREST", "woof1");
 			formulaEditorFragment.updateBrickViewAndFormula(brick, formula);
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(formulaEditorFragment);
-			activity.findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+			Log.d("FOREST", "FEF.showFragment");
+			BottomBar.setButtonsVisible(activity, false);
 		} else {
-			Log.d("FOREST", "arf");
 			formulaEditorFragment.setInputFormula(formula, SET_FORMULA_ON_SWITCH_EDIT_TEXT);
 		}
 		fragTransaction.commit();
@@ -187,9 +186,9 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 
 		resetActionBar();
 
-		activity.findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
-		activity.findViewById(R.id.bottom_bar_separator).setVisibility(View.VISIBLE);
-		activity.findViewById(R.id.button_play).setVisibility(View.VISIBLE);
+		Log.d("FOREST", "FEF.onUserDismiss");
+		BottomBar.setButtonsVisible(activity, true);
+		BottomBar.disableAddButton(activity);
 
 	}
 

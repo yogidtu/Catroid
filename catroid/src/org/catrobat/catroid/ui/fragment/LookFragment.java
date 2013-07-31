@@ -73,6 +73,7 @@ import android.support.v4.content.Loader;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
@@ -439,7 +440,8 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(copyModeCallBack);
 			unregisterForContextMenu(listView);
-			BottomBar.disableButtons(getActivity());
+			Log.d("FOREST", "LF.startCopyActionMode");
+			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = false;
 		}
 	}
@@ -449,7 +451,8 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(renameModeCallBack);
 			unregisterForContextMenu(listView);
-			BottomBar.disableButtons(getActivity());
+			Log.d("FOREST", "LF.startRenameActionMode");
+			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = true;
 		}
 	}
@@ -459,7 +462,8 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(editInPocketCodeCallBack);
 			unregisterForContextMenu(listView);
-			BottomBar.disableButtons(getActivity());
+			Log.d("FOREST", "LF.startEditInPocketPaintActionMode");
+			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = true;
 		}
 	}
@@ -469,7 +473,8 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
 			unregisterForContextMenu(listView);
-			BottomBar.disableButtons(getActivity());
+			Log.d("FOREST", "LF.startDeleteActionMode");
+			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = false;
 		}
 	}
@@ -989,7 +994,9 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		setActionModeActive(false);
 
 		registerForContextMenu(listView);
-		BottomBar.enableButtons(getActivity());
+
+		Log.d("FOREST", "LF.clearCheckedLooksAndEnableButtons");
+		BottomBar.setButtonsClickable(getActivity(), true);
 	}
 
 	private void copyLook(int position) {

@@ -25,51 +25,67 @@ package org.catrobat.catroid.ui;
 import org.catrobat.catroid.R;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
 public class BottomBar {
 
-	public static void disableButtons(Activity activity) {
-		setButtonClickable(activity, false);
-	}
-
-	public static void enableButtons(Activity activity) {
-		setButtonClickable(activity, true);
-	}
-
-	private static void setButtonClickable(Activity activity, boolean clickable) {
+	public static void setButtonsClickable(Activity activity, boolean clickable) {
+		Log.d("FOREST", "BOTTOM BAR setButtonsClickable: " + activity.toString());
+		Log.d("FOREST", "BOTTOM BAR: setButtonClickable: " + (clickable ? "true" : "false"));
 		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
 
 		if (bottomBarLayout != null) {
 			bottomBarLayout.findViewById(R.id.button_add).setClickable(clickable);
 			bottomBarLayout.findViewById(R.id.button_play).setClickable(clickable);
+		} else {
+			Log.d("FOREST", "BOTTOM BAR: setButtonClickable: bottomBarLayout == null");
 		}
 	}
 
-	public static void setButtonVisible(Activity activity, boolean visible) {
+	public static void setButtonsVisible(Activity activity, boolean visible) {
+		Log.d("FOREST", "BOTTOM BAR setButtonsVisible: " + activity.toString());
+		Log.d("FOREST", "BOTTOM BAR setButtonsVisible: " + (visible ? "true" : "false"));
 		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
 
 		if (bottomBarLayout != null) {
 			int forLinearLayout = visible ? LinearLayout.VISIBLE : LinearLayout.GONE;
 			int forView = visible ? View.VISIBLE : View.GONE;
 			bottomBarLayout.findViewById(R.id.button_add).setVisibility(forLinearLayout);
-			bottomBarLayout.findViewById(R.id.button_play).setVisibility(forLinearLayout);
 			bottomBarLayout.findViewById(R.id.bottom_bar).setVisibility(forView);
 			bottomBarLayout.findViewById(R.id.bottom_bar_separator).setVisibility(forView);
 			bottomBarLayout.findViewById(R.id.button_play).setVisibility(forView);
+		} else {
+			Log.d("FOREST", "BOTTOM BAR: setButtonVisible: bottomBarLayout == null");
 		}
 	}
 
 	public static void disablePlayButton(Activity activity) {
+		Log.d("FOREST", "BOTTOM BAR disablePlayButton: " + activity.toString());
 		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
 
 		if (bottomBarLayout != null) {
 			bottomBarLayout.findViewById(R.id.button_add).setVisibility(LinearLayout.VISIBLE);
-			bottomBarLayout.findViewById(R.id.button_play).setVisibility(LinearLayout.GONE);
 			bottomBarLayout.findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
 			bottomBarLayout.findViewById(R.id.bottom_bar_separator).setVisibility(View.GONE);
 			bottomBarLayout.findViewById(R.id.button_play).setVisibility(View.GONE);
+		} else {
+			Log.d("FOREST", "BOTTOM BAR: disablePlayButton: bottomBarLayout == null");
+		}
+	}
+
+	public static void disableAddButton(Activity activity) {
+		Log.d("FOREST", "BOTTOM BAR disableAddButton: " + activity.toString());
+		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
+
+		if (bottomBarLayout != null) {
+			bottomBarLayout.findViewById(R.id.button_add).setVisibility(LinearLayout.GONE);
+			bottomBarLayout.findViewById(R.id.button_play).setVisibility(LinearLayout.VISIBLE);
+			bottomBarLayout.findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
+			bottomBarLayout.findViewById(R.id.bottom_bar_separator).setVisibility(View.GONE);
+		} else {
+			Log.d("FOREST", "BOTTOM BAR: disablePlayButton: bottomBarLayout == null");
 		}
 	}
 }

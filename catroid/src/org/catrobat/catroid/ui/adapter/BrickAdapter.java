@@ -122,12 +122,10 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		animatedBricks = new ArrayList<Brick>();
 		this.selectMode = ListView.CHOICE_MODE_NONE;
 
-		Log.d("FOREST", "BA.BrickAdapter");
 		initBrickList();
 	}
 
 	public void initBrickList() {
-		Log.d("FOREST", "BA.initBrickList");
 
 		if (userBrick != null) {
 			initBrickListUserScript();
@@ -621,7 +619,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	public void addNewBrick(int position, Brick brickToBeAdded) {
-		Log.d("FOREST", "BA.addNewBrick");
 		if (draggedBrick != null) {
 			Log.w(TAG, "Want to add Brick while there is another one currently dragged.");
 			return;
@@ -850,7 +847,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.d("FOREST", "BA.getView");
 		if (draggedBrick != null && dragTargetPosition == position) {
 			return insertionView;
 		}
@@ -920,7 +916,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	public void updateProjectBrickList() {
-		Log.d("FOREST", "BA.updateProjectBrickList");
 		initBrickList();
 		notifyDataSetChanged();
 	}
@@ -1310,7 +1305,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	private void animateSelectedBricks() {
-		Log.d("FOREST", "BA.animateSelectedBricks");
 		if (!animatedBricks.isEmpty()) {
 
 			for (final Brick animationBrick : animatedBricks) {
@@ -1395,7 +1389,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	}
 
 	public void setUserBrick(UserBrick userBrick) {
-		Log.d("FOREST", "BA.setUserBrick");
 		this.userBrick = userBrick;
 	}
 }

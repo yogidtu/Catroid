@@ -30,6 +30,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Layout;
@@ -89,6 +90,11 @@ public class Formula implements Serializable {
 		}
 	}
 
+	public void updateVariableReferences(String oldName, String newName, Context context) {
+		internFormula.updateVariableReferences(oldName, newName, context);
+		formulaTree.updateVariableReferences(oldName, newName, context);
+	}
+
 	public boolean interpretBoolean(Sprite sprite) {
 		UserBrick userBrick = ProjectManager.getInstance().getCurrentUserBrick();
 		return interpretBoolean(userBrick, sprite);
@@ -140,6 +146,7 @@ public class Formula implements Serializable {
 	}
 
 	public void refreshTextField(View view) {
+
 		if (formulaTextFieldId != null && formulaTree != null && view != null) {
 			EditText formulaTextField = (EditText) view.findViewById(formulaTextFieldId);
 			if (formulaTextField == null) {
