@@ -1,4 +1,4 @@
-package org.catrobat.catroid.test.speechRecognition;
+package org.catrobat.catroid.test.utils;
 
 import java.io.BufferedInputStream;
 import java.io.File;

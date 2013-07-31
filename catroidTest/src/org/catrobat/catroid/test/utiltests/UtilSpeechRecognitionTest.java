@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.test.speechRecognition;
+package org.catrobat.catroid.test.utiltests;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,35 +28,37 @@ import java.util.ArrayList;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.common.StandardProjectHandler;
-import org.catrobat.catroid.speechrecognition.VoiceTriggeredRecorder;
-import org.catrobat.catroid.speechrecognition.VoiceTriggeredRecorder.VoiceTriggeredRecorderListener;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.SimulatedAudioRecord;
 import org.catrobat.catroid.test.utils.TestUtils;
 import org.catrobat.catroid.utils.MicrophoneGrabber;
+import org.catrobat.catroid.utils.UtilSpeechRecognition;
+import org.catrobat.catroid.utils.UtilSpeechRecognition.SpeechRecognizeListener;
 
 import android.test.InstrumentationTestCase;
 
-public class VoiceTriggeredRecorderTest extends InstrumentationTestCase implements VoiceTriggeredRecorderListener {
+public class UtilSpeechRecognitionTest extends InstrumentationTestCase implements SpeechRecognizeListener {
 
 	private String testProjectName = "testStandardProjectRecognition";
-	private ArrayList<String> savedFiles = new ArrayList<String>();
+	private ArrayList<String> lastMatches = new ArrayList<String>();
 	private static final int SPEECH_FILE_ID = R.raw.speechsample_directions;
+	private SimulatedAudioRecord audioSimulator;
 
 	@Override
 	public void tearDown() throws Exception {
-		savedFiles.clear();
+		lastMatches.clear();
 		super.tearDown();
 	}
 
 	@Override
 	public void setUp() {
 		TestUtils.clearProject(testProjectName);
-		savedFiles.clear();
+		lastMatches.clear();
 	}
 
-	public void testRandomNoise() throws IOException {
+	public void testChunkedSpeechRecognition() throws IOException {
+
 		ScreenValues.SCREEN_WIDTH = 720;
 		ScreenValues.SCREEN_HEIGHT = 1134;
 
@@ -64,39 +66,10 @@ public class VoiceTriggeredRecorderTest extends InstrumentationTestCase implemen
 				StandardProjectHandler.createAndSaveStandardProject(testProjectName, getInstrumentation()
 						.getTargetContext()));
 
-		VoiceTriggeredRecorder recorder = new VoiceTriggeredRecorder(this);
+		audioSimulator = new SimulatedAudioRecord(SPEECH_FILE_ID, getInstrumentation().getContext());
+		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "audioRecord", audioSimulator);
 
-		SimulatedAudioRecord simRecorder = new SimulatedAudioRecord();
-		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "audioRecord", simRecorder);
-
-		recorder.startRecording();
-
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		recorder.stopRecording();
-
-		assertTrue("There was some speechfile saved", savedFiles.size() == 0);
-		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "instance", null);
-	}
-
-	public void testAutomaticFileSaving() throws IOException {
-
-		ScreenValues.SCREEN_WIDTH = 720;
-		ScreenValues.SCREEN_HEIGHT = 1134;
-		ProjectManager.getInstance().setProject(
-				StandardProjectHandler.createAndSaveStandardProject(testProjectName, getInstrumentation()
-						.getTargetContext()));
-
-		VoiceTriggeredRecorder recorder = new VoiceTriggeredRecorder(this);
-
-		SimulatedAudioRecord simRecorder = new SimulatedAudioRecord(SPEECH_FILE_ID, getInstrumentation().getContext());
-		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "audioRecord", simRecorder);
-
-		recorder.startRecording();
+		UtilSpeechRecognition.getInstance().registerContinuousSpeechListener(this);
 
 		int i = 10;
 		do {
@@ -105,19 +78,31 @@ public class VoiceTriggeredRecorderTest extends InstrumentationTestCase implemen
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		} while ((i--) != 0 && simRecorder.isMockRecording());
+		} while ((i--) > 0
+				&& (audioSimulator.isMockRecording() || UtilSpeechRecognition.getInstance().isRecognitionRunning()));
 
-		recorder.stopRecording();
-		assertTrue("There was no speechfile saved", savedFiles.size() > 0);
+		assertTrue("There was no recognition", lastMatches.size() > 0);
 
+		assertTrue("\"links\" was not recognized.", matchesContainString("links"));
+		assertTrue("\"rechts\" was not recognized.", matchesContainString("rechts"));
+		assertTrue("\"rauf\" was not recognized.", matchesContainString("rauf"));
+		assertTrue("\"runter\" was not recognized.", matchesContainString("runter"));
+		assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
+
+		UtilSpeechRecognition.getInstance().unregisterContinuousSpeechListener(this);
 		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "instance", null);
 	}
 
-	public void onVoiceTriggeredRecorderError(int errorCode) {
-		fail("VoiceTriggeredRecorder sent error: " + errorCode);
+	public void onRecognizedSpeech(String bestAnswer, ArrayList<String> allAnswerSuggestions) {
+		lastMatches.addAll(allAnswerSuggestions);
 	}
 
-	public void onSpeechFileSaved(String speechFilePath) {
-		savedFiles.add(speechFilePath);
+	private boolean matchesContainString(String search) {
+		for (String match : lastMatches) {
+			if (match.contains(search)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

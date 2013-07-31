@@ -23,16 +23,25 @@
 package org.catrobat.catroid.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.catrobat.catroid.speechrecognition.VoiceTriggeredRecorder;
+import org.catrobat.catroid.speechrecognition.VoiceTriggeredRecorder.VoiceTriggeredRecorderListener;
+import org.catrobat.catroid.speechrecognition.WAVRecognizer;
+import org.catrobat.catroid.speechrecognition.WAVRecognizer.SpeechFileToTextListener;
 
 import android.util.Log;
 
-public class UtilSpeechRecognition {
+public class UtilSpeechRecognition implements VoiceTriggeredRecorderListener, SpeechFileToTextListener {
 
 	private static UtilSpeechRecognition instance = null;
 	private static final String TAG = UtilSpeechRecognition.class.getSimpleName();
 	private String lastBestAnswer = "";
 	private ArrayList<String> lastAnswerSuggenstions = new ArrayList<String>();
-	protected ArrayList<speechListener> askerList = new ArrayList<speechListener>();
+	private HashMap<Thread, String> runningRecognition = new HashMap<Thread, String>();
+	private VoiceTriggeredRecorder voiceRecorder = new VoiceTriggeredRecorder(this);
+
+	protected ArrayList<SpeechRecognizeListener> askerList = new ArrayList<SpeechRecognizeListener>();
 
 	protected UtilSpeechRecognition() {
 
@@ -56,22 +65,33 @@ public class UtilSpeechRecognition {
 		lastBestAnswer = matches.get(0);
 		lastAnswerSuggenstions.addAll(matches);
 
-		ArrayList<speechListener> askerListCopy = new ArrayList<speechListener>(askerList);
-		for (speechListener listener : askerListCopy) {
+		ArrayList<SpeechRecognizeListener> askerListCopy = new ArrayList<SpeechRecognizeListener>(askerList);
+		for (SpeechRecognizeListener listener : askerListCopy) {
 			listener.onRecognizedSpeech(lastBestAnswer, lastAnswerSuggenstions);
 		}
 	}
 
-	public void registerListener(speechListener asker) {
-		askerList.add(asker);
+	public void registerContinuousSpeechListener(SpeechRecognizeListener asker) {
+		synchronized (askerList) {
+			askerList.add(asker);
+			if (askerList.size() == 1) {
+				voiceRecorder.startRecording();
+			}
+		}
 		return;
 	}
 
-	public void unregisterListener(speechListener asker) {
-		if (askerList.contains(asker)) {
-			askerList.remove(asker);
-		} else {
-			Log.v(TAG, "Tried to remove not registered speechListener. " + asker.getClass().getSimpleName());
+	public void unregisterContinuousSpeechListener(SpeechRecognizeListener asker) {
+		synchronized (askerList) {
+			if (askerList.contains(asker)) {
+				askerList.remove(asker);
+
+				if (askerList.size() == 0) {
+					voiceRecorder.stopRecording();
+				}
+			} else {
+				Log.w(TAG, "Tried to remove not registered speechListener. " + asker.getClass().getSimpleName());
+			}
 		}
 		return;
 	}
@@ -84,7 +104,48 @@ public class UtilSpeechRecognition {
 		return instance.lastAnswerSuggenstions;
 	}
 
-	public interface speechListener {
-		public boolean onRecognizedSpeech(String bestAnswer, ArrayList<String> allAnswerSuggestions);
+	public boolean isRecognitionRunning() {
+		return runningRecognition.size() > 0;
+	}
+
+	@Override
+	public void onSpeechFileSaved(String speechFilePath) {
+
+		WAVRecognizer converter = new WAVRecognizer(speechFilePath, this);
+		converter.start();
+		runningRecognition.put(converter, speechFilePath);
+	}
+
+	@Override
+	public void onFileRecognized(String speechFilePath, ArrayList<String> matches) {
+
+		if (runningRecognition.containsKey(Thread.currentThread())) {
+			runningRecognition.remove(Thread.currentThread());
+		}
+
+		if (matches == null || matches.size() == 0) {
+			return;
+		}
+
+		ArrayList<SpeechRecognizeListener> listenerListCopy = new ArrayList<UtilSpeechRecognition.SpeechRecognizeListener>(
+				askerList);
+
+		for (SpeechRecognizeListener listener : listenerListCopy) {
+			listener.onRecognizedSpeech(matches.get(0), matches);
+		}
+	}
+
+	@Override
+	public void onFileToTextError(int errorCode, String errorMessage) {
+
+	}
+
+	@Override
+	public void onVoiceTriggeredRecorderError(int errorCode) {
+		voiceRecorder.stopRecording();
+	}
+
+	public interface SpeechRecognizeListener {
+		public void onRecognizedSpeech(String bestAnswer, ArrayList<String> allAnswerSuggestions);
 	}
 }

@@ -34,13 +34,16 @@ public class VoiceActivityDetection {
 	 */
 
 	public static final float SENSIBILITY_LOW = 1.8f;
-	public static final float SENSIBILITY_NORMAL = 1.5f;
+	public static final float SENSIBILITY_NORMAL = 1.6f;
 	public static final float SENSIBILITY_HIGH = 1.3f;
+
+	public double lastConfidence;
 
 	public final int samplesPerFrame = 256;
 	private double energyThreshold = 0.0d;
-	private int framesForThreshold = 20;
+	private int framesForThreshold = 40;
 	private float weightFactor = 0.1f;
+	private int crossZeroFaktor = 15;
 
 	private float thresholdFactor = 1.2f;
 	private Queue<Double> recentEnergyRingQueqe = new LinkedList<Double>();
@@ -67,14 +70,19 @@ public class VoiceActivityDetection {
 		//update Threshold
 		energyThreshold = (1 - weightFactor) * energyThreshold + weightFactor * frameEnergy;
 
+		lastConfidence = frameEnergy / (thresholdFactor * energyThreshold);
+
 		if (frameEnergy > thresholdFactor * energyThreshold) {
 			return true;
 		}
+		//Log.v("VAD", "energy fail: " + frameEnergy + " lower than: " + thresholdFactor * energyThreshold);
 
 		int crossings = countZeroCrossings(frame);
-		if (crossings >= 5 && crossings <= 20) {
+		if (crossings >= 5 && crossings <= crossZeroFaktor) {
+			//Log.v("VAD", "cross ok: " + crossings);
 			return true;
 		}
+		//Log.v("VAD", "cross fail: " + crossings);
 
 		//adaption of p
 		double var_old = getVarianceOfRecentInactiveFrames();
@@ -141,5 +149,14 @@ public class VoiceActivityDetection {
 
 	public void setSensibility(float faktor) {
 		thresholdFactor = faktor;
+		//		if (faktor == SENSIBILITY_HIGH) {
+		//			crossZeroFaktor = 33;
+		//		}
+		//		if (faktor == SENSIBILITY_NORMAL) {
+		//			crossZeroFaktor = 20;
+		//		}
+		//		if (faktor == SENSIBILITY_LOW) {
+		//			crossZeroFaktor = 10;
+		//		}
 	}
 }
