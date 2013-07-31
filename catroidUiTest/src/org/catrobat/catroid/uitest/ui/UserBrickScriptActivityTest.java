@@ -123,7 +123,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 				solo.searchText(brickAddedToUserBrickScriptName));
 	}
 
-	public void teestCantEditBrickDataWhileAddingNewBrick() throws InterruptedException {
+	public void testCantEditBrickDataWhileAddingNewBrick() throws InterruptedException {
 		UiTestUtils.addNewBrick(solo, R.string.category_user_bricks, UiTestUtils.TEST_USER_BRICK_NAME, 0);
 		dragFloatingBrick(-1);
 		solo.sleep(200);
@@ -133,10 +133,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 
 		solo.sleep(200);
 
-		String stringOnEditButton = solo.getCurrentActivity().getString(R.string.brick_context_dialog_edit_brick);
-		solo.clickOnText(stringOnEditButton);
-
-		solo.waitForActivity(UserBrickScriptActivity.class, 500);
+		showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME);
 
 		// add a new brick to the internal script of the user brick
 		UiTestUtils.addNewBrick(solo, R.string.brick_change_y_by);
