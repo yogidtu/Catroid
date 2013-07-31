@@ -52,11 +52,13 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 	private final int preVoiceFramesForActivityDetection = 40;
 	private final int preSilentFramesInVoiceFile = 10;
 
-	private final int maxSilentFramesToIgnore = 5;
-	private final int minVoiceFrames = 3;
+	private final int maxSilentFramesToIgnore = 7;
+	private final int minVoiceFrames = 8;
+	private final double silenceConfidence = 0.65d;
 
 	private int totalReadBytes = fileHeaderOffset;
 	private int ignoredFrames = 0;
+	private int voiceFrames = 0;
 	private int recordedPreFrames = 0;
 	private byte[] silentFrame;
 
@@ -84,6 +86,7 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 		boolean voiceDetected = voiceDetection.isFrameWithVoice(MicrophoneGrabber.audioByteToDouble(recievedBuffer));
 
 		if (!voiceDetected && !recordForFile) {
+			//Log.v(TAG, "silence...");
 			System.arraycopy(preVoiceBuffer, frameByteSize, preVoiceBuffer, 0, (preVoiceFramesForActivityDetection - 1)
 					* frameByteSize);
 			System.arraycopy(recievedBuffer, 0, preVoiceBuffer, frameByteSize
@@ -97,6 +100,7 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 
 		if (voiceDetected && !recordForFile) {
 
+			//Log.v(TAG, "detected");
 			for (int i = 0; i < preVoiceFramesForActivityDetection - recordedPreFrames; i++) {
 				System.arraycopy(silentFrame, 0, totalByteBuffer, i * frameByteSize, frameByteSize);
 			}
@@ -112,17 +116,23 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 
 		if (!voiceDetected && recordForFile) {
 			if (ignoredFrames < maxSilentFramesToIgnore) {
+				//				Log.v(TAG, "recorded silence...");
 				System.arraycopy(recievedBuffer, 0, totalByteBuffer, totalReadBytes, frameByteSize);
 				totalReadBytes += frameByteSize;
-				ignoredFrames++;
+				//just ignore real silence
+				if (voiceDetection.lastConfidence <= silenceConfidence) {
+					//					Log.v(TAG, "Real silence...");
+					ignoredFrames++;
+				}
 				return;
 			} else {
 				for (int i = 1; i <= maxSilentFramesToIgnore; i++) {
-					System.arraycopy(silentFrame, 0, totalByteBuffer, totalReadBytes - i * frameByteSize, frameByteSize);
+					//System.arraycopy(silentFrame, 0, totalByteBuffer, totalReadBytes - i * frameByteSize, frameByteSize);
 				}
 			}
 
-			if ((totalReadBytes - fileHeaderOffset) / frameByteSize - ignoredFrames - recordedPreFrames < minVoiceFrames) {
+			if (voiceFrames < minVoiceFrames) {
+				//Log.v(TAG, "reset");
 				resetRecordState();
 				return;
 			}
@@ -131,23 +141,26 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 			if (speechRecordingFile != null) {
 				listener.onSpeechFileSaved(speechRecordingFile);
 			} else {
-				listener.onError(ERROR_FILEIO);
+				listener.onVoiceTriggeredRecorderError(ERROR_FILEIO);
 			}
 			resetRecordState();
 			return;
 		}
 
+		//Log.v(TAG, "recording");
 		ignoredFrames = 0;
 		System.arraycopy(recievedBuffer, 0, totalByteBuffer, totalReadBytes, frameByteSize);
 		totalReadBytes += frameByteSize;
+		voiceFrames++;
 	}
 
 	private void resetRecordState() {
 		recordForFile = false;
 		totalReadBytes = fileHeaderOffset;
 		ignoredFrames = 0;
-		voiceDetection.setSensibility(VoiceActivityDetection.SENSIBILITY_HIGH);
+		voiceDetection.setSensibility(VoiceActivityDetection.SENSIBILITY_NORMAL);
 		recordedPreFrames = 0;
+		voiceFrames = 0;
 	}
 
 	@Override
@@ -240,7 +253,7 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 	}
 
 	public interface VoiceTriggeredRecorderListener {
-		public void onError(int errorCode);
+		public void onVoiceTriggeredRecorderError(int errorCode);
 
 		public void onSpeechFileSaved(String speechFilePath);
 	}

@@ -36,7 +36,7 @@ public class MicrophoneGrabber extends Thread {
 	public static final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
 	public static final int channelConfiguration = AudioFormat.CHANNEL_IN_MONO;
 	public static final int sampleRate = 16000;
-	public static final int frameByteSize = 1024;
+	public static final int frameByteSize = 512;
 	public static final int bytesPerSample = 2;
 
 	private ArrayList<microphoneListener> microphoneListenerList = new ArrayList<microphoneListener>();
