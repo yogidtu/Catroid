@@ -240,8 +240,8 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 		fragTransaction.hide(formulaEditorFragment);
 
 		Log.d("FOREST", "FEVLF.showFragment");
-		BottomBar.setButtonsVisible(getActivity(), true);
-		BottomBar.disablePlayButton(getActivity());
+		BottomBar.setButtonsVisible(activity, true);
+		BottomBar.disablePlayButton(activity);
 
 		BottomBar.setButtonsClickable(activity, true);
 		fragTransaction.show(this);
