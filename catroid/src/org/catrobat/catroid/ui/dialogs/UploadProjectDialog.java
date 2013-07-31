@@ -47,6 +47,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -247,8 +248,11 @@ public class UploadProjectDialog extends DialogFragment {
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		String token = sharedPreferences.getString(Constants.TOKEN, Constants.NO_TOKEN);
 		String username = sharedPreferences.getString(Constants.USERNAME, Constants.NO_USERNAME);
+
 		Intent uploadIntent = new Intent(getActivity(), ProjectUploadService.class);
-		uploadIntent.putExtra("receiver", new UploadReceiver(new Handler()));
+		UploadReceiver receiver = new UploadReceiver(new Handler());
+		uploadIntent.putExtra("receiver", receiver);
+		Log.d("shruti's receiver = ", receiver.toString());
 		uploadIntent.putExtra("uploadName", uploadName);
 		uploadIntent.putExtra("projectDescription", projectDescription);
 		uploadIntent.putExtra("projectPath", projectPath);

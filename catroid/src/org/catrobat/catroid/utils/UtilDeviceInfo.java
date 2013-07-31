@@ -27,11 +27,14 @@ import java.util.Locale;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.util.Log;
 
 public class UtilDeviceInfo {
 	public static final String SERVER_VALUE_FOR_UNDEFINED_COUNTRY = "undef";
 
 	public static String getUserEmail(Context context) {
+		Log.d("UtildeviceInfo context", context.toString());
+
 		if (context == null) {
 			return null;
 		}

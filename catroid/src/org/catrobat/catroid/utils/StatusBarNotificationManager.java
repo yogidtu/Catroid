@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.MainMenuActivity_Shruti;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.dialogs.OverwriteRenameDialog;
@@ -95,7 +94,7 @@ public class StatusBarNotificationManager {
 		String notificationTitle = context.getString(R.string.notification_upload_title);
 		boolean newUploadNotification = isArrayEmpty(uploadNotificationDataArray);
 
-		Intent intent = new Intent(context, MainMenuActivity.class);
+		Intent intent = new Intent(context, MainMenuActivity_Shruti.class);
 		intent.setAction(Intent.ACTION_MAIN);
 		intent = intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
@@ -156,7 +155,7 @@ public class StatusBarNotificationManager {
 		String notificationTitle = context.getString(R.string.notification_download_title);
 		boolean newDownloadNotification = isArrayEmpty(downloadNotificationDataArray);
 
-		Intent intent = new Intent(context, MainMenuActivity.class);
+		Intent intent = new Intent(context, MainMenuActivity_Shruti.class);
 		intent.setAction(Intent.ACTION_MAIN);
 		intent = intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);

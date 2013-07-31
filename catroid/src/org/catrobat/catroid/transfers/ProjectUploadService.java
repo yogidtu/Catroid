@@ -116,9 +116,21 @@ public class ProjectUploadService extends IntentService {
 
 			//String deviceIMEI = UtilDeviceInfo.getDeviceIMEI(context);
 			String userEmail = UtilDeviceInfo.getUserEmail(this);
+			Log.d("userEmail", userEmail.toString());
 			String language = UtilDeviceInfo.getUserLanguageCode(this);
 
 			Context context = getApplicationContext();
+			Log.d("projectName", projectName.toString());
+			Log.d("projectDescription", projectDescription.toString());
+			Log.d("zipFileString", zipFileString.toString());
+			Log.d("userEmail", userEmail.toString());
+			Log.d("language", language.toString());
+			Log.d("token", token.toString());
+			Log.d("username", username.toString());
+			Log.d("receiver", receiver.toString());
+			Log.d("notificationId", notificationId.toString());
+			Log.d("context", context.toString());
+
 			ServerCalls.getInstance().uploadProject(projectName, projectDescription, zipFileString, userEmail,
 					language, token, username, receiver, notificationId, context);
 

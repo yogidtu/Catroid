@@ -29,6 +29,8 @@ import java.util.concurrent.locks.Lock;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.io.LoadProjectTask;
+import org.catrobat.catroid.io.LoadProjectTask.OnLoadProjectCompleteListener;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.transfers.CheckTokenTask;
 import org.catrobat.catroid.transfers.CheckTokenTask.OnCheckTokenCompleteListener;
@@ -74,7 +76,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 public class MainMenuActivityFragment_Shruti extends SherlockFragment implements OnCheckTokenCompleteListener,
-		OnClickListener {
+		OnClickListener, OnLoadProjectCompleteListener {
 
 	private static final int DIALOG_ALERT = 10;
 
@@ -175,14 +177,13 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 			return;
 		}
 		Utils.updateScreenWidthAndHeight(getActivity());
-
-		// getActivity().setContentView(R.layout.activity_main_menu);
-
 		actionBar = getSherlockActivity().getSupportActionBar();
 		actionBar.setDisplayUseLogoEnabled(true);
 		actionBar.setTitle(R.string.app_name);
 
 		getActivity().findViewById(R.id.main_menu_button_continue).setEnabled(false);
+
+		// getActivity().setContentView(R.layout.activity_main_menu);
 
 		// Load external project from URL or local file system.
 		Uri loadExternalProjectUri = getActivity().getIntent().getData();
@@ -318,10 +319,10 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
-		if (ProjectManager.INSTANCE.getCurrentProject() != null) {
-			Intent intent = new Intent(getActivity(), ProjectActivity.class);
-			startActivity(intent);
-		}
+		LoadProjectTask loadProjectTask = new LoadProjectTask(getActivity(),
+				Utils.getCurrentProjectName(getActivity()), false);
+		loadProjectTask.setOnLoadProjectCompleteListener(this);
+		loadProjectTask.execute();
 	}
 
 	NewProjectDialog new_project_dialog;
@@ -539,4 +540,18 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		mActivity = null;
 		super.onDetach();
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.catrobat.catroid.io.LoadProjectTask.OnLoadProjectCompleteListener#onLoadProjectSuccess()
+	 */
+	@Override
+	public void onLoadProjectSuccess() {
+		if (ProjectManager.getInstance().getCurrentProject() != null) {
+			Intent intent = new Intent(getActivity(), ProjectActivity.class);
+			startActivity(intent);
+		}
+	}
+
 }
