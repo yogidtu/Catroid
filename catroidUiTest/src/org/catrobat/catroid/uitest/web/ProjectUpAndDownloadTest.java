@@ -194,14 +194,13 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		String projectName = testProject;
 		String originalProjectDescription = testDescription;
-		createTestProject(projectName);
 
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
 		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
 		ProjectManager.getInstance().getCurrentProject().setDescription(originalProjectDescription);
-
+		createTestProject(projectName);
 		UiTestUtils.createValidUser(getActivity());
 
 		//Project description is changed to testdescription2 in uploadProject()

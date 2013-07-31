@@ -33,14 +33,16 @@ public class UtilDeviceInfo {
 	public static final String SERVER_VALUE_FOR_UNDEFINED_COUNTRY = "undef";
 
 	public static String getUserEmail(Context context) {
-		Log.d("UtildeviceInfo context", context.toString());
 
 		if (context == null) {
 			return null;
 		}
+		Log.d("UtildeviceInfo context", context.toString());
 		Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
 		if (accounts.length > 0) {
+			Log.d("the name is", accounts[0].name);
 			return accounts[0].name;
+
 		}
 		return null;
 	}
