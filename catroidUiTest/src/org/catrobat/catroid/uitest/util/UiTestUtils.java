@@ -145,7 +145,7 @@ public class UiTestUtils {
 	private static List<InternToken> internTokenList = new ArrayList<InternToken>();
 
 	public static final String DEFAULT_TEST_PROJECT_NAME = "testProject";
-	public static final String PROJECTNAME1 = "testingproject1";
+	public static final String PROJECTNAME1 = "Avoiding";
 	public static final String PROJECTNAME2 = "testingproject2";
 	public static final String PROJECTNAME3 = "testingproject3";
 	public static final String PROJECTDESCRIPTION1 = "testdescription1";

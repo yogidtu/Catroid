@@ -463,9 +463,10 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		//WebViewFragment_Shruti.setTheUrl((downloadUrl));
 		solo.waitForFragmentByTag("Web_Fragment");
 
-		solo.waitForText("fishy");
-		solo.scrollDown();
-		solo.clickOnText("fishy", 1, false);
+		//solo.waitForText("Avoiding", 1, 5000, true);
+
+		//	solo.scrollDown();
+		solo.clickOnText("Avoiding", 1, true);
 
 		//solo.waitForFragmentByTag("Web_Fragment");
 		//solo.scrollToTop();
@@ -475,13 +476,17 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		//solo.waitForFragmentByTag("Web_Fragment");
 
-		solo.sleep(2000);
+		//solo.sleep(2000);
+
+		//solo.sleep(50000);
+
 		//solo.goBack();
-		//launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity_Shruti.class, intent);
-		solo.sleep(500);
-		assertTrue("OverwriteRenameDialog not shown.", solo.searchText(solo.getString(R.string.overwrite_text)));
+
+		solo.sleep(5000);
 		solo.clickOnText(solo.getString(R.string.overwrite_replace));
 		solo.clickOnButton(solo.getString(R.string.ok));
+		assertTrue("OverwriteRenameDialog not shown.", solo.searchText(solo.getString(R.string.overwrite_text)));
+		launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity_Shruti.class, intent);
 
 		boolean waitResult = solo.waitForActivity("MainMenuActivity_Shruti", 10000);
 		assertTrue("Download takes too long.", waitResult);
