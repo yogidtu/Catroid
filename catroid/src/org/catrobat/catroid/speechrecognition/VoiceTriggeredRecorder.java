@@ -163,10 +163,6 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 		voiceFrames = 0;
 	}
 
-	@Override
-	public void onPauseStateChanged(boolean isPaused) {
-	}
-
 	private String saveRecordingToNewFile() {
 
 		String projectDirectoryName = Utils

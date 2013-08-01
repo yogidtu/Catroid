@@ -24,8 +24,10 @@ package org.catrobat.catroid.test.formulaeditor;
 
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.formulaeditor.SensorLoudness;
+import org.catrobat.catroid.formulaeditor.Sensors;
 import org.catrobat.catroid.test.utils.Reflection;
-import org.catrobat.catroid.test.utils.SimulatedSoundRecorder;
+import org.catrobat.catroid.test.utils.SimulatedAudioRecord;
+import org.catrobat.catroid.utils.MicrophoneGrabber;
 
 import android.test.InstrumentationTestCase;
 
@@ -34,25 +36,46 @@ public class SensorLoudnessTest extends InstrumentationTestCase {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+		SimulatedAudioRecord simRecorder = new SimulatedAudioRecord();
+		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "audioRecord", simRecorder);
+
 	}
 
 	@Override
 	public void tearDown() throws Exception {
-		SensorHandler.stopSensorListeners();
 		Reflection.setPrivateField(SensorLoudness.class, "instance", null);
+		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "instance", null);
 		super.tearDown();
 	}
 
-	public void testMicRelease() {
-		//Initialize
-		SensorLoudness.getSensorLoudness();
-		SensorLoudness loudnessSensor = (SensorLoudness) Reflection.getPrivateField(SensorLoudness.class, "instance");
-		SimulatedSoundRecorder simSoundRec = new SimulatedSoundRecorder("/dev/null");
-		Reflection.setPrivateField(loudnessSensor, "recorder", simSoundRec);
-
+	public void testLoudnessChange() {
 		SensorHandler.startSensorListener(getInstrumentation().getTargetContext());
-		assertEquals("LoudnessSensor not startet recording, isRecording()", true, simSoundRec.isRecording());
+
+		double startLoudness = SensorHandler.getSensorValue(Sensors.LOUDNESS);
+
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+		}
+
+		assertNotSame("Loudness value wasn't updated.", SensorHandler.getSensorValue(Sensors.LOUDNESS), startLoudness);
+
 		SensorHandler.stopSensorListeners();
-		assertEquals("LoudnessSensor not stopped recording, isRecording()", false, simSoundRec.isRecording());
+	}
+
+	public void testMicRelease() {
+		SensorHandler.startSensorListener(getInstrumentation().getTargetContext());
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		assertEquals("LoudnessSensor did not require shared microphone, isRecording()", true, MicrophoneGrabber
+				.getInstance().isRecording());
+
+		SensorHandler.stopSensorListeners();
+		getInstrumentation().waitForIdleSync();
+		assertEquals("LoudnessSensor did not release shared microphone, isRecording()", false, MicrophoneGrabber
+				.getInstance().isRecording());
 	}
 }

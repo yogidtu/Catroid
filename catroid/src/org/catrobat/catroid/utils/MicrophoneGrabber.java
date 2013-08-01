@@ -45,6 +45,17 @@ public class MicrophoneGrabber extends Thread {
 	private AudioRecord audioRecord;
 	private byte[] buffer;
 
+	@Override
+	public MicrophoneGrabber clone() {
+		MicrophoneGrabber newGrabber = new MicrophoneGrabber();
+		newGrabber.microphoneListenerList.addAll(this.microphoneListenerList);
+		newGrabber.isRecording = false;
+		newGrabber.isPaused = this.isPaused;
+		newGrabber.audioRecord = this.audioRecord;
+		MicrophoneGrabber.instance = newGrabber;
+		return newGrabber;
+	}
+
 	private MicrophoneGrabber() {
 		int recBufSize = AudioRecord.getMinBufferSize(sampleRate, channelConfiguration, audioEncoding); // need to be larger than size of a frame
 		audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, sampleRate, channelConfiguration,
@@ -59,28 +70,26 @@ public class MicrophoneGrabber extends Thread {
 		return instance;
 	}
 
-	public void registerListener(microphoneListener litener) {
+	public void registerListener(microphoneListener listener) {
 		synchronized (microphoneListenerList) {
+			microphoneListenerList.add(listener);
 			if (!isRecording && !isPaused) {
 				if (this.isAlive()) {
 					isRecording = true;
 				} else {
-					this.start();
+					MicrophoneGrabber newGrabber = this.clone();
+					newGrabber.start();
 				}
 			}
-			microphoneListenerList.add(litener);
 		}
 		return;
 	}
 
-	public void unregisterListener(microphoneListener litener) {
+	public void unregisterListener(microphoneListener listener) {
 		synchronized (microphoneListenerList) {
-			if (microphoneListenerList.contains(litener)) {
-				microphoneListenerList.remove(litener);
-			} else {
-				Log.v(TAG, "Tried to remove not registered microphoneListener. " + litener.getClass().getSimpleName());
+			if (microphoneListenerList.contains(listener)) {
+				microphoneListenerList.remove(listener);
 			}
-
 			if (microphoneListenerList.size() == 0) {
 				isRecording = false;
 			}
@@ -137,32 +146,7 @@ public class MicrophoneGrabber extends Thread {
 		return micBufferData;
 	}
 
-	public void pauseRecording() {
-		if (microphoneListenerList.size() > 0 && isPaused == false && isRecording == true) {
-			ArrayList<microphoneListener> dataListener = new ArrayList<microphoneListener>(microphoneListenerList);
-			for (microphoneListener listener : dataListener) {
-				listener.onPauseStateChanged(true);
-			}
-			isPaused = true;
-			this.isRecording = false;
-		}
-	}
-
-	public void resumeRecording() {
-		if (microphoneListenerList.size() > 0 && isPaused == true && isRecording == false) {
-			ArrayList<microphoneListener> dataListener = new ArrayList<microphoneListener>(microphoneListenerList);
-			for (microphoneListener listener : dataListener) {
-				listener.onPauseStateChanged(false);
-			}
-			isPaused = false;
-			this.start();
-		}
-
-	}
-
 	public interface microphoneListener {
 		public void onMicrophoneData(byte[] recievedBuffer);
-
-		public void onPauseStateChanged(boolean isPaused);
 	}
 }
