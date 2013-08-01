@@ -53,6 +53,22 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 			handleAboutThisWallpaperPreference();
 
 			handleAllowSoundsCheckBox();
+			handleSelectProgramPreference();
+
+		}
+
+		private void handleSelectProgramPreference() {
+			Preference pref = findPreference(getResources().getString(R.string.lwp_select_program));
+
+			pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					SelectProgramDialog selectProgramDialog = new SelectProgramDialog(context);
+					selectProgramDialog.show();
+					return false;
+				}
+			});
 
 		}
 

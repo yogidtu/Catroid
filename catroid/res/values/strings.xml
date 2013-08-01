@@ -559,4 +559,5 @@
  	<string name="lwp_project_description">Description: </string> 
  	<string name="lwp_preferences">Preferences </string>
  	<string name="lwp_allow_sounds">Allow sounds </string> 
+ 	<string name="lwp_select_program">Select program </string>
 </resources>

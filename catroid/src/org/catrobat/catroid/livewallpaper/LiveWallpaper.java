@@ -22,12 +22,10 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
-import java.io.IOException;
-
 import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.stage.StageListener;
 
+import android.content.Intent;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -51,12 +49,12 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
 		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
 
-		try {
-			StandardProjectHandler.createAndSaveStandardProject(getApplicationContext());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//		try {
+		//			StandardProjectHandler.createAndSaveStandardProject(getApplicationContext());
+		//		} catch (IOException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 	}
 
 	/*
@@ -95,4 +93,19 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	}
 
+	class MyWallpaperEngine extends Engine {
+
+		@Override
+		public void onVisibilityChanged(boolean visible) {
+			super.onVisibilityChanged(visible);
+			Intent intent = new Intent("org.catrobat.catroid.livewallpaper.LiveWallpaper");
+
+			if (visible) {
+				//				startService(intent);
+			} else {
+				stopService(intent);
+			}
+		}
+
+	}
 }
