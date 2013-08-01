@@ -26,15 +26,25 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.util.Log;
+import android.view.View;
+import android.view.View.MeasureSpec;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.catrobat.catroid.ProjectManager;
@@ -97,6 +107,14 @@ public class PreStageActivity extends Activity {
 					resourceInitialized();
 				}
 
+			}
+		}
+		if ((required_resources & Brick.NETWORK_CONNECTION) > 0) {
+			if (!isOnline()) {
+				AlertDialog networkAlert = createNoNetworkAlert();
+				networkAlert.show();
+			} else {
+				resourceInitialized();
 			}
 		}
 		if (requiredResourceCounter == Brick.NO_RESOURCES) {
@@ -179,6 +197,18 @@ public class PreStageActivity extends Activity {
 		return ressources;
 	}
 
+	private ArrayList<Brick> getBricksRequieringResource(int resource) {
+		ArrayList<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance().getCurrentProject()
+				.getSpriteList();
+		ArrayList<Brick> brickList = new ArrayList<Brick>();
+
+		for (Sprite sprite : spriteList) {
+			brickList.addAll(sprite.getBricksRequiringResource(resource));
+		}
+		return brickList;
+	}
+
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i("bt", "requestcode " + requestCode + " result code" + resultCode);
@@ -307,4 +337,57 @@ public class PreStageActivity extends Activity {
 			}
 		}
 	};
+
+	private boolean isOnline() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+			return true;
+		}
+		return false;
+	}
+
+	private AlertDialog createNoNetworkAlert() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		ArrayList<Brick> networkBrickList = getBricksRequieringResource(Brick.NETWORK_CONNECTION);
+		View dialogLayout = View.inflate(builder.getContext(), R.layout.dialog_error_networkconnection, null);
+		LinearLayout imageLayout = (LinearLayout) dialogLayout
+				.findViewById(R.id.dialog_error_network_brickimages_layout);
+
+		for (Brick networkBrick : networkBrickList) {
+			ImageView brickImageView = new ImageView(builder.getContext());
+			View brickView = networkBrick.getPrototypeView(builder.getContext());
+			brickView.setDrawingCacheEnabled(true);
+			brickView.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+					MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+			brickView.layout(0, 0, brickView.getMeasuredWidth(), brickView.getMeasuredHeight());
+			brickView.buildDrawingCache(true);
+			Bitmap brickBitmap = brickView.getDrawingCache();
+			brickBitmap.prepareToDraw();
+			brickImageView.setImageBitmap(brickBitmap);
+			brickImageView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+			brickImageView.setPadding(0, 10, 0, 10);
+			brickImageView.setScaleType(ImageView.ScaleType.FIT_START);
+
+			imageLayout.addView(brickImageView);
+		}
+
+		builder.setTitle(getString(R.string.error_no_network_title)).setCancelable(false)
+				.setNegativeButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						resourceFailed();
+					}
+				}).setPositiveButton(getString(R.string.main_menu_settings), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						Intent i = new Intent(Settings.ACTION_SETTINGS);
+						startActivity(i);
+						resourceFailed();
+					}
+				}).setView(dialogLayout);
+
+		return builder.create();
+	}
 }

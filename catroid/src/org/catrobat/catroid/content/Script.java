@@ -124,6 +124,17 @@ public abstract class Script implements Serializable {
 		return ressources;
 	}
 
+	public ArrayList<Brick> getBricksRequiringResources(int resource) {
+		ArrayList<Brick> resourceBrickList = new ArrayList<Brick>();
+
+		for (Brick brick : brickList) {
+			if ((brick.getRequiredResources() & resource) > 0) {
+				resourceBrickList.add(brick);
+			}
+		}
+		return resourceBrickList;
+	}
+
 	public boolean containsBrickOfType(Class<?> type) {
 		for (Brick brick : brickList) {
 			//Log.i("bt", brick.REQUIRED_RESSOURCES + "");
