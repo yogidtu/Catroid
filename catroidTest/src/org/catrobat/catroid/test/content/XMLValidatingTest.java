@@ -94,9 +94,9 @@ public class XMLValidatingTest extends AndroidTestCase {
 		sprite.addScript(whenVirtualButtonScript);
 		project.addSprite(sprite);
 
-		ProjectManager.INSTANCE.setProject(project);
-		ProjectManager.INSTANCE.setCurrentSprite(sprite);
-		ProjectManager.INSTANCE.setCurrentScript(startScript);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentSprite(sprite);
+		ProjectManager.getInstance().setCurrentScript(startScript);
 
 		Context context = getContext();
 		String[] categories = { context.getString(R.string.category_control),

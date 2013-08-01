@@ -43,6 +43,7 @@ import org.catrobat.catroid.content.bricks.NestingBrick;
 import org.catrobat.catroid.content.bricks.RepeatBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -67,7 +68,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		// normally super.teardown should be called last
 		// but tests crashed with Nullpointer
 		super.tearDown();
-		ProjectManager.INSTANCE.deleteCurrentProject();
+		ProjectManager.getInstance().deleteCurrentProject();
 	}
 
 	public void testRepeatBrick() {
@@ -86,9 +87,8 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 
 		// just to get focus
 		// seems to be a bug just with the Nexus S 2.3.6
-		String spinnerScripts = solo.getString(R.string.scripts);
-		solo.clickOnText(spinnerScripts);
-		solo.clickOnText(spinnerScripts);
+		solo.clickOnText(solo.getString(R.string.brick_when_started));
+
 		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
 		UiTestUtils.longClickAndDrag(solo, 10, yPosition.get(2), 10, yPosition.get(0), 20);
 
@@ -109,7 +109,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
 		int addedYPosition = UiTestUtils.getAddedListItemYPosition(solo);
 
-		Sprite sprite = ProjectManager.INSTANCE.getCurrentSprite();
+		Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
 		assertEquals("Incorrect number of Scripts.", 2, sprite.getNumberOfScripts());
 
 		solo.goBack();
@@ -153,6 +153,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		assertTrue("Wrong Brick instance.", projectBrickList.get(3) instanceof LoopEndBrick);
 	}
 
+	@Device
 	public void testForeverBrick() {
 		ArrayList<Integer> yPosition;
 		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
@@ -352,9 +353,9 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		sprite.addScript(new StartScript(sprite));
 		project.addSprite(sprite);
 
-		ProjectManager.INSTANCE.setProject(project);
-		ProjectManager.INSTANCE.setCurrentSprite(sprite);
-		ProjectManager.INSTANCE.setCurrentScript(script);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentSprite(sprite);
+		ProjectManager.getInstance().setCurrentScript(script);
 	}
 
 	private void clickOnDeleteInDialog() {

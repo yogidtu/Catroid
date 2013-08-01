@@ -55,7 +55,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class SetVariableBrick extends BrickBaseType implements OnClickListener, NewVariableDialogListener {
+public class SetVariableBrick extends BrickBaseType implements OnClickListener, NewVariableDialogListener, FormulaBrick {
 	private static final long serialVersionUID = 1L;
 	private UserVariable userVariable;
 	private Formula variableFormula;
@@ -71,6 +71,11 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 		this.sprite = sprite;
 		this.variableFormula = new Formula(value);
 		this.userVariable = null;
+	}
+
+	@Override
+	public Formula getFormula() {
+		return variableFormula;
 	}
 
 	@Override
@@ -115,7 +120,7 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 		edit_text.setOnClickListener(this);
 
 		Spinner variableSpinner = (Spinner) view.findViewById(R.id.set_variable_spinner);
-		UserVariableAdapter userVariableAdapter = ProjectManager.INSTANCE.getCurrentProject().getUserVariables()
+		UserVariableAdapter userVariableAdapter = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.createUserVariableAdapter(context, sprite);
 		UserVariableAdapterWrapper userVariableAdapterWrapper = new UserVariableAdapterWrapper(context,
 				userVariableAdapter);
@@ -178,7 +183,7 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 		Spinner variableSpinner = (Spinner) prototypeView.findViewById(R.id.set_variable_spinner);
 		variableSpinner.setFocusableInTouchMode(false);
 		variableSpinner.setFocusable(false);
-		UserVariableAdapter userVariableAdapter = ProjectManager.INSTANCE.getCurrentProject().getUserVariables()
+		UserVariableAdapter userVariableAdapter = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.createUserVariableAdapter(context, sprite);
 
 		UserVariableAdapterWrapper userVariableAdapterWrapper = new UserVariableAdapterWrapper(context,

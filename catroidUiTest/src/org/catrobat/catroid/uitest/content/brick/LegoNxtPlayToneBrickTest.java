@@ -37,7 +37,6 @@ import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.suitebuilder.annotation.Smoke;
 import android.widget.ListView;
 
 public class LegoNxtPlayToneBrickTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
@@ -62,7 +61,6 @@ public class LegoNxtPlayToneBrickTest extends BaseActivityInstrumentationTestCas
 		super.setUp();
 	}
 
-	@Smoke
 	public void testNXTPlayToneBrick() {
 		ListView dragDropListView = UiTestUtils.getScriptListView(solo);
 		BrickAdapter adapter = (BrickAdapter) dragDropListView.getAdapter();
@@ -97,8 +95,8 @@ public class LegoNxtPlayToneBrickTest extends BaseActivityInstrumentationTestCas
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		ProjectManager.INSTANCE.setProject(project);
-		ProjectManager.INSTANCE.setCurrentSprite(sprite);
-		ProjectManager.INSTANCE.setCurrentScript(script);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentSprite(sprite);
+		ProjectManager.getInstance().setCurrentScript(script);
 	}
 }

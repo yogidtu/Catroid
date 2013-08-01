@@ -37,7 +37,6 @@ import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.suitebuilder.annotation.Smoke;
 import android.widget.ListView;
 
 public class ComeToFrontTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
@@ -57,7 +56,6 @@ public class ComeToFrontTest extends BaseActivityInstrumentationTestCase<ScriptA
 		super.setUp();
 	}
 
-	@Smoke
 	public void testComeToFrontBrick() {
 		ListView dragDropListView = UiTestUtils.getScriptListView(solo);
 		BrickAdapter adapter = (BrickAdapter) dragDropListView.getAdapter();
@@ -79,14 +77,14 @@ public class ComeToFrontTest extends BaseActivityInstrumentationTestCase<ScriptA
 		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
-		ProjectManager.INSTANCE.setProject(project);
+		ProjectManager.getInstance().setProject(project);
 		script.addBrick(new ComeToFrontBrick(sprite));
 
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		ProjectManager.INSTANCE.setProject(project);
-		ProjectManager.INSTANCE.setCurrentSprite(sprite);
-		ProjectManager.INSTANCE.setCurrentScript(script);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentSprite(sprite);
+		ProjectManager.getInstance().setCurrentScript(script);
 	}
 }

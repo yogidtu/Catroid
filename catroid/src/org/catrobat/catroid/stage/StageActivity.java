@@ -67,8 +67,21 @@ public class StageActivity extends AndroidApplication {
 
 		PreStageActivity.shutdownResources();
 	}
+	
+	public void onPause()
+	{
+		SensorHandler.stopSensorListeners();
+		super.onPause();
+	}
+	
+	public void onResume()
+	{
+		SensorHandler.startSensorListener(this);
+		super.onResume();
+	}
 
 	public void pause() {
+		SensorHandler.stopSensorListeners();
 		stageListener.menuPause();
 	}
 
@@ -83,8 +96,8 @@ public class StageActivity extends AndroidApplication {
 
 	private void calculateScreenSizes() {
 		ifLandscapeSwitchWidthAndHeight();
-		int virtualScreenWidth = ProjectManager.INSTANCE.getCurrentProject().getXmlHeader().virtualScreenWidth;
-		int virtualScreenHeight = ProjectManager.INSTANCE.getCurrentProject().getXmlHeader().virtualScreenHeight;
+		int virtualScreenWidth = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenWidth;
+		int virtualScreenHeight = ProjectManager.getInstance().getCurrentProject().getXmlHeader().virtualScreenHeight;
 		if (virtualScreenWidth == ScreenValues.SCREEN_WIDTH && virtualScreenHeight == ScreenValues.SCREEN_HEIGHT) {
 			resizePossible = false;
 			return;

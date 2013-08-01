@@ -28,6 +28,7 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
+import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -59,9 +60,10 @@ public class NewProjectDialogTest extends BaseActivityInstrumentationTestCase<Ma
 		// normally super.teardown should be called last
 		// but tests crashed with Nullpointer
 		super.tearDown();
-		ProjectManager.INSTANCE.deleteCurrentProject();
+		ProjectManager.getInstance().deleteCurrentProject();
 	}
 
+	@Device
 	public void testNewProjectDialog() {
 		String buttonOkText = solo.getString(R.string.ok);
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
@@ -72,7 +74,7 @@ public class NewProjectDialogTest extends BaseActivityInstrumentationTestCase<Ma
 		solo.goBack();
 		solo.clickOnButton(buttonOkText);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
-		assertTrue("New Project is not testingproject!", ProjectManager.INSTANCE.getCurrentProject().getName()
+		assertTrue("New Project is not testingproject!", ProjectManager.getInstance().getCurrentProject().getName()
 				.equals(UiTestUtils.PROJECTNAME1));
 	}
 
@@ -91,7 +93,7 @@ public class NewProjectDialogTest extends BaseActivityInstrumentationTestCase<Ma
 		Button okButton = solo.getButton(getActivity().getString(R.string.ok));
 		EditText editText = (EditText) solo.getView(R.id.project_name_edittext);
 
-		assertTrue("EditText was not empty", editText.getText().length() == 0);
+		assertTrue("EditText was not empty", editText.length() == 0);
 
 		final String projectName = "MyTestProject";
 		UiTestUtils.enterText(solo, 0, projectName);
@@ -127,6 +129,7 @@ public class NewProjectDialogTest extends BaseActivityInstrumentationTestCase<Ma
 
 	}
 
+	@Device
 	public void testCreateEmptyProject() {
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		UiTestUtils.waitForText(solo, solo.getString(R.string.new_project_dialog_title));
@@ -136,7 +139,7 @@ public class NewProjectDialogTest extends BaseActivityInstrumentationTestCase<Ma
 		solo.clickOnButton(solo.getString(R.string.ok));
 
 		UiTestUtils.waitForText(solo, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
-		Project project = ProjectManager.INSTANCE.getCurrentProject();
+		Project project = ProjectManager.getInstance().getCurrentProject();
 
 		assertNotNull("Empty project shouldn't be null", project);
 		assertEquals("Just background object should exist", 1, project.getSpriteList().size());

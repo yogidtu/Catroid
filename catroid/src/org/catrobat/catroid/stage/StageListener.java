@@ -145,9 +145,9 @@ public class StageListener implements ApplicationListener {
 		font.setColor(1f, 0f, 0.05f, 1f);
 		font.setScale(1.2f);
 
-		pathForScreenshot = Utils.buildProjectPath(ProjectManager.INSTANCE.getCurrentProject().getName()) + "/";
+		pathForScreenshot = Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()) + "/";
 
-		project = ProjectManager.INSTANCE.getCurrentProject();
+		project = ProjectManager.getInstance().getCurrentProject();
 
 		virtualWidth = project.getXmlHeader().virtualScreenWidth;
 		virtualHeight = project.getXmlHeader().virtualScreenHeight;
@@ -185,6 +185,7 @@ public class StageListener implements ApplicationListener {
 
 		for (Sprite sprite : sprites) {
 			sprite.resetSprite();
+			sprite.look.createBrightnessContrastShader();
 			stage.addActor(sprite.look);
 			sprite.resume();
 		}
@@ -244,7 +245,7 @@ public class StageListener implements ApplicationListener {
 		}
 		this.stageDialog = stageDialog;
 
-		ProjectManager.INSTANCE.getCurrentProject().getUserVariables().resetAllUserVariables();
+		ProjectManager.getInstance().getCurrentProject().getUserVariables().resetAllUserVariables();
 
 		reloadProject = true;
 	}
@@ -307,7 +308,7 @@ public class StageListener implements ApplicationListener {
 			stage.clear();
 			SoundManager.getInstance().clear();
 
-			project = ProjectManager.INSTANCE.getCurrentProject();
+			project = ProjectManager.getInstance().getCurrentProject();
 			sprites = project.getSpriteList();
 			if (spriteSize > 0) {
 				sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
@@ -316,6 +317,7 @@ public class StageListener implements ApplicationListener {
 			for (int i = 0; i < spriteSize; i++) {
 				Sprite sprite = sprites.get(i);
 				sprite.resetSprite();
+				sprite.look.createBrightnessContrastShader();
 				stage.addActor(sprite.look);
 				sprite.pause();
 			}

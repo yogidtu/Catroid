@@ -57,7 +57,9 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-public class ChangeVariableBrick extends BrickBaseType implements OnClickListener, NewVariableDialogListener {
+public class ChangeVariableBrick extends BrickBaseType implements OnClickListener, NewVariableDialogListener,
+		FormulaBrick {
+
 	private static final long serialVersionUID = 1L;
 	private UserVariable userVariable;
 	private Formula variableFormula;
@@ -115,7 +117,7 @@ public class ChangeVariableBrick extends BrickBaseType implements OnClickListene
 		edit_text.setOnClickListener(this);
 
 		Spinner variableSpinner = (Spinner) view.findViewById(R.id.change_variable_spinner);
-		UserVariableAdapter userVariableAdapter = ProjectManager.INSTANCE.getCurrentProject().getUserVariables()
+		UserVariableAdapter userVariableAdapter = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.createUserVariableAdapter(context, sprite);
 		UserVariableAdapterWrapper userVariableAdapterWrapper = new UserVariableAdapterWrapper(context,
 				userVariableAdapter);
@@ -179,7 +181,7 @@ public class ChangeVariableBrick extends BrickBaseType implements OnClickListene
 		Spinner variableSpinner = (Spinner) prototypeView.findViewById(R.id.change_variable_spinner);
 		variableSpinner.setFocusableInTouchMode(false);
 		variableSpinner.setFocusable(false);
-		UserVariableAdapter changeVariableSpinnerAdapter = ProjectManager.INSTANCE.getCurrentProject()
+		UserVariableAdapter changeVariableSpinnerAdapter = ProjectManager.getInstance().getCurrentProject()
 				.getUserVariables().createUserVariableAdapter(context, sprite);
 
 		UserVariableAdapterWrapper userVariableAdapterWrapper = new UserVariableAdapterWrapper(context,
@@ -281,5 +283,10 @@ public class ChangeVariableBrick extends BrickBaseType implements OnClickListene
 				.getAdapter());
 		userVariableAdapterWrapper.notifyDataSetChanged();
 		setSpinnerSelection(spinnerToUpdate, newUserVariable);
+	}
+
+	@Override
+	public Formula getFormula() {
+		return variableFormula;
 	}
 }

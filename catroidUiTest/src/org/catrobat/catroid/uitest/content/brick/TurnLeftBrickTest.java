@@ -39,7 +39,6 @@ import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.suitebuilder.annotation.Smoke;
 import android.widget.ListView;
 
 public class TurnLeftBrickTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
@@ -60,7 +59,6 @@ public class TurnLeftBrickTest extends BaseActivityInstrumentationTestCase<Scrip
 		super.setUp();
 	}
 
-	@Smoke
 	public void testTurnLeftBrickTest() {
 		ListView dragDropListView = UiTestUtils.getScriptListView(solo);
 		BrickAdapter adapter = (BrickAdapter) dragDropListView.getAdapter();
@@ -99,8 +97,8 @@ public class TurnLeftBrickTest extends BaseActivityInstrumentationTestCase<Scrip
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		ProjectManager.INSTANCE.setProject(project);
-		ProjectManager.INSTANCE.setCurrentSprite(sprite);
-		ProjectManager.INSTANCE.setCurrentScript(script);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentSprite(sprite);
+		ProjectManager.getInstance().setCurrentScript(script);
 	}
 }

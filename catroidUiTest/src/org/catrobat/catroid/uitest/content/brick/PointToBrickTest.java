@@ -38,7 +38,6 @@ import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.suitebuilder.annotation.Smoke;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -64,7 +63,6 @@ public class PointToBrickTest extends BaseActivityInstrumentationTestCase<Script
 		super.setUp();
 	}
 
-	@Smoke
 	public void testPointToBrickTest() throws InterruptedException {
 		ListView dragDropListView = UiTestUtils.getScriptListView(solo);
 		BrickAdapter adapter = (BrickAdapter) dragDropListView.getAdapter();
@@ -159,8 +157,8 @@ public class PointToBrickTest extends BaseActivityInstrumentationTestCase<Script
 		sprite1.addScript(startScript1);
 		project.addSprite(sprite1);
 
-		ProjectManager.INSTANCE.setProject(project);
-		ProjectManager.INSTANCE.setCurrentSprite(sprite1);
-		ProjectManager.INSTANCE.setCurrentScript(startScript1);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentSprite(sprite1);
+		ProjectManager.getInstance().setCurrentScript(startScript1);
 	}
 }

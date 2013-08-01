@@ -37,7 +37,6 @@ import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.suitebuilder.annotation.Smoke;
 import android.widget.EditText;
 
 public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
@@ -78,11 +77,10 @@ public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCa
 		project.addSprite(firstSprite);
 		project.addSprite(secondSprite);
 
-		ProjectManager.INSTANCE.setProject(project);
-		ProjectManager.INSTANCE.setCurrentSprite(firstSprite);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentSprite(firstSprite);
 	}
 
-	@Smoke
 	public void testNormalKeysKeyboard() {
 
 		solo.clickOnEditText(X_POS_EDIT_TEXT_ID);
@@ -151,12 +149,12 @@ public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCa
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_bracket_open));
 		assertEquals("Wrong button clicked", getActivity().getString(R.string.formula_editor_bracket_open), text
-				.getText().toString().substring(0, text.getText().toString().length() - 1));
+				.getText().toString().substring(0, text.length() - 1));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_bracket_close));
 		assertEquals("Wrong button clicked", getActivity().getString(R.string.formula_editor_bracket_close), text
-				.getText().toString().substring(0, text.getText().toString().length() - 1));
+				.getText().toString().substring(0, text.length() - 1));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_random));

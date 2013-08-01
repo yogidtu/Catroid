@@ -40,7 +40,6 @@ import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.Utils;
 
-import android.test.suitebuilder.annotation.Smoke;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -62,12 +61,11 @@ public class WaitBrickTest extends BaseActivityInstrumentationTestCase<ScriptAct
 		super.setUp();
 	}
 
-	@Smoke
 	public void testWaitBrick() {
 		ListView dragDropListView = UiTestUtils.getScriptListView(solo);
 		BrickAdapter adapter = (BrickAdapter) dragDropListView.getAdapter();
 
-		int childrenCount = ProjectManager.INSTANCE.getCurrentSprite().getScript(adapter.getScriptCount() - 1)
+		int childrenCount = ProjectManager.getInstance().getCurrentSprite().getScript(adapter.getScriptCount() - 1)
 				.getBrickList().size();
 		assertEquals("Incorrect number of bricks.", 2, dragDropListView.getChildCount());
 		assertEquals("Incorrect number of bricks.", 1, childrenCount);
@@ -112,8 +110,8 @@ public class WaitBrickTest extends BaseActivityInstrumentationTestCase<ScriptAct
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		ProjectManager.INSTANCE.setProject(project);
-		ProjectManager.INSTANCE.setCurrentSprite(sprite);
-		ProjectManager.INSTANCE.setCurrentScript(script);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentSprite(sprite);
+		ProjectManager.getInstance().setCurrentScript(script);
 	}
 }
