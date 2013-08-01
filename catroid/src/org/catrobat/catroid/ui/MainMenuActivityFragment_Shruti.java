@@ -146,6 +146,9 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 		main_menu_button_web.setOnClickListener(this);
 		Button main_menu_button_upload = (Button) rootView.findViewById(R.id.main_menu_button_upload);
 		main_menu_button_upload.setOnClickListener(this);
+		actionBar = getSherlockActivity().getSupportActionBar();
+		actionBar.setDisplayUseLogoEnabled(true);
+		actionBar.setTitle(R.string.app_name);
 
 		return rootView;
 	}
@@ -177,9 +180,6 @@ public class MainMenuActivityFragment_Shruti extends SherlockFragment implements
 			return;
 		}
 		Utils.updateScreenWidthAndHeight(getActivity());
-		actionBar = getSherlockActivity().getSupportActionBar();
-		actionBar.setDisplayUseLogoEnabled(true);
-		actionBar.setTitle(R.string.app_name);
 
 		getActivity().findViewById(R.id.main_menu_button_continue).setEnabled(false);
 

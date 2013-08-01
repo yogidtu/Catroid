@@ -72,8 +72,23 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 	}
 
 	public static WebView myWebView;
-	String theUrl;
-	Uri loadExternalProjectUri;
+	static String theUrl;
+	static Uri loadExternalProjectUri;
+
+	/**
+	 * @return the loadExternalProjectUri
+	 */
+	public Uri getLoadExternalProjectUri() {
+		return loadExternalProjectUri;
+	}
+
+	/**
+	 * @param loadExternalProjectUri
+	 *            the loadExternalProjectUri to set
+	 */
+	public static void setLoadExternalProjectUri(Uri loadExternalProjectUri1) {
+		loadExternalProjectUri = loadExternalProjectUri1;
+	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -94,7 +109,7 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 					Toast.makeText(getActivity(), theUrl, Toast.LENGTH_LONG).show();
 					loadExternalProjectUri = Uri.parse(theUrl);
 					if (loadExternalProjectUri != null) {
-						if (theUrl.contains("download")) {
+						if (loadExternalProjectUri.toString().contains("download")) {
 							loadProgramFromExternalSource(loadExternalProjectUri);
 							mCallback.onArticleSelected(1);
 
@@ -111,6 +126,21 @@ public class WebViewFragment_Shruti extends SherlockFragment {
 		// Toast.LENGTH_LONG).show();
 		// getActivity().getIntent().setData(null);
 
+	}
+
+	/**
+	 * @return the theUrl
+	 */
+	public String getTheUrl() {
+		return theUrl;
+	}
+
+	/**
+	 * @param theUrl
+	 *            the theUrl to set
+	 */
+	public static void setTheUrl(String theUrl1) {
+		theUrl = theUrl1;
 	}
 
 	public int createNotification(String downloadName) {

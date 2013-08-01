@@ -194,19 +194,24 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		String projectName = testProject;
 		String originalProjectDescription = testDescription;
-
+		createTestProject(projectName);
 		//intent to the main activity is sent since changing activity orientation is not working
 		//after executing line "UiTestUtils.clickOnLinearLayout(solo, R.id.btn_action_home);" 
 		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
 		getActivity().startActivity(intent);
 		ProjectManager.getInstance().getCurrentProject().setDescription(originalProjectDescription);
-		createTestProject(projectName);
+
 		UiTestUtils.createValidUser(getActivity());
 
 		//Project description is changed to testdescription2 in uploadProject()
 		String projectDescriptionSetWhenUploading = newTestDescription;
+		solo.waitForActivity(MainMenuActivity_Shruti.class);
+		solo.waitForFragmentByTag("List_Fragment");
 		uploadProject(projectName, newTestDescription);
-		solo.sleep(5000);
+		solo.sleep(5000);// change project to a non default state
+		Sprite firstSprite = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0);
+		Script firstScript = firstSprite.getScript(0);
+		firstScript.addBrick(new WaitBrick(firstSprite, 1000));
 
 		Project uploadProject = StorageHandler.getInstance().loadProject(projectName);
 
@@ -375,19 +380,23 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		solo.waitForFragmentByTag("List_Fragment");
 		solo.clickOnButton(solo.getString(R.string.main_menu_new));
 		solo.enterText(0, projectToCreate);
-		solo.goBack();
+		//solo.goBack();
 		//solo.waitForActivity(MainMenuActivity_Shruti.class);
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 		solo.sleep(500);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 		solo.enterText(0, "new sprite");
-		solo.goBack();
+		//solo.goBack();
 		solo.clickOnButton(solo.getString(R.string.ok));
-		solo.sleep(2000);
+		solo.sleep(200);
 
 		File file = new File(Constants.DEFAULT_ROOT + "/" + projectToCreate + "/" + Constants.PROJECTCODE_NAME);
 		assertTrue(projectToCreate + " was not created!", file.exists());
+		/*
+		 * Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
+		 * getActivity().startActivity(intent);
+		 */
 
 	}
 
@@ -401,14 +410,14 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	}
 
 	private void uploadProject(String uploadProjectName, String uploadProjectDescription) {
+
+		//solo.waitForFragmentByTag("List_Fragment");
+		solo.clickOnButton(solo.getString(R.string.main_menu_upload));
+		solo.waitForText(uploadDialogTitle);
 		// change project to a non default state
 		Sprite firstSprite = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0);
 		Script firstScript = firstSprite.getScript(0);
 		firstScript.addBrick(new WaitBrick(firstSprite, 1000));
-		solo.sleep(500);
-		solo.clickOnText(solo.getString(R.string.main_menu_upload));
-		solo.waitForText(uploadDialogTitle);
-
 		// enter a new title
 		EditText projectUploadName = (EditText) solo.getView(R.id.project_upload_name);
 		solo.clearEditText(projectUploadName);
@@ -440,12 +449,35 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	private void downloadProjectAndReplace(String projectName) {
 		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENTION;
 		downloadUrl += "?fname=" + projectName;
+		Log.d("shruti's url", downloadUrl);
 
 		Intent intent = new Intent(getActivity(), MainMenuActivity_Shruti.class);
-		intent.setAction(Intent.ACTION_VIEW);
-		intent.setData(Uri.parse(downloadUrl));
-		solo.goBack();
-		launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity_Shruti.class, intent);
+		getActivity().startActivity(intent);
+
+		/*
+		 * intent.setAction(Intent.ACTION_VIEW);
+		 * intent.setData(Uri.parse(downloadUrl));
+		 */
+		solo.waitForFragmentByTag("List_Fragment");
+		solo.clickOnButton("Community");
+		//WebViewFragment_Shruti.setTheUrl((downloadUrl));
+		solo.waitForFragmentByTag("Web_Fragment");
+
+		solo.waitForText("fishy");
+		solo.scrollDown();
+		solo.clickOnText("fishy", 1, false);
+
+		//solo.waitForFragmentByTag("Web_Fragment");
+		//solo.scrollToTop();
+		solo.waitForText("Download", 1, 5000, true);
+		solo.scrollToTop();
+		solo.clickOnText("Download");
+
+		//solo.waitForFragmentByTag("Web_Fragment");
+
+		solo.sleep(2000);
+		//solo.goBack();
+		//launchActivityWithIntent("org.catrobat.catroid", MainMenuActivity_Shruti.class, intent);
 		solo.sleep(500);
 		assertTrue("OverwriteRenameDialog not shown.", solo.searchText(solo.getString(R.string.overwrite_text)));
 		solo.clickOnText(solo.getString(R.string.overwrite_replace));
