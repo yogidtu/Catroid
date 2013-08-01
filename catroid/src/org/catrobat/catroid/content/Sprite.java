@@ -275,6 +275,15 @@ public class Sprite implements Serializable, Cloneable {
 		return ressources;
 	}
 
+	public ArrayList<Brick> getBricksRequiringResource(int resource) {
+		ArrayList<Brick> resourceBrickList = new ArrayList<Brick>();
+
+		for (Script script : scriptList) {
+			resourceBrickList.addAll(script.getBricksRequiringResources(resource));
+		}
+		return resourceBrickList;
+	}
+
 	@Override
 	public String toString() {
 		return name;
