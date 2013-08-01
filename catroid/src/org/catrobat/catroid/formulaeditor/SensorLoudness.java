@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import org.catrobat.catroid.utils.MicrophoneGrabber;
 import org.catrobat.catroid.utils.MicrophoneGrabber.microphoneListener;
 
-import android.util.Log;
-
 public class SensorLoudness implements microphoneListener {
 
 	private static SensorLoudness instance = null;

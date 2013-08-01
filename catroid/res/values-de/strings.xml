@@ -429,6 +429,8 @@
     <string name="error_copy_project">Beim kopieren des Programms ist ein Fehler aufgetreten.</string>
     <string name="error_upload_project_with_default_name">Das Programm mit dem Namen \'Mein erstes Programm\' kann nicht hochgeladen werden. Bitte das Programm umbenennen.</string>
     <string name="error_upload_default_project">Das Programm entspricht dem Programm \'Mein erstes Programm\'. Bitte ändere es und versuche es noch einmal.</string>
+    <string name="error_no_network">Du brauchst eine Internetverbindung für dieses Catroid Project. Bitte aktiviere eine Datenverbindung in deinen Einstellungen.\n\nFolgende Bricks werden das Netzwerk verwenden:</string>
+    <string name="error_no_network_title">Kein Internet</string>
     <!--  -->
 
 
