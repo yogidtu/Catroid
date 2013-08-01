@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.test.content.actions;
 
+import android.test.AndroidTestCase;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
@@ -33,7 +35,7 @@ import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.SimulatedSpeechRecognition;
 import org.catrobat.catroid.utils.UtilSpeechRecognition;
 
-import android.test.AndroidTestCase;
+import java.util.ArrayList;
 
 public class AskActionTest extends AndroidTestCase {
 
@@ -55,7 +57,7 @@ public class AskActionTest extends AndroidTestCase {
 		ProjectManager.getInstance().setProject(project);
 
 		SimulatedSpeechRecognition speechRecognition = new SimulatedSpeechRecognition();
-		Reflection.setPrivateField(UtilSpeechRecognition.getInstance(), "instance", speechRecognition);
+		Reflection.setPrivateField(UtilSpeechRecognition.class, "currentRunningStage", speechRecognition);
 
 		sprite.createStartScriptActionSequence();
 
@@ -78,7 +80,7 @@ public class AskActionTest extends AndroidTestCase {
 		assertEquals("AskAction hasn't finished, but other actions where executed. Spriteposition ", startPosition,
 				(int) sprite.look.getXInUserInterfaceDimensionUnit());
 
-		speechRecognition.triggerReturnResults();
+		speechRecognition.finishLastRequest(new ArrayList<String>());
 
 		i = 0;
 		while (!sprite.look.getAllActionsAreFinished()) {
@@ -89,6 +91,6 @@ public class AskActionTest extends AndroidTestCase {
 		}
 
 		assertEquals("Simple AskAction wait failed", testPosition, (int) sprite.look.getXInUserInterfaceDimensionUnit());
-		Reflection.setPrivateField(UtilSpeechRecognition.class, "instance", null);
+		Reflection.setPrivateField(UtilSpeechRecognition.class, "currentRunningStage", null);
 	}
 }

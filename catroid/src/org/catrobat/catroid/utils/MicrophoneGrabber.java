@@ -22,15 +22,16 @@
  */
 package org.catrobat.catroid.utils;
 
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
-
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 
 public class MicrophoneGrabber extends Thread {
 	private static MicrophoneGrabber instance = null;
@@ -40,6 +41,7 @@ public class MicrophoneGrabber extends Thread {
 	public static final int sampleRate = 16000;
 	public static final int frameByteSize = 512;
 	public static final int bytesPerSample = 2;
+	private static final String TAG = MicrophoneGrabber.class.getSimpleName();
 
 	private ArrayList<PipedOutputStream> microphoneStreamList = new ArrayList<PipedOutputStream>();
 	private boolean isRecording;
@@ -78,6 +80,7 @@ public class MicrophoneGrabber extends Thread {
 		try {
 			inputPipe = new PipedInputStream(outputPipe, frameByteSize * 10);
 		} catch (IOException e) {
+			Log.w(TAG, "Unable to create new Pipe");
 			return null;
 		}
 		synchronized (microphoneStreamList) {
@@ -109,7 +112,8 @@ public class MicrophoneGrabber extends Thread {
 				offset += shortRead;
 			}
 
-			for (PipedOutputStream outputPipe : microphoneStreamList) {
+			ArrayList<PipedOutputStream> currentStreams = new ArrayList<PipedOutputStream>(microphoneStreamList);
+			for (PipedOutputStream outputPipe : currentStreams) {
 				try {
 					outputPipe.write(buffer);
 				} catch (IOException e) {
@@ -132,9 +136,12 @@ public class MicrophoneGrabber extends Thread {
 		return this.isAlive() && isRecording;
 	}
 
-	public static double[] audioByteToDouble(byte[] samples) {
+	public static void audioByteToDouble(byte[] samples, double[] resultBuffer) {
 
-		double[] micBufferData = new double[samples.length / bytesPerSample];
+		if (resultBuffer.length != samples.length / bytesPerSample) {
+			return;
+			//		double[] micBufferData = new double[samples.length / bytesPerSample];
+		}
 
 		final double amplification = 1000.0;
 		for (int index = 0, floatIndex = 0; index < samples.length - bytesPerSample + 1; index += bytesPerSample, floatIndex++) {
@@ -147,8 +154,8 @@ public class MicrophoneGrabber extends Thread {
 				sample += v << (b * 8);
 			}
 			double sample32 = amplification * (sample / 32768.0);
-			micBufferData[floatIndex] = sample32;
+			resultBuffer[floatIndex] = sample32;
 		}
-		return micBufferData;
+		return;
 	}
 }

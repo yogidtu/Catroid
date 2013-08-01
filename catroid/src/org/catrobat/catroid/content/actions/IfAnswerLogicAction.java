@@ -22,16 +22,15 @@
  */
 package org.catrobat.catroid.content.actions;
 
-import org.catrobat.catroid.utils.UtilSpeechRecognition;
-
-import android.util.Log;
-
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+import org.catrobat.catroid.utils.UtilSpeechRecognition;
+
+import java.util.Locale;
+
 public class IfAnswerLogicAction extends Action {
 
-	private static final String TAG = IfAnswerLogicAction.class.getSimpleName();
 	private String prediction;
 	private Action ifAction;
 	private Action elseAction;
@@ -39,9 +38,8 @@ public class IfAnswerLogicAction extends Action {
 	private boolean isInitialized = false;
 
 	public void begin() {
-		String answer = UtilSpeechRecognition.getInstance().getLastAnswer();
-		ifConditionValue = answer.toLowerCase().contains(prediction.toLowerCase());
-		Log.v(TAG, "If compares:" + prediction + " got:" + answer + ", is " + ifConditionValue);
+		String answer = UtilSpeechRecognition.getLastAnswer();
+		ifConditionValue = answer.toLowerCase(Locale.getDefault()).contains(prediction.toLowerCase());
 		isInitialized = true;
 	}
 

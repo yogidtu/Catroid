@@ -22,16 +22,6 @@
  */
 package org.catrobat.catroid.stage;
 
-import java.util.ArrayList;
-
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.formulaeditor.SensorHandler;
-import org.catrobat.catroid.speechrecognition.RecognizerCallback;
-import org.catrobat.catroid.ui.dialogs.StageDialog;
-import org.catrobat.catroid.utils.UtilSpeechRecognition;
-
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -46,7 +36,11 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
+import org.catrobat.catroid.utils.UtilSpeechRecognition;
+
+import java.util.ArrayList;
 
 public class StageActivity extends AndroidApplication {
 	public static final String TAG = StageActivity.class.getSimpleName();
@@ -58,7 +52,6 @@ public class StageActivity extends AndroidApplication {
 	private SparseArray<RecognizerCallback> askerList = new SparseArray<RecognizerCallback>();
 
 	public static final int STAGE_ACTIVITY_FINISH = 7777;
-	private static final int SPEECH_REQUEST_CODE = 3120;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +62,7 @@ public class StageActivity extends AndroidApplication {
 		stageListener = new StageListener();
 		stageDialog = new StageDialog(this, stageListener, R.style.stage_dialog);
 		calculateScreenSizes();
-		UtilSpeechRecognition.getInstance().setStage(this);
+		UtilSpeechRecognition.setStageActivity(this);
 		initialize(stageListener, true);
 	}
 
@@ -142,7 +135,7 @@ public class StageActivity extends AndroidApplication {
 	public void askForSpeechInput(String question, RecognizerCallback callback) {
 		this.pause();
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		int identifier = (int) System.currentTimeMillis() & SPEECH_RECOGNITION_FLAG;
+		int identifier = (int) System.currentTimeMillis() | SPEECH_RECOGNITION_FLAG;
 		askerList.put(identifier, callback);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, question);
@@ -172,7 +165,7 @@ public class StageActivity extends AndroidApplication {
 			stageListener.skipDynamicSamplingRateForActions();
 			this.resume();
 		} else {
-			Log.w(TAG, "unhandeld ActivityResult.");
+			Log.w(TAG, "unhandeld ActivityResult." + requestCode);
 		}
 	}
 }

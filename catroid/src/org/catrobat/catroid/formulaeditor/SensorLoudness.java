@@ -22,11 +22,11 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
+import org.catrobat.catroid.utils.MicrophoneGrabber;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import org.catrobat.catroid.utils.MicrophoneGrabber;
 
 public class SensorLoudness {
 
@@ -38,7 +38,10 @@ public class SensorLoudness {
 	private ArrayList<SensorCustomEventListener> listenerList = new ArrayList<SensorCustomEventListener>();
 	private float lastValue = 0f;
 	private float currentValue = 0;
+	private int analyseFrameSize = MicrophoneGrabber.frameByteSize * 5;
 	private BufferedInputStream microphoneInput = null;
+
+	double[] signal = new double[MicrophoneGrabber.frameByteSize * 5 / MicrophoneGrabber.bytesPerSample];
 
 	private SensorLoudness() {
 	}
@@ -61,15 +64,15 @@ public class SensorLoudness {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						byte[] recievedBuffer = new byte[MicrophoneGrabber.frameByteSize * 5];
+						byte[] recievedBuffer = new byte[analyseFrameSize];
 						while (microphoneInput != null) {
 							try {
 								microphoneInput.read(recievedBuffer, 0, recievedBuffer.length);
 								microphoneInput.skip(microphoneInput.available());
-							} catch (IOException e) {
+							} catch (Exception e) {
 								try {
 									microphoneInput.close();
-								} catch (IOException e1) {
+								} catch (Exception e1) {
 								}
 								microphoneInput = new BufferedInputStream(MicrophoneGrabber.getInstance()
 										.getMicrophoneStream());
@@ -106,7 +109,7 @@ public class SensorLoudness {
 	}
 
 	private void updateLoudnessValue(byte[] audioBuffer) {
-		double[] signal = MicrophoneGrabber.audioByteToDouble(audioBuffer);
+		MicrophoneGrabber.audioByteToDouble(audioBuffer, signal);
 		currentValue = 0;
 		for (double sample : signal) {
 			if (currentValue < Math.abs(sample)) {

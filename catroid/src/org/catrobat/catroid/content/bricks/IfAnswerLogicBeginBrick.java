@@ -22,17 +22,6 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.BrickValues;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.dialogs.BrickTextDialog;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
@@ -44,11 +33,20 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.dialogs.BrickTextDialog;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class IfAnswerLogicBeginBrick extends IfLogicBeginBrick {
 	private static final long serialVersionUID = 1L;
@@ -68,6 +66,12 @@ public class IfAnswerLogicBeginBrick extends IfLogicBeginBrick {
 	@Override
 	public Brick clone() {
 		return new IfAnswerLogicBeginBrick(sprite, answerPrediction);
+	}
+
+	@Override
+	public void initialize() {
+		ifElseBrick = new IfLogicElseBrick(sprite, this);
+		ifEndBrick = new IfLogicEndBrick(sprite, ifElseBrick, this);
 	}
 
 	@Override
@@ -154,7 +158,7 @@ public class IfAnswerLogicBeginBrick extends IfLogicBeginBrick {
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
-		LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_if_answer_begin_layout);
+		View layout = view.findViewById(R.id.brick_if_answer_begin_layout);
 		Drawable background = layout.getBackground();
 		background.setAlpha(alphaValue);
 
@@ -174,7 +178,7 @@ public class IfAnswerLogicBeginBrick extends IfLogicBeginBrick {
 	public View getPrototypeView(Context context) {
 		View prototypeView = View.inflate(context, R.layout.brick_if_answer, null);
 		TextView textIfBegin = (TextView) prototypeView.findViewById(R.id.brick_if_answer_begin_prototype_text_view);
-		textIfBegin.setText(String.valueOf(BrickValues.IF_CONDITION));
+		textIfBegin.setText(answerPrediction);
 		return prototypeView;
 	}
 

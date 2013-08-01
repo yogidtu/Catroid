@@ -29,7 +29,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;import android.widget.TextView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
@@ -47,7 +48,6 @@ public class IfLogicElseBrick extends NestingBrick implements AllowedAfterDeadEn
 	private static final String TAG = IfLogicElseBrick.class.getSimpleName();
 	private IfLogicBeginBrick ifBeginBrick;
 	private IfLogicEndBrick ifEndBrick;
-
 	private transient IfLogicElseBrick copy;
 
 	public IfLogicElseBrick(Sprite sprite, IfLogicBeginBrick ifBeginBrick) {
@@ -75,7 +75,12 @@ public class IfLogicElseBrick extends NestingBrick implements AllowedAfterDeadEn
 		}
 
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		view = inflater.inflate(R.layout.brick_if_else, null);
+		if (ifBeginBrick instanceof IfAnswerLogicBeginBrick) {
+			view = inflater.inflate(R.layout.brick_if_else_sound, null);
+		} else {
+			view = inflater.inflate(R.layout.brick_if_else, null);
+		}
+
 		view = getViewWithAlpha(alphaValue);
 
 		setCheckboxView(R.id.brick_if_else_checkbox);
@@ -97,17 +102,21 @@ public class IfLogicElseBrick extends NestingBrick implements AllowedAfterDeadEn
 
 		if (view != null) {
 
-			View layout = (View) view.findViewById(R.id.brick_if_else_layout);
+			View layout = null;
+			TextView ifElseLabel = null;
+			if (ifBeginBrick instanceof IfAnswerLogicBeginBrick) {
+				layout = view.findViewById(R.id.brick_if_else_layout_sound);
+				ifElseLabel = (TextView) view.findViewById(R.id.brick_if_else_label_sound);
+			} else {
+				layout = view.findViewById(R.id.brick_if_else_layout);
+				ifElseLabel = (TextView) view.findViewById(R.id.brick_if_else_label);
+			}
+
 			Drawable background = layout.getBackground();
 			background.setAlpha(alphaValue);
-
-			TextView ifElseLabel = (TextView) view.findViewById(R.id.brick_if_else_label);
 			ifElseLabel.setTextColor(ifElseLabel.getTextColors().withAlpha(alphaValue));
-
 			this.alphaValue = (alphaValue);
-
 		}
-
 		return view;
 	}
 
@@ -118,7 +127,11 @@ public class IfLogicElseBrick extends NestingBrick implements AllowedAfterDeadEn
 
 	@Override
 	public View getPrototypeView(Context context) {
-		return View.inflate(context, R.layout.brick_if_else, null);
+		if (ifBeginBrick instanceof IfAnswerLogicBeginBrick) {
+			return View.inflate(context, R.layout.brick_if_else_sound, null);
+		} else {
+			return View.inflate(context, R.layout.brick_if_else, null);
+		}
 	}
 
 	public void setIfEndBrick(IfLogicEndBrick ifEndBrick) {
@@ -182,7 +195,11 @@ public class IfLogicElseBrick extends NestingBrick implements AllowedAfterDeadEn
 	@Override
 	public View getNoPuzzleView(Context context, int brickId, BaseAdapter adapter) {
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		return inflater.inflate(R.layout.brick_if_else, null);
+		if (ifBeginBrick instanceof IfAnswerLogicBeginBrick) {
+			return inflater.inflate(R.layout.brick_if_else_sound, null);
+		} else {
+			return inflater.inflate(R.layout.brick_if_else, null);
+		}
 	}
 
 	@Override

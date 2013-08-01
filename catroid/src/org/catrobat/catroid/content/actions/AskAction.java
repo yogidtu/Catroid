@@ -22,11 +22,14 @@
  */
 package org.catrobat.catroid.content.actions;
 
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.utils.UtilSpeechRecognition;
+
+import android.os.Bundle;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 
-public class AskAction extends Action {
+public class AskAction extends Action implements RecognizerCallback {
 
 	private String question;
 	private boolean pendingResult = false;
@@ -54,9 +57,19 @@ public class AskAction extends Action {
 	@Override
 	public boolean act(float delta) {
 		if (!pendingResult) {
-			UtilSpeechRecognition.getInstance().recognise(this);
+			UtilSpeechRecognition.askUserViaIntent(question, this);
 			pendingResult = true;
 		}
 		return gotAnswer;
+	}
+
+	@Override
+	public void onRecognizerResult(int resultCode, Bundle resultBundle) {
+		this.onRecognizeResult();
+	}
+
+	@Override
+	public void onRecognizerError(Bundle errorBundle) {
+		this.onRecognizeResult();
 	}
 }

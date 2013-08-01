@@ -42,7 +42,6 @@ public class AskBrickTest extends ActivityInstrumentationTestCase2<StageActivity
 		UiTestUtils.prepareStageForTest();
 		instrument = getInstrumentation();
 		createProject();
-		UtilSpeechRecognition.getInstance();
 	}
 
 	@Override
@@ -69,15 +68,15 @@ public class AskBrickTest extends ActivityInstrumentationTestCase2<StageActivity
 		instrument.waitForMonitorWithTimeout(recognizeMonitor, 2000);
 		assertEquals("Recognize intent wasn't fired as expected, monitor hit", 1, recognizeMonitor.getHits());
 
-		assertEquals("Best AskAnswer was not stored as expected.", mockRecognizedWords.get(0), UtilSpeechRecognition
-				.getInstance().getLastBestAnswer());
+		//		assertEquals("Best AskAnswer was not stored as expected.", mockRecognizedWords.get(0), UtilSpeechRecognition
+		//				.getInstance().getLastBestAnswer());
 
 		String expectedLastAnswer = "";
 		for (String answer : mockRecognizedWords) {
 			expectedLastAnswer += " " + answer;
 		}
-		assertEquals("Last full AskAnswer was not stored as expected.", expectedLastAnswer, UtilSpeechRecognition
-				.getInstance().getLastAnswer());
+		assertEquals("Last full AskAnswer was not stored as expected.", expectedLastAnswer,
+				UtilSpeechRecognition.getLastAnswer());
 
 		instrument.waitForIdleSync();
 		assertTrue("Stage didn't finish after AskAnswer returned.",
@@ -89,7 +88,7 @@ public class AskBrickTest extends ActivityInstrumentationTestCase2<StageActivity
 
 		getActivity();
 
-		Reflection.setPrivateField(UtilSpeechRecognition.getInstance(), "lastBestAnswer", "fun");
+		Reflection.setPrivateField(UtilSpeechRecognition.class, "lastAnswer", "fun");
 		ActivityMonitor recognizeMonitor = instrument.addMonitor(new IntentFilter(
 				RecognizerIntent.ACTION_RECOGNIZE_SPEECH), mockResultCanceled, true);
 
@@ -97,7 +96,7 @@ public class AskBrickTest extends ActivityInstrumentationTestCase2<StageActivity
 		assertEquals("Recognize intent wasn't fired as expected, monitor hit", 1, recognizeMonitor.getHits());
 
 		instrument.waitForIdleSync();
-		assertEquals("AskAnswer did not reset answers.", "", UtilSpeechRecognition.getInstance().getLastBestAnswer());
+		assertEquals("AskAnswer did not reset answers.", "", UtilSpeechRecognition.getLastAnswer());
 		assertTrue("Stage didn't finish after AskAnswer returned.",
 				ProjectManager.getInstance().getCurrentSprite().look.getAllActionsAreFinished());
 	}
@@ -126,16 +125,16 @@ public class AskBrickTest extends ActivityInstrumentationTestCase2<StageActivity
 		instrument.waitForMonitorWithTimeout(recognizeOkMonitor, 2000);
 		assertEquals("Recognize intent wasn't fired as expected, monitor hit", 1, recognizeOkMonitor.getHits());
 
-		assertEquals("AskAnswer was not stored as expected.", recognizedWords.get(0), UtilSpeechRecognition
-				.getInstance().getLastBestAnswer());
+		assertEquals("AskAnswer was not stored as expected.", recognizedWords.get(0),
+				UtilSpeechRecognition.getLastAnswer());
 
 		instrument.waitForMonitorWithTimeout(recognizeOkMonitor, 2000);
 		assertEquals("Second recognize intent wasn't fired as expected, monitor hit", 1,
 				recognizeCancelMonitor.getHits());
 
 		instrument.waitForIdleSync();
-		assertEquals("AskAnswer was not resettet after second recognition-intent.", "", UtilSpeechRecognition
-				.getInstance().getLastBestAnswer());
+		assertEquals("AskAnswer was not resettet after second recognition-intent.", "",
+				UtilSpeechRecognition.getLastAnswer());
 		assertTrue("Stage didn't finish after AskAnswer returned.",
 				ProjectManager.getInstance().getCurrentSprite().look.getAllActionsAreFinished());
 	}

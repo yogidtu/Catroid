@@ -63,7 +63,7 @@ public class AskBrick extends BrickBaseType {
 
 	@Override
 	public int getRequiredResources() {
-		return SPEECH_RECOGNITION;
+		return NETWORK_CONNECTION;
 	}
 
 	public AskBrick(Sprite sprite, String question) {

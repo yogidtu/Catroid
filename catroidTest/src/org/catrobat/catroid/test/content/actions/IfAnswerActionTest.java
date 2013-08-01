@@ -22,7 +22,7 @@
  */
 package org.catrobat.catroid.test.content.actions;
 
-import java.util.ArrayList;
+import android.test.AndroidTestCase;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Project;
@@ -40,14 +40,14 @@ import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.SimulatedSpeechRecognition;
 import org.catrobat.catroid.utils.UtilSpeechRecognition;
 
-import android.test.AndroidTestCase;
+import java.util.ArrayList;
 
 public class IfAnswerActionTest extends AndroidTestCase {
 
 	private static final int IF_TRUE_VALUE = 42;
 	private static final int IF_FALSE_VALUE = 32;
 	private static final String TEST_USERVARIABLE = "testUservariable";
-	private static final String TEST_ANSWER_TRUE = "run";
+	private static final String TEST_ANSWER_EXPECTED = "run";
 	private IfAnswerLogicBeginBrick ifAnswerLogicBeginBrick;
 	private IfLogicElseBrick ifLogicElseBrick;
 	private IfLogicEndBrick ifLogicEndBrick;
@@ -59,11 +59,11 @@ public class IfAnswerActionTest extends AndroidTestCase {
 		Script script = new StartScript(sprite);
 
 		SimulatedSpeechRecognition speechRecognition = new SimulatedSpeechRecognition();
-		Reflection.setPrivateField(UtilSpeechRecognition.getInstance(), "instance", speechRecognition);
+		Reflection.setPrivateField(UtilSpeechRecognition.class, "currentRunningStage", speechRecognition);
 
 		AskBrick testAskBrick = new AskBrick();
 
-		ifAnswerLogicBeginBrick = new IfAnswerLogicBeginBrick(sprite, TEST_ANSWER_TRUE);
+		ifAnswerLogicBeginBrick = new IfAnswerLogicBeginBrick(sprite, TEST_ANSWER_EXPECTED);
 		ifLogicElseBrick = new IfLogicElseBrick(sprite, ifAnswerLogicBeginBrick);
 		ifLogicEndBrick = new IfLogicEndBrick(sprite, ifLogicElseBrick, ifAnswerLogicBeginBrick);
 
@@ -92,10 +92,9 @@ public class IfAnswerActionTest extends AndroidTestCase {
 
 		ArrayList<String> outsideResults = new ArrayList<String>();
 		outsideResults.add("fun");
-		outsideResults.add("run");
+		outsideResults.add(TEST_ANSWER_EXPECTED);
 
-		speechRecognition.setRecogniserResult(outsideResults);
-		speechRecognition.triggerReturnResults();
+		speechRecognition.finishLastRequest(outsideResults);
 
 		sprite.look.act(10f);
 		sprite.look.act(10f);
@@ -103,7 +102,7 @@ public class IfAnswerActionTest extends AndroidTestCase {
 		userVariable = project.getUserVariables().getUserVariable(TEST_USERVARIABLE, null);
 
 		assertEquals("IfAnswerBrick not executed as expected", IF_TRUE_VALUE, userVariable.getValue().intValue());
-		Reflection.setPrivateField(UtilSpeechRecognition.class, "instance", null);
+		Reflection.setPrivateField(UtilSpeechRecognition.class, "currentRunningStage", null);
 	}
 
 	public void testIfElseBrick() throws InterruptedException {
@@ -112,11 +111,11 @@ public class IfAnswerActionTest extends AndroidTestCase {
 		Script script = new StartScript(sprite);
 
 		SimulatedSpeechRecognition speechRecognition = new SimulatedSpeechRecognition();
-		Reflection.setPrivateField(UtilSpeechRecognition.getInstance(), "instance", speechRecognition);
+		Reflection.setPrivateField(UtilSpeechRecognition.class, "currentRunningStage", speechRecognition);
 
 		AskBrick testAskBrick = new AskBrick();
 
-		ifAnswerLogicBeginBrick = new IfAnswerLogicBeginBrick(sprite, TEST_ANSWER_TRUE);
+		ifAnswerLogicBeginBrick = new IfAnswerLogicBeginBrick(sprite, TEST_ANSWER_EXPECTED);
 		ifLogicElseBrick = new IfLogicElseBrick(sprite, ifAnswerLogicBeginBrick);
 		ifLogicEndBrick = new IfLogicEndBrick(sprite, ifLogicElseBrick, ifAnswerLogicBeginBrick);
 
@@ -147,8 +146,7 @@ public class IfAnswerActionTest extends AndroidTestCase {
 		outsideResults.add("fun");
 		outsideResults.add("sun");
 
-		speechRecognition.setRecogniserResult(outsideResults);
-		speechRecognition.triggerReturnResults();
+		speechRecognition.finishLastRequest(outsideResults);
 
 		sprite.look.act(10f);
 		sprite.look.act(10f);
@@ -156,7 +154,7 @@ public class IfAnswerActionTest extends AndroidTestCase {
 		userVariable = project.getUserVariables().getUserVariable(TEST_USERVARIABLE, null);
 
 		assertEquals("IfAnswerBrick not executed as expected", IF_TRUE_VALUE, userVariable.getValue().intValue());
-		Reflection.setPrivateField(UtilSpeechRecognition.class, "instance", null);
+		Reflection.setPrivateField(UtilSpeechRecognition.class, "currentRunningStage", null);
 
 	}
 
