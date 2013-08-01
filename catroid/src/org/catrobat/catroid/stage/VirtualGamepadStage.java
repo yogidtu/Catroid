@@ -179,9 +179,9 @@ public class VirtualGamepadStage extends Stage {
 
 				while (running) {
 
-					Sprite sprite = ProjectManager.INSTANCE.getCurrentSprite();
+					Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
 					if (sprite == null) {
-						List<Sprite> spriteList = ProjectManager.INSTANCE.getCurrentProject().getSpriteList();
+						List<Sprite> spriteList = ProjectManager.getInstance().getCurrentProject().getSpriteList();
 						for (Sprite tmp : spriteList) {
 							for (int script = 0; script < tmp.getNumberOfScripts(); script++) {
 								if (tmp.getScript(script) instanceof WhenVirtualPadScript

@@ -71,7 +71,7 @@ public class VirtualGamepadGestureListener implements GestureListener {
 
 				Log.e("DPadThread<run>", "thread started");
 
-				List<Sprite> sprites = ProjectManager.INSTANCE.getCurrentProject().getSpriteList();
+				List<Sprite> sprites = ProjectManager.getInstance().getCurrentProject().getSpriteList();
 
 				for (int sprite = 0; sprite < sprites.size(); sprite++) {
 					if (sprites.get(sprite).getName().equals(Constants.VGP_SPRITE_PAD)) {
@@ -83,7 +83,7 @@ public class VirtualGamepadGestureListener implements GestureListener {
 
 				while (running) {
 
-					Sprite sprite = ProjectManager.INSTANCE.getCurrentSprite();
+					Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
 					if (sprite == null) {
 						Log.e("DPadThread<run>", "sprite is null");
 						running = false;

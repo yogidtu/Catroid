@@ -60,7 +60,7 @@ public class WhenVirtualButtonBrickTest extends ActivityInstrumentationTestCase2
 	@Override
 	public void tearDown() throws Exception {
 		solo.finishOpenedActivities();
-		ProjectManager.INSTANCE.deleteCurrentProject();
+		ProjectManager.getInstance().deleteCurrentProject();
 		UiTestUtils.clearAllUtilTestProjects();
 		super.tearDown();
 		solo = null;
@@ -99,7 +99,7 @@ public class WhenVirtualButtonBrickTest extends ActivityInstrumentationTestCase2
 
 		solo.drag(20, 20, addedYPosition, yPosition.get(yPosition.size() - 1) + 20, 100);
 		solo.sleep(200);
-		projectBrickList = ProjectManager.INSTANCE.getCurrentSprite().getScript(0).getBrickList();
+		projectBrickList = ProjectManager.getInstance().getCurrentSprite().getScript(0).getBrickList();
 		assertEquals("Incorrect number of bricks.", 3, projectBrickList.size());
 
 		solo.sleep(200);
@@ -109,11 +109,11 @@ public class WhenVirtualButtonBrickTest extends ActivityInstrumentationTestCase2
 
 		solo.drag(20, 20, addedYPosition, yPosition.get(3) + 20, 100);
 
-		projectBrickList = ProjectManager.INSTANCE.getCurrentSprite().getScript(0).getBrickList();
+		projectBrickList = ProjectManager.getInstance().getCurrentSprite().getScript(0).getBrickList();
 		assertEquals("Incorrect number of bricks.", 3, projectBrickList.size());
 		solo.searchText(solo.getString(R.string.brick_when_virtual_button_pressed));
 		assertTrue("Wrong Script instance.",
-				(ProjectManager.INSTANCE.getCurrentSprite().getScript(0) instanceof WhenVirtualButtonScript));
+				(ProjectManager.getInstance().getCurrentSprite().getScript(0) instanceof WhenVirtualButtonScript));
 
 	}
 
@@ -129,8 +129,8 @@ public class WhenVirtualButtonBrickTest extends ActivityInstrumentationTestCase2
 
 		project.addSprite(sprite);
 
-		ProjectManager.INSTANCE.setProject(project);
-		ProjectManager.INSTANCE.setCurrentSprite(sprite);
-		ProjectManager.INSTANCE.setCurrentScript(script);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentSprite(sprite);
+		ProjectManager.getInstance().setCurrentScript(script);
 	}
 }
