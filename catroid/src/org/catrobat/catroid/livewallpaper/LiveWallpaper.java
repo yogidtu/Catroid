@@ -25,8 +25,8 @@ package org.catrobat.catroid.livewallpaper;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.stage.StageListener;
 
-import android.content.Intent;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -93,17 +93,31 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	}
 
-	class MyWallpaperEngine extends Engine {
+	@Override
+	public Engine onCreateEngine() {
+		return new LiveWallpaperEngine();
+	}
+
+	class LiveWallpaperEngine extends AndroidWallpaperEngine {
+
+		boolean redrawNeeded = false;
 
 		@Override
 		public void onVisibilityChanged(boolean visible) {
-			super.onVisibilityChanged(visible);
-			Intent intent = new Intent("org.catrobat.catroid.livewallpaper.LiveWallpaper");
-
 			if (visible) {
-				//				startService(intent);
+				if (isPreview() && redrawNeeded) {
+					Log.d("RGB", "Redrawing");
+					onResume();
+				} else {
+					onResume();
+				}
+				redrawNeeded = false;
 			} else {
-				stopService(intent);
+				if (isPreview()) {
+					redrawNeeded = true;
+					Log.d("RGB", "redraw needed");
+				}
+				onPause();
 			}
 		}
 

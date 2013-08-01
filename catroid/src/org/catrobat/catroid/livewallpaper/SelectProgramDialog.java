@@ -44,6 +44,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 public class SelectProgramDialog extends Dialog {
 
 	private Context context;
+	private SelectProgramDialog spd;
 
 	public SelectProgramDialog(Context context) {
 		super(context);
@@ -53,6 +54,7 @@ public class SelectProgramDialog extends Dialog {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		spd = this;
 
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dialog_lwp_select_program);
@@ -89,6 +91,5 @@ public class SelectProgramDialog extends Dialog {
 				StorageHandler.getInstance().saveProject(project);
 			}
 		});
-
 	}
 }
