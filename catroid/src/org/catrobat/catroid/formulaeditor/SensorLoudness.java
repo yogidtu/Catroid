@@ -22,48 +22,25 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
-import android.os.Handler;
-import android.util.Log;
-
-import org.catrobat.catroid.soundrecorder.SoundRecorder;
-
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class SensorLoudness {
+import org.catrobat.catroid.utils.MicrophoneGrabber;
+import org.catrobat.catroid.utils.MicrophoneGrabber.microphoneListener;
+
+import android.util.Log;
+
+public class SensorLoudness implements microphoneListener {
 
 	private static SensorLoudness instance = null;
-	private static final int UPDATE_INTERVAL = 50;
-	private static final double SCALE_RANGE = 100d;
+	private final double SCALE_RANGE = 100d;
 
-	private static final double MAX_AMP_VALUE = 32767d;
+	private final double MAX_AMP_VALUE = 1000.0d;
 	private ArrayList<SensorCustomEventListener> listenerList = new ArrayList<SensorCustomEventListener>();
-
-	private SoundRecorder recorder = null;
-	private Handler handler;
 	private float lastValue = 0f;
-
-	//Periodic update the loudness_value
-	Runnable statusChecker = new Runnable() {
-		@Override
-		public void run() {
-			float[] loudness = new float[1];
-			loudness[0] = (float) (SCALE_RANGE / MAX_AMP_VALUE) * recorder.getMaxAmplitude();
-			if (lastValue != loudness[0] && loudness[0] != 0f) {
-				lastValue = loudness[0];
-				SensorCustomEvent event = new SensorCustomEvent(Sensors.LOUDNESS, loudness);
-				for (SensorCustomEventListener listener : listenerList) {
-					listener.onCustomSensorChanged(event);
-				}
-			}
-			handler.postDelayed(statusChecker, UPDATE_INTERVAL);
-		}
-	};
+	private float currentValue = 0;
 
 	private SensorLoudness() {
-		handler = new Handler();
-		recorder = new SoundRecorder("/dev/null");
-	};
+	}
 
 	public static SensorLoudness getSensorLoudness() {
 		if (instance == null) {
@@ -72,39 +49,49 @@ public class SensorLoudness {
 		return instance;
 	}
 
-	public synchronized boolean registerListener(SensorCustomEventListener listener) {
-		if (listenerList.contains(listener)) {
-			return true;
-		}
-		listenerList.add(listener);
-		if (!recorder.isRecording()) {
-			try {
-				recorder.start();
-				statusChecker.run();
-			} catch (Exception e) {
-				Log.w(SensorLoudness.class.getSimpleName(), "Could not start recorder", e);
-				listenerList.remove(listener);
-				recorder = new SoundRecorder("/dev/null");
-				return false;
+	public boolean registerListener(SensorCustomEventListener listener) {
+		synchronized (listenerList) {
+			if (listenerList.contains(listener)) {
+				return true;
+			}
+			listenerList.add(listener);
+			if (listenerList.size() == 1) {
+				MicrophoneGrabber.getInstance().registerListener(this);
 			}
 		}
 		return true;
 	}
 
-	public synchronized void unregisterListener(SensorCustomEventListener listener) {
-		if (listenerList.contains(listener)) {
-			listenerList.remove(listener);
+	public void unregisterListener(SensorCustomEventListener listener) {
+		synchronized (listenerList) {
+			if (listenerList.contains(listener)) {
+
+				listenerList.remove(listener);
+			}
 			if (listenerList.size() == 0) {
-				handler.removeCallbacks(statusChecker);
-				if (recorder.isRecording()) {
-					try {
-						recorder.stop();
-					} catch (IOException e) {
-						// ignored, nothing we can do
-					}
-					recorder = new SoundRecorder("/dev/null");
-				}
-				lastValue = 0f;
+				MicrophoneGrabber.getInstance().unregisterListener(this);
+			}
+		}
+	}
+
+	@Override
+	public void onMicrophoneData(byte[] recievedBuffer) {
+
+		double[] signal = MicrophoneGrabber.audioByteToDouble(recievedBuffer);
+		currentValue = 0;
+		for (double sample : signal) {
+			if (currentValue < Math.abs(sample)) {
+				currentValue = Math.abs((float) sample);
+			}
+		}
+
+		float[] loudness = new float[1];
+		loudness[0] = (float) (SCALE_RANGE / MAX_AMP_VALUE) * currentValue;
+		if (lastValue != loudness[0] && loudness[0] != 0f) {
+			lastValue = loudness[0];
+			SensorCustomEvent event = new SensorCustomEvent(Sensors.LOUDNESS, loudness);
+			for (SensorCustomEventListener listener : listenerList) {
+				listener.onCustomSensorChanged(event);
 			}
 		}
 	}
