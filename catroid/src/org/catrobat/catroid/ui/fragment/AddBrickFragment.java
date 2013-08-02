@@ -76,8 +76,10 @@ public class AddBrickFragment extends SherlockListFragment {
 
 	private static UserBrick brickToFocus;
 	private static int listIndexToFocus = -1;
+	private boolean cameDirectlyFromScriptActivity = false;
 
 	public static void setBrickFocus(UserBrick b) {
+		Log.d("FOREST", "ABF.setBrickFocus");
 		brickToFocus = b;
 	}
 
@@ -113,6 +115,7 @@ public class AddBrickFragment extends SherlockListFragment {
 			addButtonHandler = this;
 
 			if (brickToFocus != null) {
+				cameDirectlyFromScriptActivity = true;
 				int i = 0;
 				for (Brick brick : brickList) {
 					UserBrick b = ((UserBrick) brick);
@@ -212,10 +215,10 @@ public class AddBrickFragment extends SherlockListFragment {
 		addButtonHandler = null;
 
 		Log.d("FOREST", "ABF.onDestroy: ");
-		if (brickToFocus == null) {
-			BottomBar.setButtonsVisible(getActivity(), false);
-		} else {
+		if (cameDirectlyFromScriptActivity) {
 			BottomBar.setButtonsVisible(getActivity(), true);
+		} else {
+			BottomBar.setButtonsVisible(getActivity(), false);
 		}
 
 		super.onDestroy();
@@ -230,7 +233,7 @@ public class AddBrickFragment extends SherlockListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.d("FOREST", "ABF.onResume: ");
+		Log.d("FOREST", "ABF.onResume: " + (brickToFocus == null ? "null" : "not null"));
 		setupSelectedBrickCategory();
 		addButtonHandler = this;
 
