@@ -32,6 +32,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Layout;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -125,6 +126,7 @@ public class Formula implements Serializable {
 	public void refreshTextField(View view) {
 
 		if (formulaTextFieldId != null && formulaTree != null && view != null) {
+			Log.d("FOREST", "F.refreshTextField YES");
 			EditText formulaTextField = (EditText) view.findViewById(formulaTextFieldId);
 			if (formulaTextField == null) {
 				return;
@@ -132,6 +134,9 @@ public class Formula implements Serializable {
 			internFormula.generateExternFormulaStringAndInternExternMapping(view.getContext());
 
 			formulaTextField.setText(internFormula.getExternFormulaString());
+
+		} else {
+			Log.d("FOREST", "F.refreshTextField NO");
 		}
 
 	}

@@ -309,7 +309,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 
 		for (UserBrickUIComponent c : uiComponents) {
 			if (c != null && c.textView != null) {
-				UserBrickUIData d = uiData.get(c.dataIndex);
 				c.textView.setTextColor(c.textView.getTextColors().withAlpha(alphaValue));
 				if (c.textView.getBackground() != null) {
 					c.textView.getBackground().setAlpha(alphaValue);
