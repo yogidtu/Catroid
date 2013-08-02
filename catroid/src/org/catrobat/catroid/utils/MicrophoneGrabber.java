@@ -27,11 +27,9 @@ import java.util.ArrayList;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.util.Log;
 
 public class MicrophoneGrabber extends Thread {
 	private static MicrophoneGrabber instance = null;
-	private static final String TAG = MicrophoneGrabber.class.getSimpleName();
 
 	public static final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
 	public static final int channelConfiguration = AudioFormat.CHANNEL_IN_MONO;
