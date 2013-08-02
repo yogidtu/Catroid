@@ -22,18 +22,15 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
-import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.stage.StageListener;
-
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.WindowManager;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService;
 
 public class LiveWallpaper extends AndroidLiveWallpaperService {
+
+	private StageListener stageListener;
 
 	public void onCreateApplication() {
 		super.getApplication();
@@ -44,10 +41,13 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 	public void onCreate() {
 		//android.os.Debug.waitForDebugger();
 		super.onCreate();
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
-		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
-		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
+		//		DisplayMetrics displayMetrics = new DisplayMetrics();
+		//		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
+		//		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
+		//		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
+		//
+		//		Log.d("RGB", "Width: " + ScreenValues.SCREEN_WIDTH);
+		//		Log.d("RGB", "Height: " + ScreenValues.SCREEN_HEIGHT);
 
 		//		try {
 		//			StandardProjectHandler.createAndSaveStandardProject(getApplicationContext());
@@ -55,6 +55,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		//			// TODO Auto-generated catch block
 		//			e.printStackTrace();
 		//		}
+		//		Gdx.input.setInputProcess//();
 	}
 
 	/*
@@ -64,11 +65,12 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 	 */
 	@Override
 	public ApplicationListener createListener(boolean isPreview) {
-		return new StageListener();
+		stageListener = new StageListener();
+		return stageListener;
 	}
 
 	/*
-	 * (non-Javadoc)
+	 * stageListenerc)
 	 * 
 	 * @see com.badlogic.gdx.backends.android.AndroidLiveWallpaperService#createConfig()
 	 */
@@ -93,33 +95,36 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	}
 
-	@Override
-	public Engine onCreateEngine() {
-		return new LiveWallpaperEngine();
-	}
-
-	class LiveWallpaperEngine extends AndroidWallpaperEngine {
-
-		boolean redrawNeeded = false;
-
-		@Override
-		public void onVisibilityChanged(boolean visible) {
-			if (visible) {
-				if (isPreview() && redrawNeeded) {
-					Log.d("RGB", "Redrawing");
-					onResume();
-				} else {
-					onResume();
-				}
-				redrawNeeded = false;
-			} else {
-				if (isPreview()) {
-					redrawNeeded = true;
-					Log.d("RGB", "redraw needed");
-				}
-				onPause();
-			}
-		}
-
-	}
+	//	@Override
+	//	public Engine onCreateEngine() {
+	//		return new LiveWallpaperEngine();
+	//	}
+	//
+	//	class LiveWallpaperEngine extends AndroidWallpaperEngine {
+	//
+	//		boolean redrawNeeded = false;
+	//
+	//		@Override
+	//		public void onVisibilityChanged(boolean visible) {
+	//			if (visible) {
+	//				if (isPreview() && redrawNeeded) {
+	//					Log.d("RGB", "Redrawing");
+	//					onResume();
+	//					//					stageListener.resume();
+	//				} else {
+	//					onResume();
+	//					//					stageListener.resume();
+	//				}
+	//				redrawNeeded = false;
+	//				//				onResume();
+	//			} else {
+	//				if (isPreview()) {
+	//					redrawNeeded = true;
+	//					Log.d("RGB", "redraw needed");
+	//				}
+	//				stageListener.pause();
+	//				onPause();
+	//			}
+	//		}
+	//	}
 }

@@ -27,5 +27,31 @@
     android:orientation="vertical"
     android:gravity="left"
     android:id="@+id/lwp_linear_layout_rg">    
+    
+    <RadioGroup
+        android:id="@+id/dialog_lwp_select_project_radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:padding="10dp">
+    </RadioGroup>
+    
+    <LinearLayout 
+    android:id="@+id/lwp_linear_layout_rg_buttons" 
+    android:layout_height="wrap_content" 
+    android:layout_width="fill_parent" >
+    <Button 
+        android:id="@+id/dialog_lwp_select_project_ok_button" 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content" 
+        android:layout_weight="1" android:text="@string/ok">
+    </Button>
+    <Button 
+        android:id="@+id/dialog_lwp_select_project_cancel_button" 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content"
+        android:layout_weight="1" 
+        android:text="@string/cancel_button">
+    </Button>
+</LinearLayout>"
 
 </LinearLayout>

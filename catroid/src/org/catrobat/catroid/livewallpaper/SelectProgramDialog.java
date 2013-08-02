@@ -35,16 +35,18 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
-import android.widget.LinearLayout;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.Toast;
 
 public class SelectProgramDialog extends Dialog {
 
 	private Context context;
-	private SelectProgramDialog spd;
+	private String selectedProject;
 
 	public SelectProgramDialog(Context context) {
 		super(context);
@@ -54,14 +56,11 @@ public class SelectProgramDialog extends Dialog {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		spd = this;
 
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dialog_lwp_select_program);
 
-		RadioGroup radioGroup = new RadioGroup(context);
-		radioGroup.setOrientation(RadioGroup.VERTICAL);
-		radioGroup.setPadding(50, 50, 50, 50);
+		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.dialog_lwp_select_project_radiogroup);
 
 		File rootDirectory = new File(Constants.DEFAULT_ROOT);
 		int numOfProjects = UtilFile.getProjectNames(rootDirectory).size();
@@ -76,19 +75,36 @@ public class SelectProgramDialog extends Dialog {
 			i++;
 		}
 
-		final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.lwp_linear_layout_rg);
-		linearLayout.addView(radioGroup);
-		//		context = this.getContext();
-
 		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				RadioButton checkedRadioButton = (RadioButton) findViewById(checkedId);
-				Project project = StorageHandler.getInstance().loadProject(checkedRadioButton.getText().toString());
-				//				project.setDeviceData(context);
-				ProjectManager.getInstance().setProject(project);
-				StorageHandler.getInstance().saveProject(project);
+				selectedProject = checkedRadioButton.getText().toString();
+			}
+		});
+
+		Button cancelButton = (Button) findViewById(R.id.dialog_lwp_select_project_cancel_button);
+		cancelButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dismiss();
+			}
+		});
+
+		Button okButton = (Button) findViewById(R.id.dialog_lwp_select_project_ok_button);
+		okButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (selectedProject != null) {
+					Project project = StorageHandler.getInstance().loadProject(selectedProject);
+					ProjectManager.getInstance().setProject(project);
+					StorageHandler.getInstance().saveProject(project);
+					Toast.makeText(context, "New wallpaper will load after restart", Toast.LENGTH_LONG).show();
+					dismiss();
+				}
 			}
 		});
 	}
