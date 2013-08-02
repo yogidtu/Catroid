@@ -22,32 +22,40 @@
  */
 package org.catrobat.catroid.content.actions;
 
-import java.util.List;
-
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.UserBrickStageToken;
 import org.catrobat.catroid.content.bricks.UserBrickVariable;
+import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
+
+import android.util.Log;
 
 import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
 
 public class UserBrickAction extends DelegateAction {
 
 	private Sprite sprite;
-	private List<UserBrickVariable> variables;
+	private UserBrickStageToken userBrickToken;
 
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 
-	public void setVariables(List<UserBrickVariable> variables) {
-		this.variables = variables;
+	public void setUserBrickStageToken(UserBrickStageToken userBrickToken) {
+		this.userBrickToken = userBrickToken;
 	}
 
 	@Override
 	public boolean act(float delta) {
-		for (UserBrickVariable userBrickVariable : variables) {
+		for (UserBrickVariable userBrickVariable : userBrickToken.variables) {
 			double value = userBrickVariable.formula.interpretDouble(sprite);
 			userBrickVariable.variable.setValue(value);
+			Log.d("FOREST", "UBA " + userBrickToken.userBrickId + ".act : " + userBrickVariable.variable.getName()
+					+ " = " + value);
 		}
+
+		UserVariablesContainer userVariables = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+		userVariables.setCurrentUserBrickBeingEvaluated(userBrickToken.userBrickId);
 
 		return action.act(delta);
 	}

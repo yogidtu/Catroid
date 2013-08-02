@@ -27,7 +27,6 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.UserBrick;
-import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.ui.BottomBar;
@@ -255,12 +254,11 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 	private void initializeUserVariableAdapter() {
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 		UserBrick currentBrick = ProjectManager.getInstance().getCurrentUserBrick();
-		UserScriptDefinitionBrick definitionBrick = (currentBrick == null ? null : currentBrick.getDefinitionBrick());
+		int userBrickId = (currentBrick == null ? -1 : currentBrick.getDefinitionBrick().getUserBrickId());
 		Project currentProject = ProjectManager.getInstance().getCurrentProject();
 		UserVariablesContainer userVariableContainer = currentProject.getUserVariables();
 
-		adapter = userVariableContainer
-				.createUserVariableAdapter(getSherlockActivity(), definitionBrick, currentSprite);
+		adapter = userVariableContainer.createUserVariableAdapter(getSherlockActivity(), userBrickId, currentSprite);
 
 		setListAdapter(adapter);
 		adapter.setOnCheckedChangeListener(this);

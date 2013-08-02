@@ -31,6 +31,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.UserBrickStageToken;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.UserVariable;
@@ -68,17 +69,20 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 	// belonging to stored brick
 	public UserBrickUIDataArray uiData;
 	private int lastDataVersion = 0;
+	private int userBrickId;
 
-	public UserBrick(Sprite sprite) {
+	public UserBrick(Sprite sprite, int userBrickId) {
+		this.userBrickId = userBrickId;
 		this.sprite = sprite;
 		sprite.addUserBrick(this);
 		uiData = new UserBrickUIDataArray();
-		this.definitionBrick = new UserScriptDefinitionBrick(sprite, this);
+		this.definitionBrick = new UserScriptDefinitionBrick(sprite, this, userBrickId);
 
 		updateUIComponents(null);
 	}
 
 	public UserBrick(Sprite sprite, UserBrickUIDataArray uiData, UserScriptDefinitionBrick definitionBrick) {
+		this.userBrickId = definitionBrick.getUserBrickId();
 		this.sprite = sprite;
 		this.uiData = uiData;
 		this.definitionBrick = definitionBrick;
@@ -125,7 +129,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
 			UserVariablesContainer variablesContainer = null;
 			variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
-			variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, data.name);
+			variablesContainer.addUserBrickUserVariableToUserBrick(userBrickId, data.name);
 		}
 
 		uiData.add(data);
@@ -141,7 +145,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
 			UserVariablesContainer variablesContainer = null;
 			variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
-			variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, comp.name);
+			variablesContainer.addUserBrickUserVariableToUserBrick(userBrickId, comp.name);
 		}
 
 		uiData.add(comp);
@@ -164,8 +168,8 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
 			UserVariablesContainer variablesContainer = null;
 			variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
-			variablesContainer.deleteUserVariableFromUserBrick(definitionBrick, oldName);
-			variablesContainer.addUserBrickUserVariableToUserBrick(definitionBrick, newName);
+			variablesContainer.deleteUserVariableFromUserBrick(userBrickId, oldName);
+			variablesContainer.addUserBrickUserVariableToUserBrick(userBrickId, newName);
 		}
 	}
 
@@ -414,7 +418,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
 
-		List<UserBrickVariable> variables = getBrickVariables();
+		UserBrickStageToken stageToken = getStageToken();
 
 		SequenceAction userSequence = ExtendedActions.sequence();
 		Script userScript = definitionBrick.initScript(sprite); // getScript
@@ -423,30 +427,30 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 		ArrayList<SequenceAction> returnActionList = new ArrayList<SequenceAction>();
 		returnActionList.add(userSequence);
 
-		Action action = ExtendedActions.userBrick(sprite, userSequence, variables);
+		Action action = ExtendedActions.userBrick(sprite, userSequence, stageToken);
 		sequence.addAction(action);
 		return returnActionList;
 	}
 
-	private List<UserBrickVariable> getBrickVariables() {
-		LinkedList<UserBrickVariable> theList = new LinkedList<UserBrickVariable>();
-
-		if (ProjectManager.getInstance().getCurrentProject() == null) {
-			return theList;
+	private UserBrickStageToken getStageToken() {
+		if (ProjectManager.getInstance() == null || ProjectManager.getInstance().getCurrentProject() == null) {
+			return null;
 		}
+
+		LinkedList<UserBrickVariable> theList = new LinkedList<UserBrickVariable>();
 
 		UserVariablesContainer variablesContainer = null;
 		variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
 
 		for (UserBrickUIComponent uiComponent : uiComponents) {
 			if (uiComponent.variableFormula != null && uiComponent.variableName != null) {
-				List<UserVariable> variables = variablesContainer.getOrCreateVariableListForUserBrick(definitionBrick);
+				List<UserVariable> variables = variablesContainer.getOrCreateVariableListForUserBrick(userBrickId);
 				UserVariable variable = variablesContainer.findUserVariable(uiComponent.variableName, variables);
 
 				theList.add(new UserBrickVariable(variable, uiComponent.variableFormula));
 			}
 		}
-		return theList;
+		return new UserBrickStageToken(theList, userBrickId);
 	}
 
 	public UserScriptDefinitionBrick getDefinitionBrick() {

@@ -164,7 +164,9 @@ public class AddBrickFragment extends SherlockListFragment {
 	public void handleAddButton() {
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 		Context context = getActivity();
-		UserBrick newBrick = new UserBrick(currentSprite);
+		int newBrickId = ProjectManager.getInstance().getCurrentProject().getUserVariables()
+				.getAndIncrementUserBrickId();
+		UserBrick newBrick = new UserBrick(currentSprite, newBrickId);
 		newBrick.addUIText(scriptFragment.getString(R.string.new_user_brick) + " "
 				+ currentSprite.getNextNewUserBrickId());
 		newBrick.addUILocalizedVariable(getActivity(), R.string.new_user_brick_variable);
@@ -210,7 +212,11 @@ public class AddBrickFragment extends SherlockListFragment {
 		addButtonHandler = null;
 
 		Log.d("FOREST", "ABF.onDestroy: ");
-		BottomBar.setButtonsVisible(getActivity(), false);
+		if (brickToFocus == null) {
+			BottomBar.setButtonsVisible(getActivity(), false);
+		} else {
+			BottomBar.setButtonsVisible(getActivity(), true);
+		}
 
 		super.onDestroy();
 	}

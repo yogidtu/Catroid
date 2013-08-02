@@ -115,16 +115,18 @@ public class Sprite implements Serializable, Cloneable {
 
 	public List<Brick> getUserBrickListAtLeastOneBrick(String defaultText, String defaultVariable) {
 		if (userBricks == null || userBricks.size() == 0) {
-			initUserBrickList(defaultText, defaultVariable);
+			int newBrickId = ProjectManager.getInstance().getCurrentProject().getUserVariables()
+					.getAndIncrementUserBrickId();
+			initUserBrickList(defaultText, defaultVariable, newBrickId);
 		}
 		return userBricks;
 	}
 
-	void initUserBrickList(String defaultText, String defaultVariable) {
+	void initUserBrickList(String defaultText, String defaultVariable, int nextUserBrickID) {
 		userBricks = new ArrayList<Brick>();
 
 		// the UserBrick constructor will insert the UserBrick into this Sprite's userBricks list.
-		UserBrick exampleBrick = new UserBrick(this);
+		UserBrick exampleBrick = new UserBrick(this, nextUserBrickID);
 		exampleBrick.addUIText(defaultText);
 		exampleBrick.addUIVariable(defaultVariable);
 

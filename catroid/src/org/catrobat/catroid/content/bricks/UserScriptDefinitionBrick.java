@@ -56,12 +56,18 @@ import android.widget.TextView;
 public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickListener {
 	private UserScript userScript;
 	private UserBrick brick;
+	private int userBrickId;
 	private static final long serialVersionUID = 1L;
 
-	public UserScriptDefinitionBrick(Sprite sprite, UserBrick brick) {
+	public UserScriptDefinitionBrick(Sprite sprite, UserBrick brick, int userBrickId) {
+		this.userBrickId = userBrickId;
 		this.setUserScript(new UserScript(sprite, this));
 		this.sprite = sprite;
 		this.brick = brick;
+	}
+
+	public int getUserBrickId() {
+		return userBrickId;
 	}
 
 	@Override
@@ -213,7 +219,7 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 
 	@Override
 	public Brick clone() {
-		return new UserScriptDefinitionBrick(getSprite(), brick);
+		return new UserScriptDefinitionBrick(getSprite(), brick, userBrickId);
 	}
 
 	@Override
