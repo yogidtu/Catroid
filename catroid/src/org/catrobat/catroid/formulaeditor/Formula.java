@@ -41,7 +41,6 @@ public class Formula implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private FormulaElement formulaTree;
 	private transient Integer formulaTextFieldId = null;
-	private transient Drawable originalEditTextDrawable = null;
 	private transient InternFormula internFormula = null;
 
 	public Object readResolve() {
@@ -175,27 +174,18 @@ public class Formula implements Serializable {
 
 		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
 
-		// trying to do this here is futile, it will always return null.
-		//originalEditTextDrawable = formulaTextField.getBackground();
-
 		int width = formulaTextField.getWidth();
 		width = Math.max(width, 130);
-		formulaTextField.setBackground(highlightBackground);
-		if (brickView.getId() != R.id.brick_user_main_layout) {
-			formulaTextField.setWidth(width);
-		}
+		formulaTextField.setBackgroundDrawable(highlightBackground);
+		formulaTextField.setWidth(width);
 	}
 
 	public void removeTextFieldHighlighting(View brickView, int orientation) {
 		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
 
 		int width = formulaTextField.getWidth();
-		originalEditTextDrawable = getDefaultBackgroundRecursively(brickView, formulaTextField);
-		formulaTextField.setBackground(originalEditTextDrawable);
-		if (brickView.getId() != R.id.brick_user_main_layout) {
-			formulaTextField.setWidth(width);
-		}
-		originalEditTextDrawable = null;
+		formulaTextField.setBackgroundDrawable(getDefaultBackgroundRecursively(brickView, formulaTextField));
+		formulaTextField.setWidth(width);
 	}
 
 	private Drawable getDefaultBackgroundRecursively(View brickView, EditText formulaTextField) {
@@ -219,7 +209,6 @@ public class Formula implements Serializable {
 	}
 
 	public void prepareToRemove() {
-		originalEditTextDrawable = null;
 		formulaTextFieldId = null;
 	}
 
