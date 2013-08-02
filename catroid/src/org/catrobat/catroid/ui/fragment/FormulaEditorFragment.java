@@ -433,8 +433,13 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	}
 
 	public void refreshFormulaPreviewString() {
+		Log.d("FOREST", "FEF.refreshFormulaPreviewString");
+		updateBrickView();
+		int orientation = getResources().getConfiguration().orientation;
+		currentFormula.highlightTextField(brickView, orientation);
 		currentFormula.refreshTextField(brickView, formulaEditorEditText.getText().toString(),
 				formulaEditorEditText.getAbsoluteCursorPosition());
+
 	}
 
 	private void showFormulaEditorListFragment(String tag, int actionbarResId) {
