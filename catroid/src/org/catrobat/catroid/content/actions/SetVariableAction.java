@@ -26,6 +26,8 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 
+import android.util.Log;
+
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 
 public class SetVariableAction extends TemporalAction {
@@ -39,6 +41,7 @@ public class SetVariableAction extends TemporalAction {
 		if (userVariable == null) {
 			return;
 		}
+		//Log.d("FOREST", "SVA.update: " + userVariable.getName() + " = " + changeVariable.interpretDouble(sprite));
 		double value = changeVariable.interpretDouble(sprite);
 		userVariable.setValue(value);
 

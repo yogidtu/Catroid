@@ -149,7 +149,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		if (sprite == null) {
 			return;
 		}
-		Log.d("FOREST", "SF.onStart");
+		//Log.d("FOREST", "SF.onStart");
 		BottomBar.setButtonsVisible(getActivity(), true);
 
 		initListeners();
@@ -177,14 +177,14 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		IntentFilter filterBrickListChanged = new IntentFilter(ScriptActivity.ACTION_BRICK_LIST_CHANGED);
 		getActivity().registerReceiver(brickListChangedReceiver, filterBrickListChanged);
 
-		Log.d("FOREST", "SF.onResume");
+		//Log.d("FOREST", "SF.onResume");
 		BottomBar.setButtonsVisible(getActivity(), true);
 
 		LinearLayout bottomBarLayout = (LinearLayout) getActivity().findViewById(R.id.bottom_bar);
-		Log.d("FOREST", "SF.onResume: " + bottomBarLayout.findViewById(R.id.button_add).getVisibility() + ", "
-				+ View.VISIBLE);
+		//Log.d("FOREST", "SF.onResume: " + bottomBarLayout.findViewById(R.id.button_add).getVisibility() + ", "
+		//		+ View.VISIBLE);
 
-		Log.d("FOREST", "SF.onResume: " + getActivity().toString());
+		//Log.d("FOREST", "SF.onResume: " + getActivity().toString());
 
 		initListeners();
 
@@ -364,7 +364,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			}
 
 			unregisterForContextMenu(listView);
-			Log.d("FOREST", "SF.startCopyActionMode");
+			//Log.d("FOREST", "SF.startCopyActionMode");
 			BottomBar.setButtonsClickable(getActivity(), true);
 			adapter.setCheckboxVisibility(View.VISIBLE);
 			adapter.setActionMode(true);
@@ -419,7 +419,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			}
 
 			unregisterForContextMenu(listView);
-			Log.d("FOREST", "SF.startDeleteActionMode");
+			//Log.d("FOREST", "SF.startDeleteActionMode");
 			BottomBar.setButtonsClickable(getActivity(), false);
 			adapter.setCheckboxVisibility(View.VISIBLE);
 			adapter.setActionMode(true);
@@ -547,7 +547,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			setActionModeActive(false);
 
 			registerForContextMenu(listView);
-			Log.d("FOREST", "SF.copyModeCallBack.onDestroyActionMode");
+			//Log.d("FOREST", "SF.copyModeCallBack.onDestroyActionMode");
 			BottomBar.setButtonsClickable(getActivity(), true);
 			adapter.setActionMode(false);
 
@@ -657,7 +657,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		setActionModeActive(false);
 
 		registerForContextMenu(listView);
-		Log.d("FOREST", "SF.clearCheckedBricksAndEnableButtons");
+		//Log.d("FOREST", "SF.clearCheckedBricksAndEnableButtons");
 		BottomBar.setButtonsClickable(getActivity(), true);
 		adapter.setActionMode(false);
 	}

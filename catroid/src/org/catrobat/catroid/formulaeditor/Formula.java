@@ -31,10 +31,8 @@ import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 public class Formula implements Serializable {
@@ -123,48 +121,24 @@ public class Formula implements Serializable {
 		formulaTextFieldId = id;
 	}
 
-	public void refreshTextField(View view) {
-
-		if (formulaTextFieldId != null && formulaTree != null && view != null) {
-			Log.d("FOREST", "F.refreshTextField YES");
-			EditText formulaTextField = (EditText) view.findViewById(formulaTextFieldId);
-			if (formulaTextField == null) {
-				return;
-			}
-			internFormula.generateExternFormulaStringAndInternExternMapping(view.getContext());
-
-			formulaTextField.setText(internFormula.getExternFormulaString());
-
-		} else {
-			Log.d("FOREST", "F.refreshTextField NO");
+	public String getFormulaString(Context context) {
+		if (context != null) {
+			internFormula.generateExternFormulaStringAndInternExternMapping(context);
 		}
-
+		//Log.d("FOREST", "F.getStringFromInternFormula: " + internFormula.toString());
+		return internFormula.getExternFormulaString();
 	}
 
-	public void refreshTextField(View view, String formulaString, int position) {
+	public void refreshTextField(View view) {
+		refreshTextField(view, getFormulaString(view.getContext()));
+	}
+
+	public void refreshTextField(View view, String formulaString) {
 		if (formulaTextFieldId != null && formulaTree != null && view != null) {
 			EditText formulaTextField = (EditText) view.findViewById(formulaTextFieldId);
-			if (formulaTextField == null) {
-				return;
-			}
-			formulaTextField.setText(formulaString);
-			Layout formulaTextFieldLayout = formulaTextField.getLayout();
-			if (position < 0 || formulaTextFieldLayout == null) {
-				return;
-			}
-			int char_count = formulaTextFieldLayout.getLineVisibleEnd(0);
-			if (formulaString.length() > char_count && char_count > 0) {
-				int start = position - (char_count / 2);
-				int end = position + (char_count / 2) + 1;
-				if (end > formulaString.length() - 1) {
-					end = formulaString.length() - 1;
-					start = end - char_count;
-				}
-				if (start < 0) {
-					start = 0;
-					end = char_count;
-				}
-				formulaTextField.setText(formulaString.substring(start, end));
+			if (formulaTextField != null) {
+				//Log.d("FOREST", "F.refreshTextField.worked");
+				formulaTextField.setText(formulaString);
 			}
 		}
 	}
@@ -179,40 +153,7 @@ public class Formula implements Serializable {
 
 		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
 
-		int width = formulaTextField.getWidth();
-		width = Math.max(width, 130);
 		formulaTextField.setBackgroundDrawable(highlightBackground);
-		if (brickView.getId() != R.id.brick_user_main_layout) {
-			formulaTextField.setWidth(width);
-		}
-	}
-
-	public void removeTextFieldHighlighting(View brickView, int orientation) {
-		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
-
-		int width = formulaTextField.getWidth();
-		formulaTextField.setBackgroundDrawable(getDefaultBackgroundRecursively(brickView, formulaTextField));
-		formulaTextField.setWidth(width);
-	}
-
-	private Drawable getDefaultBackgroundRecursively(View brickView, EditText formulaTextField) {
-		if (brickView instanceof ViewGroup) {
-			ViewGroup brickViewIterable = ((ViewGroup) brickView);
-			for (int i = 0; i < brickViewIterable.getChildCount(); ++i) {
-				View nextChild = brickViewIterable.getChildAt(i);
-				Drawable recursiveCandidate = getDefaultBackgroundRecursively(nextChild, formulaTextField);
-				if (recursiveCandidate != null) {
-					return recursiveCandidate;
-				}
-			}
-		} else if (brickView instanceof EditText && brickView != formulaTextField) {
-			Drawable candidate = brickView.getBackground();
-			if (candidate != null) {
-				return candidate;
-			}
-		}
-
-		return null;
 	}
 
 	public void prepareToRemove() {

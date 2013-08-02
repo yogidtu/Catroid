@@ -79,7 +79,7 @@ public class AddBrickFragment extends SherlockListFragment {
 	private boolean cameDirectlyFromScriptActivity = false;
 
 	public static void setBrickFocus(UserBrick b) {
-		Log.d("FOREST", "ABF.setBrickFocus");
+		//Log.d("FOREST", "ABF.setBrickFocus");
 		brickToFocus = b;
 	}
 
@@ -131,7 +131,7 @@ public class AddBrickFragment extends SherlockListFragment {
 				}
 			}
 
-			Log.d("FOREST", "ABF.setupSelectedCategory: // enable add button");
+			//Log.d("FOREST", "ABF.setupSelectedCategory: // enable add button");
 			// enable add button
 			BottomBar.disablePlayButton(getActivity());
 		}
@@ -214,7 +214,7 @@ public class AddBrickFragment extends SherlockListFragment {
 		resetActionBar();
 		addButtonHandler = null;
 
-		Log.d("FOREST", "ABF.onDestroy: ");
+		//Log.d("FOREST", "ABF.onDestroy: ");
 		if (cameDirectlyFromScriptActivity) {
 			BottomBar.setButtonsVisible(getActivity(), true);
 		} else {
@@ -233,7 +233,7 @@ public class AddBrickFragment extends SherlockListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.d("FOREST", "ABF.onResume: " + (brickToFocus == null ? "null" : "not null"));
+		//Log.d("FOREST", "ABF.onResume: " + (brickToFocus == null ? "null" : "not null"));
 		setupSelectedBrickCategory();
 		addButtonHandler = this;
 
@@ -296,7 +296,7 @@ public class AddBrickFragment extends SherlockListFragment {
 				if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_add_to_script))) {
 					addBrickToScript(clickedBrick);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_edit_brick))) {
-					Log.d("FOREST", "ABF.launchBrickScriptActivityOnBrick");
+					//Log.d("FOREST", "ABF.launchBrickScriptActivityOnBrick");
 					launchBrickScriptActivityOnBrick(context, clickedBrick);
 				}
 			}
@@ -328,7 +328,7 @@ public class AddBrickFragment extends SherlockListFragment {
 		}
 		fragmentTransaction.commit();
 
-		Log.d("FOREST", "ABF.addBrickToScript");
+		//Log.d("FOREST", "ABF.addBrickToScript");
 		BottomBar.setButtonsVisible(getActivity(), true);
 	}
 

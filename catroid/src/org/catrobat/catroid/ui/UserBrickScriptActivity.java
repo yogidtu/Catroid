@@ -38,7 +38,7 @@ public class UserBrickScriptActivity extends ScriptActivity {
 	public static UserBrick userBrick;
 
 	public static void setUserBrick(Brick userBrick) {
-		Log.d("FOREST", "UBSA.setUserBrick");
+		//Log.d("FOREST", "UBSA.setUserBrick");
 		UserBrickScriptActivity.userBrick = (UserBrick) userBrick;
 		ProjectManager.getInstance().setCurrentUserBrick((UserBrick) userBrick);
 	}

@@ -121,7 +121,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		fragmentTransaction.commit();
 
 		setupActionBar();
-		Log.d("FOREST", "SA.onCreate");
+		//Log.d("FOREST", "SA.onCreate");
 		setupBottomBar();
 
 		buttonAdd = (LinearLayout) findViewById(R.id.button_add);
@@ -132,7 +132,10 @@ public class ScriptActivity extends SherlockFragmentActivity {
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(true);
+
+		// TODO this line sometimes generates a null ref when returning from stage
 		String currentSprite = ProjectManager.getInstance().getCurrentSprite().getName();
+
 		actionBar.setTitle(currentSprite);
 	}
 
@@ -147,7 +150,7 @@ public class ScriptActivity extends SherlockFragmentActivity {
 	public void onResume() {
 		super.onResume();
 		setupActionBar();
-		Log.d("FOREST", "SA.onResume");
+		//Log.d("FOREST", "SA.onResume");
 		setupBottomBar();
 	}
 

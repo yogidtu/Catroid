@@ -28,8 +28,6 @@ import org.catrobat.catroid.content.UserBrickStageToken;
 import org.catrobat.catroid.content.bricks.UserBrickVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 
-import android.util.Log;
-
 import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
 
 public class UserBrickAction extends DelegateAction {
@@ -50,8 +48,8 @@ public class UserBrickAction extends DelegateAction {
 		for (UserBrickVariable userBrickVariable : userBrickToken.variables) {
 			double value = userBrickVariable.formula.interpretDouble(sprite);
 			userBrickVariable.variable.setValue(value);
-			Log.d("FOREST", "UBA " + userBrickToken.userBrickId + ".act : " + userBrickVariable.variable.getName()
-					+ " = " + value);
+			//Log.d("FOREST", "UBA " + userBrickToken.userBrickId + ".act : " + userBrickVariable.variable.getName()
+			//		+ " = " + value);
 		}
 
 		UserVariablesContainer userVariables = ProjectManager.getInstance().getCurrentProject().getUserVariables();

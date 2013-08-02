@@ -32,21 +32,21 @@ import android.widget.LinearLayout;
 public class BottomBar {
 
 	public static void setButtonsClickable(Activity activity, boolean clickable) {
-		Log.d("FOREST", "BOTTOM BAR setButtonsClickable: " + activity.toString());
-		Log.d("FOREST", "BOTTOM BAR: setButtonClickable: " + (clickable ? "true" : "false"));
+		//Log.d("FOREST", "BOTTOM BAR setButtonsClickable: " + activity.toString());
+		//Log.d("FOREST", "BOTTOM BAR: setButtonClickable: " + (clickable ? "true" : "false"));
 		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
 
 		if (bottomBarLayout != null) {
 			bottomBarLayout.findViewById(R.id.button_add).setClickable(clickable);
 			bottomBarLayout.findViewById(R.id.button_play).setClickable(clickable);
 		} else {
-			Log.d("FOREST", "BOTTOM BAR: setButtonClickable: bottomBarLayout == null");
+			//Log.d("FOREST", "BOTTOM BAR: setButtonClickable: bottomBarLayout == null");
 		}
 	}
 
 	public static void setButtonsVisible(Activity activity, boolean visible) {
-		Log.d("FOREST", "BOTTOM BAR setButtonsVisible: " + activity.toString());
-		Log.d("FOREST", "BOTTOM BAR setButtonsVisible: " + (visible ? "true" : "false"));
+		//Log.d("FOREST", "BOTTOM BAR setButtonsVisible: " + activity.toString());
+		//Log.d("FOREST", "BOTTOM BAR setButtonsVisible: " + (visible ? "true" : "false"));
 		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
 
 		if (bottomBarLayout != null) {
@@ -57,12 +57,12 @@ public class BottomBar {
 			bottomBarLayout.findViewById(R.id.bottom_bar_separator).setVisibility(forView);
 			bottomBarLayout.findViewById(R.id.button_play).setVisibility(forView);
 		} else {
-			Log.d("FOREST", "BOTTOM BAR: setButtonVisible: bottomBarLayout == null");
+			//Log.d("FOREST", "BOTTOM BAR: setButtonVisible: bottomBarLayout == null");
 		}
 	}
 
 	public static void disablePlayButton(Activity activity) {
-		Log.d("FOREST", "BOTTOM BAR disablePlayButton: " + activity.toString());
+		//Log.d("FOREST", "BOTTOM BAR disablePlayButton: " + activity.toString());
 		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
 
 		if (bottomBarLayout != null) {
@@ -71,12 +71,12 @@ public class BottomBar {
 			bottomBarLayout.findViewById(R.id.bottom_bar_separator).setVisibility(View.GONE);
 			bottomBarLayout.findViewById(R.id.button_play).setVisibility(View.GONE);
 		} else {
-			Log.d("FOREST", "BOTTOM BAR: disablePlayButton: bottomBarLayout == null");
+			//Log.d("FOREST", "BOTTOM BAR: disablePlayButton: bottomBarLayout == null");
 		}
 	}
 
 	public static void disableAddButton(Activity activity) {
-		Log.d("FOREST", "BOTTOM BAR disableAddButton: " + activity.toString());
+		//Log.d("FOREST", "BOTTOM BAR disableAddButton: " + activity.toString());
 		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
 
 		if (bottomBarLayout != null) {
@@ -85,7 +85,7 @@ public class BottomBar {
 			bottomBarLayout.findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
 			bottomBarLayout.findViewById(R.id.bottom_bar_separator).setVisibility(View.GONE);
 		} else {
-			Log.d("FOREST", "BOTTOM BAR: disablePlayButton: bottomBarLayout == null");
+			//Log.d("FOREST", "BOTTOM BAR: disablePlayButton: bottomBarLayout == null");
 		}
 	}
 }

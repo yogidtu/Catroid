@@ -152,7 +152,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 				.getString(R.string.brick_context_dialog_show_source);
 		solo.clickOnText(stringOnShowSourceButton);
 
-		Log.d("FOREST", "showSourceAndEditBrick: waitForFragmentByTag");
+		//Log.d("FOREST", "showSourceAndEditBrick: waitForFragmentByTag");
 
 		boolean addBrickShowedUp = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 1000);
 		assertTrue("addBrickShowedUp should have showed up", addBrickShowedUp);
@@ -184,7 +184,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 		ArrayList<View> views = solo.getCurrentViews();
 		for (View v : views) {
 			if (v.getId() == R.id.drag_and_drop_list_view_image_view) {
-				Log.d("FOREST", "!!!" + v.getId());
+				//Log.d("FOREST", "!!!" + v.getId());
 				location = new int[2];
 				v.getLocationOnScreen(location);
 				width = v.getWidth();

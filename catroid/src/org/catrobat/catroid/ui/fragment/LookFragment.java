@@ -440,7 +440,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(copyModeCallBack);
 			unregisterForContextMenu(listView);
-			Log.d("FOREST", "LF.startCopyActionMode");
+			//Log.d("FOREST", "LF.startCopyActionMode");
 			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = false;
 		}
@@ -451,7 +451,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(renameModeCallBack);
 			unregisterForContextMenu(listView);
-			Log.d("FOREST", "LF.startRenameActionMode");
+			//Log.d("FOREST", "LF.startRenameActionMode");
 			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = true;
 		}
@@ -462,7 +462,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(editInPocketCodeCallBack);
 			unregisterForContextMenu(listView);
-			Log.d("FOREST", "LF.startEditInPocketPaintActionMode");
+			//Log.d("FOREST", "LF.startEditInPocketPaintActionMode");
 			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = true;
 		}
@@ -473,7 +473,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
 			unregisterForContextMenu(listView);
-			Log.d("FOREST", "LF.startDeleteActionMode");
+			//Log.d("FOREST", "LF.startDeleteActionMode");
 			BottomBar.setButtonsClickable(getActivity(), false);
 			isRenameActionMode = false;
 		}
@@ -995,7 +995,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		registerForContextMenu(listView);
 
-		Log.d("FOREST", "LF.clearCheckedLooksAndEnableButtons");
+		//Log.d("FOREST", "LF.clearCheckedLooksAndEnableButtons");
 		BottomBar.setButtonsClickable(getActivity(), true);
 	}
 

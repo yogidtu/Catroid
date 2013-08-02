@@ -157,6 +157,19 @@ public class BrickLayout extends ViewGroup {
 		this.setMeasuredDimension(resolveSize(x, widthMeasureSpec), resolveSize(y, heightMeasureSpec));
 	}
 
+	public void myForceLayout() {
+		LinkedList<View> children = new LinkedList<View>();
+		for (int i = 0; i < getChildCount(); i++) {
+			children.add(getChildAt(i));
+		}
+
+		removeAllViews();
+
+		for (View child : children) {
+			this.addView(child);
+		}
+	}
+
 	private LineData newLine(LinkedList<LineData> lines) {
 		LineData toAdd = new LineData();
 		lines.add(toAdd);

@@ -71,7 +71,7 @@ public class BrickCategoryFragment extends SherlockListFragment {
 		View rootView = inflater.inflate(R.layout.fragment_brick_categories, null);
 
 		setUpActionBar();
-		Log.d("FOREST", "BCF.onCreateView");
+		//Log.d("FOREST", "BCF.onCreateView");
 		BottomBar.setButtonsVisible(getActivity(), false);
 		setupBrickCategories();
 
@@ -105,7 +105,7 @@ public class BrickCategoryFragment extends SherlockListFragment {
 	@Override
 	public void onDestroy() {
 		resetActionBar();
-		Log.d("FOREST", "BCF.onDestroy");
+		//Log.d("FOREST", "BCF.onDestroy");
 		BottomBar.setButtonsVisible(getActivity(), true);
 		super.onDestroy();
 	}

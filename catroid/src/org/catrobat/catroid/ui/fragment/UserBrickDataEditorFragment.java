@@ -109,14 +109,14 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			fragTransaction.add(R.id.script_fragment_container, dataEditorFragment, BRICK_DATA_EDITOR_FRAGMENT_TAG);
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(dataEditorFragment);
-			Log.d("FOREST", "UBDEF.showFragment");
+			//Log.d("FOREST", "UBDEF.showFragment");
 			BottomBar.setButtonsVisible(activity, false);
 
 		} else if (dataEditorFragment.isHidden()) {
 			dataEditorFragment.updateBrickView();
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(dataEditorFragment);
-			Log.d("FOREST", "UBDEF.showFragment");
+			//Log.d("FOREST", "UBDEF.showFragment");
 			BottomBar.setButtonsVisible(activity, false);
 		} else {
 			// ??
@@ -138,7 +138,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 							+ "This should never happen, afaik. I don't know how to correctly reset the action bar...");
 		}
 
-		Log.d("FOREST", "UBDEF.onUserDismiss");
+		//Log.d("FOREST", "UBDEF.onUserDismiss");
 		BottomBar.setButtonsVisible(getActivity(), true);
 	}
 

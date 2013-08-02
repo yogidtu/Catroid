@@ -307,7 +307,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 	public void startRenameActionMode() {
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(renameModeCallBack);
-			Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
+			//Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
 			BottomBar.setButtonsClickable(getActivity(), false);
 		}
 	}
@@ -315,7 +315,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 	public void startDeleteActionMode() {
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
-			Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
+			//Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
 			BottomBar.setButtonsClickable(getActivity(), false);
 		}
 	}
@@ -323,7 +323,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 	public void startCopyActionMode() {
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(copyModeCallBack);
-			Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
+			//Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
 			BottomBar.setButtonsClickable(getActivity(), false);
 		}
 	}
@@ -424,7 +424,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 		actionMode = null;
 		actionModeActive = false;
 
-		Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
+		//Log.d("FOREST", "PLF.clearCheckedProjectsAndEnableButtons");
 		BottomBar.setButtonsClickable(getActivity(), true);
 	}
 
