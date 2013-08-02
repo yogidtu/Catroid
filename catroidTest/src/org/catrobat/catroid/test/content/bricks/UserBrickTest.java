@@ -64,7 +64,7 @@ public class UserBrickTest extends AndroidTestCase {
 	}
 
 	public void testSpriteHasOneUserBrickAfterAddingAUserBrick() {
-		UserBrick brick = new UserBrick(sprite);
+		UserBrick brick = new UserBrick(sprite, 0);
 		brick.addUIText("test0");
 		brick.addUIVariable("test1");
 
@@ -83,7 +83,7 @@ public class UserBrickTest extends AndroidTestCase {
 	public void testSpriteMovedCorrectly() {
 		int moveValue = 6;
 
-		UserBrick brick = new UserBrick(sprite);
+		UserBrick brick = new UserBrick(sprite, 0);
 		brick.addUIText("test0");
 		brick.addUIVariable("test1");
 
@@ -113,7 +113,7 @@ public class UserBrickTest extends AndroidTestCase {
 	}
 
 	public void testBrickCloneWithFormula() {
-		UserBrick brick = new UserBrick(sprite);
+		UserBrick brick = new UserBrick(sprite, 0);
 		brick.addUIText("test0");
 		brick.addUIVariable("test1");
 

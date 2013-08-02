@@ -180,7 +180,7 @@ public class Formula implements Serializable {
 
 		int width = formulaTextField.getWidth();
 		width = Math.max(width, 130);
-		formulaTextField.setBackground(highlightBackground);
+		formulaTextField.setBackgroundDrawable(highlightBackground);
 		if (brickView.getId() != R.id.brick_user_main_layout) {
 			formulaTextField.setWidth(width);
 		}
@@ -191,7 +191,7 @@ public class Formula implements Serializable {
 
 		int width = formulaTextField.getWidth();
 		originalEditTextDrawable = getDefaultBackgroundRecursively(brickView, formulaTextField);
-		formulaTextField.setBackground(originalEditTextDrawable);
+		formulaTextField.setBackgroundDrawable(originalEditTextDrawable);
 		if (brickView.getId() != R.id.brick_user_main_layout) {
 			formulaTextField.setWidth(width);
 		}

@@ -133,11 +133,11 @@ public class BrickLayout extends ViewGroup {
 
 		y += customPadding * 2;
 
-		y = Math.max(y, getMinimumHeight());
+		y = Math.max(y, getSuggestedMinimumHeight());
 
 		int yAdjust = Math.round((y - controlMaxThickness) * 0.5f);
 
-		if (y > getMinimumHeight()) {
+		if (y > getSuggestedMinimumHeight()) {
 			yAdjust += Math.round(lines.get(0).minHeight * -0.15f);
 		}
 
