@@ -29,6 +29,7 @@ import android.media.MediaPlayer;
 
 public class SoundManager {
 	private ArrayList<MediaPlayer> mediaPlayers;
+	public boolean soundDisabledByLwp = false;
 
 	private transient float volume = 70.0f;
 
