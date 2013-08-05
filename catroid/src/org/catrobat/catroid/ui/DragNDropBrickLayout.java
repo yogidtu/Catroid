@@ -225,18 +225,18 @@ public class DragNDropBrickLayout extends BrickLayout {
 		float closestDistance = 99999999;
 
 		for (BrickLayout.LineData line : lines) {
+			int elementIndex = 0;
 			for (BrickLayout.ElementData e : line.elements) {
 
-				if (e.view.getVisibility() == GONE) {
-					previousElementIndex++;
-					continue;
+				float edgeX = e.posX;
+				float edgeY = e.posY;
+				if (e.view.getVisibility() != GONE) {
+					edgeX -= (e.width * 0.5f);
 				}
 
-				float edgeX = e.posX - (e.width * 0.5f);
-				float edgeY = e.posY;
 				float dx = edgeX - x;
 				float dy = edgeY - y;
-				float d = dx * dx + dy * dy;
+				float d = dx * dx + dy * dy * 10;
 
 				if (d < closestDistance) {
 					closestDistance = d;
@@ -244,14 +244,20 @@ public class DragNDropBrickLayout extends BrickLayout {
 				}
 				previousElementIndex++;
 
-				edgeX = e.posX + (e.width * 0.5f);
+				edgeX = e.posX;
+				if (elementIndex == line.elements.size() - 1) {
+					edgeX = (edgeX + (e.width * 0.5f) + getMeasuredWidth()) * 0.5f;
+				} else if (e.view.getVisibility() != GONE) {
+					edgeX += (e.width * 0.5f);
+				}
 				dx = edgeX - x;
-				d = dx * dx + dy * dy;
+				d = dx * dx + dy * dy * 10;
 
 				if (d < closestDistance) {
 					closestDistance = d;
 					closestPreviousElementIndex = previousElementIndex;
 				}
+				elementIndex++;
 			}
 		}
 		return closestPreviousElementIndex;
