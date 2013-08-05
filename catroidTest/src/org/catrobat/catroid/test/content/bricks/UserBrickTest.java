@@ -32,6 +32,8 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.UserScript;
 import org.catrobat.catroid.content.bricks.ChangeXByNBrick;
+import org.catrobat.catroid.content.bricks.LegoNxtMotorStopBrick;
+import org.catrobat.catroid.content.bricks.LegoNxtMotorStopBrick.Motor;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIComponent;
 import org.catrobat.catroid.content.bricks.UserBrickUIDataArray;
@@ -186,6 +188,25 @@ public class UserBrickTest extends AndroidTestCase {
 		assertEquals("Unexpected initial sprite x position: ", (float) moveValue,
 				sprite.look.getXInUserInterfaceDimensionUnit());
 		assertEquals("Unexpected initial sprite y position: ", 0f, sprite.look.getYInUserInterfaceDimensionUnit());
+	}
+
+	public void testGetRequiredResources() {
+		int moveValue = 6;
+
+		UserBrick brick = new UserBrick(sprite, 0);
+
+		assertEquals("brick.getRequiredResources(): ", brick.NO_RESOURCES, brick.getRequiredResources());
+
+		Script userScript = addUserBrickToSpriteAndGetUserScript(brick, sprite);
+
+		LegoNxtMotorStopBrick legoBrick = new LegoNxtMotorStopBrick(sprite, Motor.MOTOR_A);
+
+		userScript.addBrick(legoBrick);
+
+		assertNotSame("legoBrick.getRequiredResources(): ", brick.NO_RESOURCES, legoBrick.getRequiredResources());
+
+		assertEquals("brick.getRequiredResources(): ", legoBrick.getRequiredResources(), brick.getRequiredResources());
+
 	}
 
 	public void testBrickCloneWithFormula() {

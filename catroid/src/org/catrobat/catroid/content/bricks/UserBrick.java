@@ -92,8 +92,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 	@Override
 	public int getRequiredResources() {
 
-		// @TODO aggregate resources required by children
-		return NO_RESOURCES;
+		return definitionBrick.getRequiredResources();
 	}
 
 	@Override

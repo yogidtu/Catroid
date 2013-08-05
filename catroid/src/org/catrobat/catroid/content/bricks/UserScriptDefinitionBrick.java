@@ -72,7 +72,7 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 
 	@Override
 	public int getRequiredResources() {
-		return NO_RESOURCES;
+		return userScript.getRequiredResources();
 	}
 
 	public void appendBrickToScript(Brick brick) {
