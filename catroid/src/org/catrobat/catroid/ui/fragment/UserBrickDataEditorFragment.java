@@ -240,7 +240,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			if (text != null) {
 				String oldString = d.name;
 				String newString = text.toString();
-				currentBrick.renameUIVariable(oldString, newString, getActivity());
+				currentBrick.renameUIElement(oldString, newString, getActivity());
 			} else if (d.name.toString().equals(emptyString)) {
 				currentBrick.uiData.remove(d);
 			}

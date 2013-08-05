@@ -23,15 +23,22 @@
 package org.catrobat.catroid.test.content.bricks;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.UserScript;
 import org.catrobat.catroid.content.bricks.ChangeXByNBrick;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserBrickUIComponent;
 import org.catrobat.catroid.content.bricks.UserBrickUIDataArray;
 import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
+import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.FormulaElement;
+import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.Reflection.ParameterList;
 
@@ -41,12 +48,19 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 public class UserBrickTest extends AndroidTestCase {
 	private Sprite sprite;
+	private Project project;
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		sprite = new Sprite("testSprite");
 		Reflection.invokeMethod(sprite, "init");
+
+		project = new Project(null, "testProject");
+
+		project.addSprite(sprite);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentSprite(sprite);
 	}
 
 	public void testSpriteInit() {
@@ -68,9 +82,7 @@ public class UserBrickTest extends AndroidTestCase {
 		brick.addUIText("test0");
 		brick.addUIVariable("test1");
 
-		UserScriptDefinitionBrick definitionBrick = (UserScriptDefinitionBrick) Reflection.getPrivateField(brick,
-				"definitionBrick");
-		Script userScript = definitionBrick.initScript(sprite);
+		Script userScript = addUserBrickToSpriteAndGetUserScript(brick, sprite);
 
 		userScript.addBrick(new ChangeXByNBrick(sprite, 1));
 
@@ -87,9 +99,7 @@ public class UserBrickTest extends AndroidTestCase {
 		brick.addUIText("test0");
 		brick.addUIVariable("test1");
 
-		UserScriptDefinitionBrick definitionBrick = (UserScriptDefinitionBrick) Reflection.getPrivateField(brick,
-				"definitionBrick");
-		Script userScript = definitionBrick.initScript(sprite);
+		Script userScript = addUserBrickToSpriteAndGetUserScript(brick, sprite);
 
 		userScript.addBrick(new ChangeXByNBrick(sprite, moveValue));
 
@@ -107,9 +117,75 @@ public class UserBrickTest extends AndroidTestCase {
 		x = sprite.look.getXInUserInterfaceDimensionUnit();
 		y = sprite.look.getYInUserInterfaceDimensionUnit();
 
-		assertEquals("Unexpected initial sprite x position: " + x, (float) moveValue,
+		assertEquals("Unexpected initial sprite x position: ", (float) moveValue,
 				sprite.look.getXInUserInterfaceDimensionUnit());
-		assertEquals("Unexpected initial sprite y position: " + y, 0f, sprite.look.getYInUserInterfaceDimensionUnit());
+		assertEquals("Unexpected initial sprite y position: ", 0f, sprite.look.getYInUserInterfaceDimensionUnit());
+	}
+
+	public void testSpriteMovedCorrectlyWithNestedBricks() {
+		Integer moveValue = 6;
+
+		UserBrick outerBrick = new UserBrick(sprite, 0);
+		outerBrick.addUIText("test2");
+		outerBrick.addUIVariable("outerBrickVariable");
+
+		outerBrick.updateUIComponents(null);
+		List<Formula> formulaList = outerBrick.getFormulas();
+
+		assertEquals("formulaList.size() after outerBrick.updateUIComponents()" + formulaList.size(), 1,
+				formulaList.size());
+
+		for (Formula formula : formulaList) {
+			formula.setRoot(new FormulaElement(ElementType.NUMBER, moveValue.toString(), null));
+
+			assertEquals("outerBrick.formula.interpretDouble: ", (float) moveValue, formula.interpretFloat(sprite));
+		}
+
+		UserBrick innerBrick = new UserBrick(sprite, 1);
+		innerBrick.addUIText("test0");
+		innerBrick.addUIVariable("innerBrickVariable");
+
+		Script innerScript = addUserBrickToSpriteAndGetUserScript(innerBrick, sprite);
+
+		Formula innerFormula = new Formula(new FormulaElement(ElementType.USER_VARIABLE, "innerBrickVariable", null));
+
+		innerScript.addBrick(new ChangeXByNBrick(sprite, innerFormula));
+
+		innerBrick.updateUIComponents(null);
+
+		formulaList = innerBrick.getFormulas();
+
+		assertEquals("formulaList.size() after innerBrick.updateUIComponents()" + formulaList.size(), 1,
+				formulaList.size());
+
+		for (Formula formula : formulaList) {
+			formula.setRoot(new FormulaElement(ElementType.USER_VARIABLE, "outerBrickVariable", null));
+		}
+
+		Script outerScript = addUserBrickToSpriteAndGetUserScript(outerBrick, sprite);
+		outerScript.addBrick(innerBrick);
+
+		StartScript startScript = new StartScript(sprite);
+		sprite.addScript(startScript);
+		startScript.addBrick(outerBrick);
+
+		SequenceAction sequence = new SequenceAction();
+		startScript.run(sequence);
+
+		float x = sprite.look.getXInUserInterfaceDimensionUnit();
+		float y = sprite.look.getYInUserInterfaceDimensionUnit();
+
+		assertEquals("Unexpected initial sprite x position: ", 0f, x);
+		assertEquals("Unexpected initial sprite y position: ", 0f, y);
+
+		sequence.act(1f);
+
+		x = sprite.look.getXInUserInterfaceDimensionUnit();
+		y = sprite.look.getYInUserInterfaceDimensionUnit();
+
+		assertEquals("Unexpected initial sprite x position: ", (float) moveValue,
+				sprite.look.getXInUserInterfaceDimensionUnit());
+		assertEquals("Unexpected initial sprite y position: ", 0f, sprite.look.getYInUserInterfaceDimensionUnit());
 	}
 
 	public void testBrickCloneWithFormula() {
@@ -140,5 +216,11 @@ public class UserBrickTest extends AndroidTestCase {
 				.getPrivateField(cloneBrick, "uiComponents");
 		assertTrue("The cloned brick has a different uiDataArray than the original brick",
 				componentArray != clonedComponentArray);
+	}
+
+	private Script addUserBrickToSpriteAndGetUserScript(UserBrick userBrick, Sprite sprite) {
+		UserScriptDefinitionBrick definitionBrick = (UserScriptDefinitionBrick) Reflection.getPrivateField(userBrick,
+				"definitionBrick");
+		return definitionBrick.initScript(sprite);
 	}
 }

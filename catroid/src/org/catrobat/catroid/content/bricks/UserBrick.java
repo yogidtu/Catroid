@@ -41,7 +41,6 @@ import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -154,11 +153,14 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 		return uiData.size() - 1;
 	}
 
-	public void renameUIVariable(String oldName, String newName, Context context) {
+	public void renameUIElement(String oldName, String newName, Context context) {
 		UserBrickUIData variable = null;
+		boolean isVariable = false;
 		for (UserBrickUIData data : uiData) {
 			if (data.name.equals(oldName)) {
 				variable = data;
+				isVariable = data.isVariable;
+				break;
 			}
 		}
 
@@ -166,7 +168,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 
 		variable.name = newName;
 
-		if (ProjectManager.getInstance().getCurrentProject() != null) {
+		if (isVariable && ProjectManager.getInstance().getCurrentProject() != null) {
 			UserVariablesContainer variablesContainer = null;
 			variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
 			variablesContainer.deleteUserVariableFromUserBrick(userBrickId, oldName);
@@ -187,7 +189,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 		return uiComponents.iterator();
 	}
 
-	private void updateUIComponents(Context context) {
+	public void updateUIComponents(Context context) {
 		//Log.d("FOREST", "UB.updateUIComponents");
 		ArrayList<UserBrickUIComponent> newUIComponents = new ArrayList<UserBrickUIComponent>();
 
