@@ -22,11 +22,34 @@
  */
 package org.catrobat.catroid.stage;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.content.BroadcastEvent;
+import org.catrobat.catroid.content.BroadcastEvent.BroadcastType;
+import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.io.SoundManager;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.ui.dialogs.StageDialog;
+import org.catrobat.catroid.utils.Utils;
+
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -44,24 +67,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.ui.dialogs.StageDialog;
-import org.catrobat.catroid.utils.Utils;
+public class StageListener implements ApplicationListener, RecognizerCallback {
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-
-public class StageListener implements ApplicationListener {
 	private static final float DELTA_ACTIONS_DIVIDER_MAXIMUM = 50f;
 	private static final int ACTIONS_COMPUTATION_TIME_MAXIMUM = 8;
+	private static final String TAG = StageListener.class.getSimpleName();
+	
 	private static final boolean DEBUG = false;
 	public static final String SCREENSHOT_AUTOMATIC_FILE_NAME = "automatic_screenshot.png";
 	public static final String SCREENSHOT_MANUAL_FILE_NAME = "manual_screenshot.png";
@@ -120,6 +131,7 @@ public class StageListener implements ApplicationListener {
 	private int testHeight = 0;
 
 	private StageDialog stageDialog;
+	private StageActivity activeStageActivity;
 
 	public int maximizeViewPortX = 0;
 	public int maximizeViewPortY = 0;
@@ -130,7 +142,8 @@ public class StageListener implements ApplicationListener {
 
 	private byte[] thumbnail;
 
-	StageListener() {
+	StageListener(StageActivity callingActivity) {
+		activeStageActivity = callingActivity;
 	}
 
 	@Override
@@ -250,7 +263,6 @@ public class StageListener implements ApplicationListener {
 		if (thumbnail != null) {
 			saveScreenshot(thumbnail, SCREENSHOT_AUTOMATIC_FILE_NAME);
 		}
-
 	}
 
 	@Override
@@ -528,6 +540,56 @@ public class StageListener implements ApplicationListener {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onRecognizerResult(int resultCode, Bundle resultBundle) {
+		if (resultCode == RESULT_OK) {
+			String allRecognizedWords = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES).toString();
+
+			BroadcastEvent recognizeEvent = new BroadcastEvent();
+			recognizeEvent.setBroadcastMessage(allRecognizedWords);
+			recognizeEvent.setType(BroadcastType.recognition);
+
+			List<Sprite> sprites = ProjectManager.getInstance().getCurrentProject().getSpriteList();
+			for (Sprite spriteOfList : sprites) {
+				spriteOfList.look.fire(recognizeEvent);
+			}
+		}
+
+	}
+
+	@Override
+	public void onRecognizerError(Bundle errorBundle) {
+		switch (errorBundle.getInt(BUNDLE_ERROR_CODE)) {
+			case ERROR_NONETWORK:
+				Log.w(TAG, "Error causes going down.");
+				activeStageActivity.onBackPressed();
+				AlertDialog networkAlert = PreStageActivity.createNoNetworkAlert(activeStageActivity);
+				networkAlert.setOnDismissListener(new Dialog.OnDismissListener() {
+
+					@Override
+					public void onDismiss(DialogInterface dialog) {
+						stageDialog.onBackPressed();
+					}
+				});
+				networkAlert.show();
+				break;
+			case ERROR_API_CHANGED:
+			case ERROR_IO:
+			case ERROR_OTHER:
+				if (errorBundle.getBoolean(BUNDLE_ERROR_FATAL_FLAG)) {
+					//TODO: Show cause Dialog
+					Log.w(TAG, "Error causes going down.");
+					stageDialog.onBackPressed();
+				} else {
+					Log.w(TAG, "Error nat as bad as it seems.");
+				}
+				break;
+			default:
+				Log.w(TAG, "Unhandled Recognizer error!");
+				break;
 		}
 	}
 }

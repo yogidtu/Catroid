@@ -64,10 +64,11 @@ public class StageActivity extends AndroidApplication {
 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		stageListener = new StageListener();
+		stageListener = new StageListener(this);
 		stageDialog = new StageDialog(this, stageListener, R.style.stage_dialog);
 		calculateScreenSizes();
 		initialize(stageListener, true);
+		PreStageActivity.registerAndStartRecognition(stageListener);
 	}
 
 	@Override

@@ -130,7 +130,7 @@ public class PreStageActivity extends Activity {
 
 			}
 		}
-		if ((required_resources & Brick.NETWORK_CONNECTION) > 0) {
+		if ((required_resources & Brick.NETWORK_CONNECTION) > 0 || (required_resources & Brick.SPEECH_TO_TEXT) > 0) {
 			if (!isOnline()) {
 				AlertDialog networkAlert = createNoNetworkAlert(this);
 				networkAlert.setOnDismissListener(new Dialog.OnDismissListener() {
@@ -177,9 +177,9 @@ public class PreStageActivity extends Activity {
 
 	}
 
-	public static void registerAndStartRecognition(StageActivity stage) {
+	public static void registerAndStartRecognition(RecognizerCallback listener) {
 		if (speechToText != null) {
-			speechToText.registerContinuousSpeechListener((RecognizerCallback) StageActivity.stageListener);
+			speechToText.registerContinuousSpeechListener(listener);
 			speechToText.start();
 		}
 	}

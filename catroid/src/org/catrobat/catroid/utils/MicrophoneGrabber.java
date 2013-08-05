@@ -26,7 +26,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -38,10 +40,13 @@ public class MicrophoneGrabber extends Thread {
 	public static final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
 	public static final int channelConfiguration = AudioFormat.CHANNEL_IN_MONO;
 	public static final int sampleRate = 16000;
-	public static final int frameByteSize = 512;
+	public static final int frameByteSize = 256;
 	public static final int bytesPerSample = 2;
+	private static final int DEFAULT_PIPE_BUFFERSIZE = frameByteSize * 10;
 
-	private ArrayList<PipedOutputStream> microphoneStreamList = new ArrayList<PipedOutputStream>();
+	private static final String TAG = MicrophoneGrabber.class.getSimpleName();
+
+	private HashMap<PipedOutputStream, PipedInputStream> microphoneStreamList = new HashMap<PipedOutputStream, PipedInputStream>();
 	private boolean isRecording;
 	public boolean isPaused = false;
 	private AudioRecord audioRecord;
@@ -50,7 +55,7 @@ public class MicrophoneGrabber extends Thread {
 	@Override
 	public MicrophoneGrabber clone() {
 		MicrophoneGrabber newGrabber = new MicrophoneGrabber();
-		newGrabber.microphoneStreamList.addAll(this.microphoneStreamList);
+		newGrabber.microphoneStreamList.putAll(microphoneStreamList);
 		newGrabber.isRecording = false;
 		newGrabber.isPaused = this.isPaused;
 		newGrabber.audioRecord = this.audioRecord;
@@ -59,7 +64,7 @@ public class MicrophoneGrabber extends Thread {
 	}
 
 	private MicrophoneGrabber() {
-		int recBufSize = AudioRecord.getMinBufferSize(sampleRate, channelConfiguration, audioEncoding); // need to be larger than size of a frame
+		int recBufSize = AudioRecord.getMinBufferSize(sampleRate, channelConfiguration, audioEncoding);
 		audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, sampleRate, channelConfiguration,
 				audioEncoding, recBufSize);
 		buffer = new byte[frameByteSize];
@@ -76,12 +81,12 @@ public class MicrophoneGrabber extends Thread {
 		PipedOutputStream outputPipe = new PipedOutputStream();
 		PipedInputStream inputPipe;
 		try {
-			inputPipe = new PipedInputStream(outputPipe, frameByteSize * 10);
+			inputPipe = new PipedInputStream(outputPipe, DEFAULT_PIPE_BUFFERSIZE);
 		} catch (IOException e) {
 			return null;
 		}
 		synchronized (microphoneStreamList) {
-			microphoneStreamList.add(outputPipe);
+			microphoneStreamList.put(outputPipe, inputPipe);
 			if (!isRecording && !isPaused) {
 				if (this.isAlive()) {
 					isRecording = true;
@@ -109,13 +114,22 @@ public class MicrophoneGrabber extends Thread {
 				offset += shortRead;
 			}
 
-			for (PipedOutputStream outputPipe : microphoneStreamList) {
+			HashMap<PipedOutputStream, PipedInputStream> outPipeCopy = new HashMap<PipedOutputStream, PipedInputStream>(
+					microphoneStreamList);
+			Iterator<Entry<PipedOutputStream, PipedInputStream>> it = outPipeCopy.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<PipedOutputStream, PipedInputStream> entry = it.next();
 				try {
-					outputPipe.write(buffer);
+					if (DEFAULT_PIPE_BUFFERSIZE - entry.getValue().available() >= offset) {
+						entry.getKey().write(buffer);
+					} else {
+						//						Log.v(TAG, "We skipping buffer, too slow read: "
+						//								+ (DEFAULT_PIPE_BUFFERSIZE - entry.getValue().available()) + " < " + offset);
+					}
 				} catch (IOException e) {
 					try {
-						microphoneStreamList.remove(outputPipe);
-						outputPipe.close();
+						microphoneStreamList.remove(entry.getKey());
+						entry.getKey().close();
 					} catch (IOException e1) {
 					}
 				}
