@@ -105,7 +105,7 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 
 		EditText textField = (EditText) dialogView.findViewById(R.id.dialog_brick_editor_edit_element_edit_text);
 		textField.setText(text);
-		textField.setSelection(textField.getText().length());
+		textField.setSelection(text.length());
 
 		final Dialog dialogNewVariable = new AlertDialog.Builder(getActivity()).setView(dialogView)
 				.setTitle(stringResourceOfTitle).setNegativeButton(R.string.cancel_button, new OnClickListener() {

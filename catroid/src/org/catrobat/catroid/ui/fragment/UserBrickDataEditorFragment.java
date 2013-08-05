@@ -187,14 +187,14 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	public void addTextDialog() {
 		int indexOfNewText = currentBrick.addUIText("");
 
-		editElementDialog(indexOfNewText, "", false, R.string.add_text, R.string.add_text);
+		editElementDialog(indexOfNewText, "", false, R.string.add_text, R.string.text_hint);
 		indexOfCurrentlyEditedElement = indexOfNewText;
 
 	}
 
 	public void addVariableDialog() {
 		int indexOfNewText = currentBrick.addUIVariable("");
-		editElementDialog(indexOfNewText, "", false, R.string.add_variable, R.string.add_variable);
+		editElementDialog(indexOfNewText, "", false, R.string.add_variable, R.string.variable_hint);
 		indexOfCurrentlyEditedElement = indexOfNewText;
 	}
 
@@ -260,7 +260,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		UserBrickUIData d = currentBrick.uiData.get(id);
 		if (d != null) {
 			int title = d.isVariable ? R.string.edit_variable : R.string.edit_text;
-			int defaultText = d.isVariable ? R.string.edit_variable : R.string.edit_text;
+			int defaultText = d.isVariable ? R.string.variable_hint : R.string.text_hint;
 			editElementDialog(id, d.name, true, title, defaultText);
 			indexOfCurrentlyEditedElement = id;
 		}
