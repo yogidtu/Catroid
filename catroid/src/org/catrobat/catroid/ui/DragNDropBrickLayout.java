@@ -30,6 +30,9 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 	private boolean dragging;
 
+	private final float BIAS_SAME_LINE_FUDGE_FACTOR = 10;
+	private final int MIN_MILLISECONDS_FOR_TAP = 300;
+
 	private int lastInsertableSpaceIndex;
 	private boolean justStartedDragging;
 	private boolean secondDragFrame;
@@ -176,7 +179,7 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 		long difference = dragEndMillis - dragBeganMillis;
 
-		if (difference < 400
+		if (difference < MIN_MILLISECONDS_FOR_TAP
 				&& (draggedItemIndex == lastInsertableSpaceIndex || draggedItemIndex == lastInsertableSpaceIndex + 1)) {
 
 			parent.click(draggedItemIndex);
@@ -236,7 +239,7 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 				float dx = edgeX - x;
 				float dy = edgeY - y;
-				float d = dx * dx + dy * dy * 10;
+				float d = dx * dx + dy * dy * BIAS_SAME_LINE_FUDGE_FACTOR;
 
 				if (d < closestDistance) {
 					closestDistance = d;
@@ -251,7 +254,7 @@ public class DragNDropBrickLayout extends BrickLayout {
 					edgeX += (e.width * 0.5f);
 				}
 				dx = edgeX - x;
-				d = dx * dx + dy * dy * 10;
+				d = dx * dx + dy * dy * BIAS_SAME_LINE_FUDGE_FACTOR;
 
 				if (d < closestDistance) {
 					closestDistance = d;
