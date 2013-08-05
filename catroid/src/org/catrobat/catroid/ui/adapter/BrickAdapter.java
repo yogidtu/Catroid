@@ -37,10 +37,12 @@ import org.catrobat.catroid.content.bricks.AllowedAfterDeadEndBrick;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.DeadEndBrick;
 import org.catrobat.catroid.content.bricks.FormulaBrick;
+import org.catrobat.catroid.content.bricks.MultiFormulaBrick;
 import org.catrobat.catroid.content.bricks.NestingBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
+import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.ui.ViewSwitchLock;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListView;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListener;
@@ -978,7 +980,8 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		}
 		items.add(context.getText(R.string.brick_context_dialog_delete_brick));
 		items.add(context.getText(R.string.brick_context_dialog_copy_brick));
-		if (brickList.get(itemPosition) instanceof FormulaBrick) {
+
+		if (brickHasAFormula(brickList.get(itemPosition))) {
 			items.add(context.getText(R.string.brick_context_dialog_formula_edit_brick));
 		}
 
@@ -1010,21 +1013,9 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_delete_brick))) {
 					showConfirmDeleteDialog(itemPosition);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_animate_bricks))) {
-					int itemPosition = calculateItemPositionAndTouchPointY(view);
-					Brick brick = brickList.get(itemPosition);
-					if (brick instanceof NestingBrick) {
-						List<NestingBrick> list = ((NestingBrick) brick).getAllNestingBrickParts(true);
-						for (Brick tempBrick : list) {
-							animatedBricks.add(tempBrick);
-						}
-					}
-					notifyDataSetChanged();
+					clickedAnimateBricks(view);
 				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_formula_edit_brick))) {
-
-					if (brickList.get(itemPosition) instanceof FormulaBrick) {
-						FormulaEditorFragment.showFragment(view, brickList.get(itemPosition),
-								((FormulaBrick) brickList.get(itemPosition)).getFormula());
-					}
+					clickedEditFormula(brickList.get(itemPosition), view);
 				}
 			}
 		});
@@ -1033,6 +1024,43 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		if ((selectMode == ListView.CHOICE_MODE_NONE)) {
 			alertDialog.show();
 		}
+	}
+
+	private void clickedEditFormula(Brick brick, View view) {
+		Formula formula = null;
+		if (brick instanceof FormulaBrick) {
+			formula = ((FormulaBrick) brick).getFormula();
+		}
+		if (brick instanceof MultiFormulaBrick) {
+			List<Formula> formulas = ((MultiFormulaBrick) brick).getFormulas();
+			if (formulas.size() > 0) {
+				formula = formulas.get(0);
+			}
+		}
+
+		if (formula != null) {
+			FormulaEditorFragment.showFragment(view, brick, formula);
+		}
+	}
+
+	private boolean brickHasAFormula(Brick brick) {
+		boolean multiFormulaValid = false;
+		if (brick instanceof MultiFormulaBrick) {
+			multiFormulaValid = ((MultiFormulaBrick) brick).getFormulas().size() > 0;
+		}
+		return (brick instanceof FormulaBrick || multiFormulaValid);
+	}
+
+	private void clickedAnimateBricks(View view) {
+		int itemPosition = calculateItemPositionAndTouchPointY(view);
+		Brick brick = brickList.get(itemPosition);
+		if (brick instanceof NestingBrick) {
+			List<NestingBrick> list = ((NestingBrick) brick).getAllNestingBrickParts(true);
+			for (Brick tempBrick : list) {
+				animatedBricks.add(tempBrick);
+			}
+		}
+		notifyDataSetChanged();
 	}
 
 	public void launchAddBrickAndSelectBrickAt(Context context, int index) {
