@@ -31,7 +31,6 @@ import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 

@@ -319,7 +319,7 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	static public IfLogicAction ifLogc(Sprite sprite, Formula condition, Action ifAction, Action elseAction) {
+	public static IfLogicAction ifLogc(Sprite sprite, Formula condition, Action ifAction, Action elseAction) {
 		IfLogicAction action = action(IfLogicAction.class);
 		action.setIfAction(ifAction);
 		action.setIfCondition(condition);
@@ -328,7 +328,7 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	static public RepeatAction repeat(Sprite sprite, Formula count, Action repeatedAction) {
+	public static RepeatAction repeat(Sprite sprite, Formula count, Action repeatedAction) {
 		RepeatAction action = action(RepeatAction.class);
 		action.setRepeatCount(count);
 		action.setAction(repeatedAction);
@@ -336,7 +336,7 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	static public WaitAction delay(Sprite sprite, Formula delay) {
+	public static WaitAction delay(Sprite sprite, Formula delay) {
 		WaitAction action = action(WaitAction.class);
 		action.setSprite(sprite);
 		action.setDelay(delay);

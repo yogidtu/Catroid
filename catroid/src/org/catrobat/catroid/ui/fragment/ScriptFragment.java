@@ -32,7 +32,6 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
-import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.ViewSwitchLock;
@@ -56,10 +55,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -206,39 +202,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			projectManager.saveProject();
 			projectManager.getCurrentProject().removeUnusedBroadcastMessages(); // TODO: Find better place
 		}
-	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
-
-		if (view.getId() == R.id.brick_list_view) {
-			menu.setHeaderTitle(R.string.script_context_menu_title);
-
-			Object item = adapter.getItem(listView.getTouchedListPosition());
-			if (item instanceof ScriptBrick && !(item instanceof UserScriptDefinitionBrick)) {
-				scriptToEdit = ((ScriptBrick) item).initScript(ProjectManager.getInstance().getCurrentSprite());
-				MenuInflater inflater = getActivity().getMenuInflater();
-				inflater.inflate(R.menu.menu_script, menu);
-			}
-		}
-	}
-
-	@Override
-	public boolean onContextItemSelected(android.view.MenuItem item) {
-
-		switch (item.getItemId()) {
-			case R.id.script_menu_delete: {
-
-				showConfirmDeleteDialog(true);
-				break;
-			}
-			case R.id.script_menu_copy: {
-				//currently not supported
-				break;
-			}
-		}
-
-		return true;
 	}
 
 	public void setAddNewScript() {
