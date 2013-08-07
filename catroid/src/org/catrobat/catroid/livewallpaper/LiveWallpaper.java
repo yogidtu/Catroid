@@ -22,15 +22,17 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.stage.StageListener;
+
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService;
 
 public class LiveWallpaper extends AndroidLiveWallpaperService {
-
-	private StageListener stageListener;
 
 	public void onCreateApplication() {
 		super.getApplication();
@@ -40,10 +42,10 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 	public void onCreate() {
 		//android.os.Debug.waitForDebugger();
 		super.onCreate();
-		//		DisplayMetrics displayMetrics = new DisplayMetrics();
-		//		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
-		//		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
-		//		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
+		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
+		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
 		//
 		//		Log.d("RGB", "Width: " + ScreenValues.SCREEN_WIDTH);
 		//		Log.d("RGB", "Height: " + ScreenValues.SCREEN_HEIGHT);
@@ -54,7 +56,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		//			// TODO Auto-generated catch block
 		//			e.printStackTrace();
 		//		}
-		//		Gdx.input.setInputProcess//();
 
 	}
 
@@ -65,8 +66,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 	 */
 	@Override
 	public ApplicationListener createListener(boolean isPreview) {
-		stageListener = new StageListener();
-		return stageListener;
+		return new StageListener();
 	}
 
 	/*
