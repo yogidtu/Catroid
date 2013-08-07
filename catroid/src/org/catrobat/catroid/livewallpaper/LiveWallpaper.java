@@ -94,37 +94,4 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		// TODO Auto-generated method stub
 
 	}
-
-	//	@Override
-	//	public Engine onCreateEngine() {
-	//		return new LiveWallpaperEngine();
-	//	}
-	//
-	//	class LiveWallpaperEngine extends AndroidWallpaperEngine {
-	//
-	//		boolean redrawNeeded = false;
-	//
-	//		@Override
-	//		public void onVisibilityChanged(boolean visible) {
-	//			if (visible) {
-	//				if (isPreview() && redrawNeeded) {
-	//					Log.d("RGB", "Redrawing");
-	//					onResume();
-	//					//					stageListener.resume();
-	//				} else {
-	//					onResume();
-	//					//					stageListener.resume();
-	//				}
-	//				redrawNeeded = false;
-	//				//				onResume();
-	//			} else {
-	//				if (isPreview()) {
-	//					redrawNeeded = true;
-	//					Log.d("RGB", "redraw needed");
-	//				}
-	//				stageListener.pause();
-	//				onPause();
-	//			}
-	//		}
-	//	}
 }
