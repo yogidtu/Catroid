@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+/**
  *  Catroid: An on-device visual programming system for Android devices
  *  Copyright (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
@@ -20,12 +19,17 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
-    style="?android:attr/dropDownItemStyle"
-    android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:ellipsize="marquee"
-    android:singleLine="true"
-    android:textAppearance="@style/ScriptActivitySpinnerItemTextAppearance" />
+ */
+package org.catrobat.catroid.formulaeditor;
+
+public class SensorCustomEvent {
+	public Sensors sensor;
+	public long timestamp;
+	public final float[] values;
+
+	public SensorCustomEvent(Sensors SourceSensor, float[] values) {
+		sensor = SourceSensor;
+		this.values = values;
+		timestamp = System.currentTimeMillis();
+	}
+}

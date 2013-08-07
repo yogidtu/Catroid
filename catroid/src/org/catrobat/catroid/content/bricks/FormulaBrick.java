@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+/**
  *  Catroid: An on-device visual programming system for Android devices
  *  Copyright (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
@@ -20,11 +19,12 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+ */
+package org.catrobat.catroid.content.bricks;
 
-    <item><shape>
-            <gradient android:angle="0" android:centerColor="@color/gray" android:endColor="@color/gray" android:startColor="@color/gray" />
-        </shape></item>
+import org.catrobat.catroid.formulaeditor.Formula;
 
-</layer-list>
+public interface FormulaBrick {
+
+	public Formula getFormula();
+}

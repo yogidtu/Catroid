@@ -34,7 +34,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	public void onCreateApplication() {
 		super.getApplication();
-
 	}
 
 	@Override
@@ -56,6 +55,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		//			e.printStackTrace();
 		//		}
 		//		Gdx.input.setInputProcess//();
+
 	}
 
 	/*

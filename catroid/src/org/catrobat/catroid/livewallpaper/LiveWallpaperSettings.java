@@ -23,11 +23,14 @@
 package org.catrobat.catroid.livewallpaper;
 
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.io.SoundManager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
@@ -53,27 +56,28 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 			handleAboutThisWallpaperPreference();
 
 			handleAllowSoundsCheckBox();
-			handleSelectProgramPreference();
-
-		}
-
-		private void handleSelectProgramPreference() {
-			Preference pref = findPreference(getResources().getString(R.string.lwp_select_program));
-
-			pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					SelectProgramDialog selectProgramDialog = new SelectProgramDialog(context);
-					selectProgramDialog.show();
-					return false;
-				}
-			});
 
 		}
 
 		private void handleAllowSoundsCheckBox() {
-			// TODO implement me
+			final CheckBoxPreference allowSounds = (CheckBoxPreference) findPreference(getResources().getString(
+					R.string.lwp_allow_sounds));
+
+			allowSounds.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					if (newValue.toString().equals("true")) {
+						SoundManager.getInstance().soundDisabledByLwp = false;
+						allowSounds.setChecked(true);
+					} else {
+						SoundManager.getInstance().soundDisabledByLwp = true;
+						allowSounds.setChecked(false);
+
+					}
+					return false;
+				}
+			});
 
 		}
 

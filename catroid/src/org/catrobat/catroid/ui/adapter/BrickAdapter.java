@@ -35,11 +35,13 @@ import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.AllowedAfterDeadEndBrick;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.DeadEndBrick;
+import org.catrobat.catroid.content.bricks.FormulaBrick;
 import org.catrobat.catroid.content.bricks.NestingBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.ui.ViewSwitchLock;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListView;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListener;
+import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -80,6 +82,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 	private boolean initInsertedBrick;
 	private boolean addingNewBrick;
 	private int positionOfInsertedBrick;
+	private Script scriptToDelete;
 
 	private boolean firstDrag;
 	private int fromBeginDrag, toEndDrag;
@@ -740,7 +743,11 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		Object item = getItem(position);
 
 		if (item instanceof ScriptBrick && (!initInsertedBrick || position != positionOfInsertedBrick)) {
-			return ((Brick) item).getView(context, position, this);
+			View scriptBrickView = ((Brick) item).getView(context, position, this);
+			if (draggedBrick == null) {
+				scriptBrickView.setOnClickListener(this);
+			}
+			return scriptBrickView;
 		}
 
 		View currentBrickView;
@@ -849,17 +856,27 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 		animatedBricks.clear();
 		final int itemPosition = calculateItemPositionAndTouchPointY(view);
-
 		final List<CharSequence> items = new ArrayList<CharSequence>();
-		if (!(brickList.get(itemPosition) instanceof DeadEndBrick)) {
+
+		if (brickList.get(itemPosition) instanceof ScriptBrick) {
+			int scriptIndex = getScriptIndexFromProject(itemPosition);
+			ProjectManager.getInstance().setCurrentScript(sprite.getScript(scriptIndex));
+		}
+
+		if (!(brickList.get(itemPosition) instanceof DeadEndBrick)
+				&& !(brickList.get(itemPosition) instanceof ScriptBrick)) {
 			items.add(context.getText(R.string.brick_context_dialog_move_brick));
 		}
 		if (brickList.get(itemPosition) instanceof NestingBrick) {
 			items.add(context.getText(R.string.brick_context_dialog_animate_bricks));
 		}
 		items.add(context.getText(R.string.brick_context_dialog_delete_brick));
-
-		items.add(context.getText(R.string.brick_context_dialog_copy_brick));
+		if (!(brickList.get(itemPosition) instanceof ScriptBrick)) {
+			items.add(context.getText(R.string.brick_context_dialog_copy_brick));
+		}
+		if (brickList.get(itemPosition) instanceof FormulaBrick) {
+			items.add(context.getText(R.string.brick_context_dialog_formula_edit_brick));
+		}
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -896,6 +913,12 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 						}
 					}
 					notifyDataSetChanged();
+				} else if (clickedItemText.equals(context.getText(R.string.brick_context_dialog_formula_edit_brick))) {
+
+					if (brickList.get(itemPosition) instanceof FormulaBrick) {
+						FormulaEditorFragment.showFragment(view, brickList.get(itemPosition),
+								((FormulaBrick) brickList.get(itemPosition)).getFormula());
+					}
 				}
 			}
 		});
@@ -932,13 +955,26 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		builder.setPositiveButton(yes, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
-				removeFromBrickListAndProject(clickItemPosition, false);
+				if (getItem(clickItemPosition) instanceof ScriptBrick) {
+					scriptToDelete = ((ScriptBrick) getItem(clickItemPosition)).initScript(ProjectManager.getInstance()
+							.getCurrentSprite());
+					handleScriptDelete(sprite, scriptToDelete);
+					scriptToDelete = null;
+				} else {
+					removeFromBrickListAndProject(clickItemPosition, false);
+				}
 			}
 		});
 		builder.setNegativeButton(no, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
+			}
+		});
+		builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				scriptToDelete = null;
 			}
 		});
 

@@ -1,5 +1,6 @@
 package org.catrobat.catroid.livewallpaper.test;
 
+
 import com.android.uiautomator.core.UiObject;
 import com.android.uiautomator.core.UiObjectNotFoundException;
 import com.android.uiautomator.core.UiScrollable;
@@ -9,6 +10,7 @@ import com.android.uiautomator.testrunner.UiAutomatorTestCase;
 public class PreferenceActivityTest extends UiAutomatorTestCase {
 
 	private static int timeout = 2000;
+
 	
 	public void testSettingsActivity() throws UiObjectNotFoundException {
 		navigateToLiveWallpaper(); 		
@@ -24,10 +26,24 @@ public class PreferenceActivityTest extends UiAutomatorTestCase {
 	
 	
 	private void testAllowSoundsPreference() {
-		UiObject allowSounds = new UiObject(new UiSelector().text("Allow sounds"));
-		assertTrue("Unable to detect allow sounds in the preference list", allowSounds.exists());
+		UiSelector allowSoundsSelector = new UiSelector().className(android.widget.CheckBox.class.getName()); 
+		UiObject allowSounds = new UiObject(allowSoundsSelector);
+		assertTrue("Unable to detect allow sounds check box in the preference list", allowSounds.exists());
+		try {
+			if(allowSounds.isChecked()){
+				allowSounds.click();
+				assertTrue("The allow sound check box is checked but should not be", !allowSounds.isChecked()); 
+			}
+		} catch (UiObjectNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		
-		//TODO: implement and test the functionality
+		
+
+		//TODO: create a project that only plays sounds, select it via the project selector, set it to be the current 
+		//project, test if it*s playing, then turn of and see if it's not playing
+		
 		
 	}
 
@@ -92,7 +108,7 @@ public class PreferenceActivityTest extends UiAutomatorTestCase {
 	      UiObject settingsApp = appViews.getChildByText(new UiSelector()
 	         .className(android.widget.TextView.class.getName()), 
 	         "Settings");
-	      settingsApp.clickAndWaitForNewWindow();
+	      settingsApp.clickAndWaitForNewWindow(timeout);
 	      
 	
 		UiObject displayButton = new UiObject(new UiSelector().text("Display"));
@@ -104,9 +120,13 @@ public class PreferenceActivityTest extends UiAutomatorTestCase {
 		UiObject lwpButton = new UiObject(new UiSelector().textContains("Live"));
 		lwpButton.clickAndWaitForNewWindow(timeout);
 		
-		UiObject lwp = new UiObject(new UiSelector().textContains("Pocket Code"));
-		lwp.clickAndWaitForNewWindow(timeout);
-
+		 UiScrollable lwpList = new UiScrollable(new UiSelector()
+         .scrollable(true));
+		 
+		 UiObject lwp = lwpList.getChildByText(new UiSelector()
+         .className(android.widget.TextView.class.getName()), 
+         "Pocket Code");
+		 lwp.clickAndWaitForNewWindow(timeout); 
 	}
 	
 }
