@@ -23,6 +23,7 @@
 package org.catrobat.catroid.ui.fragment;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.catrobat.catroid.ProjectManager;
@@ -99,7 +100,7 @@ public class CategoryBricksFactory {
 		}
 
 		boolean isUserScriptMode = activity != null;
-		List<Brick> tempList = null;
+		List<Brick> tempList = new LinkedList<Brick>();
 		List<Brick> toReturn = new ArrayList<Brick>();
 
 		if (category.equals(context.getString(R.string.category_control))) {

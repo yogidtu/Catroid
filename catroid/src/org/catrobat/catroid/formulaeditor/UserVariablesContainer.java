@@ -33,7 +33,6 @@ import java.util.Map;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.UserBrick;
-import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 import org.catrobat.catroid.ui.adapter.UserVariableAdapter;
 
 import android.content.Context;
@@ -92,12 +91,6 @@ public class UserVariablesContainer implements Serializable {
 		return currentUserBrickId;
 	}
 
-	public UserVariable addUserBrickUserVariable(String userVariableName) {
-		UserScriptDefinitionBrick currentBrick = null;
-		currentBrick = ProjectManager.getInstance().getCurrentUserBrick().getDefinitionBrick();
-		return addUserBrickUserVariableToUserBrick(currentBrick.getUserBrickId(), userVariableName);
-	}
-
 	public UserVariable addUserBrickUserVariableToUserBrick(int userBrickId, String userVariableName) {
 		List<UserVariable> varList = getOrCreateVariableListForUserBrick(userBrickId);
 		UserVariable userVariableToAdd = new UserVariable(userVariableName, varList);
@@ -133,7 +126,10 @@ public class UserVariablesContainer implements Serializable {
 	public void deleteUserVariableByName(String userVariableName) {
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 		UserBrick currentUserBrick = ProjectManager.getInstance().getCurrentUserBrick();
-		int userBrickId = currentUserBrick.getDefinitionBrick().getUserBrickId();
+		int userBrickId = -1;
+		if (currentUserBrick != null) {
+			userBrickId = currentUserBrick.getDefinitionBrick().getUserBrickId();
+		}
 		UserVariable variableToDelete = getUserVariable(userVariableName, userBrickId, currentSprite);
 		if (variableToDelete != null) {
 			List<UserVariable> context = variableToDelete.getContext();
