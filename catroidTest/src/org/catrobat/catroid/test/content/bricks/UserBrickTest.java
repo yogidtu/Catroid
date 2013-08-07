@@ -65,6 +65,13 @@ public class UserBrickTest extends AndroidTestCase {
 		ProjectManager.getInstance().setCurrentSprite(sprite);
 	}
 
+	@Override
+	protected void tearDown() throws Exception {
+		ProjectManager.getInstance().setProject(null);
+		ProjectManager.getInstance().setCurrentSprite(null);
+		super.tearDown();
+	}
+
 	public void testSpriteInit() {
 
 		ArrayList<Script> array = (ArrayList<Script>) Reflection.getPrivateField(sprite, "userBricks");

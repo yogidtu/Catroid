@@ -36,7 +36,7 @@ import android.widget.EditText;
 
 public class EditTextAlignmentTest extends AndroidTestCase {
 
-	private static LayoutInflater inflater;
+	static private LayoutInflater inflater;
 	private Context context;
 
 	@Override
