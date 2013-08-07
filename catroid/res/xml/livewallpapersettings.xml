@@ -17,5 +17,9 @@
     	android:title="@string/lwp_allow_sounds"
     	android:defaultValue="true" />
      
+     <Preference 
+         android:title = "@string/lwp_select_program"
+         android:key="@string/lwp_select_program"/>
+     
   
 </PreferenceScreen> 

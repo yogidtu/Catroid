@@ -25,7 +25,9 @@ package org.catrobat.catroid.livewallpaper;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.stage.StageListener;
 
+import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.view.SurfaceHolder;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -93,5 +95,65 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			float yOffsetStep, int xPixelOffset, int yPixelOffset) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.badlogic.gdx.backends.android.AndroidLiveWallpaperService#onCreateEngine()
+	 */
+	@Override
+	public Engine onCreateEngine() {
+		LiveWallpaperEngine liveWallpaperEngine = new LiveWallpaperEngine();
+		return liveWallpaperEngine;
+	}
+
+	class LiveWallpaperEngine extends AndroidWallpaperEngine {
+
+		private boolean mVisible = false;
+		private final Handler mHandler = new Handler();
+		private final Runnable mUpdateDisplay = new Runnable() {
+			@Override
+			public void run() {
+				draw();
+			}
+		};
+
+		private void draw() {
+
+			onResume();
+			if (mVisible) {
+				mHandler.postDelayed(mUpdateDisplay, 100);
+			}
+		}
+
+		@Override
+		public void onVisibilityChanged(boolean visible) {
+			mVisible = visible;
+			if (visible) {
+				draw();
+			} else {
+				mHandler.removeCallbacks(mUpdateDisplay);
+			}
+		}
+
+		@Override
+		public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+			draw();
+		}
+
+		@Override
+		public void onSurfaceDestroyed(SurfaceHolder holder) {
+			super.onSurfaceDestroyed(holder);
+			mVisible = false;
+			mHandler.removeCallbacks(mUpdateDisplay);
+		}
+
+		@Override
+		public void onDestroy() {
+			super.onDestroy();
+			mVisible = false;
+			mHandler.removeCallbacks(mUpdateDisplay);
+		}
 	}
 }
