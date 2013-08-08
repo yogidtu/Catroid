@@ -22,17 +22,19 @@
  */
 package org.catrobat.catroid.utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.speechrecognition.VoiceTriggeredRecorder;
 import org.catrobat.catroid.speechrecognition.VoiceTriggeredRecorder.VoiceTriggeredRecorderListener;
-import org.catrobat.catroid.speechrecognition.WAVRecognizer;
-import org.catrobat.catroid.speechrecognition.WAVRecognizer.SpeechFileToTextListener;
 
+import android.os.Bundle;
 import android.util.Log;
 
-public class UtilSpeechRecognition implements VoiceTriggeredRecorderListener, SpeechFileToTextListener {
+public class UtilSpeechRecognition implements VoiceTriggeredRecorderListener, RecognizerCallback {
 
 	private static UtilSpeechRecognition instance = null;
 	private static final String TAG = UtilSpeechRecognition.class.getSimpleName();
@@ -111,21 +113,35 @@ public class UtilSpeechRecognition implements VoiceTriggeredRecorderListener, Sp
 	@Override
 	public void onSpeechFileSaved(String speechFilePath) {
 
-		WAVRecognizer converter = new WAVRecognizer(speechFilePath, this);
-		converter.start();
-		runningRecognition.put(converter, speechFilePath);
+		GoogleOnlineSpeechRecognizer converter = new GoogleOnlineSpeechRecognizer();
+		try {
+			converter.setWAVInputFile(speechFilePath);
+			converter.setCallbackListener(this);
+
+			converter.prepare();
+			converter.start();
+			runningRecognition.put(converter, speechFilePath);
+		} catch (IOException e) {
+			Log.w(TAG, "There is a problem with starting the Converter: " + e.getMessage());
+		}
 	}
 
 	@Override
-	public void onFileRecognized(String speechFilePath, ArrayList<String> matches) {
+	public void onVoiceTriggeredRecorderError(int errorCode) {
+		voiceRecorder.stopRecording();
+	}
+
+	@Override
+	public void onRecognizerResult(int resultCode, Bundle resultBundle) {
 
 		if (runningRecognition.containsKey(Thread.currentThread())) {
 			runningRecognition.remove(Thread.currentThread());
 		}
-
-		if (matches == null || matches.size() == 0) {
+		if (resultCode == RecognizerCallback.RESULT_NOMATCH) {
 			return;
 		}
+
+		ArrayList<String> matches = resultBundle.getStringArrayList("RESULT");
 
 		ArrayList<SpeechRecognizeListener> listenerListCopy = new ArrayList<UtilSpeechRecognition.SpeechRecognizeListener>(
 				askerList);
@@ -136,13 +152,8 @@ public class UtilSpeechRecognition implements VoiceTriggeredRecorderListener, Sp
 	}
 
 	@Override
-	public void onFileToTextError(int errorCode, String errorMessage) {
+	public void onRecognizerError(int errorCode, String errorMessage) {
 
-	}
-
-	@Override
-	public void onVoiceTriggeredRecorderError(int errorCode) {
-		voiceRecorder.stopRecording();
 	}
 
 	public interface SpeechRecognizeListener {
