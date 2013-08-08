@@ -23,6 +23,7 @@
 package org.catrobat.catroid.livewallpaper;
 
 import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.io.SoundManager;
 import org.catrobat.catroid.stage.StageListener;
 
 import android.os.Handler;
@@ -48,16 +49,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
 		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
 		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
-		//
-		//		Log.d("RGB", "Width: " + ScreenValues.SCREEN_WIDTH);
-		//		Log.d("RGB", "Height: " + ScreenValues.SCREEN_HEIGHT);
-
-		//		try {
-		//			StandardProjectHandler.createAndSaveStandardProject(getApplicationContext());
-		//		} catch (IOException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
 
 	}
 
@@ -97,11 +88,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.badlogic.gdx.backends.android.AndroidLiveWallpaperService#onCreateEngine()
-	 */
 	@Override
 	public Engine onCreateEngine() {
 		LiveWallpaperEngine liveWallpaperEngine = new LiveWallpaperEngine();
@@ -115,31 +101,29 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		private final Runnable mUpdateDisplay = new Runnable() {
 			@Override
 			public void run() {
-				draw();
+				if (mVisible) {
+					mHandler.postDelayed(mUpdateDisplay, 100);
+				}
 			}
 		};
-
-		private void draw() {
-
-			onResume();
-			if (mVisible) {
-				mHandler.postDelayed(mUpdateDisplay, 100);
-			}
-		}
 
 		@Override
 		public void onVisibilityChanged(boolean visible) {
 			mVisible = visible;
 			if (visible) {
-				draw();
+				mHandler.postDelayed(mUpdateDisplay, 100);
+				SoundManager.getInstance().resume();
 			} else {
 				mHandler.removeCallbacks(mUpdateDisplay);
+				SoundManager.getInstance().pause();
 			}
 		}
 
 		@Override
 		public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-			draw();
+			if (mVisible) {
+				mHandler.postDelayed(mUpdateDisplay, 100);
+			}
 		}
 
 		@Override
