@@ -3,7 +3,6 @@ package org.catrobat.catroid.livewallpaper.test;
 
 import com.android.uiautomator.core.UiObject;
 import com.android.uiautomator.core.UiObjectNotFoundException;
-import com.android.uiautomator.core.UiScrollable;
 import com.android.uiautomator.core.UiSelector;
 import com.android.uiautomator.testrunner.UiAutomatorTestCase;
 
@@ -16,16 +15,20 @@ public class PreferenceActivityTest extends UiAutomatorTestCase {
 		navigateToLiveWallpaper(); 		
 		UiObject lwpSettingsButton = new UiObject(new UiSelector().textContains("Settings"));
 		assertTrue("Unable to detect live wallpaper settings", lwpSettingsButton.exists());
-		lwpSettingsButton.clickAndWaitForNewWindow(timeout);
-		
-		testAboutPocketCodeDialog();
-		testAboutWallpaperDialog(); 
-		testAllowSoundsPreference(); 
-		
+		lwpSettingsButton.clickAndWaitForNewWindow(timeout);	
 	}
 	
+	public void testSelectProgramDialog() throws UiObjectNotFoundException {
+		navigateToLiveWallpaper();		
+		UiObject lwpSettingsButton = new UiObject(new UiSelector().textContains("Settings"));
+		lwpSettingsButton.clickAndWaitForNewWindow(timeout);
+	}
 	
-	private void testAllowSoundsPreference() {
+	public void testAllowSoundsPreference() throws UiObjectNotFoundException {
+		navigateToLiveWallpaper();		
+		UiObject lwpSettingsButton = new UiObject(new UiSelector().textContains("Settings"));
+		lwpSettingsButton.clickAndWaitForNewWindow(timeout);
+		
 		UiSelector allowSoundsSelector = new UiSelector().className(android.widget.CheckBox.class.getName()); 
 		UiObject allowSounds = new UiObject(allowSoundsSelector);
 		assertTrue("Unable to detect allow sounds check box in the preference list", allowSounds.exists());
@@ -48,7 +51,11 @@ public class PreferenceActivityTest extends UiAutomatorTestCase {
 	}
 
 
-	private void testAboutWallpaperDialog() throws UiObjectNotFoundException {
+	public void testAboutWallpaperDialog() throws UiObjectNotFoundException {
+		navigateToLiveWallpaper();		
+		UiObject lwpSettingsButton = new UiObject(new UiSelector().textContains("Settings"));
+		lwpSettingsButton.clickAndWaitForNewWindow(timeout);
+		
 		UiObject aboutThisWallpaper = new UiObject(new UiSelector().text("About this wallpaper"));
 		assertTrue("Unable to detect about this wallpaper in the preference list", aboutThisWallpaper.exists());
 		
@@ -64,7 +71,11 @@ public class PreferenceActivityTest extends UiAutomatorTestCase {
 	}
 
 
-	private void testAboutPocketCodeDialog() throws UiObjectNotFoundException{
+	public void testAboutPocketCodeDialog() throws UiObjectNotFoundException{
+		navigateToLiveWallpaper();		
+		UiObject lwpSettingsButton = new UiObject(new UiSelector().textContains("Settings"));
+		lwpSettingsButton.clickAndWaitForNewWindow(timeout);
+		
 		UiObject about = new UiObject(new UiSelector().text("About Pocket Code"));
 		assertTrue("Unable to detect about text", about.exists());
 		about.clickAndWaitForNewWindow(timeout);
@@ -94,39 +105,50 @@ public class PreferenceActivityTest extends UiAutomatorTestCase {
 		
 		getUiDevice().pressHome();
 		
-		UiObject allAppsButton = new UiObject(new UiSelector().description("Apps"));
-		allAppsButton.clickAndWaitForNewWindow(timeout);
+		UiObject screen = new UiObject(new UiSelector().description("Home screen 3"));
+		screen.longClick();
 		
-		// in the apps tabs, we can simulate a user swiping until
-	      // they come to the Settings app icon.  Since the container view 
-	      // is scrollable, we can use a UiScrollable object.
-	      UiScrollable appViews = new UiScrollable(new UiSelector()
-	         .scrollable(true));
-	      
-	      // Set the swiping mode to horizontal (the default is vertical)
-	      appViews.setAsHorizontalList();
-	      UiObject settingsApp = appViews.getChildByText(new UiSelector()
-	         .className(android.widget.TextView.class.getName()), 
-	         "Settings");
-	      settingsApp.clickAndWaitForNewWindow(timeout);
-	      
-	
-		UiObject displayButton = new UiObject(new UiSelector().text("Display"));
-		displayButton.clickAndWaitForNewWindow(timeout);
+		UiObject lwpButton = new UiObject(new UiSelector().text("Live Wallpapers"));
+		lwpButton.clickAndWaitForNewWindow();
+
+		UiObject lwp = new UiObject(new UiSelector().text("Pocket Code"));
+		lwp.clickAndWaitForNewWindow();		
 		
-		UiObject backgroundButton = new UiObject(new UiSelector().text("Wallpaper"));
-		backgroundButton.clickAndWaitForNewWindow(timeout);
-		
-		UiObject lwpButton = new UiObject(new UiSelector().textContains("Live"));
-		lwpButton.clickAndWaitForNewWindow(timeout);
-		
-		 UiScrollable lwpList = new UiScrollable(new UiSelector()
-         .scrollable(true));
-		 
-		 UiObject lwp = lwpList.getChildByText(new UiSelector()
-         .className(android.widget.TextView.class.getName()), 
-         "Pocket Code");
-		 lwp.clickAndWaitForNewWindow(timeout); 
+//		getUiDevice().pressHome();
+//		
+//		UiObject allAppsButton = new UiObject(new UiSelector().description("Apps"));
+//		allAppsButton.clickAndWaitForNewWindow(timeout);
+//		
+//		// in the apps tabs, we can simulate a user swiping until
+//	      // they come to the Settings app icon.  Since the container view 
+//	      // is scrollable, we can use a UiScrollable object.
+//	      UiScrollable appViews = new UiScrollable(new UiSelector()
+//	         .scrollable(true));
+//	      
+//	      // Set the swiping mode to horizontal (the default is vertical)
+//	      appViews.setAsHorizontalList();
+//	      UiObject settingsApp = appViews.getChildByText(new UiSelector()
+//	         .className(android.widget.TextView.class.getName()), 
+//	         "Settings");
+//	      settingsApp.clickAndWaitForNewWindow(timeout);
+//	      
+//	
+//		UiObject displayButton = new UiObject(new UiSelector().text("Display"));
+//		displayButton.clickAndWaitForNewWindow(timeout);
+//		
+//		UiObject backgroundButton = new UiObject(new UiSelector().text("Wallpaper"));
+//		backgroundButton.clickAndWaitForNewWindow(timeout);
+//		
+//		UiObject lwpButton = new UiObject(new UiSelector().textContains("Live"));
+//		lwpButton.clickAndWaitForNewWindow(timeout);
+//		
+//		 UiScrollable lwpList = new UiScrollable(new UiSelector()
+//         .scrollable(true));
+//		 
+//		 UiObject lwp = lwpList.getChildByText(new UiSelector()
+//         .className(android.widget.TextView.class.getName()), 
+//         "Pocket Code");
+//		 lwp.clickAndWaitForNewWindow(timeout); 		
 	}
 	
 }
