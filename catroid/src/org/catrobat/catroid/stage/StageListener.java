@@ -133,9 +133,15 @@ public class StageListener implements ApplicationListener {
 	private byte[] thumbnail;
 
 	private boolean isLiveWallpaper = false;
+	private Context liveWallpaperContext;
+
+	public StageListener() {
+
+	}
 
 	//needed for livewallpaper
-	public StageListener() {
+	public StageListener(Context context) {
+		this.liveWallpaperContext = context;
 		this.isLiveWallpaper = true;
 	}
 
@@ -148,6 +154,10 @@ public class StageListener implements ApplicationListener {
 		if (!this.isLiveWallpaper) {
 			pathForScreenshot = Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName())
 					+ "/";
+		}
+
+		if (ProjectManager.getInstance().getCurrentProject() == null) {
+			Utils.loadProjectIfNeeded(this.liveWallpaperContext);
 		}
 
 		project = ProjectManager.getInstance().getCurrentProject();

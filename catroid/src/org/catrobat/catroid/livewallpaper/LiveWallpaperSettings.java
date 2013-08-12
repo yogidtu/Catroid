@@ -52,7 +52,7 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 		public void onCreate(final Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.livewallpapersettings);
-			handleAboutPcoketCodePreference();
+			handleAboutPocketCodePreference();
 			handleAboutThisWallpaperPreference();
 			handleSelectProgramDialog();
 			handleAllowSoundsCheckBox();
@@ -111,7 +111,7 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 
 		}
 
-		private void handleAboutPcoketCodePreference() {
+		private void handleAboutPocketCodePreference() {
 			Preference licence = findPreference(getResources().getString(R.string.main_menu_about_pocketcode));
 
 			licence.setOnPreferenceClickListener(new OnPreferenceClickListener() {

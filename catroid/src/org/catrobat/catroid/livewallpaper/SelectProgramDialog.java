@@ -22,19 +22,13 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
-import java.io.File;
-
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.utils.UtilFile;
-
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -42,6 +36,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
+
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.utils.UtilFile;
+
+import java.io.File;
 
 public class SelectProgramDialog extends Dialog {
 
@@ -59,11 +60,18 @@ public class SelectProgramDialog extends Dialog {
 
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dialog_lwp_select_program);
+		addRadioButtons();
+		addOkButton();
+		addCancelButton();
+	}
 
+	private void addRadioButtons() {
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.dialog_lwp_select_project_radiogroup);
 
 		File rootDirectory = new File(Constants.DEFAULT_ROOT);
 		int numOfProjects = UtilFile.getProjectNames(rootDirectory).size();
+
+		String currentProjectName = ProjectManager.getInstance().getCurrentProject().getName();
 
 		RadioButton[] radioButton = new RadioButton[numOfProjects];
 		int i = 0;
@@ -72,6 +80,9 @@ public class SelectProgramDialog extends Dialog {
 			radioButton[i].setText(projectName);
 			radioButton[i].setTextColor(Color.WHITE);
 			radioGroup.addView(radioButton[i], i);
+			if (projectName.equals(currentProjectName)) {
+				radioGroup.check(radioButton[i].getId());
+			}
 			i++;
 		}
 
@@ -83,28 +94,35 @@ public class SelectProgramDialog extends Dialog {
 				selectedProject = checkedRadioButton.getText().toString();
 			}
 		});
+	}
 
+	private void addOkButton() {
+		Button okButton = (Button) findViewById(R.id.dialog_lwp_select_project_ok_button);
+		okButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (selectedProject != null
+						&& !selectedProject.equals(ProjectManager.getInstance().getCurrentProject().getName())) {
+					SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+					Editor editor = sharedPreferences.edit();
+					editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
+					editor.commit();
+
+					Toast.makeText(context, "New wallpaper will load after restart", Toast.LENGTH_LONG).show();
+				}
+				dismiss();
+			}
+		});
+	}
+
+	private void addCancelButton() {
 		Button cancelButton = (Button) findViewById(R.id.dialog_lwp_select_project_cancel_button);
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				dismiss();
-			}
-		});
-
-		Button okButton = (Button) findViewById(R.id.dialog_lwp_select_project_ok_button);
-		okButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (selectedProject != null) {
-					Project project = StorageHandler.getInstance().loadProject(selectedProject);
-					ProjectManager.getInstance().setProject(project);
-					StorageHandler.getInstance().saveProject(project);
-					Toast.makeText(context, "New wallpaper will load after restart", Toast.LENGTH_LONG).show();
-					dismiss();
-				}
 			}
 		});
 	}

@@ -22,10 +22,6 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.stage.StageListener;
-
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
@@ -34,6 +30,11 @@ import android.view.WindowManager;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService;
+
+import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.io.SoundManager;
+import org.catrobat.catroid.stage.StageListener;
+import org.catrobat.catroid.utils.Utils;
 
 public class LiveWallpaper extends AndroidLiveWallpaperService {
 
@@ -49,6 +50,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
 		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
 		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
+		Utils.loadProjectIfNeeded(getApplicationContext());
 
 	}
 
@@ -59,7 +61,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 	 */
 	@Override
 	public ApplicationListener createListener(boolean isPreview) {
-		return new StageListener();
+		return new StageListener(getApplicationContext());
 	}
 
 	/*
