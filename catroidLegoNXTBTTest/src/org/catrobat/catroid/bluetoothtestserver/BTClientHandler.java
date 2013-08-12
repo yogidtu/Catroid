@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.LegoNXTBTTestServer;
+package org.catrobat.catroid.bluetoothtestserver;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,16 +29,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+
 import javax.bluetooth.RemoteDevice;
 import javax.microedition.io.StreamConnection;
 
 public class BTClientHandler extends Thread
 {
-  public static byte DIRECT_COMMAND_REPLY = 0;
-  public static byte SYSTEM_COMMAND_REPLY = 1;
-  public static byte REPLY_COMMAND = 2;
-  public static byte DIRECT_COMMAND_NOREPLY = -128;
-  public static byte SYSTEM_COMMAND_NOREPLY = -127;
+  public static final byte DIRECT_COMMAND_REPLY = 0;
+  public static final byte SYSTEM_COMMAND_REPLY = 1;
+  public static final byte REPLY_COMMAND = 2;
+  public static final byte DIRECT_COMMAND_NOREPLY = -128;
+  public static final byte SYSTEM_COMMAND_NOREPLY = -127;
   public static final byte SET_OUTPUT_STATE = 4;
   public static final byte SET_INPUT_MODE = 5;
   public static final byte GET_OUTPUT_STATE = 6;

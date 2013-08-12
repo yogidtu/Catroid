@@ -22,21 +22,6 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import java.util.List;
-
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.formulaeditor.UserVariable;
-import org.catrobat.catroid.ui.adapter.UserVariableAdapter;
-import org.catrobat.catroid.ui.adapter.UserVariableAdapterWrapper;
-import org.catrobat.catroid.ui.dialogs.NewVariableDialog;
-import org.catrobat.catroid.ui.dialogs.NewVariableDialog.NewVariableDialogListener;
-import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
-
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.MotionEvent;
@@ -54,6 +39,21 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Script;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.formulaeditor.UserVariable;
+import org.catrobat.catroid.ui.adapter.UserVariableAdapter;
+import org.catrobat.catroid.ui.adapter.UserVariableAdapterWrapper;
+import org.catrobat.catroid.ui.dialogs.NewVariableDialog;
+import org.catrobat.catroid.ui.dialogs.NewVariableDialog.NewVariableDialogListener;
+import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
+
+import java.util.List;
 
 public class SetVariableBrick extends BrickBaseType implements OnClickListener, NewVariableDialogListener, FormulaBrick {
 	private static final long serialVersionUID = 1L;
@@ -111,13 +111,13 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 			}
 		});
 
-		TextView prototype_text = (TextView) view.findViewById(R.id.brick_set_variable_prototype_view);
-		EditText edit_text = (EditText) view.findViewById(R.id.brick_set_variable_edit_text);
-		prototype_text.setVisibility(View.GONE);
+		TextView prototypeText = (TextView) view.findViewById(R.id.brick_set_variable_prototype_view);
+		EditText editText = (EditText) view.findViewById(R.id.brick_set_variable_edit_text);
+		prototypeText.setVisibility(View.GONE);
 		variableFormula.setTextFieldId(R.id.brick_set_variable_edit_text);
 		variableFormula.refreshTextField(view);
-		edit_text.setVisibility(View.VISIBLE);
-		edit_text.setOnClickListener(this);
+		editText.setVisibility(View.VISIBLE);
+		editText.setOnClickListener(this);
 
 		Spinner variableSpinner = (Spinner) view.findViewById(R.id.set_variable_spinner);
 		UserVariableAdapter userVariableAdapter = ProjectManager.getInstance().getCurrentProject().getUserVariables()

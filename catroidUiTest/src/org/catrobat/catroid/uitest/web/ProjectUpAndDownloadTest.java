@@ -22,8 +22,13 @@
  */
 package org.catrobat.catroid.uitest.web;
 
-import java.io.File;
-import java.io.IOException;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.test.UiThreadTest;
+import android.util.Log;
+import android.widget.EditText;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -45,13 +50,8 @@ import org.catrobat.catroid.web.ServerCalls;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.test.UiThreadTest;
-import android.util.Log;
-import android.widget.EditText;
+import java.io.File;
+import java.io.IOException;
 
 public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private static final String TEST_FILE_DOWNLOAD_URL = "http://catroidtest.ist.tugraz.at/catroid/download/";
@@ -242,11 +242,11 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		Project uploadProject = StorageHandler.getInstance().loadProject(projectName);
 
-		String DeserializedProjectName = uploadProject.getName();
-		String DeserializedProjectDescription = uploadProject.getDescription();
-		assertTrue("Deserialized project name was changed", DeserializedProjectName.equalsIgnoreCase(projectName));
+		String deserializedProjectName = uploadProject.getName();
+		String deserializedProjectDescription = uploadProject.getDescription();
+		assertTrue("Deserialized project name was changed", deserializedProjectName.equalsIgnoreCase(projectName));
 		assertTrue("Deserialized project description was not renamed correctly",
-				DeserializedProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
+				deserializedProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
 
 		UiTestUtils.clearAllUtilTestProjects();
 
@@ -279,8 +279,8 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		solo.sleep(5000);
 
 		Project uploadProject = StorageHandler.getInstance().loadProject(testProject);
-		String DeserializedProjectName = uploadProject.getName();
-		assertTrue("Deserialized project name was changed", DeserializedProjectName.equalsIgnoreCase(testProject));
+		String deserializedProjectName = uploadProject.getName();
+		assertTrue("Deserialized project name was changed", deserializedProjectName.equalsIgnoreCase(testProject));
 
 		downloadProjectAndReplace(testProject);
 		Project downloadedProject = StorageHandler.getInstance().loadProject(testProject);
@@ -499,7 +499,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	}
 
 	private void downloadProjectAndReplace(String projectName) {
-		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENTION;
+		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENSION;
 		downloadUrl += "?fname=" + projectName;
 
 		Intent intent = new Intent(getActivity(), MainMenuActivity.class);
@@ -526,7 +526,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 	@SuppressWarnings("unused")
 	private void downloadProject() {
-		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENTION;
+		String downloadUrl = TEST_FILE_DOWNLOAD_URL + serverProjectId + Constants.CATROBAT_EXTENSION;
 		downloadUrl += "?fname=" + newTestProject;
 
 		Intent intent = new Intent(getActivity(), MainMenuActivity.class);

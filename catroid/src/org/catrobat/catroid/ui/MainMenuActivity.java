@@ -22,32 +22,7 @@
  */
 package org.catrobat.catroid.ui;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.concurrent.locks.Lock;
-
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.io.LoadProjectTask;
-import org.catrobat.catroid.io.LoadProjectTask.OnLoadProjectCompleteListener;
-import org.catrobat.catroid.stage.PreStageActivity;
-import org.catrobat.catroid.transfers.CheckTokenTask;
-import org.catrobat.catroid.transfers.CheckTokenTask.OnCheckTokenCompleteListener;
-import org.catrobat.catroid.transfers.ProjectDownloadService;
-import org.catrobat.catroid.ui.dialogs.AboutDialogFragment;
-import org.catrobat.catroid.ui.dialogs.LoginRegisterDialog;
-import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
-import org.catrobat.catroid.ui.dialogs.UploadProjectDialog;
-import org.catrobat.catroid.utils.StatusBarNotificationManager;
-import org.catrobat.catroid.utils.UtilFile;
-import org.catrobat.catroid.utils.UtilZip;
-import org.catrobat.catroid.utils.Utils;
-import org.catrobat.catroid.web.ServerCalls;
-
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -70,11 +45,34 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.io.LoadProjectTask;
+import org.catrobat.catroid.io.LoadProjectTask.OnLoadProjectCompleteListener;
+import org.catrobat.catroid.stage.PreStageActivity;
+import org.catrobat.catroid.transfers.CheckTokenTask;
+import org.catrobat.catroid.transfers.CheckTokenTask.OnCheckTokenCompleteListener;
+import org.catrobat.catroid.transfers.ProjectDownloadService;
+import org.catrobat.catroid.ui.dialogs.AboutDialogFragment;
+import org.catrobat.catroid.ui.dialogs.LoginRegisterDialog;
+import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
+import org.catrobat.catroid.ui.dialogs.UploadProjectDialog;
+import org.catrobat.catroid.utils.StatusBarNotificationManager;
+import org.catrobat.catroid.utils.UtilFile;
+import org.catrobat.catroid.utils.UtilZip;
+import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.web.ServerCalls;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.concurrent.locks.Lock;
+
 public class MainMenuActivity extends SherlockFragmentActivity implements OnCheckTokenCompleteListener,
 		OnLoadProjectCompleteListener {
 
-	private String TYPE_FILE = "file";
-	private String TYPE_HTTP = "http";
+	private static final String TYPE_FILE = "file";
+	private static final String TYPE_HTTP = "http";
 
 	private class DownloadReceiver extends ResultReceiver {
 
@@ -252,7 +250,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 		if (!viewSwitchLock.tryLock()) {
 			return;
 		}
-		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getText(R.string.catrobat_forum).toString()));
+		Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.CATROBAT_FORUM_URL));
 		startActivity(browserIntent);
 	}
 
@@ -261,28 +259,8 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 			return;
 		}
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(getText(R.string.main_menu_web_dialog_title));
-		builder.setMessage(getText(R.string.main_menu_web_dialog_message));
-
-		builder.setPositiveButton(getText(R.string.ok), new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int id) {
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getText(R.string.pocketcode_website)
-						.toString()));
-				startActivity(browserIntent);
-			}
-		});
-		builder.setNegativeButton(getText(R.string.cancel_button), new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.cancel();
-			}
-		});
-
-		AlertDialog alertDialog = builder.create();
-		alertDialog.setCanceledOnTouchOutside(true);
-		alertDialog.show();
+		Intent intent = new Intent(MainMenuActivity.this, WebViewActivity.class);
+		startActivity(intent);
 	}
 
 	public void handleUploadButton(View v) {

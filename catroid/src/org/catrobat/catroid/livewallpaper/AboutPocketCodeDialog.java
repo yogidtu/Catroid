@@ -22,9 +22,6 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.utils.Utils;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -32,6 +29,10 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.Window;
 import android.widget.TextView;
+
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.utils.Utils;
 
 public class AboutPocketCodeDialog extends Dialog {
 
@@ -61,15 +62,13 @@ public class AboutPocketCodeDialog extends Dialog {
 
 		TextView aboutUrlTextView = (TextView) findViewById(R.id.dialog_about_text_view_url);
 		aboutUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
-		String aboutUrl = context.getString(R.string.about_link_template,
-				context.getString(R.string.about_pocketcode_license_url),
+		String aboutUrl = context.getString(R.string.about_link_template, Constants.ABOUT_POCKETCODE_LICENSE_URL,
 				context.getString(R.string.dialog_about_pocketcode_license_link_text));
 		aboutUrlTextView.setText(Html.fromHtml(aboutUrl));
 
 		TextView aboutUrlCatrobatView = (TextView) findViewById(R.id.dialog_about_text_catrobat_url);
 		aboutUrlCatrobatView.setMovementMethod(LinkMovementMethod.getInstance());
-		String aboutCatrobatUrl = context.getString(R.string.about_link_template,
-				context.getString(R.string.about_catrobat_url),
+		String aboutCatrobatUrl = context.getString(R.string.about_link_template, Constants.CATROBAT_ABOUT_URL,
 				context.getString(R.string.dialog_about_catrobat_link_text));
 		aboutUrlCatrobatView.setText(Html.fromHtml(aboutCatrobatUrl));
 

@@ -22,8 +22,12 @@
  */
 package org.catrobat.catroid.transfers;
 
-import java.io.File;
-import java.io.IOException;
+import android.app.IntentService;
+import android.content.Context;
+import android.content.Intent;
+import android.os.ResultReceiver;
+import android.util.Log;
+import android.widget.Toast;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
@@ -33,17 +37,13 @@ import org.catrobat.catroid.utils.Utils;
 import org.catrobat.catroid.web.ServerCalls;
 import org.catrobat.catroid.web.WebconnectionException;
 
-import android.app.IntentService;
-import android.content.Context;
-import android.content.Intent;
-import android.os.ResultReceiver;
-import android.util.Log;
-import android.widget.Toast;
+import java.io.File;
+import java.io.IOException;
 
 public class ProjectUploadService extends IntentService {
 
 	private static final String TAG = ProjectUploadService.class.getSimpleName();
-	private static final String UPLOAD_FILE_NAME = "upload" + Constants.CATROBAT_EXTENTION;
+	private static final String UPLOAD_FILE_NAME = "upload" + Constants.CATROBAT_EXTENSION;
 
 	private String projectPath;
 	private String projectName;

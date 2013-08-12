@@ -29,27 +29,6 @@
 
 package org.catrobat.catroid.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.Semaphore;
-
-import org.catrobat.catroid.BuildConfig;
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.common.SoundInfo;
-import org.catrobat.catroid.common.StandardProjectHandler;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.io.StorageHandler;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -75,6 +54,27 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import org.catrobat.catroid.BuildConfig;
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.common.SoundInfo;
+import org.catrobat.catroid.common.StandardProjectHandler;
+import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.io.StorageHandler;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Semaphore;
 
 public class Utils {
 
@@ -424,12 +424,12 @@ public class Utils {
 	}
 
 	public static int convertDoubleToPluralInteger(double value) {
-		double abs_value = Math.abs(value);
-		if (abs_value > 2.5) {
-			return (int) Math.round(abs_value);
+		double absoluteValue = Math.abs(value);
+		if (absoluteValue > 2.5) {
+			return (int) Math.round(absoluteValue);
 		} else {
-			if (abs_value == 0.0 || abs_value == 1.0 || abs_value == 2.0) {
-				return (int) abs_value;
+			if (absoluteValue == 0.0 || absoluteValue == 1.0 || absoluteValue == 2.0) {
+				return (int) absoluteValue;
 			} else {
 				// Random Number to get into the "other" keyword for values like 0.99 or 2.001 seconds or degrees
 				// in hopefully all possible languages
