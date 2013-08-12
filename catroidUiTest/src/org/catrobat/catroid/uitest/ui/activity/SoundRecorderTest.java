@@ -22,8 +22,12 @@
  */
 package org.catrobat.catroid.uitest.ui.activity;
 
-import java.io.File;
-import java.util.ArrayList;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
+
+import com.jayway.android.robotium.solo.Solo;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -36,12 +40,8 @@ import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.Utils;
 
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Configuration;
-
-import com.jayway.android.robotium.solo.Solo;
+import java.io.File;
+import java.util.ArrayList;
 
 public class SoundRecorderTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
@@ -121,7 +121,7 @@ public class SoundRecorderTest extends BaseActivityInstrumentationTestCase<MainM
 
 	private void assertSoundRecording(int recordNumber) {
 		String recordPath = Utils.buildPath(Constants.TMP_PATH,
-				solo.getString(R.string.soundrecorder_recorded_filename) + Constants.RECORDING_EXTENTION);
+				solo.getString(R.string.soundrecorder_recorded_filename) + Constants.RECORDING_EXTENSION);
 		File recordedFile = new File(recordPath);
 		assertTrue("recorded sound file not found in file system", recordedFile.exists());
 

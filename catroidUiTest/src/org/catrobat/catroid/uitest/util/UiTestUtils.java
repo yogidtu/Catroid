@@ -25,16 +25,36 @@ package org.catrobat.catroid.uitest.util;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.os.Build;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.test.ActivityInstrumentationTestCase2;
+import android.text.InputType;
+import android.util.Log;
+import android.util.SparseIntArray;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.internal.ActionBarSherlockCompat;
+import com.actionbarsherlock.internal.view.menu.ActionMenuItem;
+import com.jayway.android.robotium.solo.Solo;
 
 import junit.framework.AssertionFailedError;
 
@@ -109,36 +129,16 @@ import org.catrobat.catroid.utils.Utils;
 import org.catrobat.catroid.web.ServerCalls;
 import org.catrobat.catroid.web.WebconnectionException;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.Instrumentation;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.os.Build;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.test.ActivityInstrumentationTestCase2;
-import android.text.InputType;
-import android.util.Log;
-import android.util.SparseIntArray;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewConfiguration;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.internal.ActionBarSherlockCompat;
-import com.actionbarsherlock.internal.view.menu.ActionMenuItem;
-import com.jayway.android.robotium.solo.Solo;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UiTestUtils {
 	private static ProjectManager projectManager = ProjectManager.getInstance();
@@ -162,12 +162,12 @@ public class UiTestUtils {
 	public static final int LOOKS_INDEX = 1;
 	public static final int SOUNDS_INDEX = 2;
 
-	private static final List<Integer> fragmentIndexList = new ArrayList<Integer>();
+	private static final List<Integer> FRAGMENT_INDEX_LIST = new ArrayList<Integer>();
 
 	static {
-		fragmentIndexList.add(R.id.fragment_script_relative_layout);
-		fragmentIndexList.add(R.id.fragment_look_relative_layout);
-		fragmentIndexList.add(R.id.fragment_sound_relative_layout);
+		FRAGMENT_INDEX_LIST.add(R.id.fragment_script_relative_layout);
+		FRAGMENT_INDEX_LIST.add(R.id.fragment_look_relative_layout);
+		FRAGMENT_INDEX_LIST.add(R.id.fragment_sound_relative_layout);
 	}
 
 	public static enum FileTypes {
@@ -493,15 +493,15 @@ public class UiTestUtils {
 
 		ArrayList<Brick> brickList = new ArrayList<Brick>();
 
-		IfLogicBeginBrick IfBeginBrick = new IfLogicBeginBrick(firstSprite, 0);
-		IfLogicElseBrick IfElseBrick = new IfLogicElseBrick(firstSprite, IfBeginBrick);
-		IfLogicEndBrick IfEndBrick = new IfLogicEndBrick(firstSprite, IfElseBrick, IfBeginBrick);
+		IfLogicBeginBrick ifBeginBrick = new IfLogicBeginBrick(firstSprite, 0);
+		IfLogicElseBrick ifElseBrick = new IfLogicElseBrick(firstSprite, ifBeginBrick);
+		IfLogicEndBrick ifEndBrick = new IfLogicEndBrick(firstSprite, ifElseBrick, ifBeginBrick);
 
-		brickList.add(IfBeginBrick);
+		brickList.add(ifBeginBrick);
 		brickList.add(new ShowBrick(firstSprite));
-		brickList.add(IfElseBrick);
+		brickList.add(ifElseBrick);
 		brickList.add(new ComeToFrontBrick(firstSprite));
-		brickList.add(IfEndBrick);
+		brickList.add(ifEndBrick);
 
 		for (Brick brick : brickList) {
 			testScript.addBrick(brick);
@@ -1323,8 +1323,8 @@ public class UiTestUtils {
 		}
 	}
 
-	public static View getViewContainerByIds(Solo solo, int id, int container_id) {
-		View parent = solo.getView(container_id);
+	public static View getViewContainerByIds(Solo solo, int id, int containerId) {
+		View parent = solo.getView(containerId);
 		List<View> views = solo.getViews(parent);
 		for (View view : views) {
 			if (view.getId() == id) {
@@ -1394,7 +1394,7 @@ public class UiTestUtils {
 		solo.waitForActivity(ProgramMenuActivity.class);
 		solo.clickOnButton(fragmentIndex);
 		solo.waitForActivity(ScriptActivity.class);
-		int id = fragmentIndexList.get(fragmentIndex);
+		int id = FRAGMENT_INDEX_LIST.get(fragmentIndex);
 		solo.waitForFragmentById(id);
 	}
 }

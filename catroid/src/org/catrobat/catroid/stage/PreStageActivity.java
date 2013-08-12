@@ -22,19 +22,6 @@
  */
 package org.catrobat.catroid.stage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Locale;
-
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.LegoNXT.LegoNXT;
-import org.catrobat.catroid.LegoNXT.LegoNXTBtCommunicator;
-import org.catrobat.catroid.bluetooth.BluetoothManager;
-import org.catrobat.catroid.bluetooth.DeviceListActivity;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.bricks.Brick;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -48,6 +35,19 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.bluetooth.BluetoothManager;
+import org.catrobat.catroid.bluetooth.DeviceListActivity;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.legonxt.LegoNXT;
+import org.catrobat.catroid.legonxt.LegoNXTBtCommunicator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class PreStageActivity extends Activity {
 
@@ -68,15 +68,15 @@ public class PreStageActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		int required_resources = getRequiredRessources();
-		requiredResourceCounter = Integer.bitCount(required_resources);
+		int requiredResources = getRequiredRessources();
+		requiredResourceCounter = Integer.bitCount(requiredResources);
 
-		if ((required_resources & Brick.TEXT_TO_SPEECH) > 0) {
+		if ((requiredResources & Brick.TEXT_TO_SPEECH) > 0) {
 			Intent checkIntent = new Intent();
 			checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 			startActivityForResult(checkIntent, REQUEST_TEXT_TO_SPEECH);
 		}
-		if ((required_resources & Brick.BLUETOOTH_LEGO_NXT) > 0) {
+		if ((requiredResources & Brick.BLUETOOTH_LEGO_NXT) > 0) {
 			BluetoothManager bluetoothManager = new BluetoothManager(this);
 
 			int bluetoothState = bluetoothManager.activateBluetooth();

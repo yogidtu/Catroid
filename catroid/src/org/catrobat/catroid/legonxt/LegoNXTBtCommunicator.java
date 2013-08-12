@@ -40,22 +40,22 @@
  *   		You should have received a copy of the GNU Affero General Public License
  *   		along with MINDdroid.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.LegoNXT;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.util.UUID;
-
-import org.catrobat.catroid.bluetooth.BTConnectable;
+package org.catrobat.catroid.legonxt;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.res.Resources;
 import android.os.Handler;
+
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.bluetooth.BTConnectable;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.UUID;
 
 /**
  * This class is for talking to a LEGO NXT robot via bluetooth.
@@ -73,7 +73,7 @@ public class LegoNXTBtCommunicator extends LegoNXTCommunicator {
 	private OutputStream nxtOutputStream = null;
 	private InputStream nxtInputStream = null;
 
-	private String mMACaddress;
+	private String macAddress;
 	private BTConnectable myOwner;
 
 	public LegoNXTBtCommunicator(BTConnectable myOwner, Handler uiHandler, BluetoothAdapter btAdapter,
@@ -85,7 +85,7 @@ public class LegoNXTBtCommunicator extends LegoNXTCommunicator {
 	}
 
 	public void setMACAddress(String mMACaddress) {
-		this.mMACaddress = mMACaddress;
+		this.macAddress = mMACaddress;
 	}
 
 	/**
@@ -132,12 +132,12 @@ public class LegoNXTBtCommunicator extends LegoNXTCommunicator {
 		try {
 			BluetoothSocket nxtBTSocketTemporary;
 			BluetoothDevice nxtDevice = null;
-			nxtDevice = btAdapter.getRemoteDevice(mMACaddress);
+			nxtDevice = btAdapter.getRemoteDevice(macAddress);
 			if (nxtDevice == null) {
 				if (uiHandler == null) {
 					throw new IOException();
 				} else {
-					sendToast(mResources.getString(R.string.no_paired_nxt));
+					sendToast(resources.getString(R.string.no_paired_nxt));
 					sendState(STATE_CONNECTERROR);
 					return;
 				}
@@ -151,7 +151,7 @@ public class LegoNXTBtCommunicator extends LegoNXTCommunicator {
 			} catch (IOException e) {
 				if (myOwner.isPairing()) {
 					if (uiHandler != null) {
-						sendToast(mResources.getString(R.string.pairing_message));
+						sendToast(resources.getString(R.string.pairing_message));
 						sendState(STATE_CONNECTERROR_PAIRING);
 					} else {
 						throw e;
@@ -183,7 +183,7 @@ public class LegoNXTBtCommunicator extends LegoNXTCommunicator {
 				throw e;
 			} else {
 				if (myOwner.isPairing()) {
-					sendToast(mResources.getString(R.string.pairing_message));
+					sendToast(resources.getString(R.string.pairing_message));
 				}
 				sendState(STATE_CONNECTERROR);
 				return;
@@ -220,7 +220,7 @@ public class LegoNXTBtCommunicator extends LegoNXTCommunicator {
 			if (uiHandler == null) {
 				throw e;
 			} else {
-				sendToast(mResources.getString(R.string.problem_at_closing));
+				sendToast(resources.getString(R.string.problem_at_closing));
 			}
 		}
 	}

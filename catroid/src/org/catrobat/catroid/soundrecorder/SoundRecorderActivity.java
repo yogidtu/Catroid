@@ -22,12 +22,6 @@
  */
 package org.catrobat.catroid.soundrecorder;
 
-import java.io.IOException;
-
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.utils.Utils;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -43,6 +37,12 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.utils.Utils;
+
+import java.io.IOException;
 
 public class SoundRecorderActivity extends SherlockFragmentActivity implements OnClickListener {
 
@@ -114,7 +114,7 @@ public class SoundRecorderActivity extends SherlockFragmentActivity implements O
 		}
 		try {
 			String recordPath = Utils.buildPath(Constants.TMP_PATH, getString(R.string.soundrecorder_recorded_filename)
-					+ Constants.RECORDING_EXTENTION);
+					+ Constants.RECORDING_EXTENSION);
 			soundRecorder = new SoundRecorder(recordPath);
 			soundRecorder.start();
 			setViewsToRecordingState();
