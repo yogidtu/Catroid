@@ -23,14 +23,11 @@
 package org.catrobat.catroid.speechrecognition;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import javaFlacEncoder.FLACEncoder;
 import javaFlacEncoder.FLACStreamOutputStream;
@@ -47,27 +44,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import android.media.AudioFormat;
 import android.util.Log;
 
 public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 	private static final String API_URL = "http://www.google.com/speech-api/v1/recognize?client=chromium&lang=de-DE&maxresults=5";
 	private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.77 Safari/535.7";
-	private static final int MAX_READ = 16384;
 
 	public GoogleOnlineSpeechRecognizer() {
 		super();
 	}
 
-	public void setWAVInputFile(String inputFilePath) throws IOException {
-		setAudioInputStream(readWAVHeader(inputFilePath));
-	}
-
 	@Override
-	public void run() {
-
-		InputStream flacInputStream = startEncoding();
+	protected void runRecognitionTask(AudioInputStream inputStream) {
+		InputStream flacInputStream = startEncoding(inputStream);
 		if (flacInputStream == null) {
 			return;
 		}
@@ -83,17 +73,17 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 				sendResults(matches);
 			}
 		} catch (JSONException e) {
-			sendError(ERROR_API_CHANGED, "The response JSON-Object couldn't be parsed correct");
+			sendError(RecognizerCallback.ERROR_API_CHANGED, "The response JSON-Object couldn't be parsed correct");
 		}
 	}
 
-	private InputStream startEncoding() {
+	private InputStream startEncoding(final AudioInputStream inputStream) {
 
 		final FLACEncoder flac = new FLACEncoder();
 		StreamConfiguration streamConfiguration = new StreamConfiguration();
-		streamConfiguration.setBitsPerSample(stream.getSampleSizeInBits());
-		streamConfiguration.setChannelCount(stream.getChannels());
-		streamConfiguration.setSampleRate(stream.getSampleRate());
+		streamConfiguration.setBitsPerSample(inputStream.getSampleSizeInBits());
+		streamConfiguration.setChannelCount(inputStream.getChannels());
+		streamConfiguration.setSampleRate(inputStream.getSampleRate());
 
 		flac.setStreamConfiguration(streamConfiguration);
 
@@ -108,7 +98,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 			pipedInputStream = new PipedInputStream(pipedOutputStream);
 			flac.openFLACStream();
 		} catch (IOException e1) {
-			sendError(ERROR_OTHER, "Pipes couldn't be generated. Try filebased execution.");
+			sendError(RecognizerCallback.ERROR_OTHER, "Pipes couldn't be generated. Try filebased execution.");
 			return null;
 		}
 
@@ -116,13 +106,11 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 			@Override
 			public void run() {
 				try {
-					Log.w("GoogleSpeechRecog", "Starting encoding...");
-					encodeAudioInputStream(stream, MAX_READ, flac, true);
-					Log.w("GoogleSpeechRecog", "Finished encoding...");
+					encodeAudioInputStream(inputStream, inputStream.getFrameByteSize(), flac, true);
 					pipedOutputStream.flush();
 					pipedOutputStream.close();
 				} catch (Exception e) {
-					sendError(ERROR_OTHER, "There was a problem when converting into FLAC-Format.");
+					sendError(RecognizerCallback.ERROR_OTHER, "There was a problem when converting into FLAC-Format.");
 				}
 			}
 		}).start();
@@ -147,19 +135,18 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 		HttpResponse response;
 		try {
-			Log.w("GoogleSpeechRecog", "Starting request...");
+			if (DEBUG_OUTPUT) {
+				Log.w("GoogleSpeechRecog", "Starting request" + Thread.currentThread() + " ...");
+			}
 			response = httpclient.execute(httppost);
-			Log.w("GoogleSpeechRecog", "Finished request...");
+			if (DEBUG_OUTPUT) {
+				Log.w("GoogleSpeechRecog", "Finished request" + Thread.currentThread() + "...");
+			}
 		} catch (ClientProtocolException cpe) {
-			sendError(ERROR_NONETWORK, "Executing the postrequest failed.");
+			sendError(RecognizerCallback.ERROR_NONETWORK, "Executing the postrequest failed.");
 			return null;
 		} catch (IOException e) {
-			sendError(ERROR_NONETWORK, e.getMessage());
-			return null;
-		}
-
-		if (response.getStatusLine().getStatusCode() != 200) {
-			sendError(ERROR_API_CHANGED, "Statuscode was " + response.getStatusLine().getStatusCode());
+			sendError(RecognizerCallback.ERROR_NONETWORK, e.getMessage());
 			return null;
 		}
 
@@ -167,7 +154,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 		try {
 			reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 		} catch (IOException e) {
-			sendError(ERROR_NONETWORK, e.getMessage());
+			sendError(RecognizerCallback.ERROR_NONETWORK, e.getMessage());
 			return null;
 		}
 
@@ -177,13 +164,20 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 				builder.append(line).append("\n");
 			}
 		} catch (IOException e) {
-			sendError(ERROR_NONETWORK, e.getMessage());
+			sendError(RecognizerCallback.ERROR_NONETWORK, e.getMessage());
 			return null;
 		}
 
 		String resp = builder.toString();
 		if (resp.contains("NO_MATCH")) {
-			return resturnJson;
+			sendResults(new ArrayList<String>());
+			return null;
+		}
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			sendError(RecognizerCallback.ERROR_API_CHANGED, "Statuscode was "
+					+ response.getStatusLine().getStatusCode());
+			return null;
 		}
 
 		JSONObject object;
@@ -193,90 +187,15 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 				resturnJson = object.getJSONArray("hypotheses");
 			}
 		} catch (JSONException e) {
-			sendError(ERROR_API_CHANGED, "The response JSON-Object couldn't be parsed correct");
+			sendError(RecognizerCallback.ERROR_API_CHANGED, "The response JSON-Object couldn't be parsed correct");
 			return null;
 		}
 		return resturnJson;
 	}
 
-	@Override
-	public void setAudioInputStream(AudioInputStream inputStream) throws IllegalArgumentException {
-		if (inputStream.getSampleRate() != 16000) {
-			throw new IllegalArgumentException("Unsupported SampleRate. Supported: 16kHz");
-		}
-		this.stream = inputStream;
-	}
-
-	private AudioInputStream readWAVHeader(String inputFilePath) throws IOException {
-
-		long sampleRate;
-		int sampleSizeInBits;
-		int channels;
-
-		FileInputStream fileStream = new FileInputStream(new File(inputFilePath));
-
-		byte[] headerProperties = new byte[4];
-		readBytes(fileStream, headerProperties, 4);
-		if (headerProperties[0] != 'R' || headerProperties[1] != 'I' || headerProperties[2] != 'F'
-				|| headerProperties[3] != 'F') {
-			throw new IllegalArgumentException("Header mailformed or not supported.");
-		}
-		fileStream.skip(8);
-		readBytes(fileStream, headerProperties, 4);
-		if (headerProperties[0] != 'f' || headerProperties[1] != 'm' || headerProperties[2] != 't'
-				|| headerProperties[3] != ' ') {
-			throw new IllegalArgumentException("Header fmt-chunk not found.");
-		}
-		fileStream.skip(4);
-		readBytes(fileStream, headerProperties, 4);
-		channels = headerProperties[2];
-		readBytes(fileStream, headerProperties, 4);
-		sampleRate = byteToLong(headerProperties);
-		fileStream.skip(4);
-		readBytes(fileStream, headerProperties, 4);
-		sampleSizeInBits = headerProperties[2];
-
-		int encoding;
-		if (sampleSizeInBits == 8) {
-			encoding = AudioFormat.ENCODING_PCM_8BIT;
-		} else if (sampleSizeInBits == 16) {
-			encoding = AudioFormat.ENCODING_PCM_16BIT;
-		} else {
-			throw new IllegalArgumentException();
-		}
-
-		fileStream.close();
-
-		AudioInputStream audioInputStream = new AudioInputStream(new FileInputStream(new File(inputFilePath)),
-				encoding, channels, (int) sampleRate, 2, ByteOrder.LITTLE_ENDIAN, true);
-		return audioInputStream;
-	}
-
-	private void readBytes(FileInputStream stream, byte[] buffer, int size) throws IOException {
-		int readBytes = 0;
-		while (readBytes != size) {
-			int currentReadBytes = stream.read(buffer, readBytes, size - readBytes);
-			if (currentReadBytes == -1) {
-				throw new IllegalArgumentException();
-			}
-			readBytes += currentReadBytes;
-		}
-		return;
-	}
-
-	private long byteToLong(byte[] byteArray) {
-		long result = 0;
-		result = 0xff & byteArray[0];
-		result |= ((long) (0xff & byteArray[1]) << 8);
-		result |= ((long) (0xff & byteArray[2]) << 16);
-		result |= ((long) (0xff & byteArray[3]) << 24);
-		return result;
-
-	}
-
 	private int encodeAudioInputStream(AudioInputStream sin, int maxRead, FLACEncoder flac, boolean useThreads)
 			throws IOException, IllegalArgumentException {
-		int frameSize = sin.getFrameSize();
+		int frameSize = 2;
 		int sampleSize = sin.getSampleSizeInBits();
 		int bytesPerSample = sampleSize / 8;
 		if (sampleSize % 8 != 0) {
@@ -354,5 +273,13 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 			unencodedSamples -= flac.encodeSamples(unencodedSamples, true);
 		}
 		return totalSamples;
+	}
+
+	@Override
+	public boolean isAudioFormatSupported(AudioInputStream streamToCheck) {
+		if (streamToCheck.getSampleRate() != 16000) {
+			return false;
+		}
+		return true;
 	}
 }

@@ -25,7 +25,7 @@ package org.catrobat.catroid.speechrecognition;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class VoiceActivityDetection {
+public class AdaptiveEnergyVoiceDetection extends VoiceDetection {
 	/*
 	 * Implemented after
 	 * Sangwan, A.; Chiranth, M.C.; Jamadagni, H.S.; Sah, R.; Venkatesha Prasad, R.; Gaurav, V.,
@@ -43,15 +43,15 @@ public class VoiceActivityDetection {
 	private double energyThreshold = 0.0d;
 	private int framesForThreshold = 40;
 	private float weightFactor = 0.1f;
-	private int crossZeroFaktor = 15;
 
 	private float thresholdFactor = 1.2f;
 	private Queue<Double> recentEnergyRingQueqe = new LinkedList<Double>();
 
-	public VoiceActivityDetection() {
+	public AdaptiveEnergyVoiceDetection() {
 		this.resetState();
 	}
 
+	@Override
 	public boolean isFrameWithVoice(double[] frame) {
 		double frameEnergy = calculateEnergyOfFrame(frame);
 
@@ -75,14 +75,6 @@ public class VoiceActivityDetection {
 		if (frameEnergy > thresholdFactor * energyThreshold) {
 			return true;
 		}
-		//Log.v("VAD", "energy fail: " + frameEnergy + " lower than: " + thresholdFactor * energyThreshold);
-
-		int crossings = countZeroCrossings(frame);
-		if (crossings >= 5 && crossings <= crossZeroFaktor) {
-			//Log.v("VAD", "cross ok: " + crossings);
-			return true;
-		}
-		//Log.v("VAD", "cross fail: " + crossings);
 
 		//adaption of p
 		double var_old = getVarianceOfRecentInactiveFrames();
@@ -128,35 +120,32 @@ public class VoiceActivityDetection {
 		return sum / (recentEnergyRingQueqe.size() - 1);
 	}
 
-	private int countZeroCrossings(double[] frames) {
-		double preFrame = frames[0];
-		int crossings = 0;
-		for (double value : frames) {
-			if ((preFrame > 0 && value < 0) || preFrame < 0 && value > 0) {
-				crossings++;
-			}
-			preFrame = value;
-		}
-		return crossings;
-	}
-
+	@Override
 	public void resetState() {
 		energyThreshold = 0.0d;
 		weightFactor = 0.1f;
 		recentEnergyRingQueqe.clear();
-		setSensibility(SENSIBILITY_NORMAL);
+		setSensibility(VoiceDetectionSensibility.NORMAL);
 	}
 
-	public void setSensibility(float faktor) {
-		thresholdFactor = faktor;
-		//		if (faktor == SENSIBILITY_HIGH) {
-		//			crossZeroFaktor = 33;
-		//		}
-		//		if (faktor == SENSIBILITY_NORMAL) {
-		//			crossZeroFaktor = 20;
-		//		}
-		//		if (faktor == SENSIBILITY_LOW) {
-		//			crossZeroFaktor = 10;
-		//		}
+	@Override
+	public boolean isInitialized() {
+		return recentEnergyRingQueqe.size() >= framesForThreshold;
+	}
+
+	@Override
+	public void setSensibility(VoiceDetectionSensibility Sensibility) {
+		switch (Sensibility) {
+			case HIGH:
+				thresholdFactor = 1.3f;
+				break;
+			case NORMAL:
+				thresholdFactor = 1.6f;
+				break;
+			case LOW:
+				thresholdFactor = 1.8f;
+				break;
+		}
+
 	}
 }

@@ -22,28 +22,30 @@
  */
 package org.catrobat.catroid.test.utiltests;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.common.StandardProjectHandler;
+import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.test.R;
-import org.catrobat.catroid.test.utils.Reflection;
-import org.catrobat.catroid.test.utils.SimulatedAudioRecord;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.MicrophoneGrabber;
 import org.catrobat.catroid.utils.UtilSpeechRecognition;
-import org.catrobat.catroid.utils.UtilSpeechRecognition.SpeechRecognizeListener;
 
+import android.media.AudioFormat;
+import android.os.Bundle;
 import android.test.InstrumentationTestCase;
 
-public class UtilSpeechRecognitionTest extends InstrumentationTestCase implements SpeechRecognizeListener {
+public class UtilSpeechRecognitionTest extends InstrumentationTestCase implements RecognizerCallback {
 
 	private String testProjectName = "testStandardProjectRecognition";
 	private ArrayList<String> lastMatches = new ArrayList<String>();
 	private static final int SPEECH_FILE_ID = R.raw.speechsample_directions;
-	private SimulatedAudioRecord audioSimulator;
 
 	@Override
 	public void tearDown() throws Exception {
@@ -65,22 +67,26 @@ public class UtilSpeechRecognitionTest extends InstrumentationTestCase implement
 		ProjectManager.getInstance().setProject(
 				StandardProjectHandler.createAndSaveStandardProject(testProjectName, getInstrumentation()
 						.getTargetContext()));
+		File testSpeechFile = TestUtils.saveFileToProject(testProjectName, "directionSpeech.wav", SPEECH_FILE_ID,
+				getInstrumentation().getContext(), TestUtils.TYPE_SOUND_FILE);
+		FileInputStream speechFileStream = new FileInputStream(testSpeechFile);
+		AudioInputStream audioFileStream = new AudioInputStream(speechFileStream, AudioFormat.ENCODING_PCM_16BIT, 1,
+				16000, 128, ByteOrder.LITTLE_ENDIAN, true);
 
-		audioSimulator = new SimulatedAudioRecord(SPEECH_FILE_ID, getInstrumentation().getContext());
-		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "audioRecord", audioSimulator);
+		UtilSpeechRecognition speechRecognizer = new UtilSpeechRecognition(audioFileStream);
+		speechRecognizer.registerContinuousSpeechListener(this);
+		speechRecognizer.start();
 
-		UtilSpeechRecognition.getInstance().registerContinuousSpeechListener(this);
-
-		int i = 10;
+		int i = 15;
 		do {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		} while ((i--) > 0
-				&& (audioSimulator.isMockRecording() || UtilSpeechRecognition.getInstance().isRecognitionRunning()));
+		} while ((i--) > 0 && speechRecognizer.isRecognitionRunning());
 
+		assertTrue("Timed out.", i > 0);
 		assertTrue("There was no recognition", lastMatches.size() > 0);
 
 		assertTrue("\"links\" was not recognized.", matchesContainString("links"));
@@ -88,13 +94,8 @@ public class UtilSpeechRecognitionTest extends InstrumentationTestCase implement
 		assertTrue("\"rauf\" was not recognized.", matchesContainString("rauf"));
 		assertTrue("\"runter\" was not recognized.", matchesContainString("runter"));
 		assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
-
-		UtilSpeechRecognition.getInstance().unregisterContinuousSpeechListener(this);
-		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "instance", null);
-	}
-
-	public void onRecognizedSpeech(String bestAnswer, ArrayList<String> allAnswerSuggestions) {
-		lastMatches.addAll(allAnswerSuggestions);
+		speechRecognizer.unregisterContinuousSpeechListener(this);
+		speechRecognizer.stop();
 	}
 
 	private boolean matchesContainString(String search) {
@@ -104,5 +105,15 @@ public class UtilSpeechRecognitionTest extends InstrumentationTestCase implement
 			}
 		}
 		return false;
+	}
+
+	public void onRecognizerResult(int resultCode, Bundle resultBundle) {
+		if (resultCode == RESULT_OK) {
+			lastMatches.addAll(resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES));
+		}
+
+	}
+
+	public void onRecognizerError(Bundle errorBundle) {
 	}
 }

@@ -40,7 +40,6 @@ import org.catrobat.catroid.test.utils.TestUtils;
 import android.media.AudioFormat;
 import android.os.Bundle;
 import android.test.InstrumentationTestCase;
-import android.util.Log;
 
 public class WAVRecognizerTest extends InstrumentationTestCase implements RecognizerCallback {
 
@@ -66,40 +65,6 @@ public class WAVRecognizerTest extends InstrumentationTestCase implements Recogn
 		lastMatches.clear();
 	}
 
-	//	public void testConverting() throws IOException {
-	//
-	//		ScreenValues.SCREEN_WIDTH = 720;
-	//		ScreenValues.SCREEN_HEIGHT = 1134;
-	//		ProjectManager.getInstance().setProject(
-	//				StandardProjectHandler.createAndSaveStandardProject(testProjectName, getInstrumentation()
-	//						.getTargetContext()));
-	//
-	//		File testSpeechFile = TestUtils.saveFileToProject(testProjectName, "directionSpeech.wav", SPEECH_FILE_ID,
-	//				getInstrumentation().getContext(), TestUtils.TYPE_SOUND_FILE);
-	//
-	//		GoogleOnlineSpeechRecognizer converter = new GoogleOnlineSpeechRecognizer(testSpeechFile.getAbsolutePath(),
-	//				this);
-	//		converter.setConvertOnly(true);
-	//
-	//		converter.start();
-	//
-	//		int i = 100;
-	//		do {
-	//			try {
-	//				Thread.sleep(200);
-	//			} catch (InterruptedException e) {
-	//				e.printStackTrace();
-	//			}
-	//		} while ((i--) != 0 && savedFiles.size() == 0 && lastErrorMessage == "");
-	//
-	//		if (lastErrorMessage != "") {
-	//			fail("Conversion brought an error: " + lastErrorMessage);
-	//		}
-	//
-	//		assertTrue("There was no flac speechfile saved.", savedFiles.size() > 0);
-	//		assertTrue("Converted File has wrong Format", savedFiles.get(0).endsWith(".flac"));
-	//	}
-
 	public void testOnlineRecognition() throws IOException {
 
 		ScreenValues.SCREEN_WIDTH = 720;
@@ -112,15 +77,13 @@ public class WAVRecognizerTest extends InstrumentationTestCase implements Recogn
 				getInstrumentation().getContext(), TestUtils.TYPE_SOUND_FILE);
 
 		FileInputStream speechFileStream = new FileInputStream(testSpeechFile);
-		AudioInputStream ais = new AudioInputStream(speechFileStream, AudioFormat.ENCODING_PCM_16BIT, 1, 16000, 2,
-				ByteOrder.LITTLE_ENDIAN, true);
+		AudioInputStream audioFileStream = new AudioInputStream(speechFileStream, AudioFormat.ENCODING_PCM_16BIT, 1,
+				16000, 128, ByteOrder.LITTLE_ENDIAN, true);
 
 		GoogleOnlineSpeechRecognizer converter = new GoogleOnlineSpeechRecognizer();
-		converter.setCallbackListener(this);
-		converter.setAudioInputStream(ais);
-
+		converter.addCallbackListener(this);
 		converter.prepare();
-		converter.start();
+		converter.startRecognizeInput(audioFileStream);
 
 		int i = 100;
 		do {
@@ -155,18 +118,15 @@ public class WAVRecognizerTest extends InstrumentationTestCase implements Recogn
 
 	public void onRecognizerResult(int resultCode, Bundle resultBundle) {
 
-		if (resultCode == RecognizerCallback.RESULT_NOMATCH) {
-			Log.v("SebiTest", "There was no recognition.");
+		if (resultCode == RESULT_NOMATCH) {
 			return;
 		}
 
-		ArrayList<String> matches = resultBundle.getStringArrayList("RESULT");
-		Log.v("SebiTest", "Recognition.");
-		Log.v("SebiTest", "Results: " + matches.toString());
+		ArrayList<String> matches = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES);
 		lastMatches.add(matches.toString());
 	}
 
-	public void onRecognizerError(int errorCode, String errorMessage) {
-		Log.v("SebiTest", "Got error back: " + errorCode + " Message: " + errorMessage);
+	public void onRecognizerError(Bundle errorBundle) {
+		lastErrorMessage = errorBundle.getString(BUNDLE_ERROR_MESSAGE);
 	}
 }
