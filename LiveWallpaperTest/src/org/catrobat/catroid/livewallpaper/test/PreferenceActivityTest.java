@@ -42,8 +42,7 @@ public class PreferenceActivityTest extends UiAutomatorTestCase {
 			e.printStackTrace();
 		} 
 		
-		
-
+	
 		//TODO: create a project that only plays sounds, select it via the project selector, set it to be the current 
 		//project, test if it*s playing, then turn of and see if it's not playing
 		
