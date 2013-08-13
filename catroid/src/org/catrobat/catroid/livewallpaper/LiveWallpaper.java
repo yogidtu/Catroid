@@ -24,6 +24,7 @@ package org.catrobat.catroid.livewallpaper;
 
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.WindowManager;
 
@@ -31,7 +32,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService;
 
-import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.io.SoundManager;
 import org.catrobat.catroid.stage.StageListener;
@@ -51,7 +51,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
 		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
 		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
-		ProjectManager.getInstance().setProject(null);
 		Utils.loadProjectIfNeeded(getApplicationContext());
 
 	}
@@ -128,6 +127,8 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			if (mVisible) {
 				mHandler.postDelayed(mUpdateDisplay, 100);
 			}
+			Log.v("LWP", "On surface changed");
+
 		}
 
 		@Override

@@ -71,7 +71,8 @@ public class SelectProgramDialog extends Dialog {
 		File rootDirectory = new File(Constants.DEFAULT_ROOT);
 		int numOfProjects = UtilFile.getProjectNames(rootDirectory).size();
 
-		String currentProjectName = ProjectManager.getInstance().getCurrentProject().getName();
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		String currentProjectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
 
 		RadioButton[] radioButton = new RadioButton[numOfProjects];
 		int i = 0;
@@ -108,7 +109,7 @@ public class SelectProgramDialog extends Dialog {
 					Editor editor = sharedPreferences.edit();
 					editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
 					editor.commit();
-
+					ProjectManager.getInstance().setProject(null);
 					Toast.makeText(context, "New wallpaper will load after restart", Toast.LENGTH_LONG).show();
 				}
 				dismiss();
