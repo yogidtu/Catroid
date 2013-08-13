@@ -112,15 +112,14 @@ public class WAVRecognizerTest extends InstrumentationTestCase implements Recogn
 				getInstrumentation().getContext(), TestUtils.TYPE_SOUND_FILE);
 
 		FileInputStream speechFileStream = new FileInputStream(testSpeechFile);
-		AudioInputStream ais = new AudioInputStream(speechFileStream, AudioFormat.ENCODING_PCM_16BIT, 1, 16000, 2,
-				ByteOrder.LITTLE_ENDIAN, true);
+		AudioInputStream audioFileStream = new AudioInputStream(speechFileStream, AudioFormat.ENCODING_PCM_16BIT, 1,
+				16000, 128, ByteOrder.LITTLE_ENDIAN, true);
 
 		GoogleOnlineSpeechRecognizer converter = new GoogleOnlineSpeechRecognizer();
-		converter.setCallbackListener(this);
-		converter.setAudioInputStream(ais);
-
+		converter.addCallbackListener(this);
 		converter.prepare();
-		converter.start();
+		converter.startRecognizeInput(audioFileStream);
+		//		converter.setWAVInputFile(testSpeechFile.getAbsolutePath());
 
 		int i = 100;
 		do {
@@ -166,7 +165,9 @@ public class WAVRecognizerTest extends InstrumentationTestCase implements Recogn
 		lastMatches.add(matches.toString());
 	}
 
-	public void onRecognizerError(int errorCode, String errorMessage) {
-		Log.v("SebiTest", "Got error back: " + errorCode + " Message: " + errorMessage);
+	public void onRecognizerError(Bundle errorBundle) {
+		// TODO Auto-generated method stub
+		Log.v("SebiTest", (String) errorBundle.get(ERROR_BUNDLE_MESSAGE));
+
 	}
 }

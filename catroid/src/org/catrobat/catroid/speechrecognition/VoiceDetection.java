@@ -22,20 +22,17 @@
  */
 package org.catrobat.catroid.speechrecognition;
 
-import android.os.Bundle;
+public abstract class VoiceDetection {
 
-public abstract interface RecognizerCallback {
+	public enum VoiceDetectionSensibility {
+		HIGH, NORMAL, LOW;
+	}
 
-	public static final int RESULT_NOMATCH = 0x1;
-	public static final int RESULT_OK = 0x2;
+	abstract public boolean isFrameWithVoice(double[] frame);
 
-	public static final String RESULT_BUNDLE_MATCHES = "RESULT";
-	public static final String ERROR_BUNDLE_MESSAGE = "ERROR_MESSAGE";
-	public static final String ERROR_BUNDLE_CODE = "ERROR_CODE";
-	public static final String BUNDLE_IDENTIFIER = "IDENTIFIER";
+	abstract public boolean isInitialized();
 
-	public abstract void onRecognizerResult(int resultCode, Bundle resultBundle);
+	abstract public void resetState();
 
-	public abstract void onRecognizerError(Bundle errorBundle);
-
+	abstract public void setSensibility(VoiceDetectionSensibility Sensibility);
 }
