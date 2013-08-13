@@ -22,11 +22,10 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.io.SoundManager;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -34,6 +33,11 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.io.SoundManager;
 
 @SuppressLint("NewApi")
 public class LiveWallpaperSettings extends PreferenceActivity {
@@ -82,14 +86,21 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+					Editor editor = sharedPreferences.edit();
+
 					if (newValue.toString().equals("true")) {
 						SoundManager.getInstance().soundDisabledByLwp = false;
 						allowSounds.setChecked(true);
+						editor.putBoolean(Constants.PREF_SOUND_DISABLED, false);
+
 					} else {
 						SoundManager.getInstance().soundDisabledByLwp = true;
 						allowSounds.setChecked(false);
+						editor.putBoolean(Constants.PREF_SOUND_DISABLED, true);
 
 					}
+					editor.commit();
 					return false;
 				}
 			});
