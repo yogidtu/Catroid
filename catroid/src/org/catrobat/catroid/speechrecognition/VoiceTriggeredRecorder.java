@@ -29,6 +29,7 @@ import java.io.IOException;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.speechrecognition.VoiceDetection.VoiceDetectionSensibility;
 import org.catrobat.catroid.utils.MicrophoneGrabber;
 import org.catrobat.catroid.utils.MicrophoneGrabber.microphoneListener;
 import org.catrobat.catroid.utils.Utils;
@@ -42,7 +43,7 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 	private static final String TAG = VoiceTriggeredRecorder.class.getSimpleName();
 	private boolean recordForFile;
 	private VoiceTriggeredRecorderListener listener;
-	private VoiceActivityDetection voiceDetection;
+	private AdaptiveEnergyVoiceDetection voiceDetection;
 	byte[] buffer;
 	byte[] preVoiceBuffer;
 	byte[] totalByteBuffer;
@@ -63,7 +64,7 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 	private byte[] silentFrame;
 
 	public VoiceTriggeredRecorder(VoiceTriggeredRecorderListener listener) {
-		voiceDetection = new VoiceActivityDetection();
+		voiceDetection = new AdaptiveEnergyVoiceDetection();
 		preVoiceBuffer = new byte[preVoiceFramesForActivityDetection * frameByteSize];
 		totalByteBuffer = new byte[60 * 44100 * 2];
 		silentFrame = new byte[frameByteSize];
@@ -110,7 +111,7 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 
 			totalReadBytes += preVoiceFramesForActivityDetection * frameByteSize;
 
-			voiceDetection.setSensibility(VoiceActivityDetection.SENSIBILITY_HIGH);
+			voiceDetection.setSensibility(VoiceDetectionSensibility.HIGH);
 			recordForFile = true;
 		}
 
@@ -158,7 +159,7 @@ public class VoiceTriggeredRecorder implements microphoneListener {
 		recordForFile = false;
 		totalReadBytes = fileHeaderOffset;
 		ignoredFrames = 0;
-		voiceDetection.setSensibility(VoiceActivityDetection.SENSIBILITY_NORMAL);
+		voiceDetection.setSensibility(VoiceDetectionSensibility.NORMAL);
 		recordedPreFrames = 0;
 		voiceFrames = 0;
 	}

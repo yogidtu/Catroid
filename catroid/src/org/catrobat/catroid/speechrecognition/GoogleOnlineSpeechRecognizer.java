@@ -54,20 +54,18 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 	private static final String API_URL = "http://www.google.com/speech-api/v1/recognize?client=chromium&lang=de-DE&maxresults=5";
 	private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.77 Safari/535.7";
-	private static final int MAX_READ = 16384;
 
 	public GoogleOnlineSpeechRecognizer() {
 		super();
 	}
 
-	public void setWAVInputFile(String inputFilePath) throws IOException {
-		setAudioInputStream(readWAVHeader(inputFilePath));
+	public void startRecognizeInput(String inputWAVFilePath) throws IOException {
+		startRecognizeInput(readWAVHeader(inputWAVFilePath));
 	}
 
 	@Override
-	public void run() {
-
-		InputStream flacInputStream = startEncoding();
+	protected void runRecognitionTask(AudioInputStream inputStream) {
+		InputStream flacInputStream = startEncoding(inputStream);
 		if (flacInputStream == null) {
 			return;
 		}
@@ -87,13 +85,13 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 		}
 	}
 
-	private InputStream startEncoding() {
+	private InputStream startEncoding(final AudioInputStream inputStream) {
 
 		final FLACEncoder flac = new FLACEncoder();
 		StreamConfiguration streamConfiguration = new StreamConfiguration();
-		streamConfiguration.setBitsPerSample(stream.getSampleSizeInBits());
-		streamConfiguration.setChannelCount(stream.getChannels());
-		streamConfiguration.setSampleRate(stream.getSampleRate());
+		streamConfiguration.setBitsPerSample(inputStream.getSampleSizeInBits());
+		streamConfiguration.setChannelCount(inputStream.getChannels());
+		streamConfiguration.setSampleRate(inputStream.getSampleRate());
 
 		flac.setStreamConfiguration(streamConfiguration);
 
@@ -116,9 +114,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 			@Override
 			public void run() {
 				try {
-					Log.w("GoogleSpeechRecog", "Starting encoding...");
-					encodeAudioInputStream(stream, MAX_READ, flac, true);
-					Log.w("GoogleSpeechRecog", "Finished encoding...");
+					encodeAudioInputStream(inputStream, inputStream.getFrameByteSize(), flac, true);
 					pipedOutputStream.flush();
 					pipedOutputStream.close();
 				} catch (Exception e) {
@@ -147,19 +143,18 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 		HttpResponse response;
 		try {
-			Log.w("GoogleSpeechRecog", "Starting request...");
+			if (DEBUG_OUTPUT) {
+				Log.w("GoogleSpeechRecog", "Starting request" + Thread.currentThread() + " ...");
+			}
 			response = httpclient.execute(httppost);
-			Log.w("GoogleSpeechRecog", "Finished request...");
+			if (DEBUG_OUTPUT) {
+				Log.w("GoogleSpeechRecog", "Finished request" + Thread.currentThread() + "...");
+			}
 		} catch (ClientProtocolException cpe) {
 			sendError(ERROR_NONETWORK, "Executing the postrequest failed.");
 			return null;
 		} catch (IOException e) {
 			sendError(ERROR_NONETWORK, e.getMessage());
-			return null;
-		}
-
-		if (response.getStatusLine().getStatusCode() != 200) {
-			sendError(ERROR_API_CHANGED, "Statuscode was " + response.getStatusLine().getStatusCode());
 			return null;
 		}
 
@@ -183,7 +178,13 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 		String resp = builder.toString();
 		if (resp.contains("NO_MATCH")) {
-			return resturnJson;
+			sendResults(new ArrayList<String>());
+			return null;
+		}
+
+		if (response.getStatusLine().getStatusCode() != 200) {
+			sendError(ERROR_API_CHANGED, "Statuscode was " + response.getStatusLine().getStatusCode());
+			return null;
 		}
 
 		JSONObject object;
@@ -197,14 +198,6 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 			return null;
 		}
 		return resturnJson;
-	}
-
-	@Override
-	public void setAudioInputStream(AudioInputStream inputStream) throws IllegalArgumentException {
-		if (inputStream.getSampleRate() != 16000) {
-			throw new IllegalArgumentException("Unsupported SampleRate. Supported: 16kHz");
-		}
-		this.stream = inputStream;
 	}
 
 	private AudioInputStream readWAVHeader(String inputFilePath) throws IOException {
@@ -276,7 +269,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 	private int encodeAudioInputStream(AudioInputStream sin, int maxRead, FLACEncoder flac, boolean useThreads)
 			throws IOException, IllegalArgumentException {
-		int frameSize = sin.getFrameSize();
+		int frameSize = 2;
 		int sampleSize = sin.getSampleSizeInBits();
 		int bytesPerSample = sampleSize / 8;
 		if (sampleSize % 8 != 0) {
@@ -354,5 +347,13 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 			unencodedSamples -= flac.encodeSamples(unencodedSamples, true);
 		}
 		return totalSamples;
+	}
+
+	@Override
+	public boolean isAudioFormatSupported(AudioInputStream streamToCheck) {
+		if (streamToCheck.getSampleRate() != 16000) {
+			return false;
+		}
+		return true;
 	}
 }

@@ -22,20 +22,56 @@
  */
 package org.catrobat.catroid.speechrecognition;
 
-import android.os.Bundle;
+public class ZeroCrossingVoiceDetection extends VoiceDetection {
 
-public abstract interface RecognizerCallback {
+	private int crossZeroFaktor = 30;
 
-	public static final int RESULT_NOMATCH = 0x1;
-	public static final int RESULT_OK = 0x2;
+	@Override
+	public boolean isFrameWithVoice(double[] frame) {
 
-	public static final String RESULT_BUNDLE_MATCHES = "RESULT";
-	public static final String ERROR_BUNDLE_MESSAGE = "ERROR_MESSAGE";
-	public static final String ERROR_BUNDLE_CODE = "ERROR_CODE";
-	public static final String BUNDLE_IDENTIFIER = "IDENTIFIER";
+		int crossings = countZeroCrossings(frame);
+		if (crossings >= 5 && crossings <= crossZeroFaktor) {
+			return true;
+		}
 
-	public abstract void onRecognizerResult(int resultCode, Bundle resultBundle);
+		return false;
+	}
 
-	public abstract void onRecognizerError(Bundle errorBundle);
+	@Override
+	public boolean isInitialized() {
+		return true;
+	}
+
+	@Override
+	public void resetState() {
+		this.setSensibility(VoiceDetectionSensibility.NORMAL);
+	}
+
+	@Override
+	public void setSensibility(VoiceDetectionSensibility Sensibility) {
+		switch (Sensibility) {
+			case HIGH:
+				crossZeroFaktor = 40;
+				break;
+			case NORMAL:
+				crossZeroFaktor = 30;
+				break;
+			case LOW:
+				crossZeroFaktor = 20;
+				break;
+		}
+	}
+
+	private int countZeroCrossings(double[] frames) {
+		double preFrame = frames[0];
+		int crossings = 0;
+		for (double value : frames) {
+			if ((preFrame > 0 && value < 0) || preFrame < 0 && value > 0) {
+				crossings++;
+			}
+			preFrame = value;
+		}
+		return crossings;
+	}
 
 }

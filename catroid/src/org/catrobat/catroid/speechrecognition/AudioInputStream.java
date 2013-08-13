@@ -33,13 +33,13 @@ public class AudioInputStream extends InputStream {
 	InputStream internalStream;
 	private int sampleSize;
 	private int sampleRate;
-	private int frameSize;
+	private int frameByteSize;
 	private int channels;
 	private boolean bigEndian;
 	private boolean signed;
-	private int encoding; //AudioFormat Encodign PCM_SIGNED
+	private int encoding; //AudioFormat Encoding PCM_SIGNED
 
-	public AudioInputStream(InputStream stream, int encoding, int channels, int sampleRate, int frameSize,
+	public AudioInputStream(InputStream stream, int encoding, int channels, int sampleRate, int frameByteSize,
 			ByteOrder endian, boolean signed) throws IllegalArgumentException {
 		internalStream = stream;
 		this.sampleRate = sampleRate;
@@ -54,7 +54,7 @@ public class AudioInputStream extends InputStream {
 			throw new IllegalArgumentException("Unsupported encoding.");
 		}
 
-		this.frameSize = frameSize;
+		this.frameByteSize = frameByteSize;
 		this.bigEndian = (endian == ByteOrder.BIG_ENDIAN);
 		this.signed = signed;
 	}
@@ -72,8 +72,8 @@ public class AudioInputStream extends InputStream {
 		return sampleRate;
 	}
 
-	public int getFrameSize() {
-		return frameSize;
+	public int getFrameByteSize() {
+		return frameByteSize;
 	}
 
 	public int getChannels() {

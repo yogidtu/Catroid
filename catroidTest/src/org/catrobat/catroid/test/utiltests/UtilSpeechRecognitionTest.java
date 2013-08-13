@@ -22,20 +22,25 @@
  */
 package org.catrobat.catroid.test.utiltests;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.common.StandardProjectHandler;
+import org.catrobat.catroid.speechrecognition.AdaptiveEnergyVoiceDetection;
+import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
+import org.catrobat.catroid.speechrecognition.ZeroCrossingVoiceDetection;
 import org.catrobat.catroid.test.R;
-import org.catrobat.catroid.test.utils.Reflection;
-import org.catrobat.catroid.test.utils.SimulatedAudioRecord;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.MicrophoneGrabber;
 import org.catrobat.catroid.utils.UtilSpeechRecognition;
 import org.catrobat.catroid.utils.UtilSpeechRecognition.SpeechRecognizeListener;
 
+import android.media.AudioFormat;
 import android.test.InstrumentationTestCase;
 
 public class UtilSpeechRecognitionTest extends InstrumentationTestCase implements SpeechRecognizeListener {
@@ -43,7 +48,6 @@ public class UtilSpeechRecognitionTest extends InstrumentationTestCase implement
 	private String testProjectName = "testStandardProjectRecognition";
 	private ArrayList<String> lastMatches = new ArrayList<String>();
 	private static final int SPEECH_FILE_ID = R.raw.speechsample_directions;
-	private SimulatedAudioRecord audioSimulator;
 
 	@Override
 	public void tearDown() throws Exception {
@@ -66,10 +70,24 @@ public class UtilSpeechRecognitionTest extends InstrumentationTestCase implement
 				StandardProjectHandler.createAndSaveStandardProject(testProjectName, getInstrumentation()
 						.getTargetContext()));
 
-		audioSimulator = new SimulatedAudioRecord(SPEECH_FILE_ID, getInstrumentation().getContext());
-		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "audioRecord", audioSimulator);
+		File testSpeechFile = TestUtils.saveFileToProject(testProjectName, "directionSpeech.wav", SPEECH_FILE_ID,
+				getInstrumentation().getContext(), TestUtils.TYPE_SOUND_FILE);
 
-		UtilSpeechRecognition.getInstance().registerContinuousSpeechListener(this);
+		FileInputStream speechFileStream = new FileInputStream(testSpeechFile);
+		AudioInputStream audioFileStream = new AudioInputStream(speechFileStream, AudioFormat.ENCODING_PCM_16BIT, 1,
+				16000, 128, ByteOrder.LITTLE_ENDIAN, true);
+
+		UtilSpeechRecognition speechRecognizer = UtilSpeechRecognition.getInstance();
+
+		speechRecognizer.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
+		speechRecognizer.addVoiceDetector(new AdaptiveEnergyVoiceDetection());
+		speechRecognizer.addVoiceDetector(new ZeroCrossingVoiceDetection());
+
+		speechRecognizer.setParalellSpeechRecognizerProcessing(false);
+		speechRecognizer.setUseAllRecognizer(false);
+		speechRecognizer.setInputStream(audioFileStream);
+
+		speechRecognizer.registerContinuousSpeechListener(this);
 
 		int i = 10;
 		do {
@@ -78,8 +96,7 @@ public class UtilSpeechRecognitionTest extends InstrumentationTestCase implement
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		} while ((i--) > 0
-				&& (audioSimulator.isMockRecording() || UtilSpeechRecognition.getInstance().isRecognitionRunning()));
+		} while ((i--) > 0 && speechRecognizer.isRecognitionRunning());
 
 		assertTrue("There was no recognition", lastMatches.size() > 0);
 
@@ -90,10 +107,9 @@ public class UtilSpeechRecognitionTest extends InstrumentationTestCase implement
 		assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
 
 		UtilSpeechRecognition.getInstance().unregisterContinuousSpeechListener(this);
-		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "instance", null);
 	}
 
-	public void onRecognizedSpeech(String bestAnswer, ArrayList<String> allAnswerSuggestions) {
+	public void onRecognizedSpeech(ArrayList<String> allAnswerSuggestions) {
 		lastMatches.addAll(allAnswerSuggestions);
 	}
 
