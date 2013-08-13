@@ -109,7 +109,6 @@ public class SelectProgramDialog extends Dialog {
 					Editor editor = sharedPreferences.edit();
 					editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
 					editor.commit();
-					ProjectManager.getInstance().setProject(null);
 					Toast.makeText(context, "New wallpaper will load after restart", Toast.LENGTH_LONG).show();
 				}
 				dismiss();

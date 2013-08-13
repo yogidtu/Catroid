@@ -122,9 +122,13 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			if (visible) {
 				mHandler.postDelayed(mUpdateDisplay, 100);
 				SoundManager.getInstance().resume();
+				Log.v("LWP", "Visible");
+
 			} else {
 				mHandler.removeCallbacks(mUpdateDisplay);
 				SoundManager.getInstance().pause();
+				Log.v("LWP", "Not visible");
+
 			}
 		}
 
