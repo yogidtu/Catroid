@@ -22,20 +22,23 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.utils.MicrophoneGrabber;
-import org.catrobat.catroid.utils.MicrophoneGrabber.microphoneListener;
 
-public class SensorLoudness implements microphoneListener {
+public class SensorLoudness {
 
 	private static SensorLoudness instance = null;
 	private final double SCALE_RANGE = 100d;
+	private final long UPDATE_INTERVAL_MS = 50;
 
 	private final double MAX_AMP_VALUE = 1000.0d;
 	private ArrayList<SensorCustomEventListener> listenerList = new ArrayList<SensorCustomEventListener>();
 	private float lastValue = 0f;
 	private float currentValue = 0;
+	private BufferedInputStream microphoneInput = null;
 
 	private SensorLoudness() {
 	}
@@ -54,7 +57,33 @@ public class SensorLoudness implements microphoneListener {
 			}
 			listenerList.add(listener);
 			if (listenerList.size() == 1) {
-				MicrophoneGrabber.getInstance().registerListener(this);
+				microphoneInput = new BufferedInputStream(MicrophoneGrabber.getInstance().getMicrophoneStream());
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						byte[] recievedBuffer = new byte[MicrophoneGrabber.frameByteSize * 5];
+						while (microphoneInput != null) {
+							try {
+								microphoneInput.read(recievedBuffer, 0, recievedBuffer.length);
+								microphoneInput.skip(microphoneInput.available());
+							} catch (IOException e) {
+								try {
+									microphoneInput.close();
+								} catch (IOException e1) {
+								}
+								microphoneInput = new BufferedInputStream(MicrophoneGrabber.getInstance()
+										.getMicrophoneStream());
+							}
+
+							updateLoudnessValue(recievedBuffer);
+
+							try {
+								Thread.sleep(UPDATE_INTERVAL_MS);
+							} catch (InterruptedException e) {
+							}
+						}
+					}
+				}).start();
 			}
 		}
 		return true;
@@ -62,20 +91,22 @@ public class SensorLoudness implements microphoneListener {
 
 	public void unregisterListener(SensorCustomEventListener listener) {
 		synchronized (listenerList) {
-			if (listenerList.contains(listener)) {
-
-				listenerList.remove(listener);
+			if (!listenerList.contains(listener)) {
+				return;
 			}
-			if (listenerList.size() == 0) {
-				MicrophoneGrabber.getInstance().unregisterListener(this);
+			listenerList.remove(listener);
+			if (listenerList.size() == 0 && microphoneInput != null) {
+				try {
+					microphoneInput.close();
+				} catch (IOException e) {
+				}
+				microphoneInput = null;
 			}
 		}
 	}
 
-	@Override
-	public void onMicrophoneData(byte[] recievedBuffer) {
-
-		double[] signal = MicrophoneGrabber.audioByteToDouble(recievedBuffer);
+	private void updateLoudnessValue(byte[] audioBuffer) {
+		double[] signal = MicrophoneGrabber.audioByteToDouble(audioBuffer);
 		currentValue = 0;
 		for (double sample : signal) {
 			if (currentValue < Math.abs(sample)) {
