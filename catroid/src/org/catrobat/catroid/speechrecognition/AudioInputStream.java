@@ -39,6 +39,12 @@ public class AudioInputStream extends InputStream {
 	private boolean signed;
 	private int encoding; //AudioFormat Encoding PCM_SIGNED
 
+	public AudioInputStream(InputStream inputStream, AudioInputStream audioSettings) {
+		this(inputStream, audioSettings.getEncoding(), audioSettings.getChannels(), audioSettings.getSampleRate(),
+				audioSettings.getFrameByteSize(), audioSettings.isBigEndian() ? ByteOrder.BIG_ENDIAN
+						: ByteOrder.LITTLE_ENDIAN, audioSettings.isSigned());
+	}
+
 	public AudioInputStream(InputStream stream, int encoding, int channels, int sampleRate, int frameByteSize,
 			ByteOrder endian, boolean signed) throws IllegalArgumentException {
 		internalStream = stream;

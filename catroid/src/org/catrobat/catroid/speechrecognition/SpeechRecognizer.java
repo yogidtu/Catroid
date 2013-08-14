@@ -22,9 +22,14 @@
  */
 package org.catrobat.catroid.speechrecognition;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.media.AudioFormat;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -33,11 +38,6 @@ public abstract class SpeechRecognizer {
 	protected static final boolean DEBUG_OUTPUT = false;
 
 	private static final String TAG = SpeechRecognizer.class.getSimpleName();
-	public static final int ERROR_NONETWORK = 0x1;
-	public static final int ERROR_API_CHANGED = 0x2;
-	public static final int ERROR_IO = 0x3;
-	public static final int ERROR_UNSUPPORTED_AUDIOFORMAT = 0x4;
-	public static final int ERROR_OTHER = 0x5;
 	private static final int STATE_INIT = 0x1;
 	private static final int STATE_PREPARED = 0x2;
 	private ArrayList<RecognizerCallback> resultListeners = new ArrayList<RecognizerCallback>();
@@ -81,7 +81,16 @@ public abstract class SpeechRecognizer {
 
 	public void startRecognizeInput(AudioInputStream inputStream) throws IllegalArgumentException,
 			IllegalStateException {
-		this.startRecognizeInput(inputStream, 0);
+		this.startRecognizeInput(inputStream, System.currentTimeMillis());
+	}
+
+	public void startRecognizeInputWAVFile(String inputWAVFilePath, long identifier) throws IOException,
+			IllegalArgumentException {
+		startRecognizeInput(readWAVHeader(inputWAVFilePath));
+	}
+
+	public void startRecognizeInputWAVFile(String inputWAVFilePath) throws IOException, IllegalArgumentException {
+		startRecognizeInputWAVFile(inputWAVFilePath, System.currentTimeMillis());
 	}
 
 	public void prepare() throws IllegalStateException {
@@ -107,7 +116,7 @@ public abstract class SpeechRecognizer {
 		}
 		synchronized (resultListeners) {
 			if (matches != null && matches.size() > 0) {
-				resultBundle.putStringArrayList(RecognizerCallback.RESULT_BUNDLE_MATCHES, matches);
+				resultBundle.putStringArrayList(RecognizerCallback.BUNDLE_RESULT_MATCHES, matches);
 				if (DEBUG_OUTPUT) {
 					Log.v(TAG,
 							"we are sending Results: " + matches.toString() + " from Thread" + Thread.currentThread());
@@ -146,12 +155,80 @@ public abstract class SpeechRecognizer {
 			if (DEBUG_OUTPUT) {
 				Log.v(TAG, "Recognition error!" + errorMessage);
 			}
-			errorBundle.putString(RecognizerCallback.ERROR_BUNDLE_MESSAGE, errorMessage);
-			errorBundle.putInt(RecognizerCallback.ERROR_BUNDLE_CODE, errorCode);
+			errorBundle.putString(RecognizerCallback.BUNDLE_ERROR_MESSAGE, errorMessage);
+			errorBundle.putInt(RecognizerCallback.BUNDLE_ERROR_CODE, errorCode);
+			errorBundle.putString(RecognizerCallback.BUNDLE_ERROR_CALLERCLASS, this.toString());
 			for (RecognizerCallback listener : resultListeners) {
 				listener.onRecognizerError(errorBundle);
 			}
 		}
+
+	}
+
+	private AudioInputStream readWAVHeader(String inputFilePath) throws IOException, IllegalArgumentException {
+
+		long sampleRate;
+		int sampleSizeInBits;
+		int channels;
+
+		FileInputStream fileStream = new FileInputStream(new File(inputFilePath));
+
+		byte[] headerProperties = new byte[4];
+		readBytes(fileStream, headerProperties, 4);
+		if (headerProperties[0] != 'R' || headerProperties[1] != 'I' || headerProperties[2] != 'F'
+				|| headerProperties[3] != 'F') {
+			throw new IllegalArgumentException("Header mailformed or not supported.");
+		}
+		fileStream.skip(8);
+		readBytes(fileStream, headerProperties, 4);
+		if (headerProperties[0] != 'f' || headerProperties[1] != 'm' || headerProperties[2] != 't'
+				|| headerProperties[3] != ' ') {
+			throw new IllegalArgumentException("Header fmt-chunk not found.");
+		}
+		fileStream.skip(4);
+		readBytes(fileStream, headerProperties, 4);
+		channels = headerProperties[2];
+		readBytes(fileStream, headerProperties, 4);
+		sampleRate = byteToLong(headerProperties);
+		fileStream.skip(4);
+		readBytes(fileStream, headerProperties, 4);
+		sampleSizeInBits = headerProperties[2];
+
+		int encoding;
+		if (sampleSizeInBits == 8) {
+			encoding = AudioFormat.ENCODING_PCM_8BIT;
+		} else if (sampleSizeInBits == 16) {
+			encoding = AudioFormat.ENCODING_PCM_16BIT;
+		} else {
+			throw new IllegalArgumentException();
+		}
+
+		fileStream.close();
+
+		AudioInputStream audioInputStream = new AudioInputStream(new FileInputStream(new File(inputFilePath)),
+				encoding, channels, (int) sampleRate, 2, ByteOrder.LITTLE_ENDIAN, true);
+		return audioInputStream;
+	}
+
+	private void readBytes(FileInputStream stream, byte[] buffer, int size) throws IOException {
+		int readBytes = 0;
+		while (readBytes != size) {
+			int currentReadBytes = stream.read(buffer, readBytes, size - readBytes);
+			if (currentReadBytes == -1) {
+				throw new IllegalArgumentException();
+			}
+			readBytes += currentReadBytes;
+		}
+		return;
+	}
+
+	private long byteToLong(byte[] byteArray) {
+		long result = 0;
+		result = 0xff & byteArray[0];
+		result |= ((long) (0xff & byteArray[1]) << 8);
+		result |= ((long) (0xff & byteArray[2]) << 16);
+		result |= ((long) (0xff & byteArray[3]) << 24);
+		return result;
 
 	}
 
