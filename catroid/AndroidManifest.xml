@@ -35,7 +35,7 @@
 
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
      <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -73,9 +73,11 @@
 		</activity>
          
  <!--        <activity
+        android:theme="@style/Theme.Catroid" >
+        <activity
             android:name=".ui.MainMenuActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Catroid" >
+            android:launchMode="standard"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -117,8 +119,7 @@
         </activity>
         <activity
             android:name=".ui.WebViewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Catroid" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".stage.StageActivity"
             android:configChanges="orientation"
@@ -131,28 +132,23 @@
         <activity
             android:name=".ui.ProjectActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Catroid"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.ProgramMenuActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Catroid" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.ScriptActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Catroid"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.MyProjectsActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Catroid"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.SettingsActivity"
             android:noHistory="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Catroid" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".bluetooth.DeviceListActivity"
             android:theme="@android:style/Theme.Dialog" />
@@ -160,8 +156,7 @@
             android:name=".soundrecorder.SoundRecorderActivity"
             android:exported="false"
             android:label="@string/soundrecorder_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Catroid" >
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
 

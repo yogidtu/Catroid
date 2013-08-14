@@ -28,6 +28,7 @@ import static junit.framework.Assert.fail;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -124,6 +125,8 @@ import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.utils.NotificationData;
+import org.catrobat.catroid.utils.StatusBarNotificationManager;
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 import org.catrobat.catroid.web.ServerCalls;
@@ -139,6 +142,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class UiTestUtils {
 	private static ProjectManager projectManager = ProjectManager.getInstance();
@@ -1396,5 +1400,22 @@ public class UiTestUtils {
 		solo.waitForActivity(ScriptActivity.class);
 		int id = FRAGMENT_INDEX_LIST.get(fragmentIndex);
 		solo.waitForFragmentById(id);
+	}
+
+	public static void cancelAllNotifications(Context context) {
+		NotificationManager notificationManager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		@SuppressWarnings("unchecked")
+		Map<Integer, NotificationData> notificationMap = (Map<Integer, NotificationData>) Reflection.getPrivateField(
+				StatusBarNotificationManager.class, StatusBarNotificationManager.getInstance(), "notificationDataMap");
+		if (notificationMap == null) {
+			return;
+		}
+
+		for (Map.Entry<Integer, NotificationData> entry : notificationMap.entrySet()) {
+			notificationManager.cancel(entry.getKey());
+		}
+
+		notificationMap.clear();
 	}
 }
