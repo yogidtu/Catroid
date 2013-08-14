@@ -22,6 +22,10 @@
  */
 package org.catrobat.catroid.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.ArrayList;
 
 import android.media.AudioFormat;
@@ -37,7 +41,7 @@ public class MicrophoneGrabber extends Thread {
 	public static final int frameByteSize = 512;
 	public static final int bytesPerSample = 2;
 
-	private ArrayList<microphoneListener> microphoneListenerList = new ArrayList<microphoneListener>();
+	private ArrayList<PipedOutputStream> microphoneStreamList = new ArrayList<PipedOutputStream>();
 	private boolean isRecording;
 	public boolean isPaused = false;
 	private AudioRecord audioRecord;
@@ -46,7 +50,7 @@ public class MicrophoneGrabber extends Thread {
 	@Override
 	public MicrophoneGrabber clone() {
 		MicrophoneGrabber newGrabber = new MicrophoneGrabber();
-		newGrabber.microphoneListenerList.addAll(this.microphoneListenerList);
+		newGrabber.microphoneStreamList.addAll(this.microphoneStreamList);
 		newGrabber.isRecording = false;
 		newGrabber.isPaused = this.isPaused;
 		newGrabber.audioRecord = this.audioRecord;
@@ -68,9 +72,16 @@ public class MicrophoneGrabber extends Thread {
 		return instance;
 	}
 
-	public void registerListener(microphoneListener listener) {
-		synchronized (microphoneListenerList) {
-			microphoneListenerList.add(listener);
+	public InputStream getMicrophoneStream() {
+		PipedOutputStream outputPipe = new PipedOutputStream();
+		PipedInputStream inputPipe;
+		try {
+			inputPipe = new PipedInputStream(outputPipe, frameByteSize * 10);
+		} catch (IOException e) {
+			return null;
+		}
+		synchronized (microphoneStreamList) {
+			microphoneStreamList.add(outputPipe);
 			if (!isRecording && !isPaused) {
 				if (this.isAlive()) {
 					isRecording = true;
@@ -80,19 +91,7 @@ public class MicrophoneGrabber extends Thread {
 				}
 			}
 		}
-		return;
-	}
-
-	public void unregisterListener(microphoneListener listener) {
-		synchronized (microphoneListenerList) {
-			if (microphoneListenerList.contains(listener)) {
-				microphoneListenerList.remove(listener);
-			}
-			if (microphoneListenerList.size() == 0) {
-				isRecording = false;
-			}
-		}
-		return;
+		return inputPipe;
 	}
 
 	@Override
@@ -110,10 +109,19 @@ public class MicrophoneGrabber extends Thread {
 				offset += shortRead;
 			}
 
-			final byte[] broadcastBuffer = buffer.clone();
-			final ArrayList<microphoneListener> dataListener = new ArrayList<microphoneListener>(microphoneListenerList);
-			for (microphoneListener listener : dataListener) {
-				listener.onMicrophoneData(broadcastBuffer);
+			for (PipedOutputStream outputPipe : microphoneStreamList) {
+				try {
+					outputPipe.write(buffer);
+				} catch (IOException e) {
+					try {
+						microphoneStreamList.remove(outputPipe);
+						outputPipe.close();
+					} catch (IOException e1) {
+					}
+				}
+			}
+			if (microphoneStreamList.size() == 0) {
+				isRecording = false;
 			}
 		}
 
@@ -142,9 +150,5 @@ public class MicrophoneGrabber extends Thread {
 			micBufferData[floatIndex] = sample32;
 		}
 		return micBufferData;
-	}
-
-	public interface microphoneListener {
-		public void onMicrophoneData(byte[] recievedBuffer);
 	}
 }
