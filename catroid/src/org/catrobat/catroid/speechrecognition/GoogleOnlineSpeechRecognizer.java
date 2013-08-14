@@ -23,14 +23,11 @@
 package org.catrobat.catroid.speechrecognition;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import javaFlacEncoder.FLACEncoder;
 import javaFlacEncoder.FLACStreamOutputStream;
@@ -47,7 +44,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import android.media.AudioFormat;
 import android.util.Log;
 
 public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
@@ -57,10 +53,6 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 	public GoogleOnlineSpeechRecognizer() {
 		super();
-	}
-
-	public void startRecognizeInput(String inputWAVFilePath) throws IOException {
-		startRecognizeInput(readWAVHeader(inputWAVFilePath));
 	}
 
 	@Override
@@ -81,7 +73,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 				sendResults(matches);
 			}
 		} catch (JSONException e) {
-			sendError(ERROR_API_CHANGED, "The response JSON-Object couldn't be parsed correct");
+			sendError(RecognizerCallback.ERROR_API_CHANGED, "The response JSON-Object couldn't be parsed correct");
 		}
 	}
 
@@ -106,7 +98,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 			pipedInputStream = new PipedInputStream(pipedOutputStream);
 			flac.openFLACStream();
 		} catch (IOException e1) {
-			sendError(ERROR_OTHER, "Pipes couldn't be generated. Try filebased execution.");
+			sendError(RecognizerCallback.ERROR_OTHER, "Pipes couldn't be generated. Try filebased execution.");
 			return null;
 		}
 
@@ -118,7 +110,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 					pipedOutputStream.flush();
 					pipedOutputStream.close();
 				} catch (Exception e) {
-					sendError(ERROR_OTHER, "There was a problem when converting into FLAC-Format.");
+					sendError(RecognizerCallback.ERROR_OTHER, "There was a problem when converting into FLAC-Format.");
 				}
 			}
 		}).start();
@@ -151,10 +143,10 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 				Log.w("GoogleSpeechRecog", "Finished request" + Thread.currentThread() + "...");
 			}
 		} catch (ClientProtocolException cpe) {
-			sendError(ERROR_NONETWORK, "Executing the postrequest failed.");
+			sendError(RecognizerCallback.ERROR_NONETWORK, "Executing the postrequest failed.");
 			return null;
 		} catch (IOException e) {
-			sendError(ERROR_NONETWORK, e.getMessage());
+			sendError(RecognizerCallback.ERROR_NONETWORK, e.getMessage());
 			return null;
 		}
 
@@ -162,7 +154,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 		try {
 			reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
 		} catch (IOException e) {
-			sendError(ERROR_NONETWORK, e.getMessage());
+			sendError(RecognizerCallback.ERROR_NONETWORK, e.getMessage());
 			return null;
 		}
 
@@ -172,7 +164,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 				builder.append(line).append("\n");
 			}
 		} catch (IOException e) {
-			sendError(ERROR_NONETWORK, e.getMessage());
+			sendError(RecognizerCallback.ERROR_NONETWORK, e.getMessage());
 			return null;
 		}
 
@@ -183,7 +175,8 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 		}
 
 		if (response.getStatusLine().getStatusCode() != 200) {
-			sendError(ERROR_API_CHANGED, "Statuscode was " + response.getStatusLine().getStatusCode());
+			sendError(RecognizerCallback.ERROR_API_CHANGED, "Statuscode was "
+					+ response.getStatusLine().getStatusCode());
 			return null;
 		}
 
@@ -194,77 +187,10 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 				resturnJson = object.getJSONArray("hypotheses");
 			}
 		} catch (JSONException e) {
-			sendError(ERROR_API_CHANGED, "The response JSON-Object couldn't be parsed correct");
+			sendError(RecognizerCallback.ERROR_API_CHANGED, "The response JSON-Object couldn't be parsed correct");
 			return null;
 		}
 		return resturnJson;
-	}
-
-	private AudioInputStream readWAVHeader(String inputFilePath) throws IOException {
-
-		long sampleRate;
-		int sampleSizeInBits;
-		int channels;
-
-		FileInputStream fileStream = new FileInputStream(new File(inputFilePath));
-
-		byte[] headerProperties = new byte[4];
-		readBytes(fileStream, headerProperties, 4);
-		if (headerProperties[0] != 'R' || headerProperties[1] != 'I' || headerProperties[2] != 'F'
-				|| headerProperties[3] != 'F') {
-			throw new IllegalArgumentException("Header mailformed or not supported.");
-		}
-		fileStream.skip(8);
-		readBytes(fileStream, headerProperties, 4);
-		if (headerProperties[0] != 'f' || headerProperties[1] != 'm' || headerProperties[2] != 't'
-				|| headerProperties[3] != ' ') {
-			throw new IllegalArgumentException("Header fmt-chunk not found.");
-		}
-		fileStream.skip(4);
-		readBytes(fileStream, headerProperties, 4);
-		channels = headerProperties[2];
-		readBytes(fileStream, headerProperties, 4);
-		sampleRate = byteToLong(headerProperties);
-		fileStream.skip(4);
-		readBytes(fileStream, headerProperties, 4);
-		sampleSizeInBits = headerProperties[2];
-
-		int encoding;
-		if (sampleSizeInBits == 8) {
-			encoding = AudioFormat.ENCODING_PCM_8BIT;
-		} else if (sampleSizeInBits == 16) {
-			encoding = AudioFormat.ENCODING_PCM_16BIT;
-		} else {
-			throw new IllegalArgumentException();
-		}
-
-		fileStream.close();
-
-		AudioInputStream audioInputStream = new AudioInputStream(new FileInputStream(new File(inputFilePath)),
-				encoding, channels, (int) sampleRate, 2, ByteOrder.LITTLE_ENDIAN, true);
-		return audioInputStream;
-	}
-
-	private void readBytes(FileInputStream stream, byte[] buffer, int size) throws IOException {
-		int readBytes = 0;
-		while (readBytes != size) {
-			int currentReadBytes = stream.read(buffer, readBytes, size - readBytes);
-			if (currentReadBytes == -1) {
-				throw new IllegalArgumentException();
-			}
-			readBytes += currentReadBytes;
-		}
-		return;
-	}
-
-	private long byteToLong(byte[] byteArray) {
-		long result = 0;
-		result = 0xff & byteArray[0];
-		result |= ((long) (0xff & byteArray[1]) << 8);
-		result |= ((long) (0xff & byteArray[2]) << 16);
-		result |= ((long) (0xff & byteArray[3]) << 24);
-		return result;
-
 	}
 
 	private int encodeAudioInputStream(AudioInputStream sin, int maxRead, FLACEncoder flac, boolean useThreads)

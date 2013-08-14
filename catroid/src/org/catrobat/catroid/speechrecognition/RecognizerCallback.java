@@ -29,9 +29,15 @@ public abstract interface RecognizerCallback {
 	public static final int RESULT_NOMATCH = 0x1;
 	public static final int RESULT_OK = 0x2;
 
-	public static final String RESULT_BUNDLE_MATCHES = "RESULT";
-	public static final String ERROR_BUNDLE_MESSAGE = "ERROR_MESSAGE";
-	public static final String ERROR_BUNDLE_CODE = "ERROR_CODE";
+	public static final int ERROR_NONETWORK = 0x1;
+	public static final int ERROR_API_CHANGED = 0x2;
+	public static final int ERROR_IO = 0x3;
+	public static final int ERROR_OTHER = 0x4;
+
+	public static final String BUNDLE_RESULT_MATCHES = "RESULT";
+	public static final String BUNDLE_ERROR_MESSAGE = "ERROR_MESSAGE";
+	public static final String BUNDLE_ERROR_CODE = "ERROR_CODE";
+	public static final String BUNDLE_ERROR_CALLERCLASS = "ERROR_CALLERCLASS";
 	public static final String BUNDLE_IDENTIFIER = "IDENTIFIER";
 
 	public abstract void onRecognizerResult(int resultCode, Bundle resultBundle);
