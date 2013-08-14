@@ -104,7 +104,7 @@ public class SelectProgramDialog extends Dialog {
 			@Override
 			public void onClick(View v) {
 				if (selectedProject != null
-						&& !selectedProject.equals(ProjectManager.getInstance().getCurrentProject().getName())) {
+						|| !selectedProject.equals(ProjectManager.getInstance().getCurrentProject().getName())) {
 					SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 					Editor editor = sharedPreferences.edit();
 					editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
