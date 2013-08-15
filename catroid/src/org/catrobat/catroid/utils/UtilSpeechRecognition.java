@@ -57,7 +57,7 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 	private boolean stopAfterFirstSuccessRecognition = true;
 	private boolean parallelRecognition = false;
 	private boolean broadcastOnlySuccessResults = true;
-	private int silenceBeforeVoiceMs = 500;
+	private int silenceBeforeVoiceMs = 400;
 	private int minActiveVoiceTimeMr = 100;
 	private int silenceAfterVoiceInMs = 550;
 
@@ -152,6 +152,7 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 							"Error when executing recognitionchain. " + e.getMessage());
 					errorBundle.putInt(RecognizerCallback.BUNDLE_ERROR_CODE, ERROR_IO);
 					UtilSpeechRecognition.this.onRecognizerError(errorBundle);
+					inputStream = null;
 				}
 				synchronized (this) {
 					this.notifyAll();
@@ -214,6 +215,10 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 				if (!voiceFrame) {
 					System.arraycopy(preBuffer, frameSize, preBuffer, 0, preBuffer.length - frameSize);
 					System.arraycopy(frameBuffer, 0, preBuffer, preBuffer.length - frameSize, frameSize);
+
+					if (DEBUG_OUTPUT && processedActiveFrames != 0) {
+						Log.v(TAG, "resetting proccessed active frames");
+					}
 					processedActiveFrames = 0;
 					continue;
 				} else if ((++processedActiveFrames < minActiveFrames)) {
@@ -295,6 +300,8 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 			recognitionSerialPlayback.put(currentIdentifier, serialPlaybackStream.toByteArray());
 		}
 		currentOpenStreamList.clear();
+		inputStream.close();
+		inputStream = null;
 
 	}
 

@@ -61,11 +61,11 @@ public class SensorLoudness {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						byte[] recievedBuffer = new byte[MicrophoneGrabber.frameByteSize * 3];
+						byte[] recievedBuffer = new byte[MicrophoneGrabber.frameByteSize * 5];
 						while (microphoneInput != null) {
 							try {
-								//microphoneInput.skip(microphoneInput.available());
-								microphoneInput.read(recievedBuffer, 0, MicrophoneGrabber.frameByteSize * 3);
+								microphoneInput.read(recievedBuffer, 0, recievedBuffer.length);
+								microphoneInput.skip(microphoneInput.available());
 							} catch (IOException e) {
 								try {
 									microphoneInput.close();

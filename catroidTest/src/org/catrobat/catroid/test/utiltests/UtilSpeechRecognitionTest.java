@@ -115,5 +115,6 @@ public class UtilSpeechRecognitionTest extends InstrumentationTestCase implement
 	}
 
 	public void onRecognizerError(Bundle errorBundle) {
+		fail(errorBundle.getString(BUNDLE_ERROR_MESSAGE));
 	}
 }
