@@ -23,7 +23,6 @@
 package org.catrobat.catroid.stage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -37,6 +36,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -48,7 +48,7 @@ public class StageActivity extends AndroidApplication {
 	public static StageListener stageListener;
 	private boolean resizePossible;
 	private StageDialog stageDialog;
-	private HashMap<Integer, RecognizerCallback> askerList = new HashMap<Integer, RecognizerCallback>();
+	private SparseArray<RecognizerCallback> askerList = new SparseArray<RecognizerCallback>();
 
 	public static final int STAGE_ACTIVITY_FINISH = 7777;
 
@@ -143,30 +143,28 @@ public class StageActivity extends AndroidApplication {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		if((requestCode & SPEECH_RECOGNITION_FLAG) > 0)
-		{
-				ArrayList<String> matches = null;
-				Bundle resultBundle = new Bundle();
-				int resultFlag = RecognizerCallback.RESULT_NOMATCH;
-				resultBundle.putInt(RecognizerCallback.BUNDLE_IDENTIFIER, requestCode);
-				switch (resultCode) {
-					case RESULT_OK:
-						matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-						resultBundle.putStringArrayList(RecognizerCallback.BUNDLE_RESULT_MATCHES, matches);
-						resultFlag = RecognizerCallback.RESULT_OK;
-					case RESULT_CANCELED:
-					case RESULT_FIRST_USER:
-						askerList.get(requestCode).onRecognizerResult(resultFlag, resultBundle);
-						break;
-					default:
-						Log.w(TAG, "unhandeld Recognizer resultCode " + resultCode);
-				}
-				askerList.remove(requestCode);
-				stageListener.skipDynamicSamplingRateForActions();
-				this.resume();
-				}else{
-			default:
-				Log.w(TAG, "unhandeld ActivityResult.");
+		if ((requestCode & SPEECH_RECOGNITION_FLAG) > 0) {
+			ArrayList<String> matches = null;
+			Bundle resultBundle = new Bundle();
+			int resultFlag = RecognizerCallback.RESULT_NOMATCH;
+			resultBundle.putInt(RecognizerCallback.BUNDLE_IDENTIFIER, requestCode);
+			switch (resultCode) {
+				case RESULT_OK:
+					matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+					resultBundle.putStringArrayList(RecognizerCallback.BUNDLE_RESULT_MATCHES, matches);
+					resultFlag = RecognizerCallback.RESULT_OK;
+				case RESULT_CANCELED:
+				case RESULT_FIRST_USER:
+					askerList.get(requestCode).onRecognizerResult(resultFlag, resultBundle);
+					break;
+				default:
+					Log.w(TAG, "unhandeld Recognizer resultCode " + resultCode);
+			}
+			askerList.remove(requestCode);
+			stageListener.skipDynamicSamplingRateForActions();
+			this.resume();
+		} else {
+			Log.w(TAG, "unhandeld ActivityResult.");
 		}
 	}
 }

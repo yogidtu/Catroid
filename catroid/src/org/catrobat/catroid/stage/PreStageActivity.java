@@ -124,16 +124,13 @@ public class PreStageActivity extends Activity {
 				resourceInitialized();
 			}
 		}
-		if ((required_resources & Brick.SPEECH_TO_TEXT_CONTINOUS) > 0) {
+		if ((required_resources & Brick.SPEECH_TO_TEXT) > 0) {
 			AudioInputStream microphoneStream = new AudioInputStream(MicrophoneGrabber.getInstance()
 					.getMicrophoneStream(), MicrophoneGrabber.audioEncoding, 1, MicrophoneGrabber.sampleRate,
 					MicrophoneGrabber.frameByteSize, ByteOrder.LITTLE_ENDIAN, true);
 
 			speechToText = new UtilSpeechRecognition(microphoneStream);
 			resourceInitialized();
-		}
-		if ((required_resources & Brick.SPEECH_TO_TEXT) > 0) {
-
 		}
 		if (requiredResourceCounter == Brick.NO_RESOURCES) {
 			startStage();
@@ -155,16 +152,9 @@ public class PreStageActivity extends Activity {
 	}
 
 	public static void registerAndStartRecognition(StageActivity stage) {
-		int required_resources = getRequiredRessources();
-
-		if ((required_resources & Brick.SPEECH_TO_TEXT_CONTINOUS) > 0) {
-			if (speechToText != null) {
-				speechToText.registerContinuousSpeechListener((RecognizerCallback) StageActivity.stageListener);
-				speechToText.start();
-			}
-		}
-		if ((required_resources & Brick.SPEECH_TO_TEXT) > 0) {
-			UtilSpeechRecognition.setStageActivity(stage);
+		if (speechToText != null) {
+			speechToText.registerContinuousSpeechListener((RecognizerCallback) StageActivity.stageListener);
+			speechToText.start();
 		}
 	}
 
@@ -217,7 +207,7 @@ public class PreStageActivity extends Activity {
 		this.startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
 	}
 
-	private static int getRequiredRessources() {
+	private int getRequiredRessources() {
 		ArrayList<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance().getCurrentProject()
 				.getSpriteList();
 
