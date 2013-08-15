@@ -71,7 +71,7 @@ public class UtilSpeechRecognitionTest extends InstrumentationTestCase implement
 				getInstrumentation().getContext(), TestUtils.TYPE_SOUND_FILE);
 		FileInputStream speechFileStream = new FileInputStream(testSpeechFile);
 		AudioInputStream audioFileStream = new AudioInputStream(speechFileStream, AudioFormat.ENCODING_PCM_16BIT, 1,
-				16000, 128, ByteOrder.LITTLE_ENDIAN, true);
+				16000, 512, ByteOrder.LITTLE_ENDIAN, true);
 
 		UtilSpeechRecognition speechRecognizer = new UtilSpeechRecognition(audioFileStream);
 		speechRecognizer.registerContinuousSpeechListener(this);
