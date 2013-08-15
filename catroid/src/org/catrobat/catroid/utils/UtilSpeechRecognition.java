@@ -37,29 +37,28 @@ import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.VoiceDetection;
-import org.catrobat.catroid.speechrecognition.ZeroCrossingVoiceDetection;
+import org.catrobat.catroid.stage.StageActivity;
 
 import android.os.Bundle;
 import android.util.Log;
 
 public class UtilSpeechRecognition implements RecognizerCallback {
-
-	//	private static UtilSpeechRecognition instance = null;
 	private static final String TAG = UtilSpeechRecognition.class.getSimpleName();
 
 	private static final int DEFAULT_SERIAL_BUFFER_SIZE = 16384;
 	private static final boolean DEBUG_OUTPUT = true;
-	//	private String lastBestAnswer = "";
-	//	private ArrayList<String> lastAnswerSuggenstions = new ArrayList<String>();
+	private static StageActivity currentRunningStage = null;
+	private static String lastAnswer;
 	private AudioInputStream inputStream = null;
-	private boolean runRecognition = false;
 	private Thread worker = null;
+	private boolean runRecognition = false;
 
 	private boolean stopAfterFirstSuccessRecognition = true;
 	private boolean parallelRecognition = false;
 	private boolean broadcastOnlySuccessResults = true;
-	private int silenceBeforeVoiceMs = 50;
-	private int silenceAfterVoiceInMs = 150;
+	private int silenceBeforeVoiceMs = 400;
+	private int minActiveVoiceTimeMr = 100;
+	private int silenceAfterVoiceInMs = 550;
 
 	protected ArrayList<RecognizerCallback> askerList = new ArrayList<RecognizerCallback>();
 	protected ArrayList<RecognizerCallback> recognizerSelfListenerList = new ArrayList<RecognizerCallback>();
@@ -71,6 +70,35 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 
 	public UtilSpeechRecognition(AudioInputStream speechInputStream) {
 		this.inputStream = speechInputStream;
+	}
+
+	public static void setStageActivity(StageActivity currentStage) {
+		currentRunningStage = currentStage;
+	}
+
+	public static void askUserViaIntent(String question, final RecognizerCallback originCallback) {
+		currentRunningStage.askForSpeechInput(question, new RecognizerCallback() {
+
+			@Override
+			public void onRecognizerResult(int resultCode, Bundle resultBundle) {
+				if (resultCode == RESULT_OK) {
+					lastAnswer = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES).toString();
+				} else {
+					lastAnswer = "";
+				}
+				originCallback.onRecognizerResult(resultCode, resultBundle);
+			}
+
+			@Override
+			public void onRecognizerError(Bundle errorBundle) {
+				lastAnswer = "";
+				originCallback.onRecognizerError(errorBundle);
+			}
+		});
+	}
+
+	public static String getLastAnswer() {
+		return lastAnswer;
 	}
 
 	public void registerContinuousSpeechListener(RecognizerCallback asker) {
@@ -126,7 +154,7 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 		if (detectorList.size() == 0) {
 			//Use default
 			addVoiceDetector(new AdaptiveEnergyVoiceDetection());
-			addVoiceDetector(new ZeroCrossingVoiceDetection());
+			//addVoiceDetector(new ZeroCrossingVoiceDetection());
 		}
 		for (VoiceDetection detecor : detectorList) {
 			detecor.resetState();
@@ -152,6 +180,7 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 							"Error when executing recognitionchain. " + e.getMessage());
 					errorBundle.putInt(RecognizerCallback.BUNDLE_ERROR_CODE, ERROR_IO);
 					UtilSpeechRecognition.this.onRecognizerError(errorBundle);
+					inputStream = null;
 				}
 				synchronized (this) {
 					this.notifyAll();
@@ -165,13 +194,17 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 		int frameSize = inputStream.getFrameByteSize();
 		int silentPreFrames = (int) (inputStream.getSampleRate() / frameSize * (silenceBeforeVoiceMs / 1000f));
 		int silentPostFrames = (int) (inputStream.getSampleRate() / frameSize * (silenceAfterVoiceInMs / 1000f));
+		int minActiveFrames = (int) (inputStream.getSampleRate() / frameSize * (minActiveVoiceTimeMr / 1000f));
 		byte[] frameBuffer = new byte[frameSize];
 		byte[] preBuffer = new byte[silentPreFrames * frameSize];
+		byte[] activeBuffer = new byte[minActiveFrames * frameSize];
 		ArrayList<OutputStream> currentOpenStreamList = new ArrayList<OutputStream>();
 		ByteArrayOutputStream serialPlaybackStream = null;
 		long currentIdentifier = 0;
 		int processedSilentFrames = 0;
+		int processedActiveFrames = 0;
 		boolean recognizerAreListening = false;
+		ArrayList<OutputStream> copyStreamList = new ArrayList<OutputStream>(currentOpenStreamList);
 
 		while (runRecognition) {
 			int offset = 0;
@@ -205,12 +238,23 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 				}
 			}
 
-			if (recognizerAreListening && !voiceFrame && (++processedSilentFrames < silentPostFrames)) {
-				voiceFrame = true;
-			}
+			//PreProcessing
+			if (!recognizerAreListening) {
+				if (!voiceFrame) {
+					System.arraycopy(preBuffer, frameSize, preBuffer, 0, preBuffer.length - frameSize);
+					System.arraycopy(frameBuffer, 0, preBuffer, preBuffer.length - frameSize, frameSize);
 
-			if (voiceFrame) {
-				if (!recognizerAreListening) {
+					if (DEBUG_OUTPUT && processedActiveFrames != 0) {
+						Log.v(TAG, "resetting proccessed active frames");
+					}
+					processedActiveFrames = 0;
+					continue;
+				} else if ((++processedActiveFrames < minActiveFrames)) {
+					System.arraycopy(activeBuffer, frameSize, activeBuffer, 0, activeBuffer.length - frameSize);
+					System.arraycopy(frameBuffer, 0, activeBuffer, activeBuffer.length - frameSize, frameSize);
+					continue;
+				} else {
+					//start streaming
 					currentIdentifier = System.currentTimeMillis();
 					if (DEBUG_OUTPUT) {
 						Log.v(TAG, "Starting partial recognition" + currentIdentifier);
@@ -218,46 +262,59 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 					for (SpeechRecognizer recognizer : recognizerList) {
 						PipedOutputStream feedStream = new PipedOutputStream();
 						PipedInputStream recieverStream = new PipedInputStream(feedStream, inputStream.getSampleRate()
-								/ frameSize * 1000);
+								/ frameSize * 100);
 						currentOpenStreamList.add(feedStream);
-						feedStream.write(preBuffer);
 						recognizer.startRecognizeInput(new AudioInputStream(recieverStream, inputStream),
 								currentIdentifier);
+						feedStream.write(preBuffer);
+						feedStream.write(activeBuffer);
 						if (!parallelRecognition) {
 							serialPlaybackStream = new ByteArrayOutputStream(DEFAULT_SERIAL_BUFFER_SIZE);
 							currentOpenStreamList.add(serialPlaybackStream);
 							serialPlaybackStream.write(preBuffer);
+							serialPlaybackStream.write(activeBuffer);
 							break;
 						}
 					}
 					recognitionTasks.put(currentIdentifier, recognizerList.size());
 					recognitionMatches.put(currentIdentifier, new ArrayList<String>());
 					recognizerAreListening = true;
+					copyStreamList = new ArrayList<OutputStream>(currentOpenStreamList);
 				}
+			}
 
-				for (OutputStream feedStream : currentOpenStreamList) {
+			for (OutputStream feedStream : copyStreamList) {
+				try {
 					feedStream.write(frameBuffer);
+				} catch (IOException e) {
+					currentOpenStreamList.remove(feedStream);
 				}
-			} else {
-				if (recognizerAreListening) {
-					for (OutputStream feedStream : currentOpenStreamList) {
-						feedStream.write(frameBuffer);
-						feedStream.flush();
-						feedStream.close();
-					}
-					if (!parallelRecognition) {
-						recognitionSerialPlayback.put(currentIdentifier, serialPlaybackStream.toByteArray());
-					}
-					currentOpenStreamList.clear();
-					recognizerAreListening = false;
-					preBuffer = new byte[preBuffer.length];
-					if (DEBUG_OUTPUT) {
-						Log.v(TAG, "Stopped partial recognition " + currentIdentifier);
-					}
-				} else {
-					System.arraycopy(preBuffer, frameSize, preBuffer, 0, preBuffer.length - frameSize);
-					System.arraycopy(frameBuffer, 0, preBuffer, preBuffer.length - frameSize, frameSize);
+			}
+			if (currentOpenStreamList.size() == 0) {
+				recognizerAreListening = false;
+			}
+
+			if (voiceFrame || (++processedSilentFrames < silentPostFrames)) {
+				continue;
+			}
+
+			if (!voiceFrame) {
+				for (OutputStream feedStream : currentOpenStreamList) {
+					feedStream.flush();
+					feedStream.close();
 				}
+				if (!parallelRecognition) {
+					recognitionSerialPlayback.put(currentIdentifier, serialPlaybackStream.toByteArray());
+				}
+				currentOpenStreamList.clear();
+				recognizerAreListening = false;
+				preBuffer = new byte[preBuffer.length];
+				activeBuffer = new byte[activeBuffer.length];
+				if (DEBUG_OUTPUT) {
+					Log.v(TAG, "Stopped partial recognition " + currentIdentifier);
+				}
+				processedSilentFrames = 0;
+				processedActiveFrames = 0;
 			}
 		}
 
@@ -267,10 +324,12 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 			feedStream.flush();
 			feedStream.close();
 		}
-		if (!parallelRecognition) {
+		if (!parallelRecognition && serialPlaybackStream != null) {
 			recognitionSerialPlayback.put(currentIdentifier, serialPlaybackStream.toByteArray());
 		}
 		currentOpenStreamList.clear();
+		inputStream.close();
+		inputStream = null;
 
 	}
 
@@ -409,6 +468,11 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 			default:
 				Log.w(TAG, "Unhandled errorcode was thrown.");
 				break;
+		}
+		if (!this.isRecognitionRunning()) {
+			errorBundle.putBoolean(BUNDLE_ERROR_FATAL_FLAG, true);
+		} else {
+			errorBundle.putBoolean(BUNDLE_ERROR_FATAL_FLAG, false);
 		}
 		sendErrorToListener(errorBundle);
 	}

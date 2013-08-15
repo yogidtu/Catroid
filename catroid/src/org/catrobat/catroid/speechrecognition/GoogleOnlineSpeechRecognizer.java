@@ -102,15 +102,21 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 			return null;
 		}
 
+		final Thread caller = Thread.currentThread();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					encodeAudioInputStream(inputStream, inputStream.getFrameByteSize(), flac, true);
+					encodeAudioInputStream(inputStream, inputStream.getFrameByteSize(), flac, false);
+				} catch (Exception e) {
+					sendError(RecognizerCallback.ERROR_OTHER, "There was a problem when converting into FLAC-Format. :"
+							+ e.getMessage(), caller);
+				}
+				try {
 					pipedOutputStream.flush();
 					pipedOutputStream.close();
-				} catch (Exception e) {
-					sendError(RecognizerCallback.ERROR_OTHER, "There was a problem when converting into FLAC-Format.");
+				} catch (IOException e) {
+
 				}
 			}
 		}).start();

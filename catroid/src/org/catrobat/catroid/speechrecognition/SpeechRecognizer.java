@@ -35,7 +35,7 @@ import android.util.Log;
 
 public abstract class SpeechRecognizer {
 
-	protected static final boolean DEBUG_OUTPUT = false;
+	protected static final boolean DEBUG_OUTPUT = true;
 
 	private static final String TAG = SpeechRecognizer.class.getSimpleName();
 	private static final int STATE_INIT = 0x1;
@@ -100,16 +100,20 @@ public abstract class SpeechRecognizer {
 		currentState = STATE_PREPARED;
 	}
 
-	protected synchronized void sendResults(ArrayList<String> matches) {
-		if (!taskQuqe.containsKey(Thread.currentThread())) {
-			Thread.dumpStack();
+	protected void sendResults(ArrayList<String> matches) {
+		sendResults(matches, Thread.currentThread());
+	}
+
+	protected synchronized void sendResults(ArrayList<String> matches, Thread caller) {
+		if (!taskQuqe.containsKey(caller)) {
 			if (DEBUG_OUTPUT) {
+				Thread.dumpStack();
 				Log.v(TAG, "Not registered Task tries to send Results. Twice?");
 			}
 			return;
 		}
-		long identifier = taskQuqe.get(Thread.currentThread());
-		taskQuqe.remove(Thread.currentThread());
+		long identifier = taskQuqe.get(caller);
+		taskQuqe.remove(caller);
 		Bundle resultBundle = new Bundle();
 		if (identifier != 0) {
 			resultBundle.putLong(RecognizerCallback.BUNDLE_IDENTIFIER, identifier);
@@ -135,16 +139,20 @@ public abstract class SpeechRecognizer {
 		}
 	}
 
-	protected synchronized void sendError(int errorCode, String errorMessage) {
-		if (!taskQuqe.containsKey(Thread.currentThread())) {
-			Thread.dumpStack();
+	protected void sendError(int errorCode, String errorMessage) {
+		sendError(errorCode, errorMessage, Thread.currentThread());
+	}
+
+	protected synchronized void sendError(int errorCode, String errorMessage, Thread caller) {
+		if (!taskQuqe.containsKey(caller)) {
 			if (DEBUG_OUTPUT) {
+				Thread.dumpStack();
 				Log.v(TAG, "Not registered Task tries to send Error! message:" + errorMessage);
 			}
 			return;
 		}
-		long identifier = taskQuqe.get(Thread.currentThread());
-		taskQuqe.remove(Thread.currentThread());
+		long identifier = taskQuqe.get(caller);
+		taskQuqe.remove(caller);
 
 		Bundle errorBundle = new Bundle();
 		if (identifier != 0) {
