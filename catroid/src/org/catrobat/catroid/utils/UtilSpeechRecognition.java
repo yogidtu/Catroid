@@ -37,19 +37,16 @@ import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.VoiceDetection;
+import org.catrobat.catroid.stage.StageActivity;
 
 import android.os.Bundle;
 import android.util.Log;
 
 public class UtilSpeechRecognition implements RecognizerCallback {
-
-	//	private static UtilSpeechRecognition instance = null;
 	private static final String TAG = UtilSpeechRecognition.class.getSimpleName();
 
 	private static final int DEFAULT_SERIAL_BUFFER_SIZE = 16384;
 	private static final boolean DEBUG_OUTPUT = true;
-	//	private String lastBestAnswer = "";
-	//	private ArrayList<String> lastAnswerSuggenstions = new ArrayList<String>();
 	private AudioInputStream inputStream = null;
 	private boolean runRecognition = false;
 	private Thread worker = null;
@@ -69,8 +66,14 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 	protected HashMap<Long, byte[]> recognitionSerialPlayback = new HashMap<Long, byte[]>();
 	protected HashMap<Long, ArrayList<String>> recognitionMatches = new HashMap<Long, ArrayList<String>>();
 
+	private static StageActivity runningActivity = null;
+
 	public UtilSpeechRecognition(AudioInputStream speechInputStream) {
 		this.inputStream = speechInputStream;
+	}
+
+	public static void setStageActivity(StageActivity currentStage) {
+		runningActivity = currentStage;
 	}
 
 	public void registerContinuousSpeechListener(RecognizerCallback asker) {
