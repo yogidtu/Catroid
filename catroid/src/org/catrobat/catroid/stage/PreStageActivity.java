@@ -22,9 +22,27 @@
  */
 package org.catrobat.catroid.stage;
 
-import android.annotation.SuppressLint;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.LegoNXT.LegoNXT;
+import org.catrobat.catroid.LegoNXT.LegoNXTBtCommunicator;
+import org.catrobat.catroid.bluetooth.BluetoothManager;
+import org.catrobat.catroid.bluetooth.DeviceListActivity;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.utils.MicrophoneGrabber;
+import org.catrobat.catroid.utils.UtilSpeechRecognition;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -75,6 +93,7 @@ public class PreStageActivity extends Activity {
 	private int requiredResourceCounter;
 	private static LegoNXT legoNXT;
 	private ProgressDialog connectingProgressDialog;
+	private static UtilSpeechRecognition speechToText;
 	private static TextToSpeech textToSpeech;
 	private static OnUtteranceCompletedListenerContainer onUtteranceCompletedListenerContainer;
 
@@ -111,11 +130,25 @@ public class PreStageActivity extends Activity {
 		}
 		if ((required_resources & Brick.NETWORK_CONNECTION) > 0) {
 			if (!isOnline()) {
-				AlertDialog networkAlert = createNoNetworkAlert();
+				AlertDialog networkAlert = createNoNetworkAlert(this);
+				networkAlert.setOnDismissListener(new Dialog.OnDismissListener() {
+					@Override
+					public void onDismiss(DialogInterface dialog) {
+						resourceFailed();
+					}
+				});
 				networkAlert.show();
 			} else {
 				resourceInitialized();
 			}
+		}
+		if ((required_resources & Brick.SPEECH_TO_TEXT) > 0) {
+			AudioInputStream microphoneStream = new AudioInputStream(MicrophoneGrabber.getInstance()
+					.getMicrophoneStream(), MicrophoneGrabber.audioEncoding, 1, MicrophoneGrabber.sampleRate,
+					MicrophoneGrabber.frameByteSize, ByteOrder.LITTLE_ENDIAN, true);
+
+			speechToText = new UtilSpeechRecognition(microphoneStream);
+			resourceInitialized();
 		}
 		if (requiredResourceCounter == Brick.NO_RESOURCES) {
 			startStage();
@@ -130,6 +163,19 @@ public class PreStageActivity extends Activity {
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+	}
+
+	public static void registerAndStartRecognition(StageActivity stage) {
+		if (speechToText != null) {
+			speechToText.registerContinuousSpeechListener((RecognizerCallback) StageActivity.stageListener);
+			speechToText.start();
+		}
+	}
+
 	//all resources that should be reinitialized with every stage start
 	public static void shutdownResources() {
 		if (textToSpeech != null) {
@@ -138,6 +184,9 @@ public class PreStageActivity extends Activity {
 		}
 		if (legoNXT != null) {
 			legoNXT.pauseCommunicator();
+		}
+		if (speechToText != null) {
+			speechToText.unregisterAllAndStop();
 		}
 	}
 
@@ -197,13 +246,26 @@ public class PreStageActivity extends Activity {
 		return ressources;
 	}
 
-	private ArrayList<Brick> getBricksRequieringResource(int resource) {
+	private static ArrayList<Brick> getBricksRequieringResource(int resource) {
 		ArrayList<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance().getCurrentProject()
 				.getSpriteList();
 		ArrayList<Brick> brickList = new ArrayList<Brick>();
 
 		for (Sprite sprite : spriteList) {
 			brickList.addAll(sprite.getBricksRequiringResource(resource));
+		}
+		ArrayList<Brick> filterBrickList = new ArrayList<Brick>(brickList);
+		for (Brick filterType : filterBrickList) {
+			boolean contained = false;
+			for (Brick realType : brickList) {
+				if (filterType.getClass() == realType.getClass() && filterType != realType) {
+					contained = true;
+					break;
+				}
+			}
+			if (contained) {
+				brickList.remove(filterType);
+			}
 		}
 		return brickList;
 	}
@@ -347,8 +409,8 @@ public class PreStageActivity extends Activity {
 		return false;
 	}
 
-	private AlertDialog createNoNetworkAlert() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	public static AlertDialog createNoNetworkAlert(final Activity builderContext) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(builderContext);
 
 		ArrayList<Brick> networkBrickList = getBricksRequieringResource(Brick.NETWORK_CONNECTION);
 		View dialogLayout = View.inflate(builder.getContext(), R.layout.dialog_error_networkconnection, null);
@@ -373,20 +435,22 @@ public class PreStageActivity extends Activity {
 			imageLayout.addView(brickImageView);
 		}
 
-		builder.setTitle(getString(R.string.error_no_network_title)).setCancelable(false)
-				.setNegativeButton(getString(R.string.cancel_button), new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-						resourceFailed();
-					}
-				}).setPositiveButton(getString(R.string.main_menu_settings), new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int id) {
-						Intent i = new Intent(Settings.ACTION_SETTINGS);
-						startActivity(i);
-						resourceFailed();
-					}
-				}).setView(dialogLayout);
+		builder.setTitle(builderContext.getString(R.string.error_no_network_title))
+				.setCancelable(false)
+				.setNegativeButton(builderContext.getString(R.string.cancel_button),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+							}
+						})
+				.setPositiveButton(builderContext.getString(R.string.main_menu_settings),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								Intent i = new Intent(Settings.ACTION_SETTINGS);
+								builderContext.startActivity(i);
+							}
+						}).setView(dialogLayout);
 
 		return builder.create();
 	}
