@@ -37,6 +37,7 @@ import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.VoiceDetection;
+import org.catrobat.catroid.stage.StageActivity;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -46,9 +47,11 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 
 	private static final int DEFAULT_SERIAL_BUFFER_SIZE = 16384;
 	private static final boolean DEBUG_OUTPUT = true;
+	private static StageActivity currentRunningStage = null;
+	private static String lastAnswer;
 	private AudioInputStream inputStream = null;
-	private boolean runRecognition = false;
 	private Thread worker = null;
+	private boolean runRecognition = false;
 
 	private boolean stopAfterFirstSuccessRecognition = true;
 	private boolean parallelRecognition = false;
@@ -67,6 +70,35 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 
 	public UtilSpeechRecognition(AudioInputStream speechInputStream) {
 		this.inputStream = speechInputStream;
+	}
+
+	public static void setStageActivity(StageActivity currentStage) {
+		currentRunningStage = currentStage;
+	}
+
+	public static void askUserViaIntent(String question, final RecognizerCallback originCallback) {
+		currentRunningStage.askForSpeechInput(question, new RecognizerCallback() {
+
+			@Override
+			public void onRecognizerResult(int resultCode, Bundle resultBundle) {
+				if (resultCode == RESULT_OK) {
+					lastAnswer = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES).toString();
+				} else {
+					lastAnswer = "";
+				}
+				originCallback.onRecognizerResult(resultCode, resultBundle);
+			}
+
+			@Override
+			public void onRecognizerError(Bundle errorBundle) {
+				lastAnswer = "";
+				originCallback.onRecognizerError(errorBundle);
+			}
+		});
+	}
+
+	public static String getLastAnswer() {
+		return lastAnswer;
 	}
 
 	public void registerContinuousSpeechListener(RecognizerCallback asker) {
