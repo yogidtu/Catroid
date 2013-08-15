@@ -153,6 +153,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_gravity">center_vertical</item>
+        
     </style>
 
     <style name="BrickText.SingleLine">
@@ -174,6 +175,8 @@
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="BrickEditText" parent="@style/BrickPrototypeTextView">

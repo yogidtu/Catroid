@@ -32,7 +32,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 
 public class Formula implements Serializable {
 
@@ -128,7 +128,7 @@ public class Formula implements Serializable {
 
 	public void refreshTextField(View view, String formulaString) {
 		if (formulaTextFieldId != null && formulaTree != null && view != null) {
-			EditText formulaTextField = (EditText) view.findViewById(formulaTextFieldId);
+			TextView formulaTextField = (TextView) view.findViewById(formulaTextFieldId);
 			if (formulaTextField != null) {
 				formulaTextField.setText(formulaString);
 			}
@@ -144,7 +144,7 @@ public class Formula implements Serializable {
 			highlightBackground = brickView.getResources().getDrawable(R.drawable.textfield_pressed);
 		}
 
-		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
+		TextView formulaTextField = (TextView) brickView.findViewById(formulaTextFieldId);
 
 		formulaTextField.setBackgroundDrawable(highlightBackground);
 	}

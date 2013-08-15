@@ -59,35 +59,35 @@
                 android:layout_width="match_parent" >
             </TextView>
 
-            <EditText
+            <TextView
                 android:id="@+id/brick_glide_to_edit_text_duration"
                 style="@style/BrickEditText"
-                android:inputType="number|numberDecimal" 
                 android:layout_width="match_parent">
-            </EditText>
+            </TextView>
 
             <TextView
                 android:id="@+id/brick_glide_to_seconds_text_view"
                 style="@style/BrickText.SingleLine" >
             </TextView>
 
+             
+            <!-- app:layout_newLine="true" -->
             <TextView
-                app:layout_newLine="true"
                 android:id="@+id/brick_glide_to_x"
                 style="@style/BrickText.SingleLine"
                 android:text="@string/brick_glide_to_x" >
             </TextView>
-
+			
             <TextView
                 android:id="@+id/brick_glide_to_prototype_text_view_x"
                 style="@style/BrickPrototypeTextView" >
             </TextView>
 
-            <EditText
+            <TextView
                 android:id="@+id/brick_glide_to_edit_text_x"
                 style="@style/BrickEditText"
-                android:inputType="number|numberDecimal|numberSigned" >
-            </EditText>
+					 >
+            </TextView>
 
             <TextView
                 android:id="@+id/brick_glide_to_y"
@@ -100,11 +100,12 @@
                 style="@style/BrickPrototypeTextView" >
             </TextView>
 
-            <EditText
+            <TextView
                 android:id="@+id/brick_glide_to_edit_text_y"
                 style="@style/BrickEditText"
-                android:inputType="number|numberDecimal|numberSigned" >
-            </EditText>
+                	>
+            </TextView>
+           	
     </org.catrobat.catroid.ui.BrickLayout>
 
 </LinearLayout>
