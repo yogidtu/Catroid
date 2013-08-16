@@ -37,6 +37,7 @@ import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.VoiceDetection;
+import org.catrobat.catroid.speechrecognition.ZeroCrossingVoiceDetection;
 import org.catrobat.catroid.stage.StageActivity;
 
 import android.os.Bundle;
@@ -154,7 +155,7 @@ public class UtilSpeechRecognition implements RecognizerCallback {
 		if (detectorList.size() == 0) {
 			//Use default
 			addVoiceDetector(new AdaptiveEnergyVoiceDetection());
-			//addVoiceDetector(new ZeroCrossingVoiceDetection());
+			addVoiceDetector(new ZeroCrossingVoiceDetection());
 		}
 		for (VoiceDetection detecor : detectorList) {
 			detecor.resetState();

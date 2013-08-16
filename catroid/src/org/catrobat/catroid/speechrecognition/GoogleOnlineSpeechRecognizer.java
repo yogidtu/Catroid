@@ -48,7 +48,7 @@ import android.util.Log;
 
 public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
-	private static final String API_URL = "http://www.google.com/speech-api/v1/recognize?client=chromium&lang=de-DE&maxresults=5";
+	private static final String API_URL = "https://www.google.com/speech-api/v1/recognize?client=chromium&maxresults=5";
 	private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.77 Safari/535.7";
 
 	public GoogleOnlineSpeechRecognizer() {
@@ -95,7 +95,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 			pipedOutputStream = new PipedOutputStream();
 			flacOutputStream = new FLACStreamOutputStream(pipedOutputStream);
 			flac.setOutputStream(flacOutputStream);
-			pipedInputStream = new PipedInputStream(pipedOutputStream);
+			pipedInputStream = new PipedInputStream(pipedOutputStream, inputStream.getFrameByteSize() * 32);
 			flac.openFLACStream();
 		} catch (IOException e1) {
 			sendError(RecognizerCallback.ERROR_OTHER, "Pipes couldn't be generated. Try filebased execution.");
