@@ -37,8 +37,8 @@ public abstract interface RecognizerCallback {
 	public static final String BUNDLE_RESULT_MATCHES = "RESULT";
 	public static final String BUNDLE_ERROR_MESSAGE = "ERROR_MESSAGE";
 	public static final String BUNDLE_ERROR_CODE = "ERROR_CODE";
-	public static final String BUNDLE_ERROR_CALLERCLASS = "ERROR_CALLERCLASS";
 	public static final String BUNDLE_ERROR_FATAL_FLAG = "ERROR_FATAL_FLAG";
+	public static final String BUNDLE_SENDERCLASS = "SENDERCLASS";
 	public static final String BUNDLE_IDENTIFIER = "IDENTIFIER";
 
 	public abstract void onRecognizerResult(int resultCode, Bundle resultBundle);

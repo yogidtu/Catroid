@@ -30,8 +30,6 @@ public abstract class VoiceDetection {
 
 	abstract public boolean isFrameWithVoice(double[] frame);
 
-	abstract public boolean isInitialized();
-
 	abstract public void resetState();
 
 	abstract public void setSensibility(VoiceDetectionSensibility Sensibility);

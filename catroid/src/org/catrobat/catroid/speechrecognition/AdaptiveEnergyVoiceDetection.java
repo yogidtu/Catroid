@@ -25,6 +25,8 @@ package org.catrobat.catroid.speechrecognition;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import android.util.Log;
+
 public class AdaptiveEnergyVoiceDetection extends VoiceDetection {
 	/*
 	 * Implemented after
@@ -39,7 +41,6 @@ public class AdaptiveEnergyVoiceDetection extends VoiceDetection {
 
 	public double lastConfidence;
 
-	public final int samplesPerFrame = 256;
 	private double energyThreshold = 0.0d;
 	private int framesForThreshold = 40;
 	private float weightFactor = 0.1f;
@@ -126,11 +127,6 @@ public class AdaptiveEnergyVoiceDetection extends VoiceDetection {
 		weightFactor = 0.1f;
 		recentEnergyRingQueqe.clear();
 		setSensibility(VoiceDetectionSensibility.NORMAL);
-	}
-
-	@Override
-	public boolean isInitialized() {
-		return recentEnergyRingQueqe.size() >= framesForThreshold;
 	}
 
 	@Override

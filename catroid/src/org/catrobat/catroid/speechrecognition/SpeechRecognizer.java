@@ -38,6 +38,7 @@ public abstract class SpeechRecognizer {
 	protected static final boolean DEBUG_OUTPUT = true;
 
 	private static final String TAG = SpeechRecognizer.class.getSimpleName();
+	private String runningInstance;
 	private static final int STATE_INIT = 0x1;
 	private static final int STATE_PREPARED = 0x2;
 	private ArrayList<RecognizerCallback> resultListeners = new ArrayList<RecognizerCallback>();
@@ -49,6 +50,7 @@ public abstract class SpeechRecognizer {
 	protected abstract void runRecognitionTask(AudioInputStream inputStream);
 
 	public SpeechRecognizer() {
+		runningInstance = this.toString();
 	}
 
 	public void addCallbackListener(RecognizerCallback resultListener) {
@@ -100,6 +102,14 @@ public abstract class SpeechRecognizer {
 		currentState = STATE_PREPARED;
 	}
 
+	public void stopAllTasks() {
+		taskQuqe.clear();
+	}
+
+	public int getRunningTaskCount() {
+		return taskQuqe.size();
+	}
+
 	protected void sendResults(ArrayList<String> matches) {
 		sendResults(matches, Thread.currentThread());
 	}
@@ -108,7 +118,7 @@ public abstract class SpeechRecognizer {
 		if (!taskQuqe.containsKey(caller)) {
 			if (DEBUG_OUTPUT) {
 				Thread.dumpStack();
-				Log.v(TAG, "Not registered Task tries to send Results. Twice?");
+				Log.v(TAG, "Not registered Task tries to send Results.");
 			}
 			return;
 		}
@@ -118,6 +128,7 @@ public abstract class SpeechRecognizer {
 		if (identifier != 0) {
 			resultBundle.putLong(RecognizerCallback.BUNDLE_IDENTIFIER, identifier);
 		}
+		resultBundle.putString(RecognizerCallback.BUNDLE_SENDERCLASS, this.toString());
 		synchronized (resultListeners) {
 			if (matches != null && matches.size() > 0) {
 				resultBundle.putStringArrayList(RecognizerCallback.BUNDLE_RESULT_MATCHES, matches);
@@ -130,7 +141,8 @@ public abstract class SpeechRecognizer {
 				}
 			} else {
 				if (DEBUG_OUTPUT) {
-					Log.v(TAG, "we are sending Results, but none here :(  from Thread" + Thread.currentThread());
+					Log.v(TAG, "we are sending empty results from Thread" + Thread.currentThread() + "and caller:"
+							+ runningInstance);
 				}
 				for (RecognizerCallback listener : resultListeners) {
 					listener.onRecognizerResult(RecognizerCallback.RESULT_NOMATCH, resultBundle);
@@ -147,7 +159,7 @@ public abstract class SpeechRecognizer {
 		if (!taskQuqe.containsKey(caller)) {
 			if (DEBUG_OUTPUT) {
 				Thread.dumpStack();
-				Log.v(TAG, "Not registered Task tries to send Error! message:" + errorMessage);
+				Log.v(TAG, "Not registered Task tries to send Error. message:" + errorMessage);
 			}
 			return;
 		}
@@ -165,7 +177,7 @@ public abstract class SpeechRecognizer {
 			}
 			errorBundle.putString(RecognizerCallback.BUNDLE_ERROR_MESSAGE, errorMessage);
 			errorBundle.putInt(RecognizerCallback.BUNDLE_ERROR_CODE, errorCode);
-			errorBundle.putString(RecognizerCallback.BUNDLE_ERROR_CALLERCLASS, this.toString());
+			errorBundle.putString(RecognizerCallback.BUNDLE_SENDERCLASS, this.toString());
 			for (RecognizerCallback listener : resultListeners) {
 				listener.onRecognizerError(errorBundle);
 			}
