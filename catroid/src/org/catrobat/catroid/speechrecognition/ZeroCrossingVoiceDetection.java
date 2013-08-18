@@ -38,11 +38,6 @@ public class ZeroCrossingVoiceDetection extends VoiceDetection {
 	}
 
 	@Override
-	public boolean isInitialized() {
-		return true;
-	}
-
-	@Override
 	public void resetState() {
 		this.setSensibility(VoiceDetectionSensibility.NORMAL);
 	}

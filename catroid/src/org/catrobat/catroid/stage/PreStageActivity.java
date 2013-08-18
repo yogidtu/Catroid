@@ -36,9 +36,9 @@ import org.catrobat.catroid.bluetooth.DeviceListActivity;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.RecognitionManager;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.utils.MicrophoneGrabber;
-import org.catrobat.catroid.utils.UtilSpeechRecognition;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -93,7 +93,7 @@ public class PreStageActivity extends Activity {
 	private int requiredResourceCounter;
 	private static LegoNXT legoNXT;
 	private ProgressDialog connectingProgressDialog;
-	private static UtilSpeechRecognition speechToText;
+	private static RecognitionManager speechToText;
 	private static TextToSpeech textToSpeech;
 	private static OnUtteranceCompletedListenerContainer onUtteranceCompletedListenerContainer;
 
@@ -147,7 +147,7 @@ public class PreStageActivity extends Activity {
 					.getMicrophoneStream(), MicrophoneGrabber.audioEncoding, 1, MicrophoneGrabber.sampleRate,
 					MicrophoneGrabber.frameByteSize, ByteOrder.LITTLE_ENDIAN, true);
 
-			speechToText = new UtilSpeechRecognition(microphoneStream);
+			speechToText = new RecognitionManager(microphoneStream);
 			resourceInitialized();
 		}
 		if (requiredResourceCounter == Brick.NO_RESOURCES) {

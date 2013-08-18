@@ -22,70 +22,50 @@
  */
 package org.catrobat.catroid.test.speechRecognition;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
 import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.test.R;
-import org.catrobat.catroid.test.utils.TestUtils;
 
 import android.media.AudioFormat;
 import android.os.Bundle;
 import android.test.InstrumentationTestCase;
 
-public class WAVRecognizerTest extends InstrumentationTestCase implements RecognizerCallback {
+public class SpeechRecognizerTest extends InstrumentationTestCase implements RecognizerCallback {
 
-	private String testProjectName = "testStandardProjectBuilding";
-	private ArrayList<String> savedFiles = new ArrayList<String>();
 	private ArrayList<String> lastMatches = new ArrayList<String>();
 	private String lastErrorMessage = "";
-	private static final int SPEECH_FILE_ID = R.raw.speechsample_directions;
 
 	@Override
 	public void tearDown() throws Exception {
-		savedFiles.clear();
 		lastMatches.clear();
 		super.tearDown();
-		TestUtils.clearProject(testProjectName);
 	}
 
 	@Override
 	public void setUp() {
-		TestUtils.clearProject(testProjectName);
 		lastErrorMessage = "";
-		savedFiles.clear();
 		lastMatches.clear();
 	}
 
 	public void testOnlineRecognition() throws IOException {
 
-		ScreenValues.SCREEN_WIDTH = 720;
-		ScreenValues.SCREEN_HEIGHT = 1134;
-		ProjectManager.getInstance().setProject(
-				StandardProjectHandler.createAndSaveStandardProject(testProjectName, getInstrumentation()
-						.getTargetContext()));
-
-		File testSpeechFile = TestUtils.saveFileToProject(testProjectName, "directionSpeech.wav", SPEECH_FILE_ID,
-				getInstrumentation().getContext(), TestUtils.TYPE_SOUND_FILE);
-
-		FileInputStream speechFileStream = new FileInputStream(testSpeechFile);
-		AudioInputStream audioFileStream = new AudioInputStream(speechFileStream, AudioFormat.ENCODING_PCM_16BIT, 1,
-				16000, 128, ByteOrder.LITTLE_ENDIAN, true);
+		InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
+				.openRawResource(R.raw.speechsample_directions);
+		AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
+				1, 16000, 128, ByteOrder.LITTLE_ENDIAN, true);
 
 		GoogleOnlineSpeechRecognizer converter = new GoogleOnlineSpeechRecognizer();
 		converter.addCallbackListener(this);
 		converter.prepare();
 		converter.startRecognizeInput(audioFileStream);
 
-		int i = 100;
+		int i = 50;
 		do {
 			try {
 				Thread.sleep(200);
