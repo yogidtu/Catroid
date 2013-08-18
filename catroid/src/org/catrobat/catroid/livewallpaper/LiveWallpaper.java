@@ -42,6 +42,8 @@ import org.catrobat.catroid.utils.Utils;
 
 public class LiveWallpaper extends AndroidLiveWallpaperService {
 
+	private StageListener stageListener;
+
 	public void onCreateApplication() {
 		super.getApplication();
 	}
@@ -54,42 +56,32 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
 		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
 		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
-		Utils.loadProjectIfNeeded(getApplicationContext());
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		SoundManager.getInstance().soundDisabledByLwp = sharedPreferences.getBoolean(Constants.PREF_SOUND_DISABLED,
 				false);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.badlogic.gdx.backends.android.AndroidLiveWallpaperService#createListener(boolean)
-	 */
 	@Override
 	public ApplicationListener createListener(boolean isPreview) {
-		return new StageListener(getApplicationContext());
+		return stageListener;
 	}
 
-	/*
-	 * stageListenerc)
-	 * 
-	 * @see com.badlogic.gdx.backends.android.AndroidLiveWallpaperService#createConfig()
-	 */
 	@Override
 	public AndroidApplicationConfiguration createConfig() {
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
 		cfg.useGL20 = true;
+
 		return cfg;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.badlogic.gdx.backends.android.AndroidLiveWallpaperService#offsetChange(com.badlogic.gdx.ApplicationListener,
-	 * float, float, float, float, int, int)
-	 */
+	@Override
+	public Engine onCreateEngine() {
+		Utils.loadProjectIfNeeded(getApplicationContext());
+		stageListener = new StageListener(getApplicationContext());
+		return new LiveWallpaperEngine(this.stageListener);
+	}
+
 	@Override
 	public void offsetChange(ApplicationListener listener, float xOffset, float yOffset, float xOffsetStep,
 			float yOffsetStep, int xPixelOffset, int yPixelOffset) {
@@ -97,13 +89,9 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	}
 
-	@Override
-	public Engine onCreateEngine() {
-		LiveWallpaperEngine liveWallpaperEngine = new LiveWallpaperEngine();
-		return liveWallpaperEngine;
-	}
-
 	class LiveWallpaperEngine extends AndroidWallpaperEngine {
+
+		private StageListener localStageListener;
 
 		private boolean mVisible = false;
 		private final Handler mHandler = new Handler();
@@ -116,29 +104,40 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			}
 		};
 
+		public LiveWallpaperEngine(StageListener stageListener) {
+			super();
+			this.localStageListener = stageListener;
+			Log.v("LWP", "CREATED \n" + this.toString() + "\n" + localStageListener.toString());
+		}
+
 		@Override
 		public void onVisibilityChanged(boolean visible) {
 			mVisible = visible;
 			if (visible) {
+				Log.v("LWP", "VISIBLE \n" + this.toString() + "\n" + localStageListener.toString());
 				mHandler.postDelayed(mUpdateDisplay, 100);
-				SoundManager.getInstance().resume();
-				Log.v("LWP", "Visible");
+				localStageListener.menuResume();
+				if (!SoundManager.getInstance().soundDisabledByLwp) {
+					SoundManager.getInstance().resume();
+				}
 
 			} else {
+				localStageListener.menuPause();
+				Log.v("LWP", "NOT VISIBLE  \n" + this.toString() + "\n" + localStageListener.toString());
 				mHandler.removeCallbacks(mUpdateDisplay);
 				SoundManager.getInstance().pause();
-				Log.v("LWP", "Not visible");
 
 			}
 		}
 
 		@Override
 		public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+			super.onSurfaceChanged(holder, format, width, height);
 			if (mVisible) {
 				mHandler.postDelayed(mUpdateDisplay, 100);
+			} else {
+				mHandler.removeCallbacks(mUpdateDisplay);
 			}
-			Log.v("LWP", "On surface changed");
-
 		}
 
 		@Override
@@ -154,5 +153,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			mVisible = false;
 			mHandler.removeCallbacks(mUpdateDisplay);
 		}
+
 	}
+
 }

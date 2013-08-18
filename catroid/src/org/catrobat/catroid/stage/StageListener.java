@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -199,13 +200,12 @@ public class StageListener implements ApplicationListener {
 		} else {
 			Gdx.input.setInputProcessor(stage);
 		}
-
 		axes = new Texture(Gdx.files.internal("stage/red_pixel.bmp"));
 		skipFirstFrameForAutomaticScreenshot = true;
 	}
 
-	void menuResume() {
-		if (reloadProject) {
+	public void menuResume() {
+		if (reloadProject || !paused) {
 			return;
 		}
 		paused = false;
@@ -213,9 +213,11 @@ public class StageListener implements ApplicationListener {
 		for (Sprite sprite : sprites) {
 			sprite.resume();
 		}
+		Log.v("LWP", "RESUMED " + this.toString());
+
 	}
 
-	void menuPause() {
+	public void menuPause() {
 		if (finished || reloadProject || (sprites == null)) {
 			return;
 		}
@@ -224,6 +226,9 @@ public class StageListener implements ApplicationListener {
 		for (Sprite sprite : sprites) {
 			sprite.pause();
 		}
+
+		Log.v("LWP", "PAUSED " + this.toString());
+
 	}
 
 	public void reloadProject(Context context, StageDialog stageDialog) {
@@ -277,7 +282,6 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void render() {
-
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (reloadProject) {
@@ -441,6 +445,7 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+		Log.v("LWP", "disposing the stage listener " + this.toString());
 		if (!finished) {
 			this.finish();
 		}
