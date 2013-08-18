@@ -12,6 +12,7 @@
         <attr name="debugDraw" format="boolean" />
     </declare-styleable>
     <declare-styleable name="FlowLayout_LayoutParams">
+        <attr name="layout_textField" format="boolean"/>
         <attr name="layout_newLine" format="boolean"/>
         <attr name="layout_customPadding" format="dimension"/>
         <attr name="layout_horizontalSpacing" format="dimension"/>

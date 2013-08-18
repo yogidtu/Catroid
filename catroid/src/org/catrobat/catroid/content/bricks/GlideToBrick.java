@@ -119,6 +119,7 @@ public class GlideToBrick extends BrickBaseType implements OnClickListener, Form
 				adapter.handleCheck(brickInstance, isChecked);
 			}
 		});
+
 		TextView textX = (TextView) view.findViewById(R.id.brick_glide_to_prototype_text_view_x);
 		TextView editX = (TextView) view.findViewById(R.id.brick_glide_to_edit_text_x);
 		xDestination.setTextFieldId(R.id.brick_glide_to_edit_text_x);

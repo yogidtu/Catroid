@@ -60,6 +60,7 @@
             </TextView>
 
             <TextView
+                app:layout_textField="true"
                 android:id="@+id/brick_glide_to_edit_text_duration"
                 style="@style/BrickEditText"
                 android:layout_width="match_parent">
@@ -71,8 +72,8 @@
             </TextView>
 
              
-            <!-- app:layout_newLine="true" -->
             <TextView
+                app:layout_newLine="true"
                 android:id="@+id/brick_glide_to_x"
                 style="@style/BrickText.SingleLine"
                 android:text="@string/brick_glide_to_x" >
@@ -84,6 +85,7 @@
             </TextView>
 
             <TextView
+                app:layout_textField="true"
                 android:id="@+id/brick_glide_to_edit_text_x"
                 style="@style/BrickEditText"
 					 >
@@ -101,6 +103,7 @@
             </TextView>
 
             <TextView
+                app:layout_textField="true"
                 android:id="@+id/brick_glide_to_edit_text_y"
                 style="@style/BrickEditText"
                 	>

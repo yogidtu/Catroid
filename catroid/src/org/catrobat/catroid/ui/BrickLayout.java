@@ -4,13 +4,18 @@ import java.util.LinkedList;
 
 import org.catrobat.catroid.R;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 /**
  * Author: Romain Guy
@@ -28,12 +33,14 @@ import android.view.ViewGroup;
 public class BrickLayout extends ViewGroup {
 	public static final int HORIZONTAL = 0;
 	public static final int VERTICAL = 1;
+	public static final int MAX_TEXT_FIELD_WIDTH_DP = 600;
 
 	private int customPadding = 0;
 	private int horizontalSpacing = 0;
 	private int verticalSpacing = 0;
 	private int orientation = 0;
 	protected boolean debugDraw = false;
+	private boolean hasDoneFirstPass = false;
 
 	protected LinkedList<LineData> lines;
 
@@ -55,6 +62,7 @@ public class BrickLayout extends ViewGroup {
 		this.readStyleParameters(context, attributeSet);
 	}
 
+	@SuppressLint("WrongCall")
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		int sizeWidth = MeasureSpec.getSize(widthMeasureSpec) - this.getPaddingRight() - this.getPaddingLeft();
@@ -66,7 +74,7 @@ public class BrickLayout extends ViewGroup {
 		int lineThicknessWithSpacing = 0;
 		int lineThickness = 0;
 		int lineLengthWithSpacing = 0;
-		int lineLength;
+		int lineLength = 0;
 
 		int prevLinePosition = 0;
 
@@ -101,10 +109,28 @@ public class BrickLayout extends ViewGroup {
 			lineLength = lineLengthWithSpacing + childWidth;
 			lineLengthWithSpacing = lineLength + hSpacing;
 
-			boolean newLine = lp.newLine || (modeWidth != MeasureSpec.UNSPECIFIED && lineLength > sizeWidth);
+			Resources r = getResources();
+			int maxTextFieldWidthPixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+					MAX_TEXT_FIELD_WIDTH_DP, r.getDisplayMetrics());
+
+			int currentTextFieldWidth = currentLine.totalTextFieldWidth + (lp.textField ? childWidth : 0);
+			int currentTextFieldCount = currentLine.numberOfTextFields + (lp.textField ? 1 : 0);
+			int lineLengthWithMaxTextField = (lineLength - (currentTextFieldWidth + hSpacing))
+					+ (currentTextFieldCount * maxTextFieldWidthPixels);
+			boolean preEmptiveNewLine = lp.newLine && lineLengthWithMaxTextField > sizeWidth;
+
+			Log.d("FOREST", "preEmptiveNewLine" + preEmptiveNewLine);
+
+			boolean newLine = preEmptiveNewLine || (modeWidth != MeasureSpec.UNSPECIFIED && lineLength > sizeWidth);
 
 			if (newLine) {
 				prevLinePosition = prevLinePosition + lineThicknessWithSpacing;
+
+				int endingWidthOfLineMinusFields = (lineLength - (childWidth + hSpacing
+						+ currentLine.totalTextFieldWidth + hSpacing));
+				float allowalbeWidth = (float) (sizeWidth - (endingWidthOfLineMinusFields))
+						/ currentLine.numberOfTextFields;
+				currentLine.allowableTextFieldWidth = (int) Math.floor(allowalbeWidth);
 
 				currentLine = newLine(lines);
 
@@ -124,10 +150,21 @@ public class BrickLayout extends ViewGroup {
 
 			ElementData ed = new ElementData(child, posX, posY, childWidth, childHeight);
 			currentLine.elements.add(ed);
+			if (lp.textField) {
+				currentLine.totalTextFieldWidth += childWidth;
+				currentLine.numberOfTextFields++;
+				Log.d("FOREST", "currentLine.numberOfTextFields" + currentLine.numberOfTextFields);
+			}
 
 			controlMaxLength = Math.max(controlMaxLength, lineLength);
 			controlMaxThickness = prevLinePosition + lineThickness;
+
 		}
+
+		int endingWidthOfLineMinusFields = (lineLength - currentLine.totalTextFieldWidth);
+		Log.d("FOREST", "currentLine.numberOfTextFields" + currentLine.numberOfTextFields);
+		float allowalbeWidth = (float) (sizeWidth - endingWidthOfLineMinusFields) / currentLine.numberOfTextFields;
+		currentLine.allowableTextFieldWidth = (int) Math.floor(allowalbeWidth);
 
 		int x = controlMaxLength;
 		int y = controlMaxThickness;
@@ -142,6 +179,15 @@ public class BrickLayout extends ViewGroup {
 			yAdjust += Math.round(lines.get(0).minHeight * -0.15f);
 		}
 
+		int minAllowableTextFieldWidth = Integer.MAX_VALUE;
+		for (LineData d : lines) {
+			Log.d("FOREST", "d.allowableTextFieldWidth" + d.allowableTextFieldWidth);
+			if (d.allowableTextFieldWidth < minAllowableTextFieldWidth) {
+				minAllowableTextFieldWidth = d.allowableTextFieldWidth;
+				Log.d("FOREST", "minAllowableTextFieldWidth" + minAllowableTextFieldWidth);
+			}
+		}
+
 		for (LineData d : lines) {
 			for (ElementData ed : d.elements) {
 				int yAdjust2 = 0;
@@ -152,23 +198,20 @@ public class BrickLayout extends ViewGroup {
 				ed.posY += yAdjust + yAdjust2;
 				LayoutParams lp = (LayoutParams) ed.view.getLayoutParams();
 				lp.setPosition(ed.posX, ed.posY);
+				if (lp.textField) {
+					((TextView) ed.view).setMaxWidth(minAllowableTextFieldWidth);
+					//((TextView) ed.view).setMinWidth(minAllowableTextFieldWidth);
+				}
 			}
 		}
 
+		boolean hadDoneFirstPass = hasDoneFirstPass;
+		hasDoneFirstPass = true;
+		if (!hadDoneFirstPass) {
+			onMeasure(widthMeasureSpec, heightMeasureSpec);
+		}
+
 		this.setMeasuredDimension(resolveSize(x, widthMeasureSpec), resolveSize(y, heightMeasureSpec));
-	}
-
-	public void myForceLayout() {
-		LinkedList<View> children = new LinkedList<View>();
-		for (int i = 0; i < getChildCount(); i++) {
-			children.add(getChildAt(i));
-		}
-
-		removeAllViews();
-
-		for (View child : children) {
-			this.addView(child);
-		}
 	}
 
 	private LineData newLine(LinkedList<LineData> lines) {
@@ -308,6 +351,9 @@ public class BrickLayout extends ViewGroup {
 	}
 
 	protected class LineData {
+		public int totalTextFieldWidth;
+		public int allowableTextFieldWidth;
+		public int numberOfTextFields;
 		public int minHeight;
 		public int height;
 		public LinkedList<ElementData> elements;
@@ -341,6 +387,7 @@ public class BrickLayout extends ViewGroup {
 		private int horizontalSpacing = NO_SPACING;
 		private int verticalSpacing = NO_SPACING;
 		private boolean newLine = false;
+		private boolean textField = false;
 
 		public LayoutParams(Context context, AttributeSet attributeSet) {
 			super(context, attributeSet);
@@ -368,6 +415,10 @@ public class BrickLayout extends ViewGroup {
 			this.y = y;
 		}
 
+		public void setWidth(int width) {
+			this.width = width;
+		}
+
 		private void readStyleParameters(Context context, AttributeSet attributeSet) {
 			TypedArray a = context.obtainStyledAttributes(attributeSet, R.styleable.FlowLayout_LayoutParams);
 			try {
@@ -376,6 +427,7 @@ public class BrickLayout extends ViewGroup {
 				verticalSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_LayoutParams_layout_verticalSpacing,
 						NO_SPACING);
 				newLine = a.getBoolean(R.styleable.FlowLayout_LayoutParams_layout_newLine, false);
+				textField = a.getBoolean(R.styleable.FlowLayout_LayoutParams_layout_textField, false);
 			} finally {
 				a.recycle();
 			}
