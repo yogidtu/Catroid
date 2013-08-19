@@ -22,17 +22,17 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
-import java.io.Serializable;
-
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
+
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
+
+import java.io.Serializable;
 
 public class Formula implements Serializable {
 
@@ -40,6 +40,7 @@ public class Formula implements Serializable {
 	private FormulaElement formulaTree;
 	private transient Integer formulaTextFieldId = null;
 	private transient InternFormula internFormula = null;
+	private transient String displayText = null;
 
 	public Object readResolve() {
 
@@ -85,6 +86,10 @@ public class Formula implements Serializable {
 		}
 	}
 
+	public void setDisplayText(String text) {
+		displayText = text;
+	}
+
 	public boolean interpretBoolean(Sprite sprite) {
 		int result = interpretInteger(sprite);
 
@@ -106,6 +111,7 @@ public class Formula implements Serializable {
 	}
 
 	public void setRoot(FormulaElement formula) {
+		displayText = null;
 		formulaTree = formula;
 		internFormula = new InternFormula(formula.getInternTokenList());
 
@@ -115,15 +121,19 @@ public class Formula implements Serializable {
 		formulaTextFieldId = id;
 	}
 
-	public String getFormulaString(Context context) {
-		if (context != null) {
-			internFormula.generateExternFormulaStringAndInternExternMapping(context);
+	public String getDisplayString(Context context) {
+		if (displayText != null) {
+			return displayText;
+		} else {
+			if (context != null) {
+				internFormula.generateExternFormulaStringAndInternExternMapping(context);
+			}
+			return internFormula.getExternFormulaString();
 		}
-		return internFormula.getExternFormulaString();
 	}
 
 	public void refreshTextField(View view) {
-		refreshTextField(view, getFormulaString(view.getContext()));
+		refreshTextField(view, getDisplayString(view.getContext()));
 	}
 
 	public void refreshTextField(View view, String formulaString) {
@@ -148,6 +158,7 @@ public class Formula implements Serializable {
 
 		formulaTextField.setBackgroundDrawable(highlightBackground);
 	}
+
 	public void prepareToRemove() {
 		formulaTextFieldId = null;
 	}

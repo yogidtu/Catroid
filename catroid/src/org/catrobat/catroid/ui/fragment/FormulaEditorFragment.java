@@ -368,19 +368,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		}
 	}
 
-	public void saveFormulaIfPossibleQuiet() {
-		InternFormulaParser formulaToParse = formulaEditorEditText.getFormulaParser();
-		FormulaElement formulaParseTree = formulaToParse.parseFormula();
-		int err = formulaToParse.getErrorTokenIndex();
-		if (err == PARSER_OK) {
-			currentFormula.setRoot(formulaParseTree);
-			if (formulaEditorBrick != null) {
-				refreshFormulaPreviewString();
-			}
-			formulaEditorEditText.formulaSaved();
-		}
-	}
-
 	private boolean checkReturnWithoutSaving(int errorType) {
 		Log.i("info", "confirmBackCounter=" + confirmBackCounter + " "
 				+ (System.currentTimeMillis() <= confirmBackTimeStamp[0] + TIME_WINDOW)
@@ -440,11 +427,15 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	}
 
 	public void refreshFormulaPreviewString() {
-		currentFormula.refreshTextField(brickView, formulaEditorEditText.getText().toString());
+		refreshFormulaPreviewString(formulaEditorEditText.getStringFromInternFormula());
+	}
+
+	public void refreshFormulaPreviewString(String newString) {
+		currentFormula.setDisplayText(newString);
 
 		updateBrickView();
 
-		currentFormula.refreshTextField(brickView, formulaEditorEditText.getStringFromInternFormula());
+		currentFormula.refreshTextField(brickView, newString);
 
 		int orientation = getResources().getConfiguration().orientation;
 		currentFormula.highlightTextField(brickView, orientation);
