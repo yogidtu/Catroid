@@ -246,6 +246,15 @@
     <string name="overwrite_replace">Ersetze bestehendes Programm</string>
     <string name="overwrite_rename">Benenne heruntergeladenes Programm um</string>
     <!--  -->
+    
+    <!-- Word check dailog -->
+    <string name="wordcheck_dialog_oneword_title">Ein Wort</string>
+    <string name="wordcheck_dialog_oneword_content">Bitte gib nur ein Wort ein.</string>
+    <string name="wordcheck_dialog_dictionary_title">Wort unbekannt</string>
+    <string name="wordcheck_dialog_dictionary_content">Ich kenne dieses Wort nicht. Es wird wahrscheinlich nie verstanden werden können.\nBitte überprüfe es erneut.</string>
+    <string name="wordcheck_dialog_dictionary_recheck">Überprüfen</string>
+    <string name="wordcheck_dialog_dictionary_useanyway">Trotzdem verwenden</string>
+    <!--  -->
 
 
     <!-- Stage menu dialog -->

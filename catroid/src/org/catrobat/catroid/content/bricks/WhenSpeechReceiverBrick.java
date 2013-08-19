@@ -29,10 +29,15 @@ import org.catrobat.catroid.content.BroadcastMessage;
 import org.catrobat.catroid.content.RecognitionScript;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.speechrecognition.RecognitionManager;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.dialogs.BrickTextDialog;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -131,12 +136,25 @@ public class WhenSpeechReceiverBrick extends ScriptBrick implements BroadcastMes
 							}
 
 							@Override
-							public void afterTextChanged(Editable s) {
+							public void afterTextChanged(final Editable s) {
 								if (s.toString().endsWith(" ") || s.toString().contains(" ")) {
-									//TODO: prompt fail Dialog
-									String oneWord = s.toString().substring(0, s.toString().indexOf(""));
-									s.clear();
-									s.insert(0, oneWord);
+									final String oneWord = s.toString().substring(0, s.toString().indexOf(" "));
+									AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+									builder.setTitle(getActivity().getString(R.string.wordcheck_dialog_oneword_title))
+											.setCancelable(false)
+											.setPositiveButton(getActivity().getString(R.string.ok),
+													new DialogInterface.OnClickListener() {
+														@Override
+														public void onClick(DialogInterface dialog, int id) {
+															s.clear();
+															s.insert(0, oneWord);
+														}
+													})
+											.setMessage(
+													getActivity().getString(R.string.wordcheck_dialog_oneword_content));
+
+									builder.create();
+									builder.show();
 								}
 							}
 						};
@@ -144,9 +162,64 @@ public class WhenSpeechReceiverBrick extends ScriptBrick implements BroadcastMes
 
 					@Override
 					protected boolean handleOkButton() {
-						recognitionKeyword = (input.getText().toString()).trim();
-						script.setBroadcastMessage(recognitionKeyword);
-						return true;
+						final String givenRecognitionKeyword = (input.getText().toString()).trim();
+						final ProgressDialog connectingProgressDialog = ProgressDialog.show(getActivity(), "",
+								getResources().getString(R.string.please_wait), true);
+
+						final BrickTextDialog brickTextDialog = this;
+						new Thread() {
+
+							@Override
+							public void run() {
+								int recognizeable = RecognitionManager.isWordRecognizeable(givenRecognitionKeyword);
+								connectingProgressDialog.dismiss();
+								if (recognizeable == 1) {
+									recognitionKeyword = givenRecognitionKeyword;
+									script.setBroadcastMessage(recognitionKeyword);
+									getActivity().sendBroadcast(new Intent(ScriptActivity.ACTION_BRICK_LIST_CHANGED));
+									brickTextDialog.dismiss();
+								} else {
+									getActivity().runOnUiThread(new Runnable() {
+										@Override
+										public void run() {
+											AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+											builder.setTitle(
+													getActivity().getString(R.string.wordcheck_dialog_dictionary_title))
+													.setCancelable(false)
+													.setPositiveButton(
+															getActivity().getString(
+																	R.string.wordcheck_dialog_dictionary_useanyway),
+															new DialogInterface.OnClickListener() {
+																@Override
+																public void onClick(DialogInterface dialog, int id) {
+																	recognitionKeyword = givenRecognitionKeyword;
+																	script.setBroadcastMessage(recognitionKeyword);
+																	getActivity()
+																			.sendBroadcast(
+																					new Intent(
+																							ScriptActivity.ACTION_BRICK_LIST_CHANGED));
+																	brickTextDialog.dismiss();
+																}
+															})
+													.setNegativeButton(
+															getActivity().getString(
+																	R.string.wordcheck_dialog_dictionary_recheck),
+															new DialogInterface.OnClickListener() {
+																@Override
+																public void onClick(DialogInterface dialog, int id) {
+																}
+															})
+													.setMessage(
+															getActivity().getString(
+																	R.string.wordcheck_dialog_dictionary_content));
+											builder.create();
+											builder.show();
+										}
+									});
+								}
+							}
+						}.start();
+						return false;
 					}
 				};
 

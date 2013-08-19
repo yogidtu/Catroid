@@ -193,7 +193,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 		if (response.getStatusLine().getStatusCode() != 200) {
 			sendError(RecognizerCallback.ERROR_API_CHANGED, "Statuscode was "
-					+ response.getStatusLine().getStatusCode());
+					+ response.getStatusLine().getStatusCode() + ", response: " + resp);
 			return null;
 		}
 

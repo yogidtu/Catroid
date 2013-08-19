@@ -28,6 +28,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.ScreenValues;
@@ -44,12 +45,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -565,21 +569,56 @@ public class StageListener implements ApplicationListener, RecognizerCallback {
 		switch (errorBundle.getInt(BUNDLE_ERROR_CODE)) {
 			case ERROR_NONETWORK:
 				Log.w(TAG, "Error causes going down.");
-				activeStageActivity.onBackPressed();
-				AlertDialog networkAlert = PreStageActivity.createNoNetworkAlert(activeStageActivity);
-				networkAlert.setOnDismissListener(new Dialog.OnDismissListener() {
+				activeStageActivity.runOnUiThread(new Runnable() {
 
 					@Override
-					public void onDismiss(DialogInterface dialog) {
-						stageDialog.onBackPressed();
+					public void run() {
+						activeStageActivity.onBackPressed();
+						AlertDialog networkAlert = PreStageActivity.createNoNetworkAlert(activeStageActivity);
+						networkAlert.setOnDismissListener(new Dialog.OnDismissListener() {
+
+							@Override
+							public void onDismiss(DialogInterface dialog) {
+								//activeStageActivity.exit();
+							}
+						});
+						networkAlert.show();
 					}
 				});
-				networkAlert.show();
 				break;
 			case ERROR_API_CHANGED:
 			case ERROR_IO:
 			case ERROR_OTHER:
 				if (errorBundle.getBoolean(BUNDLE_ERROR_FATAL_FLAG)) {
+					activeStageActivity.runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							activeStageActivity.onBackPressed();
+							AlertDialog.Builder builder = new AlertDialog.Builder(activeStageActivity);
+							builder.setTitle(activeStageActivity.getString(R.string.error_no_network_title))
+									.setCancelable(false)
+									.setNegativeButton(activeStageActivity.getString(R.string.cancel_button),
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(DialogInterface dialog, int id) {
+												}
+											})
+									.setPositiveButton(activeStageActivity.getString(R.string.main_menu_settings),
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(DialogInterface dialog, int id) {
+													Intent i = new Intent(Settings.ACTION_SETTINGS);
+													activeStageActivity.startActivity(i);
+												}
+											})
+									.setView(
+											View.inflate(builder.getContext(), R.layout.dialog_error_networkconnection,
+													null));
+
+							builder.create();
+							builder.show();
+						}
+					});
 					//TODO: Show cause Dialog
 					Log.w(TAG, "Error causes going down.");
 					stageDialog.onBackPressed();

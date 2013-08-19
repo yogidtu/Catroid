@@ -247,6 +247,15 @@
     <string name="overwrite_replace">Replace existing program</string>
     <string name="overwrite_rename">Rename downloaded program</string>
     <!--  -->
+    
+    <!-- Word check dailog -->
+    <string name="wordcheck_dialog_oneword_title">Single word</string>
+    <string name="wordcheck_dialog_oneword_content">Please use only one word for recognition.</string>
+    <string name="wordcheck_dialog_dictionary_title">Word unknown</string>
+    <string name="wordcheck_dialog_dictionary_content">Seems the word doesn\'t exist. Please assure spelling, i can\'t recognize non-existing words.</string>
+    <string name="wordcheck_dialog_dictionary_recheck">Recheck</string>
+    <string name="wordcheck_dialog_dictionary_useanyway">Use anyway</string>
+    <!--  -->
 
 
     <!-- Stage menu dialog -->

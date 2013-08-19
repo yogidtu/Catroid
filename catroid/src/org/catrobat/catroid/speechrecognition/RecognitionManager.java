@@ -146,6 +146,9 @@ public class RecognitionManager implements RecognizerCallback {
 			}
 
 		} catch (Exception e) {
+			if (DEBUG_OUTPUT) {
+				Log.v(TAG, "Error for dict-entry \"" + wordToValidate + "\"." + e.getMessage());
+			}
 			isValidWord = -1;
 		}
 		return isValidWord;
@@ -337,7 +340,7 @@ public class RecognitionManager implements RecognizerCallback {
 					for (SpeechRecognizer recognizer : recognizerList) {
 						PipedOutputStream feedStream = new PipedOutputStream();
 						PipedInputStream recieverStream = new PipedInputStream(feedStream, inputStream.getSampleRate()
-								/ frameSize * 100);
+								/ frameSize * 500);
 						currentOpenStreamList.add(feedStream);
 						recognizer.startRecognizeInput(new AudioInputStream(recieverStream, inputStream),
 								currentIdentifier);
