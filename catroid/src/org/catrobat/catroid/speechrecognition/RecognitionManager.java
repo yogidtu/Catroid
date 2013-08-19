@@ -37,6 +37,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.catrobat.catroid.stage.StageActivity;
 
 import android.os.Bundle;
@@ -108,7 +111,9 @@ public class RecognitionManager implements RecognizerCallback {
 
 	public static int isWordRecognizeable(String wordToValidate) {
 		int isValidWord = 0;
-		HttpClient httpclient = new DefaultHttpClient();
+		final HttpParams httpParammeters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParammeters, 5000);
+		HttpClient httpclient = new DefaultHttpClient(httpParammeters);
 		HttpGet httppost = new HttpGet("http://en.wiktionary.org/w/api.php?action=opensearch&search=" + wordToValidate
 				+ "");
 		try {
