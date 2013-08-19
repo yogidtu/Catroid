@@ -32,8 +32,10 @@ import java.util.LinkedList;
 public class BrickLayout extends ViewGroup {
 	public static final int HORIZONTAL = 0;
 	public static final int VERTICAL = 1;
-	public static final int MIN_TEXT_FIELD_WIDTH_DP = 100;
-	public static final int MAX_TEXT_FIELD_WIDTH_DP = 350;
+	private static final int MIN_TEXT_FIELD_WIDTH_DP = 100;
+	private static final int MAX_TEXT_FIELD_WIDTH_DP = 350;
+	private static final int LINES_TO_ALLOCATE = 10;
+	private static final int ELEMENTS_TO_ALLOCATE = 10;
 
 	private int customPadding = 0;
 	private int horizontalSpacing = 0;
@@ -45,20 +47,36 @@ public class BrickLayout extends ViewGroup {
 
 	public BrickLayout(Context context) {
 		super(context);
-
+		allocateLineData();
 		this.readStyleParameters(context, null);
 	}
 
 	public BrickLayout(Context context, AttributeSet attributeSet) {
 		super(context, attributeSet);
-
+		allocateLineData();
 		this.readStyleParameters(context, attributeSet);
 	}
 
 	public BrickLayout(Context context, AttributeSet attributeSet, int defStyle) {
 		super(context, attributeSet, defStyle);
-
+		allocateLineData();
 		this.readStyleParameters(context, attributeSet);
+	}
+
+	private void allocateLineData() {
+		lines = new LinkedList<LineData>();
+		for (int i = 0; i < LINES_TO_ALLOCATE; i++) {
+			allocateNewLine();
+		}
+	}
+
+	private LineData allocateNewLine() {
+		LineData d = new LineData();
+		for (int j = 0; j < ELEMENTS_TO_ALLOCATE; j++) {
+			d.elements.add(new ElementData(null, 0, 0, 0, 0));
+		}
+		lines.add(d);
+		return d;
 	}
 
 	@Override
@@ -79,8 +97,7 @@ public class BrickLayout extends ViewGroup {
 		int controlMaxLength = 0;
 		int controlMaxThickness = 0;
 
-		lines = new LinkedList<LineData>();
-		LineData currentLine = newLine(lines);
+		LineData currentLine = lines.getFirst();
 
 		// ************************ BEGIN PRE-LAYOUT (decide on a maximum width for text fields) ************************
 		// 1. adding text to a text field never causes a line break
@@ -88,6 +105,7 @@ public class BrickLayout extends ViewGroup {
 		// 3. on wider screens, line breaks are removed entirely and the layout is one line
 
 		final int count = getChildCount();
+		int elementInLineIndex = 0;
 		for (int i = 0; i < count; i++) {
 			final View child = getChildAt(i);
 			if (child.getVisibility() == GONE) {
@@ -134,14 +152,16 @@ public class BrickLayout extends ViewGroup {
 						/ currentLine.numberOfTextFields;
 				currentLine.allowableTextFieldWidth = (int) Math.floor(allowalbeWidth);
 
-				currentLine = newLine(lines);
+				currentLine = getNextLine(currentLine);
 
 				lineLength = childWidth;
 				lineLengthWithSpacing = lineLength + hSpacing;
+
+				elementInLineIndex = 0;
 			}
 
-			ElementData ed = new ElementData(child, 0, 0, 0, 0);
-			currentLine.elements.add(ed);
+			getElement(currentLine, elementInLineIndex).view = child;
+			elementInLineIndex++;
 
 			if (lp.textField) {
 				currentLine.totalTextFieldWidth += childWidth;
@@ -224,7 +244,7 @@ public class BrickLayout extends ViewGroup {
 					newLine = false;
 					prevLinePosition = prevLinePosition + lineThicknessWithSpacing;
 
-					currentLine = lines.get(lines.indexOf(currentLine) + 1);
+					currentLine = getNextLine(currentLine);
 
 					lineThickness = childHeight;
 					lineLength = childWidth;
@@ -280,10 +300,23 @@ public class BrickLayout extends ViewGroup {
 		this.setMeasuredDimension(resolveSize(x, widthMeasureSpec), resolveSize(y, heightMeasureSpec));
 	}
 
-	private LineData newLine(LinkedList<LineData> lines) {
-		LineData toAdd = new LineData();
-		lines.add(toAdd);
-		return toAdd;
+	private LineData getNextLine(LineData currentLine) {
+		int index = lines.indexOf(currentLine) + 1;
+		if (index < lines.size()) {
+			return lines.get(index);
+		} else {
+			return allocateNewLine();
+		}
+	}
+
+	private ElementData getElement(LineData currentLine, int elementInLineIndex) {
+		if (elementInLineIndex < currentLine.elements.size()) {
+			return currentLine.elements.get(elementInLineIndex);
+		} else {
+			ElementData d = new ElementData(null, 0, 0, 0, 0);
+			currentLine.elements.add(d);
+			return d;
+		}
 	}
 
 	private int getVerticalSpacing(LayoutParams lp) {
