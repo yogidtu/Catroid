@@ -92,13 +92,13 @@ public class SpeakBrick extends BrickBaseType {
 		});
 
 		TextView textHolder = (TextView) view.findViewById(R.id.brick_speak_prototype_text_view);
-		TextView TextView = (TextView) view.findViewById(R.id.brick_speak_edit_text);
-		TextView.setText(text);
+		TextView textField = (TextView) view.findViewById(R.id.brick_speak_edit_text);
+		textField.setText(text);
 
 		textHolder.setVisibility(View.GONE);
-		TextView.setVisibility(View.VISIBLE);
+		textField.setVisibility(View.VISIBLE);
 
-		TextView.setOnClickListener(new OnClickListener() {
+		textField.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				if (checkbox.getVisibility() == View.VISIBLE) {
@@ -131,7 +131,7 @@ public class SpeakBrick extends BrickBaseType {
 
 		if (view != null) {
 
-			View layout = (View) view.findViewById(R.id.brick_speak_layout);
+			View layout = view.findViewById(R.id.brick_speak_layout);
 			Drawable background = layout.getBackground();
 			background.setAlpha(alphaValue);
 

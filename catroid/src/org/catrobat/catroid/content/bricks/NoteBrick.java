@@ -96,13 +96,13 @@ public class NoteBrick extends BrickBaseType {
 		});
 
 		TextView textHolder = (TextView) view.findViewById(R.id.brick_note_prototype_text_view);
-		TextView TextView = (TextView) view.findViewById(R.id.brick_note_edit_text);
-		TextView.setText(note);
+		TextView textField = (TextView) view.findViewById(R.id.brick_note_edit_text);
+		textField.setText(note);
 
 		textHolder.setVisibility(View.GONE);
-		TextView.setVisibility(View.VISIBLE);
+		textField.setVisibility(View.VISIBLE);
 
-		TextView.setOnClickListener(new OnClickListener() {
+		textField.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
@@ -159,7 +159,7 @@ public class NoteBrick extends BrickBaseType {
 
 		if (view != null) {
 
-			View layout = (View) view.findViewById(R.id.brick_note_layout);
+			View layout = view.findViewById(R.id.brick_note_layout);
 			Drawable background = layout.getBackground();
 			background.setAlpha(alphaValue);
 

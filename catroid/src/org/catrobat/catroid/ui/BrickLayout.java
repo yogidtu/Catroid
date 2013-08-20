@@ -56,10 +56,10 @@ import java.util.LinkedList;
 public class BrickLayout extends ViewGroup {
 	public static final int HORIZONTAL = 0;
 	public static final int VERTICAL = 1;
-	private final int MIN_TEXT_FIELD_WIDTH_DP = 100;
-	private final int MAX_TEXT_FIELD_WIDTH_DP = 350;
-	private final int LINES_TO_ALLOCATE = 10;
-	private final int ELEMENTS_TO_ALLOCATE = 10;
+	private final int minTextFieldWidthDp = 100;
+	private final int maxTextFieldWidthDp = 350;
+	private final int linesToAllocate = 10;
+	private final int elementsToAllocatePerLine = 10;
 
 	private int horizontalSpacing = 0;
 	private int verticalSpacing = 0;
@@ -88,14 +88,14 @@ public class BrickLayout extends ViewGroup {
 
 	private void allocateLineData() {
 		lines = new LinkedList<LineData>();
-		for (int i = 0; i < LINES_TO_ALLOCATE; i++) {
+		for (int i = 0; i < linesToAllocate; i++) {
 			allocateNewLine();
 		}
 	}
 
 	private LineData allocateNewLine() {
 		LineData d = new LineData();
-		for (int j = 0; j < ELEMENTS_TO_ALLOCATE; j++) {
+		for (int j = 0; j < elementsToAllocatePerLine; j++) {
 			d.elements.add(new ElementData(null, 0, 0, 0, 0));
 		}
 		lines.add(d);
@@ -167,7 +167,7 @@ public class BrickLayout extends ViewGroup {
 
 			int childWidth = child.getMeasuredWidth();
 			if (lp.textField) {
-				childWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MIN_TEXT_FIELD_WIDTH_DP,
+				childWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, minTextFieldWidthDp,
 						r.getDisplayMetrics());
 			}
 
@@ -175,7 +175,7 @@ public class BrickLayout extends ViewGroup {
 			lineLengthWithSpacing = lineLength + hSpacing;
 
 			int maxTextFieldWidthPixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-					MAX_TEXT_FIELD_WIDTH_DP, r.getDisplayMetrics());
+					maxTextFieldWidthDp, r.getDisplayMetrics());
 
 			int currentTextFieldWidth = currentLine.totalTextFieldWidth + (lp.textField ? childWidth : 0);
 			int currentTextFieldCount = currentLine.numberOfTextFields + (lp.textField ? 1 : 0);
@@ -389,7 +389,8 @@ public class BrickLayout extends ViewGroup {
 		for (int i = 0; i < count; i++) {
 			View child = getChildAt(i);
 			LayoutParams lp = (LayoutParams) child.getLayoutParams();
-			child.layout(lp.x, lp.y, lp.x + child.getMeasuredWidth(), lp.y + child.getMeasuredHeight());
+			child.layout(lp.positionX, lp.positionY, lp.positionX + child.getMeasuredWidth(),
+					lp.positionY + child.getMeasuredHeight());
 		}
 	}
 
@@ -522,10 +523,10 @@ public class BrickLayout extends ViewGroup {
 	}
 
 	public static class LayoutParams extends ViewGroup.LayoutParams {
-		private static int NO_SPACING = -1;
+		private static final int NO_SPACING = -1;
 
-		private int x;
-		private int y;
+		private int positionX;
+		private int positionY;
 		private int horizontalSpacing = NO_SPACING;
 		private int verticalSpacing = NO_SPACING;
 		private boolean newLine = false;
@@ -558,8 +559,8 @@ public class BrickLayout extends ViewGroup {
 		}
 
 		public void setPosition(int x, int y) {
-			this.x = x;
-			this.y = y;
+			this.positionX = x;
+			this.positionY = y;
 		}
 
 		public void setWidth(int width) {

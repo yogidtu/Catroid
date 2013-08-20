@@ -111,12 +111,12 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 		});
 
 		TextView prototypeText = (TextView) view.findViewById(R.id.brick_set_variable_prototype_view);
-		TextView TextView = (TextView) view.findViewById(R.id.brick_set_variable_edit_text);
+		TextView textField = (TextView) view.findViewById(R.id.brick_set_variable_edit_text);
 		prototypeText.setVisibility(View.GONE);
 		variableFormula.setTextFieldId(R.id.brick_set_variable_edit_text);
 		variableFormula.refreshTextField(view);
-		TextView.setVisibility(View.VISIBLE);
-		TextView.setOnClickListener(this);
+		textField.setVisibility(View.VISIBLE);
+		textField.setOnClickListener(this);
 
 		Spinner variableSpinner = (Spinner) view.findViewById(R.id.set_variable_spinner);
 		UserVariableAdapter userVariableAdapter = ProjectManager.getInstance().getCurrentProject().getUserVariables()
