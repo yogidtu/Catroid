@@ -23,6 +23,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -35,28 +36,25 @@
         android:gravity="center_vertical"
         android:visibility="gone" />
 
-    <LinearLayout
+    <org.catrobat.catroid.ui.BrickLayout
+	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+ 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
+	    android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
         android:id="@+id/brick_place_at_layout"
         style="@style/BrickContainer.Motion.Medium"
         android:gravity="center_vertical"
-        android:orientation="vertical" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+         >
 
             <TextView
                 android:id="@+id/brick_place_at_label"
                 style="@style/BrickText.SingleLine"
                 android:text="@string/brick_place_at" >
             </TextView>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
 			
             <TextView
+                app:layout_newLine="true"
                 android:id="@+id/brick_place_at_x_textview"
                 style="@style/BrickText.SingleLine"
                 android:text="@string/x_label" >
@@ -66,11 +64,12 @@
                 android:id="@+id/brick_place_at_prototype_text_view_x"
                 style="@style/BrickPrototypeTextView" />
 
-            <EditText
+            <TextView
+	app:layout_textField="true"
                 android:id="@+id/brick_place_at_edit_text_x"
                 style="@style/BrickEditTextMultiple"
-                android:inputType="number|numberDecimal|numberSigned" >
-            </EditText>
+                 >
+            </TextView>
 
             <TextView
                 android:id="@+id/brick_place_at_y_textview"
@@ -82,11 +81,13 @@
                 android:id="@+id/brick_place_at_prototype_text_view_y"
                 style="@style/BrickPrototypeTextView" />
 
-            <EditText
+            <TextView
+	app:layout_textField="true"
                 android:id="@+id/brick_place_at_edit_text_y"
                 style="@style/BrickEditTextMultiple"
-                android:inputType="number|numberDecimal|numberSigned" >
-            </EditText>
-        </LinearLayout>
-    </LinearLayout>
+                 >
+            </TextView>
+
+    </org.catrobat.catroid.ui.BrickLayout>
+
 </LinearLayout>

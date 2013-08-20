@@ -23,6 +23,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -35,7 +36,12 @@
         android:gravity="center_vertical"
         android:visibility="gone" />
 
-    <LinearLayout
+    <org.catrobat.catroid.ui.BrickLayout
+	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+ 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
+	    android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
         android:id="@+id/brick_set_size_to_layout"
         style="@style/BrickContainer.Look.Small" >
 
@@ -50,17 +56,18 @@
             style="@style/BrickPrototypeTextView" >
         </TextView>
 
-        <EditText
+        <TextView
+	app:layout_textField="true"
             android:id="@+id/brick_set_size_to_edit_text"
             style="@style/BrickEditTextMultiple"
-            android:inputType="number|numberDecimal" >
-        </EditText>
+             >
+        </TextView>
 
         <TextView
             android:id="@+id/brick_set_size_to_percent"
             style="@style/BrickText.SingleLine"
             android:text="@string/percent_symbol" >
         </TextView>
-    </LinearLayout>
+    </org.catrobat.catroid.ui.BrickLayout>
 
 </LinearLayout>

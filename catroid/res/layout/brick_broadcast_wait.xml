@@ -37,8 +37,7 @@
         android:visibility="gone" />
 
     	<org.catrobat.catroid.ui.BrickLayout
-	    app:customPadding="@dimen/brick_flow_layout_padding"
- 	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
  	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
 		android:layout_width="match_parent"
         	android:layout_height="wrap_content"

@@ -33,16 +33,15 @@ import java.util.LinkedList;
 public class BrickLayout extends ViewGroup {
 	public static final int HORIZONTAL = 0;
 	public static final int VERTICAL = 1;
-	private static final int MIN_TEXT_FIELD_WIDTH_DP = 100;
-	private static final int MAX_TEXT_FIELD_WIDTH_DP = 350;
-	private static final int LINES_TO_ALLOCATE = 10;
-	private static final int ELEMENTS_TO_ALLOCATE = 10;
+	private final int MIN_TEXT_FIELD_WIDTH_DP = 100;
+	private final int MAX_TEXT_FIELD_WIDTH_DP = 350;
+	private final int LINES_TO_ALLOCATE = 10;
+	private final int ELEMENTS_TO_ALLOCATE = 10;
 
-	private int customPadding = 0;
 	private int horizontalSpacing = 0;
 	private int verticalSpacing = 0;
 	private int orientation = 0;
-	protected boolean debugDraw = false;
+	protected boolean debugDraw = true;
 
 	protected LinkedList<LineData> lines;
 
@@ -83,7 +82,7 @@ public class BrickLayout extends ViewGroup {
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		int sizeWidth = MeasureSpec.getSize(widthMeasureSpec) - this.getPaddingRight() - this.getPaddingLeft();
-		int sizeHeight = MeasureSpec.getSize(heightMeasureSpec) - this.getPaddingTop() - this.getPaddingBottom();
+		int sizeHeight = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
 
 		int modeWidth = MeasureSpec.getMode(widthMeasureSpec);
 		int modeHeight = MeasureSpec.getMode(heightMeasureSpec);
@@ -164,8 +163,6 @@ public class BrickLayout extends ViewGroup {
 			boolean newLine = preEmptiveNewLine || (modeWidth != MeasureSpec.UNSPECIFIED && lineLength > sizeWidth);
 
 			if (newLine) {
-				prevLinePosition = prevLinePosition + lineThicknessWithSpacing;
-
 				int usedChildWidth = (lp.textField ? childWidth : 0);
 				int endingWidthOfLineMinusFields = (lineLength - (usedChildWidth + hSpacing + currentLine.totalTextFieldWidth));
 				float allowalbeWidth = (float) (sizeWidth - (endingWidthOfLineMinusFields))
@@ -302,27 +299,31 @@ public class BrickLayout extends ViewGroup {
 		int x = controlMaxLength;
 		int y = controlMaxThickness;
 
-		y += customPadding * 2;
+		y += getPaddingTop() + getPaddingBottom();
+
+		Log.d("FOREST", "y = " + y);
+		Log.d("FOREST", "getSuggestedMinimumHeight() = " + getSuggestedMinimumHeight());
+
+		int centerVertically = 0;
+		if (y < getSuggestedMinimumHeight()) {
+			centerVertically = (getSuggestedMinimumHeight() - y) / 2;
+		}
 
 		y = Math.max(y, getSuggestedMinimumHeight());
 
-		int yAdjust = Math.round((y - controlMaxThickness) * 0.5f);
+		Log.d("FOREST", "centerVertically = " + centerVertically);
 
-		if (y > getSuggestedMinimumHeight()) {
-			yAdjust += Math.round(lines.get(0).minHeight * -0.15f);
-		}
-
-		for (LineData d : lines) {
-			for (ElementData ed : d.elements) {
-				if (ed.view != null) {
-					int yAdjust2 = 0;
-					if (ed.height < d.height) {
-						yAdjust2 = Math.round((d.height - ed.height) * 0.5f);
+		for (LineData lineData : lines) {
+			for (ElementData elementData : lineData.elements) {
+				if (elementData.view != null) {
+					int centerVerticallyWithinLine = 0;
+					if (elementData.height < lineData.height) {
+						centerVerticallyWithinLine = Math.round((lineData.height - elementData.height) * 0.5f);
 					}
 
-					ed.posY += yAdjust + yAdjust2;
-					LayoutParams lp = (LayoutParams) ed.view.getLayoutParams();
-					lp.setPosition(ed.posX, ed.posY);
+					elementData.posY += centerVertically + centerVerticallyWithinLine;
+					LayoutParams lp = (LayoutParams) elementData.view.getLayoutParams();
+					lp.setPosition(elementData.posX, elementData.posY);
 				}
 			}
 		}
@@ -409,7 +410,6 @@ public class BrickLayout extends ViewGroup {
 	private void readStyleParameters(Context context, AttributeSet attributeSet) {
 		TypedArray a = context.obtainStyledAttributes(attributeSet, R.styleable.BrickLayout);
 		try {
-			customPadding = a.getDimensionPixelSize(R.styleable.BrickLayout_customPadding, 0);
 			horizontalSpacing = a.getDimensionPixelSize(R.styleable.BrickLayout_horizontalSpacing, 0);
 			verticalSpacing = a.getDimensionPixelSize(R.styleable.BrickLayout_verticalSpacing, 0);
 			orientation = a.getInteger(R.styleable.BrickLayout_orientation, HORIZONTAL);

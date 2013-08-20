@@ -37,8 +37,7 @@
         android:visibility="gone" />
 
 	<org.catrobat.catroid.ui.BrickLayout
-	    app:customPadding="@dimen/brick_flow_layout_padding"
- 	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
  	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
         android:id="@+id/brick_set_variable_layout"
         style="@style/BrickContainer.UserVariables.Medium"
@@ -72,7 +71,7 @@
             app:layout_textField="true"
             android:id="@+id/brick_set_variable_edit_text"
             style="@style/BrickEditText"
-            android:inputType="number|numberDecimal|numberSigned" />
+             />
         
     </org.catrobat.catroid.ui.BrickLayout>
 

@@ -23,6 +23,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -35,15 +36,17 @@
         android:gravity="center_vertical"
         android:visibility="gone" />
 
-    <LinearLayout
+    <org.catrobat.catroid.ui.BrickLayout
+	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+ 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
+	    android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
         android:id="@+id/brick_nxt_motor_turn_layout"
         style="@style/BrickContainer.Lego.Medium"
         android:gravity="center_vertical"
-        android:orientation="vertical" >
+         >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/brick_nxt_motor_turn_label"
@@ -58,11 +61,6 @@
                 android:clickable="false"
                 android:focusable="false" >
             </Spinner>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/brick_nxt_motor_turn_angle"
@@ -75,13 +73,14 @@
                 style="@style/BrickText.SingleLine"
                 />
 
-            <EditText
+            <TextView
+	app:layout_textField="true"
                 android:id="@+id/motor_turn_angle_edit_text"
                 style="@style/BrickEditTextMultiple"
                 android:clickable="false"
-                android:inputType="number|numberDecimal|numberSigned"
+                
                 android:visibility="gone" >
-            </EditText>
+            </TextView>
 
             <TextView
                 android:id="@+id/brick_nxt_motor_turn_degree"
@@ -98,7 +97,6 @@
                     android:clickable="false"
                     android:focusable="false" />
             -->
-        </LinearLayout>
-    </LinearLayout>
+    </org.catrobat.catroid.ui.BrickLayout>
 
 </LinearLayout>
