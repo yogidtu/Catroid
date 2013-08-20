@@ -10,6 +10,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.catrobat.catroid.R;
@@ -97,6 +98,21 @@ public class BrickLayout extends ViewGroup {
 		int controlMaxLength = 0;
 		int controlMaxThickness = 0;
 
+		for (LineData d : lines) {
+			d.allowableTextFieldWidth = 0;
+			d.height = 0;
+			d.minHeight = 0;
+			d.numberOfTextFields = 0;
+			d.totalTextFieldWidth = 0;
+			for (ElementData ed : d.elements) {
+				ed.height = 0;
+				ed.width = 0;
+				ed.posY = 0;
+				ed.posX = 0;
+				ed.view = null;
+			}
+		}
+
 		LineData currentLine = lines.getFirst();
 
 		// ************************ BEGIN PRE-LAYOUT (decide on a maximum width for text fields) ************************
@@ -112,9 +128,15 @@ public class BrickLayout extends ViewGroup {
 				continue;
 			}
 
-			child.measure(MeasureSpec.makeMeasureSpec(sizeWidth, modeWidth == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST
-					: modeWidth), MeasureSpec.makeMeasureSpec(sizeHeight,
-					modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeHeight));
+			if (child instanceof Spinner) {
+				child.measure(MeasureSpec.makeMeasureSpec(sizeWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(
+						sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeHeight));
+			} else {
+				child.measure(MeasureSpec.makeMeasureSpec(sizeWidth,
+						modeWidth == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeWidth), MeasureSpec
+						.makeMeasureSpec(sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST
+								: modeHeight));
+			}
 
 			Resources r = getResources();
 			LayoutParams lp = (LayoutParams) child.getLayoutParams();
@@ -139,18 +161,19 @@ public class BrickLayout extends ViewGroup {
 					+ (currentTextFieldCount * maxTextFieldWidthPixels);
 			boolean preEmptiveNewLine = lp.newLine && lineLengthWithMaxTextField > sizeWidth;
 
-			Log.d("FOREST", "preEmptiveNewLine" + preEmptiveNewLine);
-
 			boolean newLine = preEmptiveNewLine || (modeWidth != MeasureSpec.UNSPECIFIED && lineLength > sizeWidth);
 
 			if (newLine) {
 				prevLinePosition = prevLinePosition + lineThicknessWithSpacing;
 
-				int endingWidthOfLineMinusFields = (lineLength - (childWidth + hSpacing
-						+ currentLine.totalTextFieldWidth + hSpacing));
+				int usedChildWidth = (lp.textField ? childWidth : 0);
+				int endingWidthOfLineMinusFields = (lineLength - (usedChildWidth + hSpacing + currentLine.totalTextFieldWidth));
 				float allowalbeWidth = (float) (sizeWidth - (endingWidthOfLineMinusFields))
 						/ currentLine.numberOfTextFields;
 				currentLine.allowableTextFieldWidth = (int) Math.floor(allowalbeWidth);
+
+				Log.d("FOREST", "BL1: " + endingWidthOfLineMinusFields + ", " + currentLine.numberOfTextFields + ", "
+						+ sizeWidth + "--> " + currentLine.allowableTextFieldWidth);
 
 				currentLine = getNextLine(currentLine);
 
@@ -166,30 +189,29 @@ public class BrickLayout extends ViewGroup {
 			if (lp.textField) {
 				currentLine.totalTextFieldWidth += childWidth;
 				currentLine.numberOfTextFields++;
-				Log.d("FOREST", "currentLine.numberOfTextFields" + currentLine.numberOfTextFields);
 			}
 		}
 
 		int endingWidthOfLineMinusFields = (lineLength - currentLine.totalTextFieldWidth);
-		Log.d("FOREST", "currentLine.numberOfTextFields" + currentLine.numberOfTextFields);
 		float allowalbeWidth = (float) (sizeWidth - endingWidthOfLineMinusFields) / currentLine.numberOfTextFields;
 		currentLine.allowableTextFieldWidth = (int) Math.floor(allowalbeWidth);
+		Log.d("FOREST", "BL2: " + endingWidthOfLineMinusFields + ", " + currentLine.numberOfTextFields + ", "
+				+ sizeWidth + "--> " + currentLine.allowableTextFieldWidth);
 
 		int minAllowableTextFieldWidth = Integer.MAX_VALUE;
 		for (LineData d : lines) {
-			Log.d("FOREST", "d.allowableTextFieldWidth" + d.allowableTextFieldWidth);
-			if (d.allowableTextFieldWidth < minAllowableTextFieldWidth) {
+			if (d.allowableTextFieldWidth > 0 && d.allowableTextFieldWidth < minAllowableTextFieldWidth) {
 				minAllowableTextFieldWidth = d.allowableTextFieldWidth;
-				Log.d("FOREST", "minAllowableTextFieldWidth" + minAllowableTextFieldWidth);
 			}
 		}
 
 		for (LineData d : lines) {
 			for (ElementData ed : d.elements) {
-				LayoutParams lp = (LayoutParams) ed.view.getLayoutParams();
-				if (lp.textField) {
-					Log.d("FOREST", "minAllowableTextFieldWidth" + minAllowableTextFieldWidth);
-					((TextView) ed.view).setMaxWidth(minAllowableTextFieldWidth);
+				if (ed.view != null) {
+					LayoutParams lp = (LayoutParams) ed.view.getLayoutParams();
+					if (lp.textField) {
+						((TextView) ed.view).setMaxWidth(minAllowableTextFieldWidth);
+					}
 				}
 			}
 		}
@@ -212,14 +234,20 @@ public class BrickLayout extends ViewGroup {
 			boolean newLine = !firstLine;
 			for (ElementData element : line.elements) {
 				View child = element.view;
-				if (child.getVisibility() == GONE) {
+				if (child == null || child.getVisibility() == GONE) {
 					continue;
 				}
 
-				child.measure(MeasureSpec.makeMeasureSpec(sizeWidth,
-						modeWidth == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeWidth), MeasureSpec
-						.makeMeasureSpec(sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST
-								: modeHeight));
+				if (child instanceof Spinner) {
+					child.measure(MeasureSpec.makeMeasureSpec(sizeWidth, MeasureSpec.EXACTLY), MeasureSpec
+							.makeMeasureSpec(sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST
+									: modeHeight));
+				} else {
+					child.measure(MeasureSpec.makeMeasureSpec(sizeWidth,
+							modeWidth == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeWidth), MeasureSpec
+							.makeMeasureSpec(sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST
+									: modeHeight));
+				}
 
 				LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
@@ -286,14 +314,16 @@ public class BrickLayout extends ViewGroup {
 
 		for (LineData d : lines) {
 			for (ElementData ed : d.elements) {
-				int yAdjust2 = 0;
-				if (ed.height < d.height) {
-					yAdjust2 = Math.round((d.height - ed.height) * 0.5f);
-				}
+				if (ed.view != null) {
+					int yAdjust2 = 0;
+					if (ed.height < d.height) {
+						yAdjust2 = Math.round((d.height - ed.height) * 0.5f);
+					}
 
-				ed.posY += yAdjust + yAdjust2;
-				LayoutParams lp = (LayoutParams) ed.view.getLayoutParams();
-				lp.setPosition(ed.posX, ed.posY);
+					ed.posY += yAdjust + yAdjust2;
+					LayoutParams lp = (LayoutParams) ed.view.getLayoutParams();
+					lp.setPosition(ed.posX, ed.posY);
+				}
 			}
 		}
 

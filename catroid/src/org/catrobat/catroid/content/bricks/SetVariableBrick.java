@@ -33,7 +33,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -112,7 +111,7 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 		});
 
 		TextView prototypeText = (TextView) view.findViewById(R.id.brick_set_variable_prototype_view);
-		EditText editText = (EditText) view.findViewById(R.id.brick_set_variable_edit_text);
+		TextView editText = (TextView) view.findViewById(R.id.brick_set_variable_edit_text);
 		prototypeText.setVisibility(View.GONE);
 		variableFormula.setTextFieldId(R.id.brick_set_variable_edit_text);
 		variableFormula.refreshTextField(view);
@@ -206,7 +205,7 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 
 			TextView textSetVariable = (TextView) view.findViewById(R.id.brick_set_variable_label);
 			TextView textTo = (TextView) view.findViewById(R.id.brick_set_variable_to_textview);
-			EditText editVariable = (EditText) view.findViewById(R.id.brick_set_variable_edit_text);
+			TextView editVariable = (TextView) view.findViewById(R.id.brick_set_variable_edit_text);
 			Spinner variablebrickSpinner = (Spinner) view.findViewById(R.id.set_variable_spinner);
 
 			ColorStateList color = textSetVariable.getTextColors().withAlpha(alphaValue);
