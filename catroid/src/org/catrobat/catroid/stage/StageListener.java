@@ -286,13 +286,6 @@ public class StageListener implements ApplicationListener {
 			prepareAutomaticScreenshotAndNoMeadiaFile();
 			saveScreenshot(thumbnail, SCREENSHOT_AUTOMATIC_FILE_NAME);
 		}
-
-		for (int i = 0; i < sprites.size(); i++) {
-			if (sprites.get(i).getName().equals(Constants.VGP_SPRITE_PAD)) {
-				sprites.remove(i);
-				break;
-			}
-		}
 	}
 
 	@Override
@@ -461,6 +454,10 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+
+		//remove vgp sprites
+		removeVirtualGamepadSprites();
+
 		if (!finished) {
 			this.finish();
 		}
@@ -635,4 +632,19 @@ public class StageListener implements ApplicationListener {
 			e.printStackTrace();
 		}
 	}
+
+	private void removeVirtualGamepadSprites() {
+		try {
+			for (int i = 0; i < sprites.size(); i++) {
+				if (sprites.get(i).getName().equals(Constants.VGP_SPRITE_PAD)) {
+					sprites.remove(i);
+					i = 0;
+					break;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
