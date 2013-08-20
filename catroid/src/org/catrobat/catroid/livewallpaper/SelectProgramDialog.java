@@ -24,22 +24,20 @@ package org.catrobat.catroid.livewallpaper;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.Toast;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
@@ -71,9 +69,7 @@ public class SelectProgramDialog extends Dialog {
 		File rootDirectory = new File(Constants.DEFAULT_ROOT);
 		int numOfProjects = UtilFile.getProjectNames(rootDirectory).size();
 
-		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-		String currentProjectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
-
+		String currentProjectName = ProjectManager.getInstance().getCurrentProject().getName();
 		RadioButton[] radioButton = new RadioButton[numOfProjects];
 		int i = 0;
 		for (String projectName : UtilFile.getProjectNames(rootDirectory)) {
@@ -104,14 +100,21 @@ public class SelectProgramDialog extends Dialog {
 			@Override
 			public void onClick(View v) {
 				if (selectedProject != null
-						|| !selectedProject.equals(ProjectManager.getInstance().getCurrentProject().getName())) {
-					SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-					Editor editor = sharedPreferences.edit();
-					editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
-					editor.commit();
-					Toast.makeText(context, "New wallpaper will load after restart", Toast.LENGTH_LONG).show();
+						&& !selectedProject.equals(ProjectManager.getInstance().getCurrentProject().getName())) {
+
+					Project project = StorageHandler.getInstance().loadProject(selectedProject);
+					if (project != null) {
+						ProjectManager.getInstance().setProject(project);
+						LiveWallpaper.liveWallpaperEngine.changeWallpaperProgram();
+						dismiss();
+						//display toast
+
+					} else {
+						//display toast, not successful  - error???????
+					}
+				} else {
+					dismiss();
 				}
-				dismiss();
 			}
 		});
 	}
@@ -119,7 +122,6 @@ public class SelectProgramDialog extends Dialog {
 	private void addCancelButton() {
 		Button cancelButton = (Button) findViewById(R.id.dialog_lwp_select_project_cancel_button);
 		cancelButton.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				dismiss();

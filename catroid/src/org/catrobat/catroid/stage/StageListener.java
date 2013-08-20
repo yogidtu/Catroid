@@ -134,16 +134,13 @@ public class StageListener implements ApplicationListener {
 	private byte[] thumbnail;
 
 	private boolean isLiveWallpaper = false;
-	private Context liveWallpaperContext;
 
 	public StageListener() {
 
 	}
 
-	//needed for livewallpaper
-	public StageListener(Context context) {
-		this.liveWallpaperContext = context;
-		this.isLiveWallpaper = true;
+	public StageListener(boolean isLiveWallpaper) {
+		this.isLiveWallpaper = isLiveWallpaper;
 	}
 
 	@Override
@@ -155,10 +152,6 @@ public class StageListener implements ApplicationListener {
 		if (!this.isLiveWallpaper) {
 			pathForScreenshot = Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName())
 					+ "/";
-		}
-
-		if (ProjectManager.getInstance().getCurrentProject() == null) {
-			Utils.loadProjectIfNeeded(this.liveWallpaperContext);
 		}
 
 		project = ProjectManager.getInstance().getCurrentProject();
@@ -213,7 +206,7 @@ public class StageListener implements ApplicationListener {
 		for (Sprite sprite : sprites) {
 			sprite.resume();
 		}
-		Log.v("LWP", "RESUMED " + this.toString());
+		Log.i("LWP", "RESUMED " + hashCode());
 
 	}
 
@@ -227,7 +220,7 @@ public class StageListener implements ApplicationListener {
 			sprite.pause();
 		}
 
-		Log.v("LWP", "PAUSED " + this.toString());
+		Log.i("LWP", "PAUSED SL" + hashCode());
 
 	}
 
@@ -238,6 +231,22 @@ public class StageListener implements ApplicationListener {
 		this.stageDialog = stageDialog;
 
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().resetAllUserVariables();
+
+		if (this.isLiveWallpaper) {
+			project = ProjectManager.getInstance().getCurrentProject();
+			sprites = project.getSpriteList();
+
+			for (Sprite sprite : sprites) {
+				sprite.resetSprite();
+				sprite.look.createBrightnessContrastShader();
+				stage.addActor(sprite.look);
+				sprite.resume();
+			}
+
+			if (sprites.size() > 0) {
+				sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
+			}
+		}
 
 		reloadProject = true;
 	}
@@ -310,8 +319,12 @@ public class StageListener implements ApplicationListener {
 			paused = true;
 			firstStart = true;
 			reloadProject = false;
-			synchronized (stageDialog) {
-				stageDialog.notify();
+			try {
+				synchronized (stageDialog) {
+					stageDialog.notify();
+				}
+			} catch (Exception e) {
+				//TODO: handle expection here, probably NullPointer when LWP
 			}
 		}
 

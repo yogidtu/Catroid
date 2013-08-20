@@ -43,10 +43,7 @@ import org.catrobat.catroid.utils.Utils;
 public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	private StageListener stageListener;
-
-	public void onCreateApplication() {
-		super.getApplication();
-	}
+	public static LiveWallpaperEngine liveWallpaperEngine;
 
 	@Override
 	public void onCreate() {
@@ -78,8 +75,9 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 	@Override
 	public Engine onCreateEngine() {
 		Utils.loadProjectIfNeeded(getApplicationContext());
-		stageListener = new StageListener(getApplicationContext());
-		return new LiveWallpaperEngine(this.stageListener);
+		stageListener = new StageListener(true);
+		LiveWallpaper.liveWallpaperEngine = new LiveWallpaperEngine(this.stageListener);
+		return LiveWallpaper.liveWallpaperEngine;
 	}
 
 	@Override
@@ -99,7 +97,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			@Override
 			public void run() {
 				if (mVisible) {
-					mHandler.postDelayed(mUpdateDisplay, 100);
+					mHandler.postDelayed(mUpdateDisplay, 300);
 				}
 			}
 		};
@@ -107,51 +105,61 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		public LiveWallpaperEngine(StageListener stageListener) {
 			super();
 			this.localStageListener = stageListener;
-			Log.v("LWP", "CREATED \n" + this.toString() + "\n" + localStageListener.toString());
 		}
 
 		@Override
 		public void onVisibilityChanged(boolean visible) {
 			mVisible = visible;
-			if (visible) {
-				Log.v("LWP", "VISIBLE \n" + this.toString() + "\n" + localStageListener.toString());
-				mHandler.postDelayed(mUpdateDisplay, 100);
-				localStageListener.menuResume();
-				if (!SoundManager.getInstance().soundDisabledByLwp) {
-					SoundManager.getInstance().resume();
-				}
+			super.onVisibilityChanged(visible);
+		}
 
-			} else {
-				localStageListener.menuPause();
-				Log.v("LWP", "NOT VISIBLE  \n" + this.toString() + "\n" + localStageListener.toString());
-				mHandler.removeCallbacks(mUpdateDisplay);
-				SoundManager.getInstance().pause();
-
+		@Override
+		public void onResume() {
+			Log.d("LWP", "VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
+			mHandler.postDelayed(mUpdateDisplay, 300);
+			localStageListener.menuResume();
+			if (!SoundManager.getInstance().soundDisabledByLwp) {
+				SoundManager.getInstance().resume();
 			}
+
+		}
+
+		@Override
+		public void onPause() {
+			localStageListener.menuPause();
+			Log.d("LWP", "NOT VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
+			mHandler.removeCallbacks(mUpdateDisplay);
+			SoundManager.getInstance().pause();
 		}
 
 		@Override
 		public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-			super.onSurfaceChanged(holder, format, width, height);
 			if (mVisible) {
-				mHandler.postDelayed(mUpdateDisplay, 100);
+				mHandler.postDelayed(mUpdateDisplay, 300);
 			} else {
 				mHandler.removeCallbacks(mUpdateDisplay);
 			}
+			super.onSurfaceChanged(holder, format, width, height);
+
 		}
 
 		@Override
 		public void onSurfaceDestroyed(SurfaceHolder holder) {
-			super.onSurfaceDestroyed(holder);
 			mVisible = false;
 			mHandler.removeCallbacks(mUpdateDisplay);
+			super.onSurfaceDestroyed(holder);
+
 		}
 
 		@Override
 		public void onDestroy() {
-			super.onDestroy();
 			mVisible = false;
 			mHandler.removeCallbacks(mUpdateDisplay);
+			super.onDestroy();
+		}
+
+		public void changeWallpaperProgram() {
+			this.localStageListener.reloadProject(getApplicationContext(), null);
 		}
 
 	}
