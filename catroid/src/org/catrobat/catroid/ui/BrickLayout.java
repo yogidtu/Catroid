@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -506,6 +507,11 @@ public class BrickLayout extends ViewGroup {
 		private int verticalSpacing = NO_SPACING;
 		private boolean newLine = false;
 		private boolean textField = false;
+		private InputType inputType = InputType.NUMBER;
+
+		public enum InputType {
+			NUMBER, TEXT
+		}
 
 		public LayoutParams(Context context, AttributeSet attributeSet) {
 			super(context, attributeSet);
@@ -537,6 +543,10 @@ public class BrickLayout extends ViewGroup {
 			this.width = width;
 		}
 
+		public InputType getInputType() {
+			return inputType;
+		}
+
 		private void readStyleParameters(Context context, AttributeSet attributeSet) {
 			TypedArray a = context.obtainStyledAttributes(attributeSet, R.styleable.FlowLayout_LayoutParams);
 			try {
@@ -546,6 +556,10 @@ public class BrickLayout extends ViewGroup {
 						NO_SPACING);
 				newLine = a.getBoolean(R.styleable.FlowLayout_LayoutParams_layout_newLine, false);
 				textField = a.getBoolean(R.styleable.FlowLayout_LayoutParams_layout_textField, false);
+				String inputTypeString = a.getString(R.styleable.FlowLayout_LayoutParams_layout_inputType);
+				Log.d("FOREST", "inputTypeString: " + inputTypeString);
+				inputType = (inputTypeString != null && inputTypeString.equals("text") ? InputType.TEXT
+						: InputType.NUMBER);
 			} finally {
 				a.recycle();
 			}

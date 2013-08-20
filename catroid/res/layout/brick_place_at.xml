@@ -66,6 +66,7 @@
 
             <TextView
 	app:layout_textField="true"
+app:layout_inputType="number"
                 android:id="@+id/brick_place_at_edit_text_x"
                 style="@style/BrickEditTextMultiple"
                  >
@@ -83,6 +84,7 @@
 
             <TextView
 	app:layout_textField="true"
+app:layout_inputType="number"
                 android:id="@+id/brick_place_at_edit_text_y"
                 style="@style/BrickEditTextMultiple"
                  >

@@ -60,6 +60,7 @@
 
             <TextView
                 app:layout_textField="true"
+app:layout_inputType="number"
                 android:id="@+id/brick_glide_to_edit_text_duration"
                 style="@style/BrickEditText"
                 android:layout_width="match_parent">
@@ -85,6 +86,7 @@
 
             <TextView
                 app:layout_textField="true"
+app:layout_inputType="number"
                 android:id="@+id/brick_glide_to_edit_text_x"
                 style="@style/BrickEditText"
 					 >
@@ -103,6 +105,7 @@
 
             <TextView
                 app:layout_textField="true"
+app:layout_inputType="number"
                 android:id="@+id/brick_glide_to_edit_text_y"
                 style="@style/BrickEditText"
                 	>

@@ -61,12 +61,12 @@
         </TextView>
 
         <TextView
-	app:layout_textField="true"
+			app:layout_textField="true"
+			app:layout_inputType="text"
             android:id="@+id/brick_speak_edit_text"
             style="@style/BrickEditText"
             android:layout_width="match_parent"
-            android:gravity="left"
-            android:inputType="text" >
+            android:gravity="left" >
         </TextView>
     </org.catrobat.catroid.ui.BrickLayout>
 

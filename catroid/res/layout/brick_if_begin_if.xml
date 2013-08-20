@@ -53,6 +53,7 @@
 
         <TextView
 	app:layout_textField="true"
+app:layout_inputType="number"
             android:id="@+id/brick_if_begin_edit_text"
             style="@style/BrickEditTextMultiple"
             android:inputType="number|numberDecimal" />
