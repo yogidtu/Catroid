@@ -43,6 +43,7 @@ import org.catrobat.catroid.utils.Utils;
 public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	private StageListener stageListener;
+	private AndroidApplicationConfiguration cfg;
 	public static LiveWallpaperEngine liveWallpaperEngine;
 
 	@Override
@@ -66,9 +67,10 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	@Override
 	public AndroidApplicationConfiguration createConfig() {
-		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-		cfg.useGL20 = true;
-
+		if (cfg == null) {
+			cfg = new AndroidApplicationConfiguration();
+			cfg.useGL20 = true;
+		}
 		return cfg;
 	}
 

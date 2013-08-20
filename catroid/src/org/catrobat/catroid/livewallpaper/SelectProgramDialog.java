@@ -24,8 +24,11 @@ package org.catrobat.catroid.livewallpaper;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -69,7 +72,9 @@ public class SelectProgramDialog extends Dialog {
 		File rootDirectory = new File(Constants.DEFAULT_ROOT);
 		int numOfProjects = UtilFile.getProjectNames(rootDirectory).size();
 
-		String currentProjectName = ProjectManager.getInstance().getCurrentProject().getName();
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		String currentProjectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
+
 		RadioButton[] radioButton = new RadioButton[numOfProjects];
 		int i = 0;
 		for (String projectName : UtilFile.getProjectNames(rootDirectory)) {
@@ -106,6 +111,10 @@ public class SelectProgramDialog extends Dialog {
 					if (project != null) {
 						ProjectManager.getInstance().setProject(project);
 						LiveWallpaper.liveWallpaperEngine.changeWallpaperProgram();
+						SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+						Editor editor = sharedPreferences.edit();
+						editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
+						editor.commit();
 						dismiss();
 						//display toast
 
