@@ -22,11 +22,6 @@
  */
 package org.catrobat.catroid.stage;
 
-import java.util.ArrayList;
-
-import org.catrobat.catroid.content.WhenVirtualButtonScript;
-import org.catrobat.catroid.content.WhenVirtualPadScript;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -56,6 +51,8 @@ import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.WhenVirtualButtonScript;
+import org.catrobat.catroid.content.WhenVirtualPadScript;
 import org.catrobat.catroid.io.SoundManager;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
 import org.catrobat.catroid.utils.Utils;
@@ -63,6 +60,7 @@ import org.catrobat.catroid.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StageListener implements ApplicationListener {
@@ -211,7 +209,6 @@ public class StageListener implements ApplicationListener {
 				loadVirtualGamepadImagesLookData();
 				((VirtualGamepadStage) stage).setVgpPadSprite(vgpPadSprite);
 				Gdx.input.setInputProcessor(stage);
-				//Gdx.input.setInputProcessor(new GestureDetector(createPreStageGestureListener()));
 			} else {
 				Gdx.input.setInputProcessor(stage);
 			}
@@ -593,11 +590,6 @@ public class StageListener implements ApplicationListener {
 			e.printStackTrace();
 		}
 	}
-
-	//	private VirtualGamepadGestureListener createPreStageGestureListener() {
-	//		VirtualGamepadGestureListener gestureListener = new VirtualGamepadGestureListener();
-	//		return gestureListener;
-	//	}
 
 	private void loadVirtualGamepadImagesLookData() {
 		try {
