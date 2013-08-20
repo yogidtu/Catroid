@@ -26,6 +26,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.BaseAdapter;
+
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.R;
@@ -117,7 +118,7 @@ public class WhenStartedBrick extends ScriptBrick {
 
 		if (view != null) {
 
-			View layout = (View) view.findViewById(R.id.brick_when_started_layout);
+			View layout = view.findViewById(R.id.brick_when_started_layout);
 			Drawable background = layout.getBackground();
 			background.setAlpha(alphaValue);
 			this.alphaValue = (alphaValue);
