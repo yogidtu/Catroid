@@ -25,6 +25,7 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -37,7 +38,13 @@
         android:gravity="center_vertical"
         android:visibility="gone" />
 
-    <LinearLayout
+    <org.catrobat.catroid.ui.BrickLayout
+	    app:customPadding="@dimen/brick_flow_layout_padding"
+ 	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+ 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
+	    android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
         android:id="@+id/brick_change_y_layout"
         style="@style/BrickContainer.Motion.Small" >
 
@@ -52,11 +59,12 @@
             style="@style/BrickPrototypeTextView" >
         </TextView>
 
-        <EditText
+        <TextView
+	app:layout_textField="true"
             android:id="@+id/brick_change_y_edit_text"
             style="@style/BrickEditText"
-            android:inputType="number|numberDecimal|numberSigned" >
-        </EditText>
-    </LinearLayout>
+             >
+        </TextView>
+    </org.catrobat.catroid.ui.BrickLayout>
 
 </LinearLayout>

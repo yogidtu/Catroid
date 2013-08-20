@@ -22,6 +22,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -34,7 +35,13 @@
         android:gravity="center_vertical"
         android:visibility="gone" />
 
-    <LinearLayout
+    <org.catrobat.catroid.ui.BrickLayout
+	    app:customPadding="@dimen/brick_flow_layout_padding"
+ 	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+ 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
+	    android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" 
         android:id="@+id/brick_if_end_if_layout"
         style="@style/BrickContainer.Control.Small" >
 
@@ -42,5 +49,5 @@
             android:id="@+id/brick_if_end_if_label"
             style="@style/BrickText"
             android:text="@string/brick_if_end" />
-    </LinearLayout>
+    </org.catrobat.catroid.ui.BrickLayout>
 </LinearLayout>
