@@ -29,7 +29,7 @@ import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;import android.widget.TextView;
+import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
@@ -124,7 +124,7 @@ public class ChangeBrightnessByNBrick extends BrickBaseType implements OnClickLi
 
 		if (view != null) {
 
-			View layout = (View) view.findViewById(R.id.brick_change_brightness_layout);
+			View layout = view.findViewById(R.id.brick_change_brightness_layout);
 			Drawable background = layout.getBackground();
 			background.setAlpha(alphaValue);
 

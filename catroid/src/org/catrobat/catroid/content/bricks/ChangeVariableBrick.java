@@ -34,7 +34,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;import android.widget.Spinner;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -198,7 +198,7 @@ public class ChangeVariableBrick extends BrickBaseType implements OnClickListene
 
 		if (view != null) {
 
-			View layout = (View) view.findViewById(R.id.brick_change_variable_layout);
+			View layout = view.findViewById(R.id.brick_change_variable_layout);
 			Drawable background = layout.getBackground();
 			background.setAlpha(alphaValue);
 

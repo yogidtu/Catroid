@@ -28,7 +28,7 @@ import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;import android.widget.TextView;
+import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
@@ -47,7 +47,6 @@ public class PointInDirectionBrick extends BrickBaseType implements View.OnClick
 
 	private Formula degrees;
 
-	private transient TextView setAngleTextView;
 	private transient View prototypeView;
 
 	public static enum Direction {
@@ -150,7 +149,7 @@ public class PointInDirectionBrick extends BrickBaseType implements View.OnClick
 
 		if (view != null) {
 
-			View layout = (View) view.findViewById(R.id.brick_point_in_direction_layout);
+			View layout = view.findViewById(R.id.brick_point_in_direction_layout);
 			Drawable background = layout.getBackground();
 			background.setAlpha(alphaValue);
 

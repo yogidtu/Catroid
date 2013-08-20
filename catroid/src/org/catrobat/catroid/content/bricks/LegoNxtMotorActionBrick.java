@@ -33,7 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;import android.widget.Spinner;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
@@ -207,7 +207,7 @@ public class LegoNxtMotorActionBrick extends BrickBaseType implements OnClickLis
 
 		if (view != null) {
 
-			View layout = (View) view.findViewById(R.id.brick_nxt_motor_action_layout);
+			View layout = view.findViewById(R.id.brick_nxt_motor_action_layout);
 			Drawable background = layout.getBackground();
 			background.setAlpha(alphaValue);
 
