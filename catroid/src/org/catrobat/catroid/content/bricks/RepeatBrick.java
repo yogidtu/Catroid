@@ -27,9 +27,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.TextView;import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
@@ -105,7 +103,7 @@ public class RepeatBrick extends LoopBeginBrick implements OnClickListener, Form
 		});
 
 		TextView text = (TextView) view.findViewById(R.id.brick_repeat_prototype_text_view);
-		EditText edit = (EditText) view.findViewById(R.id.brick_repeat_edit_text);
+		TextView edit = (TextView) view.findViewById(R.id.brick_repeat_edit_text);
 		timesToRepeat.setTextFieldId(R.id.brick_repeat_edit_text);
 		timesToRepeat.refreshTextField(view);
 
@@ -145,12 +143,12 @@ public class RepeatBrick extends LoopBeginBrick implements OnClickListener, Form
 
 		if (view != null) {
 
-			LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_repeat_layout);
+			View layout = (View) view.findViewById(R.id.brick_repeat_layout);
 			Drawable background = layout.getBackground();
 			background.setAlpha(alphaValue);
 
 			TextView repeatLabel = (TextView) view.findViewById(R.id.brick_repeat_label);
-			EditText editRepeat = (EditText) view.findViewById(R.id.brick_repeat_edit_text);
+			TextView editRepeat = (TextView) view.findViewById(R.id.brick_repeat_edit_text);
 			TextView times = (TextView) view.findViewById(R.id.brick_repeat_time_text_view);
 			repeatLabel.setTextColor(repeatLabel.getTextColors().withAlpha(alphaValue));
 			times.setTextColor(times.getTextColors().withAlpha(alphaValue));
