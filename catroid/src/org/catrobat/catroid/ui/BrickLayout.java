@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,9 +168,6 @@ public class BrickLayout extends ViewGroup {
 						/ currentLine.numberOfTextFields;
 				currentLine.allowableTextFieldWidth = (int) Math.floor(allowalbeWidth);
 
-				Log.d("FOREST", "BL1: " + endingWidthOfLineMinusFields + ", " + currentLine.numberOfTextFields + ", "
-						+ sizeWidth + "--> " + currentLine.allowableTextFieldWidth);
-
 				currentLine = getNextLine(currentLine);
 
 				lineLength = childWidth;
@@ -192,8 +188,6 @@ public class BrickLayout extends ViewGroup {
 		int endingWidthOfLineMinusFields = (lineLength - currentLine.totalTextFieldWidth);
 		float allowalbeWidth = (float) (sizeWidth - endingWidthOfLineMinusFields) / currentLine.numberOfTextFields;
 		currentLine.allowableTextFieldWidth = (int) Math.floor(allowalbeWidth);
-		Log.d("FOREST", "BL2: " + endingWidthOfLineMinusFields + ", " + currentLine.numberOfTextFields + ", "
-				+ sizeWidth + "--> " + currentLine.allowableTextFieldWidth);
 
 		int minAllowableTextFieldWidth = Integer.MAX_VALUE;
 		for (LineData d : lines) {
@@ -301,17 +295,12 @@ public class BrickLayout extends ViewGroup {
 
 		y += getPaddingTop() + getPaddingBottom();
 
-		Log.d("FOREST", "y = " + y);
-		Log.d("FOREST", "getSuggestedMinimumHeight() = " + getSuggestedMinimumHeight());
-
 		int centerVertically = 0;
 		if (y < getSuggestedMinimumHeight()) {
 			centerVertically = (getSuggestedMinimumHeight() - y) / 2;
 		}
 
 		y = Math.max(y, getSuggestedMinimumHeight());
-
-		Log.d("FOREST", "centerVertically = " + centerVertically);
 
 		for (LineData lineData : lines) {
 			for (ElementData elementData : lineData.elements) {
