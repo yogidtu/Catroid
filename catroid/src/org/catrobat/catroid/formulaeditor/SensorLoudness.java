@@ -22,21 +22,21 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import android.os.Handler;
+import android.util.Log;
 
 import org.catrobat.catroid.soundrecorder.SoundRecorder;
 
-import android.os.Handler;
-import android.util.Log;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class SensorLoudness {
 
 	private static SensorLoudness instance = null;
-	private final int UPDATE_INTERVAL = 50;
-	private final double SCALE_RANGE = 100d;
+	private static final int UPDATE_INTERVAL = 50;
+	private static final double SCALE_RANGE = 100d;
 
-	private final double MAX_AMP_VALUE = 32767d;
+	private static final double MAX_AMP_VALUE = 32767d;
 	private ArrayList<SensorCustomEventListener> listenerList = new ArrayList<SensorCustomEventListener>();
 
 	private SoundRecorder recorder = null;

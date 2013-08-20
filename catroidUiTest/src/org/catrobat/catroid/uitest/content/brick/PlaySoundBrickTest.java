@@ -22,8 +22,9 @@
  */
 package org.catrobat.catroid.uitest.content.brick;
 
-import java.io.File;
-import java.util.ArrayList;
+import android.media.MediaPlayer;
+
+import com.jayway.android.robotium.solo.Solo;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -43,13 +44,12 @@ import org.catrobat.catroid.ui.fragment.SoundFragment;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.media.MediaPlayer;
-
-import com.jayway.android.robotium.solo.Solo;
+import java.io.File;
+import java.util.ArrayList;
 
 public class PlaySoundBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
-	private final int RESOURCE_SOUND = org.catrobat.catroid.uitest.R.raw.longsound;
-	private final int RESOURCE_SOUND2 = org.catrobat.catroid.uitest.R.raw.testsoundui;
+	private static final int RESOURCE_SOUND = org.catrobat.catroid.uitest.R.raw.longsound;
+	private static final int RESOURCE_SOUND2 = org.catrobat.catroid.uitest.R.raw.testsoundui;
 
 	private String soundName = "testSound1";
 	private String soundName2 = "testSound2";

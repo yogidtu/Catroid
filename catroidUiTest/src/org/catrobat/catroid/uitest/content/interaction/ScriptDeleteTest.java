@@ -22,8 +22,6 @@
  */
 package org.catrobat.catroid.uitest.content.interaction;
 
-import java.util.ArrayList;
-
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Project;
@@ -37,6 +35,8 @@ import org.catrobat.catroid.content.bricks.ShowBrick;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
+
+import java.util.ArrayList;
 
 public class ScriptDeleteTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
@@ -56,53 +56,68 @@ public class ScriptDeleteTest extends BaseActivityInstrumentationTestCase<MainMe
 	public void testAddLooksCategoryBrick() {
 		String brickSetLookText = solo.getString(R.string.brick_set_look);
 		UiTestUtils.addNewBrick(solo, R.string.brick_set_look);
-		solo.clickOnText(solo.getString(R.string.brick_when_started));
 
-		solo.clickOnScreen(200, 200);
-		if (solo.searchText(solo.getString(R.string.brick_context_dialog_move_brick), true)) {
-			solo.goBack();
-		}
+		gainFocus();
+
 		assertTrue("Set look brick was not added", solo.searchText(brickSetLookText));
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_set_size_to);
+
+		gainFocus();
+
 		assertTrue("Set size to brick was not added", solo.searchText(solo.getString(R.string.brick_set_size_to)));
 	}
 
 	public void testDeleteScript() {
-		String brickWhenStartedText = solo.getString(R.string.brick_when_started);
-		String buttonDeleteText = solo.getString(R.string.delete);
 		UiTestUtils.addNewBrick(solo, R.string.brick_broadcast_receive);
-		solo.clickOnScreen(200, 200);
-		if (solo.searchText(solo.getString(R.string.brick_context_dialog_move_brick), true)) {
-			solo.goBack();
-		}
+
+		gainFocus();
+
 		int numberOfScripts = ProjectManager.getInstance().getCurrentSprite().getNumberOfScripts();
 		assertEquals("Incorrect number of scripts in list", 2, numberOfScripts);
 
-		solo.clickLongOnText(brickWhenStartedText);
-		solo.clickOnText(buttonDeleteText);
+		solo.waitForText(solo.getString(R.string.brick_when_started));
+		solo.clickOnText(solo.getString(R.string.brick_when_started));
+		solo.waitForText(solo.getString(R.string.brick_context_dialog_delete_script));
+		solo.clickOnText(solo.getString(R.string.brick_context_dialog_delete_script));
+
+		solo.waitForText(solo.getString(R.string.yes));
 		solo.clickOnButton(solo.getString(R.string.yes));
-		solo.sleep(200);
+		solo.waitForText(solo.getString(R.string.brick_broadcast_receive));
 
 		numberOfScripts = ProjectManager.getInstance().getCurrentSprite().getNumberOfScripts();
 		assertEquals("Incorrect number of scripts in scriptList", 1, numberOfScripts);
 		assertEquals("Incorrect number of elements in listView", 3, UiTestUtils.getScriptListView(solo).getChildCount());
 
-		solo.clickLongOnText(solo.getString(R.string.brick_broadcast_receive));
-		solo.clickOnText(buttonDeleteText);
+		solo.waitForText(solo.getString(R.string.brick_broadcast_receive));
+		solo.clickOnText(solo.getString(R.string.brick_broadcast_receive));
+		solo.waitForText(solo.getString(R.string.brick_context_dialog_delete_script));
+		solo.clickOnText(solo.getString(R.string.brick_context_dialog_delete_script));
+		solo.waitForText(solo.getString(R.string.yes));
 		solo.clickOnButton(solo.getString(R.string.yes));
-		solo.sleep(200);
+		solo.waitForText(solo.getString(R.string.brick_when_started));
 
 		numberOfScripts = ProjectManager.getInstance().getCurrentSprite().getNumberOfScripts();
 		assertEquals("Incorrect number of scripts in list", 0, numberOfScripts);
 		assertEquals("Incorrect number of elements in listView", 0, UiTestUtils.getScriptListView(solo).getChildCount());
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_hide);
-		solo.clickOnText(brickWhenStartedText);
+
+		gainFocus();
+
+		solo.waitForText(solo.getString(R.string.brick_when_started));
 
 		numberOfScripts = ProjectManager.getInstance().getCurrentSprite().getNumberOfScripts();
 		assertEquals("Incorrect number of scripts in scriptList", 1, numberOfScripts);
 		assertEquals("Incorrect number of elements in listView", 2, UiTestUtils.getScriptListView(solo).getChildCount());
+	}
+
+	private void gainFocus() {
+		solo.clickOnScreen(200, 200);
+		if (solo.searchText(solo.getString(R.string.brick_context_dialog_delete_brick), true)) {
+			solo.goBack();
+		}
+
 	}
 
 	private void createTestProject(String projectName) {

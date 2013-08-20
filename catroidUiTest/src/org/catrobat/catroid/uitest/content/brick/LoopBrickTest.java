@@ -22,7 +22,7 @@
  */
 package org.catrobat.catroid.uitest.content.brick;
 
-import java.util.ArrayList;
+import android.widget.ListView;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -47,7 +47,7 @@ import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.widget.ListView;
+import java.util.ArrayList;
 
 public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private Project project;
@@ -88,6 +88,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		// just to get focus
 		// seems to be a bug just with the Nexus S 2.3.6
 		solo.clickOnText(solo.getString(R.string.brick_when_started));
+		solo.goBack();
 
 		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
 		UiTestUtils.longClickAndDrag(solo, 10, yPosition.get(2), 10, yPosition.get(0), 20);
@@ -309,7 +310,9 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 
 		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
 
+		//just to gain focus
 		solo.clickOnScreen(20, yPosition.get(0)); // needed because of bug? in Nexus S 2.3.6
+		solo.goBack();
 		solo.clickOnScreen(20, yPosition.get(1));
 		clickOnDeleteInDialog();
 

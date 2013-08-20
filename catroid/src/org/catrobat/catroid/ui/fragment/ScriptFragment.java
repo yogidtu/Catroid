@@ -22,8 +22,28 @@
  */
 package org.catrobat.catroid.ui.fragment;
 
-import java.util.List;
-import java.util.concurrent.locks.Lock;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ListView;
+
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -42,30 +62,8 @@ import org.catrobat.catroid.ui.dragndrop.DragAndDropListView;
 import org.catrobat.catroid.ui.fragment.BrickCategoryFragment.OnCategorySelectedListener;
 import org.catrobat.catroid.utils.Utils;
 
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.ListView;
-
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 public class ScriptFragment extends ScriptActivityFragment implements OnCategorySelectedListener, OnBrickEditListener {
 
@@ -129,9 +127,15 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		menu.findItem(R.id.show_details).setVisible(false);
 		menu.findItem(R.id.rename).setVisible(false);
 		menu.findItem(R.id.edit_in_pocket_paint).setVisible(false);
-		menu.findItem(R.id.copy).setVisible(true);
 
 		super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.findItem(R.id.delete).setVisible(true);
+		menu.findItem(R.id.copy).setVisible(true);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
@@ -193,39 +197,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		}
 	}
 
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
-
-		if (view.getId() == R.id.brick_list_view) {
-			menu.setHeaderTitle(R.string.script_context_menu_title);
-
-			if (adapter.getItem(listView.getTouchedListPosition()) instanceof ScriptBrick) {
-				scriptToEdit = ((ScriptBrick) adapter.getItem(listView.getTouchedListPosition()))
-						.initScript(ProjectManager.getInstance().getCurrentSprite());
-				MenuInflater inflater = getActivity().getMenuInflater();
-				inflater.inflate(R.menu.menu_script, menu);
-			}
-		}
-	}
-
-	@Override
-	public boolean onContextItemSelected(android.view.MenuItem item) {
-
-		switch (item.getItemId()) {
-			case R.id.script_menu_delete: {
-
-				showConfirmDeleteDialog(true);
-				break;
-			}
-			case R.id.script_menu_copy: {
-				//currently not supported
-				break;
-			}
-		}
-
-		return true;
-	}
-
 	public void setAddNewScript() {
 		addNewScript = true;
 	}
@@ -249,7 +220,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 				AddBrickFragment.ADD_BRICK_FRAGMENT_TAG);
 		fragmentTransaction.addToBackStack(null);
 		fragmentTransaction.commit();
-
 		adapter.notifyDataSetChanged();
 
 	}

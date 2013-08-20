@@ -22,7 +22,9 @@
  */
 package org.catrobat.catroid.uitest.content.interaction;
 
-import java.util.ArrayList;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -38,9 +40,7 @@ import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.view.View;
-import android.widget.ListView;
-import android.widget.TextView;
+import java.util.ArrayList;
 
 public class ScriptChangeTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
 
@@ -66,21 +66,30 @@ public class ScriptChangeTest extends BaseActivityInstrumentationTestCase<Script
 		ListView parent = UiTestUtils.getScriptListView(solo);
 		View testScriptBrick = parent.getChildAt(0);
 
+		solo.waitForText(solo.getString(R.string.brick_when_started));
 		solo.clickOnView(testScriptBrick);
-		solo.sleep(100);
+		solo.waitForText(solo.getString(R.string.brick_context_dialog_delete_brick));
+		solo.goBack();
+		solo.waitForText(solo.getString(R.string.brick_when_started));
 
 		assertEquals("Current Script in List is not testScript", testScript, ProjectManager.getInstance()
 				.getCurrentScript());
 
 		View startBrick = parent.getChildAt(4);
 		solo.clickOnView(startBrick);
-		solo.sleep(100);
+		solo.waitForText(solo.getString(R.string.brick_context_dialog_delete_brick));
+		solo.goBack();
+		solo.waitForText(solo.getString(R.string.brick_when_started));
+
 		assertEquals("Current Script in List is not testScript", testScript3, ProjectManager.getInstance()
 				.getCurrentScript());
 
 		startBrick = parent.getChildAt(5);
 		solo.clickOnView(startBrick);
-		solo.sleep(100);
+		solo.waitForText(solo.getString(R.string.brick_context_dialog_delete_brick));
+		solo.goBack();
+		solo.waitForText(solo.getString(R.string.brick_when_started));
+
 		assertEquals("Current Script in List is not testScript", testScript2, ProjectManager.getInstance()
 				.getCurrentScript());
 

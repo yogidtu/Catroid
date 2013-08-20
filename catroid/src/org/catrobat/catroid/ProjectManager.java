@@ -23,11 +23,13 @@
 package org.catrobat.catroid;
 
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.FileChecksumContainer;
@@ -39,9 +41,8 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.Utils;
 
-import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
+import java.io.File;
+import java.io.IOException;
 
 public class ProjectManager {
 	private static final ProjectManager INSTANCE = new ProjectManager();
@@ -118,7 +119,6 @@ public class ProjectManager {
 			Utils.saveToPreferences(context, Constants.PREF_PROJECTNAME_KEY, project.getName());
 			return true;
 		}
-
 	}
 
 	public boolean canLoadProject(String projectName) {
@@ -307,7 +307,7 @@ public class ProjectManager {
 		String temporaryDirectorySuffix = "_tmp";
 		String temporaryDirectoryName = projectDirectoryName + temporaryDirectorySuffix;
 		int suffixCounter = 0;
-		while (StorageHandler.getInstance().projectExistsIgnoreCase(temporaryDirectoryName)) {
+		while (Utils.checkIfProjectExistsOrIsDownloadingIgnoreCase(temporaryDirectoryName)) {
 			temporaryDirectoryName = projectDirectoryName + temporaryDirectorySuffix + suffixCounter;
 			suffixCounter++;
 		}

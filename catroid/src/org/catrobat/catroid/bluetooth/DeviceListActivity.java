@@ -42,9 +42,6 @@
  */
 package org.catrobat.catroid.bluetooth;
 
-import java.util.ArrayList;
-import java.util.Set;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -62,7 +59,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import org.catrobat.catroid.R;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 public class DeviceListActivity extends Activity {
 	public static final String PAIRING = "pairing";
@@ -109,17 +110,17 @@ public class DeviceListActivity extends Activity {
 
 		ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
 		pairedListView.setAdapter(pairedDevicesArrayAdapter);
-		pairedListView.setOnItemClickListener(mDeviceClickListener);
+		pairedListView.setOnItemClickListener(deviceClickListener);
 
 		ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
 		newDevicesListView.setAdapter(newDevicesArrayAdapter);
-		newDevicesListView.setOnItemClickListener(mDeviceClickListener);
+		newDevicesListView.setOnItemClickListener(deviceClickListener);
 
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		this.registerReceiver(mReceiver, filter);
+		this.registerReceiver(receiver, filter);
 
 		filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-		this.registerReceiver(mReceiver, filter);
+		this.registerReceiver(receiver, filter);
 
 		btAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -179,7 +180,7 @@ public class DeviceListActivity extends Activity {
 			btAdapter.cancelDiscovery();
 		}
 
-		this.unregisterReceiver(mReceiver);
+		this.unregisterReceiver(receiver);
 	}
 
 	private void doDiscovery() {
@@ -196,7 +197,7 @@ public class DeviceListActivity extends Activity {
 		btAdapter.startDiscovery();
 	}
 
-	private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
+	private OnItemClickListener deviceClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
 
@@ -219,7 +220,7 @@ public class DeviceListActivity extends Activity {
 		}
 	};
 
-	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+	private final BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();

@@ -23,38 +23,38 @@
 
 package org.catrobat.catroid.test.utils;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 
 import org.catrobat.catroid.formulaeditor.SensorCustomEvent;
 import org.catrobat.catroid.formulaeditor.SensorCustomEventListener;
 import org.catrobat.catroid.formulaeditor.SensorManagerInterface;
 import org.catrobat.catroid.formulaeditor.Sensors;
 
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class SimulatedSensorManager implements SensorManagerInterface {
 
 	public class Pair<L, R> {
-		private L l;
-		private R r;
+		private L firstEntry;
+		private R secondEntry;
 
 		public Pair(L l, R r) {
-			this.l = l;
-			this.r = r;
+			this.firstEntry = l;
+			this.secondEntry = r;
 		}
 
 		public L getL() {
-			return l;
+			return firstEntry;
 		}
 
 		public R getR() {
-			return r;
+			return secondEntry;
 		}
 	};
 
