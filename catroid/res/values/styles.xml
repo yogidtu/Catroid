@@ -180,12 +180,7 @@
     </style>
 
     <style name="BrickEditText" parent="@style/BrickPrototypeTextView">
-        <item name="android:maxLines">1</item>
         <item name="android:visibility">gone</item>
-    </style>
-
-    <style name="BrickEditTextMultiple" parent="@style/BrickEditText">
-        <item name="android:maxEms">6</item>
     </style>
 
     <style name="BrickContainer">

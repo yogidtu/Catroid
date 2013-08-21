@@ -57,10 +57,9 @@
 
         <TextView
             android:id="@+id/brick_go_back_edit_text"
-            style="@style/BrickEditTextMultiple"
+            style="@style/BrickEditText"
             app:layout_inputType="number"
-            app:layout_textField="true"
-            android:inputType="number" >
+            app:layout_textField="true" >
         </TextView>
 
         <TextView

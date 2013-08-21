@@ -65,7 +65,7 @@
 
         <TextView
             android:id="@+id/brick_place_at_edit_text_x"
-            style="@style/BrickEditTextMultiple"
+            style="@style/BrickEditText"
             app:layout_inputType="number"
             app:layout_textField="true" >
         </TextView>
@@ -82,7 +82,7 @@
 
         <TextView
             android:id="@+id/brick_place_at_edit_text_y"
-            style="@style/BrickEditTextMultiple"
+            style="@style/BrickEditText"
             app:layout_inputType="number"
             app:layout_textField="true" >
         </TextView>

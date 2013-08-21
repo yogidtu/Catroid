@@ -75,7 +75,7 @@
 
         <TextView
             android:id="@+id/motor_action_speed_edit_text"
-            style="@style/BrickEditTextMultiple"
+            style="@style/BrickEditText"
             app:layout_inputType="number"
             app:layout_textField="true"
             android:clickable="false" >

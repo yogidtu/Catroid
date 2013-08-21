@@ -58,7 +58,6 @@ public class BrickLayout extends ViewGroup {
 	public static final int HORIZONTAL = 0;
 	public static final int VERTICAL = 1;
 	private final int minTextFieldWidthDp = 100;
-	private final int maxTextFieldWidthDp = 350;
 	private final int linesToAllocate = 10;
 	private final int elementsToAllocatePerLine = 10;
 
@@ -164,16 +163,15 @@ public class BrickLayout extends ViewGroup {
 				continue;
 			}
 
-			Resources r = getResources();
 			LayoutParams lp = (LayoutParams) child.getLayoutParams();
 			int childWidth = preLayoutMeasureWidth(child, sizeWidth, sizeHeight, modeWidth, modeHeight);
 
 			lineLength = lineLengthWithSpacing + childWidth;
 			lineLengthWithSpacing = lineLength + horizontalSpacing;
 
-			boolean newLine = lp.newLine && totalLengthOfContent - combinedLengthOfPreviousLines > sizeWidth;
+			boolean newLine = (lp.newLine && totalLengthOfContent - combinedLengthOfPreviousLines > sizeWidth);
 
-			if (newLine) {
+			if (newLine || child instanceof Spinner) {
 				int usedChildWidth = (lp.textField ? childWidth : 0);
 				int endingWidthOfLineMinusFields = (lineLength - (usedChildWidth + horizontalSpacing + currentLine.totalTextFieldWidth));
 				float allowalbeWidth = (float) (sizeWidth - (endingWidthOfLineMinusFields))
