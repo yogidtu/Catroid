@@ -145,58 +145,46 @@ public class BrickLayout extends ViewGroup {
 
 		final int count = getChildCount();
 		int elementInLineIndex = 0;
+
+		int totalLengthOfContent = 0;
 		for (int i = 0; i < count; i++) {
 			final View child = getChildAt(i);
 			if (child.getVisibility() == GONE) {
 				continue;
 			}
 
-			if (child instanceof Spinner) {
-				child.measure(MeasureSpec.makeMeasureSpec(sizeWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(
-						sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeHeight));
-			} else {
-				child.measure(MeasureSpec.makeMeasureSpec(sizeWidth,
-						modeWidth == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeWidth), MeasureSpec
-						.makeMeasureSpec(sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST
-								: modeHeight));
+			totalLengthOfContent += horizontalSpacing
+					+ preLayoutMeasureWidth(child, sizeWidth, sizeHeight, modeWidth, modeHeight);
+		}
+
+		int combinedLengthOfPreviousLines = 0;
+		for (int i = 0; i < count; i++) {
+			final View child = getChildAt(i);
+			if (child.getVisibility() == GONE) {
+				continue;
 			}
 
 			Resources r = getResources();
 			LayoutParams lp = (LayoutParams) child.getLayoutParams();
-
-			int hSpacing = this.getHorizontalSpacing(lp);
-
-			int childWidth = child.getMeasuredWidth();
-			if (lp.textField) {
-				childWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, minTextFieldWidthDp,
-						r.getDisplayMetrics());
-			}
+			int childWidth = preLayoutMeasureWidth(child, sizeWidth, sizeHeight, modeWidth, modeHeight);
 
 			lineLength = lineLengthWithSpacing + childWidth;
-			lineLengthWithSpacing = lineLength + hSpacing;
+			lineLengthWithSpacing = lineLength + horizontalSpacing;
 
-			int maxTextFieldWidthPixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-					maxTextFieldWidthDp, r.getDisplayMetrics());
-
-			int currentTextFieldWidth = currentLine.totalTextFieldWidth + (lp.textField ? childWidth : 0);
-			int currentTextFieldCount = currentLine.numberOfTextFields + (lp.textField ? 1 : 0);
-			int lineLengthWithMaxTextField = (lineLength - (currentTextFieldWidth + hSpacing))
-					+ (currentTextFieldCount * maxTextFieldWidthPixels);
-			boolean preEmptiveNewLine = lp.newLine && lineLengthWithMaxTextField > sizeWidth;
-
-			boolean newLine = preEmptiveNewLine || (modeWidth != MeasureSpec.UNSPECIFIED && lineLength > sizeWidth);
+			boolean newLine = lp.newLine && totalLengthOfContent - combinedLengthOfPreviousLines > sizeWidth;
 
 			if (newLine) {
 				int usedChildWidth = (lp.textField ? childWidth : 0);
-				int endingWidthOfLineMinusFields = (lineLength - (usedChildWidth + hSpacing + currentLine.totalTextFieldWidth));
+				int endingWidthOfLineMinusFields = (lineLength - (usedChildWidth + horizontalSpacing + currentLine.totalTextFieldWidth));
 				float allowalbeWidth = (float) (sizeWidth - (endingWidthOfLineMinusFields))
 						/ currentLine.numberOfTextFields;
 				currentLine.allowableTextFieldWidth = (int) Math.floor(allowalbeWidth);
 
 				currentLine = getNextLine(currentLine);
 
+				combinedLengthOfPreviousLines += lineLength;
 				lineLength = childWidth;
-				lineLengthWithSpacing = lineLength + hSpacing;
+				lineLengthWithSpacing = lineLength + horizontalSpacing;
 
 				elementInLineIndex = 0;
 			}
@@ -343,6 +331,27 @@ public class BrickLayout extends ViewGroup {
 		}
 
 		this.setMeasuredDimension(resolveSize(x, widthMeasureSpec), resolveSize(y, heightMeasureSpec));
+	}
+
+	private int preLayoutMeasureWidth(View child, int sizeWidth, int sizeHeight, int modeWidth, int modeHeight) {
+		if (child instanceof Spinner) {
+			child.measure(MeasureSpec.makeMeasureSpec(sizeWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(
+					sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeHeight));
+		} else {
+			child.measure(MeasureSpec.makeMeasureSpec(sizeWidth, modeWidth == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST
+					: modeWidth), MeasureSpec.makeMeasureSpec(sizeHeight,
+					modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeHeight));
+		}
+
+		Resources r = getResources();
+		LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+		int childWidth = child.getMeasuredWidth();
+		if (lp.textField) {
+			childWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, minTextFieldWidthDp,
+					r.getDisplayMetrics());
+		}
+		return childWidth;
 	}
 
 	private LineData getNextLine(LineData currentLine) {
