@@ -53,6 +53,7 @@ import java.util.LinkedList;
  * <p/>
  * </com.example.android.layout.FlowLayout>
  */
+
 public class BrickLayout extends ViewGroup {
 	public static final int HORIZONTAL = 0;
 	public static final int VERTICAL = 1;
