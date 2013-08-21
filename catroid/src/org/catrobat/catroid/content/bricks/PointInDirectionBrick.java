@@ -118,15 +118,15 @@ public class PointInDirectionBrick extends BrickBaseType implements View.OnClick
 		});
 
 		TextView setAngleTextView = (TextView) view.findViewById(R.id.brick_point_in_direction_prototype_text_view);
-		setAngleTextView = (TextView) view.findViewById(R.id.brick_point_in_direction_edit_text);
+		TextView setAngleTextField = (TextView) view.findViewById(R.id.brick_point_in_direction_edit_text);
 
 		degrees.setTextFieldId(R.id.brick_point_in_direction_edit_text);
 		degrees.refreshTextField(view);
 
 		setAngleTextView.setVisibility(View.GONE);
-		setAngleTextView.setVisibility(View.VISIBLE);
+		setAngleTextField.setVisibility(View.VISIBLE);
 
-		setAngleTextView.setOnClickListener(this);
+		setAngleTextField.setOnClickListener(this);
 		return view;
 	}
 

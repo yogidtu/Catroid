@@ -36,11 +36,11 @@
         android:visibility="gone" />
 
     <org.catrobat.catroid.ui.BrickLayout
-	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
  	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
 	    android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" 
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
         android:id="@+id/brick_note_layout"
         style="@style/BrickContainer.Control.Medium" >
 
@@ -57,7 +57,7 @@
             android:gravity="left" >
         </TextView>
 
-        <TextView
+        <EditText
 			app:layout_textField="true"
 			app:layout_inputType="text"
             android:id="@+id/brick_note_edit_text"

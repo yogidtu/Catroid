@@ -57,12 +57,11 @@
             style="@style/BrickPrototypeTextView" />
 
         <TextView
-	app:layout_textField="true"
-app:layout_inputType="number"
+			app:layout_textField="true"
+			app:layout_inputType="number"
             android:id="@+id/brick_point_in_direction_edit_text"
             style="@style/BrickEditText"
-            android:maxEms="5"
-             >
+            android:maxEms="5" >
         </TextView>
 
         <TextView
