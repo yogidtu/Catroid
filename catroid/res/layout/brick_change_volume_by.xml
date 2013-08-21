@@ -20,7 +20,6 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
@@ -37,13 +36,13 @@
         android:visibility="gone" />
 
     <org.catrobat.catroid.ui.BrickLayout
-	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
- 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
-	    android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" 
         android:id="@+id/brick_change_volume_by_layout"
-        style="@style/BrickContainer.Sound.Small" >
+        style="@style/BrickContainer.Sound.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+        app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
 
         <TextView
             android:id="@+id/brick_change_volume_by_label"
@@ -57,11 +56,10 @@
         </TextView>
 
         <TextView
-	app:layout_textField="true"
-app:layout_inputType="number"
             android:id="@+id/brick_change_volume_by_edit_text"
             style="@style/BrickEditText"
-            android:inputType="number|numberDecimal" >
+            app:layout_inputType="number"
+            app:layout_textField="true" >
         </TextView>
     </org.catrobat.catroid.ui.BrickLayout>
 

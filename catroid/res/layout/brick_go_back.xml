@@ -36,13 +36,13 @@
         android:visibility="gone" />
 
     <org.catrobat.catroid.ui.BrickLayout
-	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
- 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
-	    android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" 
         android:id="@+id/brick_go_back_layout"
-        style="@style/BrickContainer.Motion.Small" >
+        style="@style/BrickContainer.Motion.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+        app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
 
         <TextView
             android:id="@+id/brick_go_back_label"
@@ -56,10 +56,10 @@
         </TextView>
 
         <TextView
-	app:layout_textField="true"
-app:layout_inputType="number"
             android:id="@+id/brick_go_back_edit_text"
             style="@style/BrickEditTextMultiple"
+            app:layout_inputType="number"
+            app:layout_textField="true"
             android:inputType="number" >
         </TextView>
 

@@ -37,15 +37,14 @@
         android:visibility="gone" />
 
     <org.catrobat.catroid.ui.BrickLayout
-	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
- 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
-	    android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" 
         android:id="@+id/brick_speak_layout"
         style="@style/BrickContainer.Sound.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-         >
+        android:orientation="horizontal"
+        app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+        app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
 
         <TextView
             android:id="@+id/brick_speak_label"
@@ -61,11 +60,11 @@
         </TextView>
 
         <TextView
-			app:layout_textField="true"
-			app:layout_inputType="text"
             android:id="@+id/brick_speak_edit_text"
             style="@style/BrickEditText"
             android:layout_width="match_parent"
+            app:layout_inputType="text"
+            app:layout_textField="true"
             android:gravity="left" >
         </TextView>
     </org.catrobat.catroid.ui.BrickLayout>

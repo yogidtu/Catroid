@@ -20,7 +20,6 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -38,13 +37,13 @@
         android:visibility="gone" />
 
     <org.catrobat.catroid.ui.BrickLayout
-	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
- 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
-	    android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" 
         android:id="@+id/brick_when_layout"
-        style="@style/BrickContainer.Script.Small" >
+        style="@style/BrickContainer.Script.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+        app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
 
         <TextView
             style="@style/BrickText.SingleLine"
@@ -63,7 +62,6 @@
 		android:focusable="false"
 		
 	/>
-
         -->
 
     </org.catrobat.catroid.ui.BrickLayout>

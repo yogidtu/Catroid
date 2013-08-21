@@ -20,7 +20,6 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -28,8 +27,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal" >
 
     <CheckBox
         android:id="@+id/brick_change_brightness_checkbox"
@@ -39,15 +37,14 @@
         android:visibility="gone" />
 
     <org.catrobat.catroid.ui.BrickLayout
-	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
- 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
-	    android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" 
         android:id="@+id/brick_change_brightness_layout"
         style="@style/BrickContainer.Look.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-         >
+        android:orientation="horizontal"
+        app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+        app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
 
         <TextView
             android:id="@+id/brick_change_brightness_label"
@@ -55,27 +52,25 @@
             android:text="@string/brick_change_brightness" >
         </TextView>
 
+        <TextView
+            android:id="@+id/brick_change_brightness_by_textview"
+            style="@style/BrickText.SingleLine"
+            app:layout_newLine="true"
+            android:text="@string/by_label" >
+        </TextView>
 
-            <TextView
-                app:layout_newLine="true"
-                android:id="@+id/brick_change_brightness_by_textview"
-                style="@style/BrickText.SingleLine"
-                android:text="@string/by_label" >
-            </TextView>
+        <TextView
+            android:id="@+id/brick_change_brightness_prototype_text_view"
+            style="@style/BrickPrototypeTextView" >
+        </TextView>
 
-            <TextView
-                android:id="@+id/brick_change_brightness_prototype_text_view"
-                style="@style/BrickPrototypeTextView" >
-            </TextView>
-
-            <TextView
-				app:layout_textField="true"
-app:layout_inputType="number"
-                android:id="@+id/brick_change_brightness_edit_text"
-                style="@style/BrickEditText"
-                android:maxEms="10"
-                 >
-            </TextView>
+        <TextView
+            android:id="@+id/brick_change_brightness_edit_text"
+            style="@style/BrickEditText"
+            app:layout_inputType="number"
+            app:layout_textField="true"
+            android:maxEms="10" >
+        </TextView>
     </org.catrobat.catroid.ui.BrickLayout>
 
 </LinearLayout>

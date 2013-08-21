@@ -36,14 +36,14 @@
         android:gravity="center_vertical"
         android:visibility="gone" />
 
-	<org.catrobat.catroid.ui.BrickLayout
-	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
- 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
+    <org.catrobat.catroid.ui.BrickLayout
         android:id="@+id/brick_set_variable_layout"
         style="@style/BrickContainer.UserVariables.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+        app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
 
         <TextView
             android:id="@+id/brick_set_variable_label"
@@ -58,9 +58,9 @@
             android:focusable="false" />
 
         <TextView
-            app:layout_newLine="true"
             android:id="@+id/brick_set_variable_to_textview"
             style="@style/BrickText.SingleLine"
+            app:layout_newLine="true"
             android:text="@string/to_label" />
 
         <TextView
@@ -68,12 +68,10 @@
             style="@style/BrickPrototypeTextView" />
 
         <TextView
-            app:layout_textField="true"
-app:layout_inputType="number"
             android:id="@+id/brick_set_variable_edit_text"
             style="@style/BrickEditText"
-             />
-        
+            app:layout_inputType="number"
+            app:layout_textField="true" />
     </org.catrobat.catroid.ui.BrickLayout>
 
 </LinearLayout>

@@ -20,7 +20,6 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
@@ -37,13 +36,13 @@
         android:visibility="gone" />
 
     <org.catrobat.catroid.ui.BrickLayout
-	     	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
- 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" 
-	    android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" 
         android:id="@+id/brick_repeat_layout"
-        style="@style/BrickContainer.Control.Small" >
+        style="@style/BrickContainer.Control.Small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
+        app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
 
         <TextView
             android:id="@+id/brick_repeat_label"
@@ -57,17 +56,16 @@
         </TextView>
 
         <TextView
-	app:layout_textField="true"
-app:layout_inputType="number"
             android:id="@+id/brick_repeat_edit_text"
             style="@style/BrickEditTextMultiple"
-             >
+            app:layout_inputType="number"
+            app:layout_textField="true" >
         </TextView>
 
         <TextView
-        android:id="@+id/brick_repeat_time_text_view"
-        style="@style/BrickText.SingleLine" >
-    </TextView>
+            android:id="@+id/brick_repeat_time_text_view"
+            style="@style/BrickText.SingleLine" >
+        </TextView>
     </org.catrobat.catroid.ui.BrickLayout>
 
 </LinearLayout>
