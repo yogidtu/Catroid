@@ -164,6 +164,7 @@ public class UiTestUtils {
 	public static final String JAPANESE_PROJECT_NAME = "これは例の説明です。";
 
 	private static final int ACTION_MODE_ACCEPT_IMAGE_BUTTON_INDEX = 0;
+	private static final int DRAG_FRAMES = 35;
 
 	public static final int SCRIPTS_INDEX = 0;
 	public static final int LOOKS_INDEX = 1;
@@ -407,7 +408,7 @@ public class UiTestUtils {
 		addNewBrick(solo, categoryStringId, brickName, nThElement);
 	}
 
-	public static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
+	private static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
 		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 5000)) {
 			fail("Text not shown in 5 secs!");
@@ -419,24 +420,69 @@ public class UiTestUtils {
 			fail("add brick fragment should appear");
 		}
 
-		if (solo.searchText(brickName, nThElement, true)) {
-			clickOnBrickInAddBrickFragment(solo, brickName, true);
-		} else {
-			fail("add brick named " + brickName + " should appear");
+		boolean succeeded = clickOnBrickInAddBrickFragment(solo, brickName, true);
+		if (!succeeded) {
+			fail(brickName + " should appear. Failed to scroll to find it.");
 		}
 		solo.sleep(600);
 	}
 
-	public static void clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
-		ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
-		for (TextView v : array) {
-			if (v.getText().toString().equals(brickName)) {
-				ViewParent p = v.getParent().getParent().getParent().getParent();
-				if (p instanceof View && ((View) p).getId() == R.id.add_brick_fragment_list) {
-					solo.clickOnView(v);
+	private static boolean clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
+		boolean success = false;
+		int lowestIdTimeBeforeLast = -2;
+		int lowestIdLastTime = -1;
+
+		while (!success && lowestIdLastTime != lowestIdTimeBeforeLast) {
+
+			lowestIdTimeBeforeLast = lowestIdLastTime;
+			int farthestDownThisTime = -999999;
+			int highestUpThisTime = 999999;
+
+			ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
+			for (TextView v : array) {
+				View greatGreatGrandParent = greatGreatGrandParent(v);
+				if (greatGreatGrandParent != null && greatGreatGrandParent.getId() == R.id.add_brick_fragment_list) {
+					int bottom = getBottomOfBrickFromViewInside(v);
+					Log.d("FOREST", v.getText().toString() + " bottom: " + bottom);
+					if (farthestDownThisTime < bottom) {
+						farthestDownThisTime = bottom;
+						lowestIdLastTime = v.getId();
+					}
+					if (highestUpThisTime > bottom) {
+						highestUpThisTime = bottom;
+					}
+					if (v.getText().toString().equals(brickName)) {
+						solo.clickOnView(v);
+						success = true;
+						break;
+					}
 				}
 			}
+
+			int difference = farthestDownThisTime - highestUpThisTime;
+			Log.d("FOREST", "farthestDownThisTime: " + farthestDownThisTime);
+			Log.d("FOREST", "highestUpThisTime: " + highestUpThisTime);
+			Log.d("FOREST", "difference: " + difference);
+
+			solo.drag(40, 40, difference, 40, DRAG_FRAMES);
 		}
+
+		return success;
+	}
+
+	private static int getBottomOfBrickFromViewInside(View v) {
+		return ((View) (v.getParent().getParent())).getBottom();
+	}
+
+	private static View greatGreatGrandParent(View v) {
+		ViewParent p = v.getParent();
+		int i = 0;
+		while (i < 3 && p != null) {
+			p = p.getParent();
+			i++;
+		}
+
+		return (p != null && p instanceof View ? ((View) p) : null);
 	}
 
 	public static int[] tapFloatingBrick(Solo solo) {
@@ -471,7 +517,7 @@ public class UiTestUtils {
 		int destinationX = originX;
 		int destinationY = Math.round(originY + height * offsetY);
 
-		solo.drag(originX, destinationX, originY, destinationY, 70);
+		solo.drag(originX, destinationX, originY, destinationY, DRAG_FRAMES);
 
 		location[0] = destinationX;
 		location[1] = destinationY;

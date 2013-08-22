@@ -158,7 +158,6 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		int addedYPosition;
 
 		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_forever);
-		solo.sleep(200);
 		UiTestUtils.dragFloatingBrickUpwards(solo);
 		solo.sleep(400);
 
@@ -166,8 +165,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		assertTrue("Wrong Brick instance.", projectBrickList.get(0) instanceof ForeverBrick);
 		assertTrue("Wrong Brick instance.", projectBrickList.get(4) instanceof LoopEndlessBrick);
 
-		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_forever, 2);
-		solo.sleep(200);
+		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_forever);
 		UiTestUtils.dragFloatingBrickUpwards(solo);
 		solo.sleep(400);
 
@@ -180,7 +178,6 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 				((NestingBrick) projectBrickList.get(2)).getAllNestingBrickParts(false).get(1), projectBrickList.get(4));
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_change_brightness);
-		solo.sleep(200);
 		UiTestUtils.tapFloatingBrick(solo);
 		solo.sleep(400);
 
