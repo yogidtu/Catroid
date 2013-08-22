@@ -84,7 +84,7 @@ public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCa
 	public void testNormalKeysKeyboard() {
 
 		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
@@ -173,7 +173,7 @@ public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCa
 		String itemString = "";
 
 		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
@@ -238,7 +238,7 @@ public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCa
 		String itemString = "";
 
 		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
@@ -334,7 +334,7 @@ public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCa
 		String itemString = "";
 
 		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
@@ -412,7 +412,7 @@ public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCa
 		String itemString = "";
 
 		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_delete));

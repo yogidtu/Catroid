@@ -84,8 +84,10 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 	public void testChangeFormula() {
 
 		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
+		solo.sleep(150);
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
+		solo.sleep(150);
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
 		solo.sleep(50);
 		assertTrue("Saved changes message not found!",
 				solo.searchText(solo.getString(R.string.formula_editor_changes_saved)));
@@ -98,11 +100,11 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_1));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_plus));
 
-		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID, 1));
 		assertTrue("Fix error message not found!", solo.searchText(solo.getString(R.string.formula_editor_parse_fail)));
 		solo.sleep(500);
-		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
-		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID, 1));
+		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID, 1));
 		assertTrue("Changes saved message not found!",
 				solo.searchText(solo.getString(R.string.formula_editor_changes_discarded)));
 
@@ -119,14 +121,14 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		assertEquals("Wrong text in FormulaEditor", "1 ", solo.getEditText(FORMULA_EDITOR_EDIT_TEXT_ID).getText()
 				.toString());
 		solo.sleep(100);
-		assertEquals("Wrong text in X EditText", "1 ", ((TextView) solo.getView(X_POS_EDIT_TEXT_RID)).getText()
+		assertEquals("Wrong text in X EditText", "1 ", ((TextView) solo.getView(X_POS_EDIT_TEXT_RID, 1)).getText()
 				.toString());
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_2));
 
 		assertEquals("Wrong text in FormulaEditor", "12 ", solo.getEditText(FORMULA_EDITOR_EDIT_TEXT_ID).getText()
 				.toString());
-		assertEquals("Wrong text in X EditText", "12 ", ((TextView) solo.getView(X_POS_EDIT_TEXT_RID)).getText()
+		assertEquals("Wrong text in X EditText", "12 ", ((TextView) solo.getView(X_POS_EDIT_TEXT_RID, 1)).getText()
 				.toString());
 
 		solo.goBack();
@@ -287,7 +289,7 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		assertTrue("Save failed toast not found",
 				solo.searchText(solo.getString(R.string.formula_editor_changes_saved)));
 
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_random));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_math));
@@ -299,14 +301,14 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_3));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_0));
 
-		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID, 1));
 		assertTrue("Changes saved toast not found",
 				solo.searchText(solo.getString(R.string.formula_editor_changes_saved)));
 
 		assertEquals("Wrong text in FormulaEditor", newXFormula, solo.getEditText(FORMULA_EDITOR_EDIT_TEXT_ID)
 				.getText().toString());
 
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
 		solo.sleep(250);
 		assertEquals("Wrong text in FormulaEditor", newYFormula, solo.getEditText(FORMULA_EDITOR_EDIT_TEXT_ID)
 				.getText().toString());
@@ -418,7 +420,7 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 
 	public void testIfLandscapeOrientationIsDeactivated() {
 
-		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID, 1));
 
 		int orientation = getActivity().getRequestedOrientation();
 
@@ -432,7 +434,7 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_6));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_minus));
 
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
 		solo.goBack();
 
 		boolean isFound = solo.searchText("6") && solo.searchText("-");
@@ -446,15 +448,15 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_plus));
 		solo.goBack();
 
-		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID, 1));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_minus));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_4));
 
-		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID, 1));
 		isFound = solo.searchText("6") && solo.searchText("+") && solo.searchText("3");
 		assertTrue("6 + 3 not found!", isFound);
 
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
 		isFound = solo.searchText("5") && solo.searchText("-") && solo.searchText("4");
 		assertTrue("5 - 4 not found!", isFound);
 

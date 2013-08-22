@@ -152,9 +152,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 
 	@Device
 	public void testForeverBrick() {
-		ArrayList<Integer> yPosition;
 		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
-		int addedYPosition;
 
 		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_forever);
 		UiTestUtils.dragFloatingBrickUpwards(solo, 1);
