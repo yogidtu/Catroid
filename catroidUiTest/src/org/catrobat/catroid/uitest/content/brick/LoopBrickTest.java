@@ -102,10 +102,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		assertEquals("Incorrect number of bricks.", 3, projectBrickList.size());
 		assertTrue("Wrong Brick instance.", projectBrickList.get(2) instanceof LoopEndBrick);
 
-		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		solo.clickOnText(solo.getString(R.string.category_control));
-		solo.searchText(solo.getString(R.string.category_control));
-		solo.clickOnText(solo.getString(R.string.brick_broadcast_receive));
+		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_broadcast_receive);
 
 		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
 		int addedYPosition = UiTestUtils.getAddedListItemYPosition(solo);
@@ -160,13 +157,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
 		int addedYPosition;
 
-		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		solo.clickOnText(solo.getString(R.string.category_control));
-		solo.searchText(solo.getString(R.string.category_control));
-		ListView fragmentListView = solo.getCurrentViews(ListView.class).get(
-				solo.getCurrentViews(ListView.class).size() - 1);
-		solo.scrollListToBottom(fragmentListView);
-		solo.clickOnText(solo.getString(R.string.brick_forever));
+		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_forever);
 
 		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
 		addedYPosition = UiTestUtils.getAddedListItemYPosition(solo);
@@ -184,7 +175,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		addedYPosition = UiTestUtils.getAddedListItemYPosition(solo);
 
 		solo.drag(20, 20, addedYPosition, yPosition.get(2) + 20, 20);
-		solo.sleep(500);
+		solo.sleep(5000);
 
 		assertEquals("Incorrect number of bricks.", 7, projectBrickList.size());
 		assertTrue("Wrong Brick instance.", projectBrickList.get(2) instanceof ForeverBrick);
@@ -225,7 +216,6 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		ArrayList<Integer> yPosition;
 		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
 		int addedYPosition;
-		float foreverBrickPosition = 500;
 
 		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
 		solo.clickOnScreen(20, yPosition.get(1));
