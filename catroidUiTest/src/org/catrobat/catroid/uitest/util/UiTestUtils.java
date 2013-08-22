@@ -269,10 +269,11 @@ public class UiTestUtils {
 	 * For bricks using the FormulaEditor. Tests starting the FE, entering a new number/formula and
 	 * ensures its set correctly to the brick´s edit text field
 	 */
-	public static void testBrickWithFormulaEditor(Solo solo, int editTextNumber, int numberOfEditTextsInBrick,
-			double newValue, String fieldName, Brick theBrick) {
+	public static void testBrickWithFormulaEditor(Solo solo, int editTextId, double newValue, String fieldName,
+			Brick theBrick) {
 
-		solo.clickOnEditText(editTextNumber);
+		solo.clickOnView(solo.getView(editTextId));
+
 		insertDoubleIntoEditText(solo, newValue);
 
 		assertEquals(
@@ -287,13 +288,13 @@ public class UiTestUtils {
 
 		assertEquals("Wrong text in field", newValue, formula.interpretDouble(theBrick.getSprite()), 0.01f);
 		assertEquals("Text not updated in the brick list", newValue,
-				Double.parseDouble(solo.getEditText(editTextNumber).getText().toString().replace(',', '.')), 0.01f);
+				Double.parseDouble(((TextView) solo.getView(editTextId)).getText().toString().replace(',', '.')), 0.01f);
 
 	}
 
-	public static void insertValueViaFormulaEditor(Solo solo, int editTextNumber, double value) {
+	public static void insertValueViaFormulaEditor(Solo solo, int editTextId, double value) {
 
-		solo.clickOnEditText(editTextNumber);
+		solo.clickOnView(solo.getView(editTextId));
 		UiTestUtils.insertDoubleIntoEditText(solo, value);
 
 		assertEquals("Text not updated within FormulaEditor", value,
@@ -302,8 +303,8 @@ public class UiTestUtils {
 		solo.sleep(200);
 	}
 
-	public static void clickEnterClose(Solo solo, int editTextIndex, String value) {
-		solo.clickOnEditText(editTextIndex);
+	public static void clickEnterClose(Solo solo, int editTextNumber, String value) {
+		solo.clickOnEditText(editTextNumber);
 		solo.clearEditText(0);
 		solo.enterText(0, value);
 		String buttonPositiveText = solo.getString(R.string.ok);

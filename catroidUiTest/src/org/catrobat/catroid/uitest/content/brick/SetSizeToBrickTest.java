@@ -85,7 +85,7 @@ public class SetSizeToBrickTest extends BaseActivityInstrumentationTestCase<Main
 	public void testSetSizeToBrick() {
 		double newSize = 200;
 
-		UiTestUtils.testBrickWithFormulaEditor(solo, 0, 1, newSize, "size", setSizeToBrick);
+		UiTestUtils.testBrickWithFormulaEditor(solo, R.id.brick_set_size_to_edit_text, newSize, "size", setSizeToBrick);
 
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);

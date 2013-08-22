@@ -171,16 +171,22 @@ public class BrickLayout extends ViewGroup {
 
 			boolean newLine = (lp.newLine && totalLengthOfContent - combinedLengthOfPreviousLines > sizeWidth);
 
-			if (newLine || child instanceof Spinner) {
-				int usedChildWidth = (lp.textField ? childWidth : 0);
-				int endingWidthOfLineMinusFields = (lineLength - (usedChildWidth + horizontalSpacing + currentLine.totalTextFieldWidth));
+			boolean lastChildWasSpinner = false;
+			if (i > 0) {
+				lastChildWasSpinner = getChildAt(i - 1) instanceof Spinner;
+			}
+			newLine = newLine || child instanceof Spinner || lastChildWasSpinner;
+
+			if (newLine) {
+				int childWidthNotCountingField = (lp.textField ? childWidth : 0);
+				int endingWidthOfLineMinusFields = (lineLength - (childWidthNotCountingField + horizontalSpacing + currentLine.totalTextFieldWidth));
 				float allowalbeWidth = (float) (sizeWidth - (endingWidthOfLineMinusFields))
 						/ currentLine.numberOfTextFields;
 				currentLine.allowableTextFieldWidth = (int) Math.floor(allowalbeWidth);
 
 				currentLine = getNextLine(currentLine);
 
-				combinedLengthOfPreviousLines += lineLength;
+				combinedLengthOfPreviousLines += (lineLength - (childWidth + horizontalSpacing));
 				lineLength = childWidth;
 				lineLengthWithSpacing = lineLength + horizontalSpacing;
 
@@ -348,6 +354,9 @@ public class BrickLayout extends ViewGroup {
 		if (lp.textField) {
 			childWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, minTextFieldWidthDp,
 					r.getDisplayMetrics());
+		}
+		if (child instanceof Spinner) {
+			childWidth = sizeWidth;
 		}
 		return childWidth;
 	}

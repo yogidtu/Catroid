@@ -42,8 +42,8 @@
         android:orientation="horizontal"
         android:paddingBottom="0dp"
         android:paddingTop="0dp"
-        app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
-        app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
+        app:horizontalSpacing="@dimen/brick_flow_layout_horizontal_spacing"
+        app:verticalSpacing="@dimen/brick_flow_layout_vertical_spacing" >
 
         <TextView
             android:id="@+id/brick_glide_to_label"

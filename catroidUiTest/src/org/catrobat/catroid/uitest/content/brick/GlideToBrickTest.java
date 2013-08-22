@@ -69,9 +69,9 @@ public class GlideToBrickTest extends BaseActivityInstrumentationTestCase<MainMe
 			solo.clickOnView(solo.getView(R.id.brick_glide_to_edit_text_duration));
 		}
 
-		UiTestUtils.insertValueViaFormulaEditor(solo, 0, duration);
-		UiTestUtils.insertValueViaFormulaEditor(solo, 1, xPosition);
-		UiTestUtils.insertValueViaFormulaEditor(solo, 2, yPosition);
+		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_glide_to_edit_text_duration, duration);
+		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_glide_to_edit_text_x, xPosition);
+		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_glide_to_edit_text_y, yPosition);
 
 		assertEquals("Text not updated within FormulaEditor", duration,
 				Double.parseDouble(solo.getEditText(0).getText().toString()));
@@ -96,14 +96,14 @@ public class GlideToBrickTest extends BaseActivityInstrumentationTestCase<MainMe
 		temp2 = formula.interpretInteger(sprite);
 		assertEquals("Wrong y input in Glide to brick", yPosition, temp2);
 
-		UiTestUtils.insertValueViaFormulaEditor(solo, 0, 1);
+		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_glide_to_edit_text_duration, 1);
 		TextView secondsTextView = (TextView) solo.getView(R.id.brick_glide_to_seconds_text_view);
 		assertTrue(
 				"Specifier hasn't changed from plural to singular",
 				secondsTextView.getText().equals(
 						secondsTextView.getResources().getQuantityString(R.plurals.second_plural, 1)));
 
-		UiTestUtils.insertValueViaFormulaEditor(solo, 0, 5);
+		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_glide_to_edit_text_duration, 5);
 		secondsTextView = (TextView) solo.getView(R.id.brick_glide_to_seconds_text_view);
 		assertTrue(
 				"Specifier hasn't changed from singular to plural",

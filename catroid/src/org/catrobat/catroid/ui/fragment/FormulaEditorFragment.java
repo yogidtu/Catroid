@@ -382,6 +382,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 			confirmBackTimeStamp[0] = 0;
 			confirmBackTimeStamp[1] = 0;
 			confirmBackCounter = 0;
+			currentFormula.setDisplayText(null);
 			showToast(R.string.formula_editor_changes_discarded);
 			return true;
 		} else {
@@ -420,6 +421,8 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		if (formulaEditorEditText.hasChanges()) {
 			if (saveFormulaIfPossible()) {
 				onUserDismiss();
+			} else {
+
 			}
 		} else {
 			onUserDismiss();
