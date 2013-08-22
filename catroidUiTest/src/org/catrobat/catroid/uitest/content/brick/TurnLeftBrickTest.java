@@ -77,14 +77,14 @@ public class TurnLeftBrickTest extends BaseActivityInstrumentationTestCase<Scrip
 
 		double turnDegrees = 25;
 
-		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_move_n_steps_edit_text, turnDegrees);
+		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_turn_left_edit_text, turnDegrees);
 
 		Formula actualDegrees = (Formula) Reflection.getPrivateField(turnLeftBrick, "degrees");
 		assertEquals("Wrong text in field", turnDegrees, actualDegrees.interpretDouble(null));
 		assertEquals("Text not updated", turnDegrees, Double.parseDouble(solo.getEditText(0).getText().toString()));
 
-		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_move_n_steps_edit_text, 1);
-		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_move_n_steps_edit_text, 1.4);
+		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_turn_left_edit_text, 1);
+		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_turn_left_edit_text, 1.4);
 	}
 
 	private void createProject() {
