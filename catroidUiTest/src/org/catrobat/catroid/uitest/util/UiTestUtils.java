@@ -46,6 +46,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewParent;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -127,6 +128,7 @@ import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.fragment.AddBrickFragment;
 import org.catrobat.catroid.utils.NotificationData;
 import org.catrobat.catroid.utils.StatusBarNotificationManager;
 import org.catrobat.catroid.utils.UtilFile;
@@ -401,25 +403,40 @@ public class UiTestUtils {
 	}
 
 	public static void addNewBrick(Solo solo, int categoryStringId, int brickStringId, int nThElement) {
+		String brickName = solo.getCurrentActivity().getString(brickStringId);
+		addNewBrick(solo, categoryStringId, brickName, nThElement);
+	}
+
+	public static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
-		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), 0, 5000)) {
+		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 5000)) {
 			fail("Text not shown in 5 secs!");
 		}
 
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
-		solo.searchText(solo.getCurrentActivity().getString(categoryStringId));
-
-		ListView fragmentListView = solo.getCurrentViews(ListView.class).get(
-				solo.getCurrentViews(ListView.class).size() - 1);
-
-		while (!solo.searchText(solo.getCurrentActivity().getString(brickStringId))) {
-			if (!solo.scrollDownList(fragmentListView)) {
-				fail("Text not shown");
-			}
+		boolean fragmentAppeared = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 1000);
+		if (!fragmentAppeared) {
+			fail("add brick fragment should appear");
 		}
 
-		solo.clickOnText(solo.getCurrentActivity().getString(brickStringId), nThElement, true);
-		solo.sleep(500);
+		if (solo.searchText(brickName, nThElement, true)) {
+			clickOnBrickInAddBrickFragment(solo, brickName, true);
+		} else {
+			fail("add brick named " + brickName + " should appear");
+		}
+		solo.sleep(600);
+	}
+
+	public static void clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
+		ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
+		for (TextView v : array) {
+			if (v.getText().toString().equals(brickName)) {
+				ViewParent p = v.getParent().getParent().getParent().getParent();
+				if (p instanceof View && ((View) p).getId() == R.id.add_brick_fragment_list) {
+					solo.clickOnView(v);
+				}
+			}
+		}
 	}
 
 	public static int[] tapFloatingBrick(Solo solo) {
