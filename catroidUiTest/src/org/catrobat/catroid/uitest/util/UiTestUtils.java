@@ -437,6 +437,34 @@ public class UiTestUtils {
 		solo.sleep(600);
 	}
 
+	public static int[] dragFloatingBrick(Solo solo, float offsetY) {
+		int[] location = null;
+		int width = 0;
+		int height = 0;
+
+		ArrayList<View> views = solo.getCurrentViews();
+		for (View v : views) {
+			if (v.getId() == R.id.drag_and_drop_list_view_image_view) {
+				location = new int[2];
+				v.getLocationOnScreen(location);
+				width = v.getWidth();
+				height = v.getHeight();
+			}
+		}
+
+		int originX = location[0] + Math.round(width * 0.2f);
+		int originY = location[1] + Math.round(height * 0.5f);
+		int destinationX = originX;
+		int destinationY = Math.round(originY + height * offsetY);
+
+		solo.drag(originX, destinationX, originY, destinationY, 70);
+
+		location[0] = destinationX;
+		location[1] = destinationY;
+
+		return location;
+	}
+
 	public static void clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
 		ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
 		for (TextView v : array) {

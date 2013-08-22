@@ -22,7 +22,9 @@
  */
 package org.catrobat.catroid.uitest.ui;
 
-import java.util.ArrayList;
+import android.test.ActivityInstrumentationTestCase2;
+
+import com.jayway.android.robotium.solo.Solo;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
@@ -32,12 +34,6 @@ import org.catrobat.catroid.ui.UserBrickScriptActivity;
 import org.catrobat.catroid.ui.fragment.AddBrickFragment;
 import org.catrobat.catroid.ui.fragment.UserBrickDataEditorFragment;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-
-import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
-import android.view.View;
-
-import com.jayway.android.robotium.solo.Solo;
 
 public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
 	private Solo solo = null;
@@ -73,7 +69,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 		// as it is a prerendered imageview. Why doesn't robotium have an OCR feature? :P 
 
 		// click on position x brick-heights above/below the place where the brick currently is
-		int[] location = dragFloatingBrick(-1);
+		int[] location = UiTestUtils.dragFloatingBrick(solo, -1);
 		assertTrue("was not able to find the brick we just added: first user brick", location != null);
 		solo.sleep(200);
 
@@ -96,7 +92,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 		UiTestUtils.addNewBrick(solo, R.string.brick_change_y_by);
 
 		// place it
-		location = dragFloatingBrick(1);
+		location = UiTestUtils.dragFloatingBrick(solo, 1);
 		assertTrue("was not able to find the brick we just added: brick inside user brick", location != null);
 		solo.sleep(200);
 
@@ -108,7 +104,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 
 		UiTestUtils.addNewBrick(solo, R.string.category_user_bricks, UiTestUtils.TEST_USER_BRICK_NAME, 0);
 
-		location = dragFloatingBrick(1);
+		location = UiTestUtils.dragFloatingBrick(solo, 1);
 		assertTrue("was not able to find the brick we just added: second user brick", location != null);
 
 		solo.sleep(200);
@@ -125,7 +121,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 
 	public void testCantEditBrickDataWhileAddingNewBrick() throws InterruptedException {
 		UiTestUtils.addNewBrick(solo, R.string.category_user_bricks, UiTestUtils.TEST_USER_BRICK_NAME, 0);
-		dragFloatingBrick(-1);
+		UiTestUtils.dragFloatingBrick(solo, -1);
 		solo.sleep(200);
 
 		// click on the user brick in the list to open it's menu
@@ -139,7 +135,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 		UiTestUtils.addNewBrick(solo, R.string.brick_change_y_by);
 
 		// place it (this should click on the define brick)
-		dragFloatingBrick(-1);
+		UiTestUtils.dragFloatingBrick(solo, -1);
 
 		boolean wentToDataEditor = solo.waitForFragmentByTag(
 				UserBrickDataEditorFragment.BRICK_DATA_EDITOR_FRAGMENT_TAG, 800);
@@ -175,35 +171,4 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 		solo.sleep(50);
 	}
 
-	int[] dragFloatingBrick(int offsetY) {
-		int[] location = null;
-		int width = 0;
-		int height = 0;
-
-		View theView = null;
-		ArrayList<View> views = solo.getCurrentViews();
-		for (View v : views) {
-			if (v.getId() == R.id.drag_and_drop_list_view_image_view) {
-				//Log.d("FOREST", "!!!" + v.getId());
-				location = new int[2];
-				v.getLocationOnScreen(location);
-				width = v.getWidth();
-				height = v.getHeight();
-				theView = v;
-			}
-		}
-
-		int originX = location[0] + Math.round(width * 0.2f);
-		int originY = location[1] + Math.round(height * 0.5f);
-		int destinationX = originX;
-		int destinationY = originY + height * offsetY;
-
-		solo.drag(originX, destinationX, originY, destinationY, 70);
-
-		location[0] = destinationX;
-		location[1] = destinationY;
-
-		return location;
-
-	}
 }
