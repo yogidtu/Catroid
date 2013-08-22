@@ -23,6 +23,7 @@
 package org.catrobat.catroid.uitest.content.brick;
 
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -79,7 +80,8 @@ public class ChangeSizeByNBrickTest extends BaseActivityInstrumentationTestCase<
 
 		Formula currentSize = (Formula) Reflection.getPrivateField(changeSizeByNBrick, "size");
 		assertEquals("Wrong text in field", SIZE_TO_CHANGE, currentSize.interpretDouble(null));
-		assertEquals("Text not updated", SIZE_TO_CHANGE, Double.parseDouble(solo.getEditText(0).getText().toString()));
+		TextView textView = ((TextView) solo.getView(R.id.brick_change_size_by_edit_text));
+		assertEquals("Text not updated", SIZE_TO_CHANGE, Double.parseDouble(textView.getText().toString()));
 
 	}
 

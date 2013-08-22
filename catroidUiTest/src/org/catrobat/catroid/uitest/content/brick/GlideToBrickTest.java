@@ -73,12 +73,16 @@ public class GlideToBrickTest extends BaseActivityInstrumentationTestCase<MainMe
 		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_glide_to_edit_text_x, xPosition);
 		UiTestUtils.insertValueViaFormulaEditor(solo, R.id.brick_glide_to_edit_text_y, yPosition);
 
+		TextView textViewDuration = ((TextView) solo.getView(R.id.brick_glide_to_edit_text_duration));
+		TextView textViewX = ((TextView) solo.getView(R.id.brick_glide_to_edit_text_x));
+		TextView textViewY = ((TextView) solo.getView(R.id.brick_glide_to_edit_text_y));
+
 		assertEquals("Text not updated within FormulaEditor", duration,
-				Double.parseDouble(solo.getEditText(0).getText().toString()));
+				Double.parseDouble(textViewDuration.getText().toString()));
 		assertEquals("Text not updated within FormulaEditor", xPosition,
-				Integer.parseInt(solo.getEditText(1).getText().toString().substring(0, 3)));
+				Integer.parseInt(textViewX.getText().toString().substring(0, 3)));
 		assertEquals("Text not updated within FormulaEditor", yPosition,
-				Integer.parseInt(solo.getEditText(2).getText().toString().substring(0, 3)));
+				Integer.parseInt(textViewY.getText().toString().substring(0, 3)));
 
 		ProjectManager manager = ProjectManager.getInstance();
 		List<Brick> brickList = manager.getCurrentSprite().getScript(0).getBrickList();

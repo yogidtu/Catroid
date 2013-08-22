@@ -79,7 +79,7 @@ public class IfBrickTest extends BaseActivityInstrumentationTestCase<MainMenuAct
 
 	public void testStrings() {
 
-		solo.clickOnEditText(0);
+		solo.clickOnView(solo.getView(R.id.brick_if_begin_edit_text));
 		solo.sleep(100);
 
 		boolean isFound = solo.searchText(solo.getString(R.string.brick_if_begin_second_part));
