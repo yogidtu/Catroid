@@ -493,8 +493,16 @@ public class UiTestUtils {
 		return dragFloatingBrick(solo, -1);
 	}
 
+	public static int[] dragFloatingBrickUpwards(Solo solo, int bricks) {
+		return dragFloatingBrick(solo, -bricks);
+	}
+
 	public static int[] dragFloatingBrickDownwards(Solo solo) {
 		return dragFloatingBrick(solo, 1);
+	}
+
+	public static int[] dragFloatingBrickDownwards(Solo solo, int bricks) {
+		return dragFloatingBrick(solo, bricks);
 	}
 
 	public static int[] dragFloatingBrick(Solo solo, float offsetY) {
