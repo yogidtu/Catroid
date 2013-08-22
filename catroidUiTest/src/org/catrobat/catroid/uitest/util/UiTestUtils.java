@@ -402,7 +402,7 @@ public class UiTestUtils {
 
 	public static void addNewBrick(Solo solo, int categoryStringId, int brickStringId, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
-		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 5000)) {
+		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), 0, 5000)) {
 			fail("Text not shown in 5 secs!");
 		}
 
@@ -420,6 +420,46 @@ public class UiTestUtils {
 
 		solo.clickOnText(solo.getCurrentActivity().getString(brickStringId), nThElement, true);
 		solo.sleep(500);
+	}
+
+	public static int[] tapFloatingBrick(Solo solo) {
+		return dragFloatingBrick(solo, 0);
+	}
+
+	public static int[] dragFloatingBrickUpwards(Solo solo) {
+		return dragFloatingBrick(solo, -1);
+	}
+
+	public static int[] dragFloatingBrickDownwards(Solo solo) {
+		return dragFloatingBrick(solo, 1);
+	}
+
+	public static int[] dragFloatingBrick(Solo solo, float offsetY) {
+		int[] location = null;
+		int width = 0;
+		int height = 0;
+
+		ArrayList<View> views = solo.getCurrentViews();
+		for (View v : views) {
+			if (v.getId() == R.id.drag_and_drop_list_view_image_view) {
+				location = new int[2];
+				v.getLocationOnScreen(location);
+				width = v.getWidth();
+				height = v.getHeight();
+			}
+		}
+
+		int originX = location[0] + Math.round(width * 0.2f);
+		int originY = location[1] + Math.round(height * 0.5f);
+		int destinationX = originX;
+		int destinationY = Math.round(originY + height * offsetY);
+
+		solo.drag(originX, destinationX, originY, destinationY, 70);
+
+		location[0] = destinationX;
+		location[1] = destinationY;
+
+		return location;
 	}
 
 	public static List<Brick> createTestProject(String projectName) {
