@@ -416,18 +416,15 @@ public class UiTestUtils {
 
 	public static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
-		//Log.d("FOREST", "click bottom bar");
 		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 5000)) {
 			fail("Text not shown in 5 secs!");
 		}
-		//Log.d("FOREST", "saw_text_category");
 
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
 		boolean fragmentAppeared = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 1000);
 		if (!fragmentAppeared) {
 			fail("add brick fragment should appear");
 		}
-		//Log.d("FOREST", "add brick fragment appeared");
 
 		if (solo.searchText(brickName, nThElement, true)) {
 			clickOnBrickInAddBrickFragment(solo, brickName, true);
@@ -435,6 +432,28 @@ public class UiTestUtils {
 			fail("add brick named " + brickName + " should appear");
 		}
 		solo.sleep(600);
+	}
+
+	public static void clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
+		ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
+		for (TextView v : array) {
+			if (v.getText().toString().equals(brickName)) {
+				ViewParent p = v.getParent().getParent().getParent().getParent();
+				if (p instanceof View && ((View) p).getId() == R.id.add_brick_fragment_list) {
+					solo.clickOnView(v);
+				}
+			}
+		}
+		if (addToScript) {
+			String addBrick = solo.getCurrentActivity().getString(R.string.brick_context_dialog_add_to_script);
+			boolean foundAddBrickText = solo.waitForText(addBrick, 0, 200);
+
+			if (foundAddBrickText) {
+				solo.clickOnText(addBrick);
+			}
+
+			solo.sleep(50);
+		}
 	}
 
 	public static int[] dragFloatingBrick(Solo solo, float offsetY) {
@@ -463,35 +482,6 @@ public class UiTestUtils {
 		location[1] = destinationY;
 
 		return location;
-	}
-
-	public static void clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
-		ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
-		for (TextView v : array) {
-			if (v.getText().toString().equals(brickName)) {
-				//v.getParent() = BrickLayout or LinearLayout (brick visual element)
-				//v.getParent().getParent() = brick container (also contains checkmark)
-				//v.getParent().getParent().getParent() = listview list of bricks
-				//v.getParent().getParent().getParent().getParent()= linearLayout inside addbrickfragment
-				ViewParent p = v.getParent().getParent().getParent().getParent();
-				if (p instanceof View && ((View) p).getId() == R.id.add_brick_fragment_list) {
-					//Log.d("FOREST", "dunkey");
-					solo.clickOnView(v);
-				}
-			}
-		}
-		if (addToScript) {
-			//Log.d("FOREST", "dunkey1");
-			String addBrick = solo.getCurrentActivity().getString(R.string.brick_context_dialog_add_to_script);
-			boolean foundAddBrickText = solo.waitForText(addBrick, 0, 200);
-
-			if (foundAddBrickText) {
-				//Log.d("FOREST", "dunkey4");
-				solo.clickOnText(addBrick);
-			}
-
-			solo.sleep(50);
-		}
 	}
 
 	public static List<Brick> createTestProject(String projectName) {
