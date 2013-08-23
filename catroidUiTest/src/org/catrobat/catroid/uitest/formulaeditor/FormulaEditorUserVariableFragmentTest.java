@@ -64,6 +64,7 @@ public class FormulaEditorUserVariableFragmentTest extends BaseActivityInstrumen
 
 	private static final int CHANGE_SIZE_EDIT_TEXT_RID = R.id.brick_change_size_by_edit_text;
 	private static final int SET_VARIABLE_EDIT_TEXT_RID = R.id.brick_set_variable_edit_text;
+	private static final int GlIDE_TO_EDIT_TEXT_RID = R.id.brick_glide_to_edit_text_x;
 	private static final int ACTIONMODE_INDEX = 0;
 	private static final int MAX_ITERATIONS = 10;
 	private static final String QUOTE = "\"";
@@ -183,17 +184,20 @@ public class FormulaEditorUserVariableFragmentTest extends BaseActivityInstrumen
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 
 		solo.clickOnView(solo.getView(R.id.button_play));
-		solo.waitForActivity(StageActivity.class.getSimpleName());
+		assertTrue("StageActivity not shown: ", solo.waitForActivity(StageActivity.class.getSimpleName()));
 		solo.sleep(250);
 		solo.goBack();
 		solo.waitForView(solo.getView(R.id.stage_dialog_button_back));
 		solo.clickOnView(solo.getView(R.id.stage_dialog_button_back));
-		solo.waitForActivity(ScriptActivity.class.getSimpleName());
+		assertTrue("ScriptActivity not shown: ", solo.waitForActivity(ScriptActivity.class.getSimpleName()));
 
+		solo.sleep(500);
 		solo.clickOnView(solo.getView(SET_VARIABLE_EDIT_TEXT_RID));
-		solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
+		assertTrue("FormulaEditorFragment not shown: ",
+				solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
-		solo.waitForFragmentByTag(FormulaEditorVariableListFragment.VARIABLE_TAG);
+		assertTrue("FormulaEditorVariableListFragment not shown: ",
+				solo.waitForFragmentByTag(FormulaEditorVariableListFragment.VARIABLE_TAG));
 
 		createUserVariableFromVariableFragment(userVariableString, false);
 		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
@@ -439,7 +443,7 @@ public class FormulaEditorUserVariableFragmentTest extends BaseActivityInstrumen
 
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
-		solo.clickOnView(solo.getView(CHANGE_SIZE_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(GlIDE_TO_EDIT_TEXT_RID));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
 		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
