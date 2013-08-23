@@ -31,7 +31,6 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.BroadcastBrick;
 import org.catrobat.catroid.content.bricks.ChangeBrightnessByNBrick;
 import org.catrobat.catroid.content.bricks.ChangeYByNBrick;
 import org.catrobat.catroid.content.bricks.ClearGraphicEffectBrick;
@@ -158,24 +157,14 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		int addedYPosition;
 
 		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_forever);
-		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
-		addedYPosition = UiTestUtils.getAddedListItemYPosition(solo);
-
-		solo.drag(20, 20, addedYPosition, 0, 20);
-		solo.sleep(200);
+		UiTestUtils.dragFloatingBrickDownwards(solo, 1);
 
 		assertEquals("Incorrect number of bricks.", 5, projectBrickList.size());
 		assertTrue("Wrong Brick instance.", projectBrickList.get(0) instanceof ForeverBrick);
 		assertTrue("Wrong Brick instance.", projectBrickList.get(4) instanceof LoopEndlessBrick);
 
 		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_forever);
-
-		solo.sleep(500);
-		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
-		addedYPosition = UiTestUtils.getAddedListItemYPosition(solo);
-
-		solo.drag(20, 20, addedYPosition, yPosition.get(2) + 20, 20);
-		solo.sleep(200);
+		UiTestUtils.dragFloatingBrickDownwards(solo, 2);
 
 		assertEquals("Incorrect number of bricks.", 7, projectBrickList.size());
 		assertTrue("Wrong Brick instance.", projectBrickList.get(2) instanceof ForeverBrick);
@@ -186,30 +175,13 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 				((NestingBrick) projectBrickList.get(2)).getAllNestingBrickParts(false).get(1), projectBrickList.get(4));
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_change_brightness);
-		solo.sleep(500);
-		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
-		addedYPosition = UiTestUtils.getAddedListItemYPosition(solo);
-
-		solo.drag(20, 20, addedYPosition, yPosition.get(3) + 20, 20);
-		solo.sleep(500);
+		UiTestUtils.dragFloatingBrickDownwards(solo, 3);
 
 		assertEquals("Incorrect number of bricks.", 8, projectBrickList.size());
-		assertTrue("Wrong Brick instance. expected 4, bricklist: " + projectBrickList.toString(),
+		assertTrue(
+				"Wrong Brick instance. expected 4=ChangeBrightnessByNBrick, bricklist: " + projectBrickList.toString(),
 				projectBrickList.get(4) instanceof ChangeBrightnessByNBrick);
 
-		solo.scrollDownList(0);
-
-		UiTestUtils.addNewBrick(solo, R.string.brick_broadcast);
-		solo.sleep(500);
-		yPosition = UiTestUtils.getListItemYPositions(solo, 1);
-		addedYPosition = UiTestUtils.getAddedListItemYPosition(solo);
-
-		solo.drag(20, 20, addedYPosition, yPosition.get(4), 20);
-		solo.sleep(500);
-
-		assertEquals("Incorrect number of bricks.", 9, projectBrickList.size());
-		assertTrue("Wrong Brick instance. expected 5, bricklist: " + projectBrickList.toString(),
-				projectBrickList.get(5) instanceof BroadcastBrick);
 	}
 
 	public void testNestedForeverBricks() {

@@ -289,10 +289,11 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		assertTrue("Save failed toast not found",
 				solo.searchText(solo.getString(R.string.formula_editor_changes_saved)));
 
-		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID, 1));
+		solo.clickOnView(solo.getView(Y_POS_EDIT_TEXT_RID));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_random));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_math));
+		solo.sleep(400);
 		solo.clickOnText(getActivity().getString(R.string.formula_editor_function_cos));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_9));
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_0));

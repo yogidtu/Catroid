@@ -74,6 +74,8 @@ public class BroadcastBricksTest extends BaseActivityInstrumentationTestCase<Scr
 	public void testBroadcastBricks() {
 		checkSetupBricks();
 
+		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_broadcast);
+
 		final String firstBroadcastMessage = "First";
 		final String secondBroadcastMessage = "Second";
 		final String thirdBroadcastMessage = "Third";
@@ -98,7 +100,7 @@ public class BroadcastBricksTest extends BaseActivityInstrumentationTestCase<Scr
 		solo.waitForText(solo.getString(R.string.yes));
 		solo.clickOnButton(solo.getString(R.string.yes));
 
-		UiTestUtils.addNewBrick(solo, R.string.brick_broadcast);
+		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_broadcast);
 
 		//to gain focus
 		solo.clickOnScreen(200, 200);
