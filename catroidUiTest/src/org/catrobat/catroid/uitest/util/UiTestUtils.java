@@ -461,7 +461,7 @@ public class UiTestUtils {
 
 			if (!success) {
 				int difference = farthestDownThisTime - highestUpThisTime;
-				solo.drag(40, 40, difference, 40, DRAG_FRAMES);
+				solo.drag(40, 40, difference * 0.75f, 40, DRAG_FRAMES);
 			}
 		}
 
