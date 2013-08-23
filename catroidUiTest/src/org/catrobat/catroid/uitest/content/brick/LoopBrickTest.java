@@ -152,19 +152,17 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 
 	@Device
 	public void testForeverBrick() {
-		ArrayList<Integer> yPosition;
 		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
-		int addedYPosition;
 
 		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_forever);
-		UiTestUtils.dragFloatingBrickDownwards(solo, 1);
+		UiTestUtils.dragFloatingBrickUpwards(solo, 1);
 
 		assertEquals("Incorrect number of bricks.", 5, projectBrickList.size());
 		assertTrue("Wrong Brick instance.", projectBrickList.get(0) instanceof ForeverBrick);
 		assertTrue("Wrong Brick instance.", projectBrickList.get(4) instanceof LoopEndlessBrick);
 
 		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_forever);
-		UiTestUtils.dragFloatingBrickDownwards(solo, 2);
+		UiTestUtils.dragFloatingBrickDownwards(solo, 0);
 
 		assertEquals("Incorrect number of bricks.", 7, projectBrickList.size());
 		assertTrue("Wrong Brick instance.", projectBrickList.get(2) instanceof ForeverBrick);
@@ -175,7 +173,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 				((NestingBrick) projectBrickList.get(2)).getAllNestingBrickParts(false).get(1), projectBrickList.get(4));
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_change_brightness);
-		UiTestUtils.dragFloatingBrickDownwards(solo, 3);
+		UiTestUtils.dragFloatingBrickDownwards(solo, 1);
 
 		assertEquals("Incorrect number of bricks.", 8, projectBrickList.size());
 		assertTrue(

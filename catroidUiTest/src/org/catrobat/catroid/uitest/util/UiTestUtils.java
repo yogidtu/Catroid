@@ -410,7 +410,7 @@ public class UiTestUtils {
 
 	private static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
-		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 5000)) {
+		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 2000)) {
 			fail("Text not shown in 5 secs!");
 		}
 
@@ -420,6 +420,7 @@ public class UiTestUtils {
 			fail("add brick fragment should appear");
 		}
 
+		solo.sleep(600);
 		boolean succeeded = clickOnBrickInAddBrickFragment(solo, brickName, true);
 		if (!succeeded) {
 			fail(brickName + " should appear. Failed to scroll to find it.");
@@ -439,38 +440,35 @@ public class UiTestUtils {
 			int highestUpThisTime = 999999;
 
 			ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
-			for (TextView v : array) {
-				View greatGreatGrandParent = greatGreatGrandParent(v);
+			for (TextView candidate : array) {
+				View greatGreatGrandParent = greatGreatGrandParent(candidate);
 				if (greatGreatGrandParent != null && greatGreatGrandParent.getId() == R.id.add_brick_fragment_list) {
-					int bottom = getBottomOfBrickFromViewInside(v);
-					Log.d("FOREST", v.getText().toString() + " bottom: " + bottom);
+					int bottom = getBottomOfBrickGivenViewInsideThatBrick(candidate);
 					if (farthestDownThisTime < bottom) {
 						farthestDownThisTime = bottom;
-						lowestIdLastTime = v.getId();
+						lowestIdLastTime = candidate.getId();
 					}
 					if (highestUpThisTime > bottom) {
 						highestUpThisTime = bottom;
 					}
-					if (v.getText().toString().equals(brickName)) {
-						solo.clickOnView(v);
+					if (candidate.getText().toString().equals(brickName)) {
+						solo.clickOnView(candidate);
 						success = true;
 						break;
 					}
 				}
 			}
 
-			int difference = farthestDownThisTime - highestUpThisTime;
-			Log.d("FOREST", "farthestDownThisTime: " + farthestDownThisTime);
-			Log.d("FOREST", "highestUpThisTime: " + highestUpThisTime);
-			Log.d("FOREST", "difference: " + difference);
-
-			solo.drag(40, 40, difference, 40, DRAG_FRAMES);
+			if (!success) {
+				int difference = farthestDownThisTime - highestUpThisTime;
+				solo.drag(40, 40, difference, 40, DRAG_FRAMES);
+			}
 		}
 
 		return success;
 	}
 
-	private static int getBottomOfBrickFromViewInside(View v) {
+	private static int getBottomOfBrickGivenViewInsideThatBrick(View v) {
 		return ((View) (v.getParent().getParent())).getBottom();
 	}
 
