@@ -420,7 +420,7 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 
 	public void testIfLandscapeOrientationIsDeactivated() {
 
-		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID, 1));
+		solo.clickOnView(solo.getView(X_POS_EDIT_TEXT_RID));
 
 		int orientation = getActivity().getRequestedOrientation();
 
