@@ -64,7 +64,7 @@ public class FormulaEditorUserVariableFragmentTest extends BaseActivityInstrumen
 
 	private static final int CHANGE_SIZE_EDIT_TEXT_RID = R.id.brick_change_size_by_edit_text;
 	private static final int SET_VARIABLE_EDIT_TEXT_RID = R.id.brick_set_variable_edit_text;
-	private static final int GlIDE_TO_EDIT_TEXT_RID = R.id.brick_glide_to_edit_text_x;
+	private static final int GLIDE_TO_EDIT_TEXT_RID = R.id.brick_glide_to_edit_text_x;
 	private static final int ACTIONMODE_INDEX = 0;
 	private static final int MAX_ITERATIONS = 10;
 	private static final String QUOTE = "\"";
@@ -443,7 +443,7 @@ public class FormulaEditorUserVariableFragmentTest extends BaseActivityInstrumen
 
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
-		solo.clickOnView(solo.getView(GlIDE_TO_EDIT_TEXT_RID));
+		solo.clickOnView(solo.getView(GLIDE_TO_EDIT_TEXT_RID));
 
 		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_variables));
 		assertTrue("Variable Fragment not shown", solo.waitForText(solo.getString(R.string.formula_editor_variables)));
