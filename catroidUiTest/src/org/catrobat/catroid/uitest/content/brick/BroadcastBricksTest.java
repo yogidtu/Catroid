@@ -103,6 +103,8 @@ public class BroadcastBricksTest extends BaseActivityInstrumentationTestCase<Scr
 		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_broadcast);
 		//dont need to place it because there are 0 bricks, places automatically.
 
+		solo.sleep(200);
+
 		Spinner broadcastSpinner = (Spinner) solo.getView(R.id.brick_broadcast_spinner);
 
 		assertEquals("Wrong selection", defaultBroadcastMessage, broadcastSpinner.getSelectedItem().toString());
