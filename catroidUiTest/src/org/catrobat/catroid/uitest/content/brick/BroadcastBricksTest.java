@@ -103,7 +103,11 @@ public class BroadcastBricksTest extends BaseActivityInstrumentationTestCase<Scr
 		UiTestUtils.addNewBrick(solo, R.string.category_control, R.string.brick_broadcast);
 		//dont need to place it because there are 0 bricks, places automatically.
 
-		solo.sleep(200);
+		//to gain focus
+		solo.clickOnScreen(200, 200);
+		if (solo.searchText(solo.getString(R.string.brick_context_dialog_move_brick), true)) {
+			solo.goBack();
+		}
 
 		Spinner broadcastSpinner = (Spinner) solo.getView(R.id.brick_broadcast_spinner);
 

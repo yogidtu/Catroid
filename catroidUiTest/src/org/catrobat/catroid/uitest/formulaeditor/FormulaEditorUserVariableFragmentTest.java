@@ -63,7 +63,7 @@ public class FormulaEditorUserVariableFragmentTest extends BaseActivityInstrumen
 	private Brick glideToBrick;
 
 	private static final int CHANGE_SIZE_EDIT_TEXT_RID = R.id.brick_change_size_by_edit_text;
-	private static final int SET_VARIABLE_EDIT_TEXT_RID = R.id.brick_change_size_by_edit_text;
+	private static final int SET_VARIABLE_EDIT_TEXT_RID = R.id.brick_set_variable_edit_text;
 	private static final int ACTIONMODE_INDEX = 0;
 	private static final int MAX_ITERATIONS = 10;
 	private static final String QUOTE = "\"";
