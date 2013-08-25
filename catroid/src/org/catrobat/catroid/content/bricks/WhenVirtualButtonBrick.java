@@ -22,13 +22,6 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import java.util.List;
-
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.WhenVirtualButtonScript;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -41,12 +34,19 @@ import android.widget.Spinner;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Script;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.WhenVirtualButtonScript;
+
+import java.util.List;
+
 public class WhenVirtualButtonBrick extends ScriptBrick {
 	protected WhenVirtualButtonScript whenVirtualButtonScript;
 	private static final long serialVersionUID = 1L;
 
 	public static enum Action {
-		TOUCH(0);
+		TOUCH(0), WIPE_UP(1), WIPE_DOWN(2), WIPE_LEFT(3), WIPE_RIGHT(4);
 
 		private int id;
 
