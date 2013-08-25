@@ -173,7 +173,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 				((NestingBrick) projectBrickList.get(2)).getAllNestingBrickParts(false).get(1), projectBrickList.get(4));
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_change_brightness);
-		UiTestUtils.dragFloatingBrickDownwards(solo, 2);
+		UiTestUtils.dragFloatingBrick(solo, 1.25f);
 
 		assertEquals("Incorrect number of bricks.", 8, projectBrickList.size());
 		assertTrue(
