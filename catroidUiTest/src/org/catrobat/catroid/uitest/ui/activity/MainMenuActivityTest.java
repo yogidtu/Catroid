@@ -247,8 +247,6 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		solo.clickOnText(testProject3);
 		assertTrue("ProjectActivity not shown", solo.waitForActivity(ProjectActivity.class.getSimpleName()));
 		solo.goBack();
-		assertTrue("MyProjectsActivity not shown", solo.waitForActivity(MyProjectsActivity.class.getSimpleName()));
-		solo.goBack();
 		assertTrue("MainMenuActivity not shown", solo.waitForActivity(MainMenuActivity.class.getSimpleName()));
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		assertTrue("ProjectActivity not shown", solo.waitForActivity(ProjectActivity.class.getSimpleName()));
