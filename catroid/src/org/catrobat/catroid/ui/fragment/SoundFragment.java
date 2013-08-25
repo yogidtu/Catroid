@@ -74,7 +74,7 @@ import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.SoundViewHolder;
 import org.catrobat.catroid.ui.adapter.SoundAdapter;
-import org.catrobat.catroid.ui.adapter.SoundAdapter.OnSoundEditListener;
+import org.catrobat.catroid.ui.adapter.SoundBaseAdapter;
 import org.catrobat.catroid.ui.controller.BackPackListManager;
 import org.catrobat.catroid.ui.controller.SoundController;
 import org.catrobat.catroid.ui.dialogs.DeleteSoundDialog;
@@ -85,7 +85,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SoundFragment extends ScriptActivityFragment implements OnSoundEditListener,
+public class SoundFragment extends ScriptActivityFragment implements SoundBaseAdapter.OnSoundEditListener,
 		LoaderManager.LoaderCallbacks<Cursor>, Dialog.OnKeyListener {
 
 	public static final String TAG = SoundFragment.class.getSimpleName();
@@ -464,7 +464,7 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 				SoundController.getInstance().backPackSound(selectedSoundInfo,
 						BackPackListManager.getInstance().getBackPackSoundActivityFragment(),
 						BackPackListManager.getInstance().getSoundInfoArrayList(),
-						BackPackListManager.getInstance().getBackPackSoundActivityFragment().getSoundAdapter()); //todo: bp ad.
+						BackPackListManager.getInstance().getBackPackSoundActivityFragment().getBackPackSoundAdapter()); //todo: bp ad.
 				break;
 
 			case R.id.context_menu_copy:
