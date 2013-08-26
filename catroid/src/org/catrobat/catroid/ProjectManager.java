@@ -22,11 +22,6 @@
  */
 package org.catrobat.catroid;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -41,8 +36,12 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.Utils;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class ProjectManager {
 	private static final ProjectManager INSTANCE = new ProjectManager();
@@ -341,12 +340,15 @@ public class ProjectManager {
 				Utils.buildPath(path, Constants.VGP_IMAGE_PAD_UPLEFT),
 				Utils.buildPath(path, Constants.VGP_IMAGE_PAD_UPRIGHT),
 				Utils.buildPath(path, Constants.VGP_IMAGE_PAD_DOWNLEFT),
-				Utils.buildPath(path, Constants.VGP_IMAGE_PAD_DOWNRIGHT) };
+				Utils.buildPath(path, Constants.VGP_IMAGE_PAD_DOWNRIGHT),
+				Utils.buildPath(path, Constants.VGP_IMAGE_BUTTON_TOUCH),
+				Utils.buildPath(path, Constants.VGP_IMAGE_BUTTON_SWIPE) };
 		int[] resList = new int[] { org.catrobat.catroid.R.drawable.dpad_center,
 				org.catrobat.catroid.R.drawable.dpad_up, org.catrobat.catroid.R.drawable.dpad_down,
 				org.catrobat.catroid.R.drawable.dpad_left, org.catrobat.catroid.R.drawable.dpad_right,
 				org.catrobat.catroid.R.drawable.dpad_upleft, org.catrobat.catroid.R.drawable.dpad_upright,
-				org.catrobat.catroid.R.drawable.dpad_downleft, org.catrobat.catroid.R.drawable.dpad_downright };
+				org.catrobat.catroid.R.drawable.dpad_downleft, org.catrobat.catroid.R.drawable.dpad_downright,
+				org.catrobat.catroid.R.drawable.button_touch, org.catrobat.catroid.R.drawable.button_swipe };
 
 		for (int i = 0; i < imagePath.length; i++) {
 			File file = new File(imagePath[i]);
@@ -364,17 +366,6 @@ public class ProjectManager {
 				in.close();
 				out.flush();
 				out.close();
-
-				//resize
-				//				int[] dimensions = ImageEditing.getImageDimensions(file.getAbsolutePath());
-				//				int originalWidth = dimensions[0];
-				//				int originalHeight = dimensions[1];
-				//				double ratio = (double) originalHeight / (double) originalWidth;
-
-				// scale the dpad, that its always 1/2 of the screen width
-				//				Bitmap bitmap = ImageEditing.getScaledBitmapFromPath(file.getAbsolutePath(), Values.SCREEN_WIDTH / 2,
-				//						(int) (Values.SCREEN_WIDTH / 2 * ratio), false);
-				//				StorageHandler.saveBitmapToImageFile(file, bitmap);
 
 			} catch (Exception e) {
 				e.printStackTrace();
