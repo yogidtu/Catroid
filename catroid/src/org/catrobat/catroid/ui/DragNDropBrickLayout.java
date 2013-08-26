@@ -299,13 +299,13 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 	private WeirdFloatingWindowData makeWeirdFloatingWindow(Bitmap bitmap, int width, int height) {
 		Context context = getContext();
-		ImageView v = new ImageView(context);
-		v.setImageBitmap(bitmap);
+		ImageView userVariable = new ImageView(context);
+		userVariable.setImageBitmap(bitmap);
 
 		WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-		mWindowManager.addView(v, getFloatingWindowParams());
+		mWindowManager.addView(userVariable, getFloatingWindowParams());
 
-		return new WeirdFloatingWindowData(v, width, height);
+		return new WeirdFloatingWindowData(userVariable, width, height);
 	}
 
 	private WeirdFloatingWindowData makeWeirdFloatingWindow(View view) {

@@ -433,16 +433,16 @@ public class UiTestUtils {
 
 	public static void clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
 		ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
-		for (TextView v : array) {
-			if (v.getText().toString().equals(brickName)) {
+		for (TextView view : array) {
+			if (view.getText().toString().equals(brickName)) {
 				//v.getParent() = BrickLayout or LinearLayout (brick visual element)
 				//v.getParent().getParent() = brick container (also contains checkmark)
 				//v.getParent().getParent().getParent() = listview list of bricks
 				//v.getParent().getParent().getParent().getParent()= linearLayout inside addbrickfragment
-				ViewParent p = v.getParent().getParent().getParent().getParent();
-				if (p instanceof View && ((View) p).getId() == R.id.add_brick_fragment_list) {
+				ViewParent viewParent = view.getParent().getParent().getParent().getParent();
+				if (viewParent instanceof View && ((View) viewParent).getId() == R.id.add_brick_fragment_list) {
 					//Log.d("FOREST", "dunkey");
-					solo.clickOnView(v);
+					solo.clickOnView(view);
 				}
 			}
 		}

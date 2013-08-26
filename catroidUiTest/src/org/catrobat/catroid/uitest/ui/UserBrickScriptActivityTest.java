@@ -34,7 +34,6 @@ import org.catrobat.catroid.ui.fragment.UserBrickDataEditorFragment;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
 import android.view.View;
 
 import com.jayway.android.robotium.solo.Solo;
@@ -182,14 +181,14 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 
 		View theView = null;
 		ArrayList<View> views = solo.getCurrentViews();
-		for (View v : views) {
-			if (v.getId() == R.id.drag_and_drop_list_view_image_view) {
+		for (View view : views) {
+			if (view.getId() == R.id.drag_and_drop_list_view_image_view) {
 				//Log.d("FOREST", "!!!" + v.getId());
 				location = new int[2];
-				v.getLocationOnScreen(location);
-				width = v.getWidth();
-				height = v.getHeight();
-				theView = v;
+				view.getLocationOnScreen(location);
+				width = view.getWidth();
+				height = view.getHeight();
+				theView = view;
 			}
 		}
 

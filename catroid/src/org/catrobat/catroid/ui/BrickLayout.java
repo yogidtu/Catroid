@@ -63,9 +63,9 @@ public class BrickLayout extends ViewGroup {
 		int modeWidth = MeasureSpec.getMode(widthMeasureSpec);
 		int modeHeight = MeasureSpec.getMode(heightMeasureSpec);
 
-		int lineThicknessWithSpacing = 0;
+		int lineThicknessWithorizontalSpacing = 0;
 		int lineThickness = 0;
-		int lineLengthWithSpacing = 0;
+		int lineLengthWithorizontalSpacing = 0;
 		int lineLength;
 
 		int prevLinePosition = 0;
@@ -87,10 +87,10 @@ public class BrickLayout extends ViewGroup {
 					: modeWidth), MeasureSpec.makeMeasureSpec(sizeHeight,
 					modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeHeight));
 
-			LayoutParams lp = (LayoutParams) child.getLayoutParams();
+			LayoutParams layoutParams = (LayoutParams) child.getLayoutParams();
 
-			int hSpacing = this.getHorizontalSpacing(lp);
-			int vSpacing = this.getVerticalSpacing(lp);
+			int horizontalSpacing = this.getHorizontalSpacing(layoutParams);
+			int verticalSpacing = this.getVerticalSpacing(layoutParams);
 
 			int childWidth = child.getMeasuredWidth();
 			int childHeight = child.getMeasuredHeight();
@@ -98,22 +98,23 @@ public class BrickLayout extends ViewGroup {
 			boolean updateSmallestHeight = currentLine.minHeight == 0 || currentLine.minHeight > childHeight;
 			currentLine.minHeight = (updateSmallestHeight ? childHeight : currentLine.minHeight);
 
-			lineLength = lineLengthWithSpacing + childWidth;
-			lineLengthWithSpacing = lineLength + hSpacing;
+			lineLength = lineLengthWithorizontalSpacing + childWidth;
+			lineLengthWithorizontalSpacing = lineLength + horizontalSpacing;
 
-			boolean newLine = lp.newLine || (modeWidth != MeasureSpec.UNSPECIFIED && lineLength > sizeWidth);
+			boolean newLine = layoutParams.newLine || (modeWidth != MeasureSpec.UNSPECIFIED && lineLength > sizeWidth);
 			if (newLine) {
-				prevLinePosition = prevLinePosition + lineThicknessWithSpacing;
+				prevLinePosition = prevLinePosition + lineThicknessWithorizontalSpacing;
 
 				currentLine = newLine(lines);
 
 				lineThickness = childHeight;
 				lineLength = childWidth;
-				lineThicknessWithSpacing = childHeight + vSpacing;
-				lineLengthWithSpacing = lineLength + hSpacing;
+				lineThicknessWithorizontalSpacing = childHeight + verticalSpacing;
+				lineLengthWithorizontalSpacing = lineLength + horizontalSpacing;
 			}
 
-			lineThicknessWithSpacing = Math.max(lineThicknessWithSpacing, childHeight + vSpacing);
+			lineThicknessWithorizontalSpacing = Math.max(lineThicknessWithorizontalSpacing, childHeight
+					+ verticalSpacing);
 			lineThickness = Math.max(lineThickness, childHeight);
 
 			currentLine.height = lineThickness;
@@ -141,16 +142,16 @@ public class BrickLayout extends ViewGroup {
 			yAdjust += Math.round(lines.get(0).minHeight * -0.15f);
 		}
 
-		for (LineData d : lines) {
-			for (ElementData ed : d.elements) {
+		for (LineData lineData : lines) {
+			for (ElementData elementData : lineData.elements) {
 				int yAdjust2 = 0;
-				if (ed.height < d.height) {
-					yAdjust2 = Math.round((d.height - ed.height) * 0.5f);
+				if (elementData.height < lineData.height) {
+					yAdjust2 = Math.round((lineData.height - elementData.height) * 0.5f);
 				}
 
-				ed.posY += yAdjust + yAdjust2;
-				LayoutParams lp = (LayoutParams) ed.view.getLayoutParams();
-				lp.setPosition(ed.posX, ed.posY);
+				elementData.posY += yAdjust + yAdjust2;
+				LayoutParams layoutParams = (LayoutParams) elementData.view.getLayoutParams();
+				layoutParams.setPosition(elementData.posX, elementData.posY);
 			}
 		}
 
@@ -176,33 +177,34 @@ public class BrickLayout extends ViewGroup {
 		return toAdd;
 	}
 
-	private int getVerticalSpacing(LayoutParams lp) {
-		int vSpacing;
-		if (lp.verticalSpacingSpecified()) {
-			vSpacing = lp.verticalSpacing;
+	private int getVerticalSpacing(LayoutParams layoutParams) {
+		int verticalSpacing;
+		if (layoutParams.verticalSpacingSpecified()) {
+			verticalSpacing = layoutParams.verticalSpacing;
 		} else {
-			vSpacing = this.verticalSpacing;
+			verticalSpacing = this.verticalSpacing;
 		}
-		return vSpacing;
+		return verticalSpacing;
 	}
 
-	private int getHorizontalSpacing(LayoutParams lp) {
-		int hSpacing;
-		if (lp.horizontalSpacingSpecified()) {
-			hSpacing = lp.horizontalSpacing;
+	private int getHorizontalSpacing(LayoutParams layoutParams) {
+		int horizontalSpacing;
+		if (layoutParams.horizontalSpacingSpecified()) {
+			horizontalSpacing = layoutParams.horizontalSpacing;
 		} else {
-			hSpacing = this.horizontalSpacing;
+			horizontalSpacing = this.horizontalSpacing;
 		}
-		return hSpacing;
+		return horizontalSpacing;
 	}
 
 	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 		final int count = getChildCount();
 		for (int i = 0; i < count; i++) {
 			View child = getChildAt(i);
-			LayoutParams lp = (LayoutParams) child.getLayoutParams();
-			child.layout(lp.x, lp.y, lp.x + child.getMeasuredWidth(), lp.y + child.getMeasuredHeight());
+			LayoutParams layoutParams = (LayoutParams) child.getLayoutParams();
+			child.layout(layoutParams.x, layoutParams.y, layoutParams.x + child.getMeasuredWidth(), layoutParams.y
+					+ child.getMeasuredHeight());
 		}
 	}
 
@@ -214,8 +216,8 @@ public class BrickLayout extends ViewGroup {
 	}
 
 	@Override
-	protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
-		return p instanceof LayoutParams;
+	protected boolean checkLayoutParams(ViewGroup.LayoutParams layoutParams) {
+		return layoutParams instanceof LayoutParams;
 	}
 
 	@Override
@@ -234,15 +236,15 @@ public class BrickLayout extends ViewGroup {
 	}
 
 	private void readStyleParameters(Context context, AttributeSet attributeSet) {
-		TypedArray a = context.obtainStyledAttributes(attributeSet, R.styleable.BrickLayout);
+		TypedArray styledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.BrickLayout);
 		try {
-			customPadding = a.getDimensionPixelSize(R.styleable.BrickLayout_customPadding, 0);
-			horizontalSpacing = a.getDimensionPixelSize(R.styleable.BrickLayout_horizontalSpacing, 0);
-			verticalSpacing = a.getDimensionPixelSize(R.styleable.BrickLayout_verticalSpacing, 0);
-			orientation = a.getInteger(R.styleable.BrickLayout_orientation, HORIZONTAL);
-			debugDraw = a.getBoolean(R.styleable.BrickLayout_debugDraw, false);
+			customPadding = styledAttributes.getDimensionPixelSize(R.styleable.BrickLayout_customPadding, 0);
+			horizontalSpacing = styledAttributes.getDimensionPixelSize(R.styleable.BrickLayout_horizontalSpacing, 0);
+			verticalSpacing = styledAttributes.getDimensionPixelSize(R.styleable.BrickLayout_verticalSpacing, 0);
+			orientation = styledAttributes.getInteger(R.styleable.BrickLayout_orientation, HORIZONTAL);
+			debugDraw = styledAttributes.getBoolean(R.styleable.BrickLayout_debugDraw, false);
 		} finally {
-			a.recycle();
+			styledAttributes.recycle();
 		}
 	}
 
@@ -255,14 +257,16 @@ public class BrickLayout extends ViewGroup {
 		Paint layoutPaint = this.createPaint(0xff00ff00);
 		Paint newLinePaint = this.createPaint(0xffff0000);
 
-		LayoutParams lp = (LayoutParams) child.getLayoutParams();
+		LayoutParams layoutParams = (LayoutParams) child.getLayoutParams();
 
-		if (lp.horizontalSpacing > 0) {
+		if (layoutParams.horizontalSpacing > 0) {
 			float x = child.getRight();
 			float y = child.getTop() + child.getHeight() / 2.0f;
-			canvas.drawLine(x, y, x + lp.horizontalSpacing, y, childPaint);
-			canvas.drawLine(x + lp.horizontalSpacing - 4.0f, y - 4.0f, x + lp.horizontalSpacing, y, childPaint);
-			canvas.drawLine(x + lp.horizontalSpacing - 4.0f, y + 4.0f, x + lp.horizontalSpacing, y, childPaint);
+			canvas.drawLine(x, y, x + layoutParams.horizontalSpacing, y, childPaint);
+			canvas.drawLine(x + layoutParams.horizontalSpacing - 4.0f, y - 4.0f, x + layoutParams.horizontalSpacing, y,
+					childPaint);
+			canvas.drawLine(x + layoutParams.horizontalSpacing - 4.0f, y + 4.0f, x + layoutParams.horizontalSpacing, y,
+					childPaint);
 		} else if (this.horizontalSpacing > 0) {
 			float x = child.getRight();
 			float y = child.getTop() + child.getHeight() / 2.0f;
@@ -271,12 +275,14 @@ public class BrickLayout extends ViewGroup {
 			canvas.drawLine(x + this.horizontalSpacing - 4.0f, y + 4.0f, x + this.horizontalSpacing, y, layoutPaint);
 		}
 
-		if (lp.verticalSpacing > 0) {
+		if (layoutParams.verticalSpacing > 0) {
 			float x = child.getLeft() + child.getWidth() / 2.0f;
 			float y = child.getBottom();
-			canvas.drawLine(x, y, x, y + lp.verticalSpacing, childPaint);
-			canvas.drawLine(x - 4.0f, y + lp.verticalSpacing - 4.0f, x, y + lp.verticalSpacing, childPaint);
-			canvas.drawLine(x + 4.0f, y + lp.verticalSpacing - 4.0f, x, y + lp.verticalSpacing, childPaint);
+			canvas.drawLine(x, y, x, y + layoutParams.verticalSpacing, childPaint);
+			canvas.drawLine(x - 4.0f, y + layoutParams.verticalSpacing - 4.0f, x, y + layoutParams.verticalSpacing,
+					childPaint);
+			canvas.drawLine(x + 4.0f, y + layoutParams.verticalSpacing - 4.0f, x, y + layoutParams.verticalSpacing,
+					childPaint);
 		} else if (this.verticalSpacing > 0) {
 			float x = child.getLeft() + child.getWidth() / 2.0f;
 			float y = child.getBottom();
@@ -285,7 +291,7 @@ public class BrickLayout extends ViewGroup {
 			canvas.drawLine(x + 4.0f, y + this.verticalSpacing - 4.0f, x, y + this.verticalSpacing, layoutPaint);
 		}
 
-		if (lp.newLine) {
+		if (layoutParams.newLine) {
 			if (orientation == HORIZONTAL) {
 				float x = child.getLeft();
 				float y = child.getTop() + child.getHeight() / 2.0f;
@@ -368,15 +374,16 @@ public class BrickLayout extends ViewGroup {
 		}
 
 		private void readStyleParameters(Context context, AttributeSet attributeSet) {
-			TypedArray a = context.obtainStyledAttributes(attributeSet, R.styleable.FlowLayout_LayoutParams);
+			TypedArray styledAttributes = context.obtainStyledAttributes(attributeSet,
+					R.styleable.FlowLayout_LayoutParams);
 			try {
-				horizontalSpacing = a.getDimensionPixelSize(
+				horizontalSpacing = styledAttributes.getDimensionPixelSize(
 						R.styleable.FlowLayout_LayoutParams_layout_horizontalSpacing, NO_SPACING);
-				verticalSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_LayoutParams_layout_verticalSpacing,
-						NO_SPACING);
-				newLine = a.getBoolean(R.styleable.FlowLayout_LayoutParams_layout_newLine, false);
+				verticalSpacing = styledAttributes.getDimensionPixelSize(
+						R.styleable.FlowLayout_LayoutParams_layout_verticalSpacing, NO_SPACING);
+				newLine = styledAttributes.getBoolean(R.styleable.FlowLayout_LayoutParams_layout_newLine, false);
 			} finally {
-				a.recycle();
+				styledAttributes.recycle();
 			}
 		}
 	}

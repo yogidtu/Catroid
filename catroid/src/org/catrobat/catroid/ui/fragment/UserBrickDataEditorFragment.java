@@ -208,17 +208,17 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 		ArrayList<String> takenVariables = new ArrayList<String>();
 		int i = 0;
-		for (UserBrickUIData d : currentBrick.uiData) {
+		for (UserBrickUIData d : currentBrick.uiDataArray) {
 			if (i != id && d.isVariable) {
 				takenVariables.add(d.name);
 			}
 			i++;
 		}
-		for (UserVariable v : spriteVars) {
-			takenVariables.add(v.getName());
+		for (UserVariable userVariable : spriteVars) {
+			takenVariables.add(userVariable.getName());
 		}
-		for (UserVariable v : globalVars) {
-			takenVariables.add(v.getName());
+		for (UserVariable userVariable : globalVars) {
+			takenVariables.add(userVariable.getName());
 		}
 
 		UserBrickEditElementDialog dialog = new UserBrickEditElementDialog();
@@ -234,7 +234,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	@Override
 	public void onFinishDialog(CharSequence text, boolean editMode) {
-		UserBrickUIData d = currentBrick.uiData.get(indexOfCurrentlyEditedElement);
+		UserBrickUIData d = currentBrick.uiDataArray.get(indexOfCurrentlyEditedElement);
 		if (d != null) {
 			String emptyString = ("").toString();
 			if (text != null) {
@@ -242,7 +242,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 				String newString = text.toString();
 				currentBrick.renameUIVariable(oldString, newString, getActivity());
 			} else if (d.name.toString().equals(emptyString)) {
-				currentBrick.uiData.remove(d);
+				currentBrick.uiDataArray.remove(d);
 			}
 		}
 		updateBrickView();
@@ -257,7 +257,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	@Override
 	public void click(int id) {
-		UserBrickUIData d = currentBrick.uiData.get(id);
+		UserBrickUIData d = currentBrick.uiDataArray.get(id);
 		if (d != null) {
 			int title = d.isVariable ? R.string.edit_variable : R.string.edit_text;
 			int defaultText = d.isVariable ? R.string.edit_variable : R.string.edit_text;
@@ -290,7 +290,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			layout.removeAllViews();
 		}
 
-		for (UserBrickUIData d : currentBrick.uiData) {
+		for (UserBrickUIData d : currentBrick.uiDataArray) {
 			View dataView = null;
 			if (d.isVariable) {
 				dataView = View.inflate(context, R.layout.brick_user_data_variable, null);
