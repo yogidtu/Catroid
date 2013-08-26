@@ -468,19 +468,19 @@ public class UiTestUtils {
 		return success;
 	}
 
-	private static int getBottomOfBrickGivenViewInsideThatBrick(View v) {
-		return ((View) (v.getParent().getParent())).getBottom();
+	private static int getBottomOfBrickGivenViewInsideThatBrick(View view) {
+		return ((View) (view.getParent().getParent())).getBottom();
 	}
 
-	private static View greatGreatGrandParent(View v) {
-		ViewParent p = v.getParent();
+	private static View greatGreatGrandParent(View view) {
+		ViewParent parent = view.getParent();
 		int i = 0;
-		while (i < 3 && p != null) {
-			p = p.getParent();
+		while (i < 3 && parent != null) {
+			parent = parent.getParent();
 			i++;
 		}
 
-		return (p != null && p instanceof View ? ((View) p) : null);
+		return (parent != null && parent instanceof View ? ((View) parent) : null);
 	}
 
 	public static int[] tapFloatingBrick(Solo solo) {
@@ -509,12 +509,12 @@ public class UiTestUtils {
 		int height = 0;
 
 		ArrayList<View> views = solo.getCurrentViews();
-		for (View v : views) {
-			if (v.getId() == R.id.drag_and_drop_list_view_image_view) {
+		for (View view : views) {
+			if (view.getId() == R.id.drag_and_drop_list_view_image_view) {
 				location = new int[2];
-				v.getLocationOnScreen(location);
-				width = v.getWidth();
-				height = v.getHeight();
+				view.getLocationOnScreen(location);
+				width = view.getWidth();
+				height = view.getHeight();
 			}
 		}
 

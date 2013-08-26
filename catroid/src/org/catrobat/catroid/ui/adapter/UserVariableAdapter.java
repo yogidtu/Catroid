@@ -161,7 +161,7 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 		if (onListItemClickListener != null) {
 			view.setOnClickListener(new View.OnClickListener() {
 				@Override
-				public void onClick(View v) {
+				public void onClick(View view) {
 					onListItemClickListener.onListItemClick(position);
 				}
 			});

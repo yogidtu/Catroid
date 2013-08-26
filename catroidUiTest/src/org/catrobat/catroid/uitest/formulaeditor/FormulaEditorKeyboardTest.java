@@ -41,8 +41,6 @@ import java.util.ArrayList;
 
 public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
-	//difference
-
 	private Project project;
 	private Sprite firstSprite;
 	private Sprite secondSprite;

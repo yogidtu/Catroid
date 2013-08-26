@@ -238,7 +238,7 @@ public class FormulaEditorEditText extends EditText implements OnTouchListener {
 	}
 
 	@Override
-	public boolean onTouch(View v, MotionEvent motion) {
+	public boolean onTouch(View view, MotionEvent motion) {
 		return gestureDetector.onTouchEvent(motion);
 	}
 

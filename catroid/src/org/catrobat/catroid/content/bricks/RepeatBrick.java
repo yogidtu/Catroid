@@ -91,7 +91,7 @@ public class RepeatBrick extends LoopBeginBrick implements OnClickListener, Form
 		final Brick brickInstance = this;
 		checkbox.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick(View view) {
 				checked = !checked;
 				if (!checked) {
 					for (Brick currentBrick : adapter.getCheckedBricks()) {

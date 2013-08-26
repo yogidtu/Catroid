@@ -136,10 +136,11 @@ public class ChangeVariableBrick extends BrickBaseType implements OnClickListene
 		variableSpinner.setOnTouchListener(new OnTouchListener() {
 
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
+			public boolean onTouch(View view, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_UP) {
-					if (((Spinner) v).getSelectedItemPosition() == 0 && ((Spinner) v).getAdapter().getCount() == 1) {
-						NewVariableDialog dialog = new NewVariableDialog((Spinner) v);
+					if (((Spinner) view).getSelectedItemPosition() == 0
+							&& ((Spinner) view).getAdapter().getCount() == 1) {
+						NewVariableDialog dialog = new NewVariableDialog((Spinner) view);
 						dialog.addVariableDialogListener(ChangeVariableBrick.this);
 						dialog.show(((SherlockFragmentActivity) view.getContext()).getSupportFragmentManager(),
 								NewVariableDialog.DIALOG_FRAGMENT_TAG);
