@@ -36,6 +36,7 @@ import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.io.SoundManager;
 import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.utils.Utils;
@@ -107,6 +108,8 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		public LiveWallpaperEngine(StageListener stageListener) {
 			super();
 			this.localStageListener = stageListener;
+			SensorHandler.startSensorListener(getApplicationContext());
+
 		}
 
 		@Override
@@ -119,6 +122,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		public void onResume() {
 			Log.d("LWP", "VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
 			mHandler.postDelayed(mUpdateDisplay, 300);
+			SensorHandler.startSensorListener(getApplicationContext());
 			localStageListener.menuResume();
 			if (!SoundManager.getInstance().soundDisabledByLwp) {
 				SoundManager.getInstance().resume();
@@ -129,6 +133,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		@Override
 		public void onPause() {
 			localStageListener.menuPause();
+			SensorHandler.stopSensorListeners();
 			Log.d("LWP", "NOT VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
 			mHandler.removeCallbacks(mUpdateDisplay);
 			SoundManager.getInstance().pause();
