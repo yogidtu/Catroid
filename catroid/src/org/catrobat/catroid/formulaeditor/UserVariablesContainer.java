@@ -172,10 +172,6 @@ public class UserVariablesContainer implements Serializable {
 		return variables;
 	}
 
-	public List<UserVariable> createVariableListForCopySprite(Sprite sprite) {
-		return spriteVariables.get(sprite);
-	}
-
 	public void cleanVariableListForSprite(Sprite sprite) {
 		List<UserVariable> vars = spriteVariables.get(sprite);
 		if (vars != null) {
@@ -247,7 +243,7 @@ public class UserVariablesContainer implements Serializable {
 
 	private void resetUserVariables(List<UserVariable> userVariableList) {
 		for (UserVariable userVariable : userVariableList) {
-			userVariable.setValue(0);
+			userVariable.setValue(0.0);
 		}
 	}
 }
