@@ -233,19 +233,7 @@ public class StageListener implements ApplicationListener {
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().resetAllUserVariables();
 
 		if (this.isLiveWallpaper) {
-			project = ProjectManager.getInstance().getCurrentProject();
-			sprites = project.getSpriteList();
-
-			for (Sprite sprite : sprites) {
-				sprite.resetSprite();
-				sprite.look.createBrightnessContrastShader();
-				stage.addActor(sprite.look);
-				sprite.resume();
-			}
-
-			if (sprites.size() > 0) {
-				sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
-			}
+			create();
 		}
 
 		reloadProject = true;
