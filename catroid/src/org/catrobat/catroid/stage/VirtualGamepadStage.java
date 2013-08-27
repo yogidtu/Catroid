@@ -173,33 +173,41 @@ public class VirtualGamepadStage extends Stage {
 	private void handleDPadAction(Sprite sprite) throws Exception {
 		boolean changeImage = true;
 		if (dPadUp && dPadLeft) {
+			//up left
 			for (LookData lookData : vgpPadSprite.getLookDataList()) {
-				if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_UPLEFT)) {
+				if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_DIAGONAL)) {
 					vgpPadSprite.look.setLookData(lookData);
+					vgpPadSprite.look.setRotation(90.0f);
 					break;
 				}
 			}
 			changeImage = false;
 		} else if (dPadUp && dPadRight) {
+			//up right
 			for (LookData lookData : vgpPadSprite.getLookDataList()) {
-				if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_UPRIGHT)) {
+				if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_DIAGONAL)) {
 					vgpPadSprite.look.setLookData(lookData);
+					vgpPadSprite.look.setRotation(0.0f);
 					break;
 				}
 			}
 			changeImage = false;
 		} else if (dPadDown && dPadLeft) {
+			//down left
 			for (LookData lookData : vgpPadSprite.getLookDataList()) {
-				if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_DOWNLEFT)) {
+				if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_DIAGONAL)) {
 					vgpPadSprite.look.setLookData(lookData);
+					vgpPadSprite.look.setRotation(180.0f);
 					break;
 				}
 			}
 			changeImage = false;
 		} else if (dPadDown && dPadRight) {
+			//down right
 			for (LookData lookData : vgpPadSprite.getLookDataList()) {
-				if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_DOWNRIGHT)) {
+				if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_DIAGONAL)) {
 					vgpPadSprite.look.setLookData(lookData);
+					vgpPadSprite.look.setRotation(270.0f);
 					break;
 				}
 			}
@@ -208,9 +216,11 @@ public class VirtualGamepadStage extends Stage {
 
 		if (dPadUp) {
 			if (changeImage) {
+				//up
 				for (LookData lookData : vgpPadSprite.getLookDataList()) {
-					if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_UP)) {
+					if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_STRAIGHT)) {
 						vgpPadSprite.look.setLookData(lookData);
+						vgpPadSprite.look.setRotation(0.0f);
 						break;
 					}
 				}
@@ -219,9 +229,11 @@ public class VirtualGamepadStage extends Stage {
 		}
 		if (dPadDown) {
 			if (changeImage) {
+				//down
 				for (LookData lookData : vgpPadSprite.getLookDataList()) {
-					if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_DOWN)) {
+					if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_STRAIGHT)) {
 						vgpPadSprite.look.setLookData(lookData);
+						vgpPadSprite.look.setRotation(180.0f);
 						break;
 					}
 				}
@@ -230,9 +242,11 @@ public class VirtualGamepadStage extends Stage {
 		}
 		if (dPadLeft) {
 			if (changeImage) {
+				//left
 				for (LookData lookData : vgpPadSprite.getLookDataList()) {
-					if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_LEFT)) {
+					if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_STRAIGHT)) {
 						vgpPadSprite.look.setLookData(lookData);
+						vgpPadSprite.look.setRotation(90.0f);
 						break;
 					}
 				}
@@ -241,9 +255,11 @@ public class VirtualGamepadStage extends Stage {
 		}
 		if (dPadRight) {
 			if (changeImage) {
+				//right
 				for (LookData lookData : vgpPadSprite.getLookDataList()) {
-					if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_RIGHT)) {
+					if (lookData.getLookName().equals(Constants.VGP_IMAGE_PAD_STRAIGHT)) {
 						vgpPadSprite.look.setLookData(lookData);
+						vgpPadSprite.look.setRotation(270.0f);
 						break;
 					}
 				}
