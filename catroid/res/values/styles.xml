@@ -85,7 +85,7 @@
         <item name="android:drawingCacheQuality">high</item>
         <item name="android:fadingEdgeLength">10dp</item>
         <item name="android:fastScrollEnabled">true</item>
-        <!--  <item name="android:requiresFadingEdge">vertical</item> -->
+        <!-- TODO Causing error needs api 14: <item name="android:requiresFadingEdge">vertical</item> -->
         <item name="android:scrollingCache">@string/scrolling_cache_enabled</item>
         <item name="android:animationCache">@string/animation_cache_enabled</item>
     </style>
@@ -155,6 +155,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_gravity">center_vertical</item>
+        
     </style>
 
     <style name="BrickText.SingleLine">
@@ -171,19 +172,17 @@
         <item name="android:focusableInTouchMode">false</item>
         <item name="android:clickable">false</item>
         <item name="android:minWidth">@dimen/brick_edit_text_and_prototype_text_view_minimum_width</item>
+        <item name="android:gravity">right</item>
+        <item name="android:minEms">1</item>
+        <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_vertical</item>
-        
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="BrickEditText" parent="@style/BrickPrototypeTextView">
-        <item name="android:maxLines">1</item>
         <item name="android:visibility">gone</item>
-    </style>
-
-    <style name="BrickEditTextMultiple" parent="@style/BrickEditText">
-        <item name="android:maxEms">6</item>
     </style>
 
     <style name="BrickContainer">

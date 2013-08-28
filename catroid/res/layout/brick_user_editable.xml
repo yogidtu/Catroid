@@ -23,10 +23,11 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal" xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid">
+    android:orientation="horizontal" >
 
     <CheckBox
         android:id="@+id/brick_user_checkbox"
@@ -40,11 +41,8 @@
  	    android:id="@+id/brick_user_flow_layout"
  	    style="@style/BrickContainer.UserBrick.Small"
  	    android:orientation="horizontal"
- 	    android:paddingBottom="0dp"
- 	    android:paddingTop="0dp"
- 	    app:customPadding="@dimen/brick_flow_layout_padding"
- 	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
- 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
+ 	    app:horizontalSpacing="@dimen/brick_flow_layout_horizontal_spacing"
+ 	    app:verticalSpacing="@dimen/brick_flow_layout_vertical_spacing" >
 
  	    
 	</org.catrobat.catroid.ui.DragNDropBrickLayout>

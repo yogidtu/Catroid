@@ -402,6 +402,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 			confirmBackTimeStamp[0] = 0;
 			confirmBackTimeStamp[1] = 0;
 			confirmBackCounter = 0;
+			currentFormula.setDisplayText(null);
 			showToast(R.string.formula_editor_changes_discarded);
 			return true;
 		} else {
@@ -440,6 +441,8 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		if (formulaEditorEditText.hasChanges()) {
 			if (saveFormulaIfPossible()) {
 				onUserDismiss();
+			} else {
+
 			}
 		} else {
 			onUserDismiss();
@@ -447,11 +450,15 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	}
 
 	public void refreshFormulaPreviewString() {
-		//Log.d("FOREST", "FEF.refreshFormulaPreviewString: " + formulaEditorEditText.getStringFromInternFormula());
+		refreshFormulaPreviewString(formulaEditorEditText.getStringFromInternFormula());
+	}
+
+	public void refreshFormulaPreviewString(String newString) {
+		currentFormula.setDisplayText(newString);
 
 		updateBrickView();
 
-		currentFormula.refreshTextField(brickView, formulaEditorEditText.getStringFromInternFormula());
+		currentFormula.refreshTextField(brickView, newString);
 
 		int orientation = getResources().getConfiguration().orientation;
 		currentFormula.highlightTextField(brickView, orientation);

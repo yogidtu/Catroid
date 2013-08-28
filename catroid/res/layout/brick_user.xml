@@ -41,11 +41,8 @@
  	    android:id="@+id/brick_user_flow_layout"
  	    style="@style/BrickContainer.UserBrick.Small"
  	    android:orientation="horizontal"
- 	    android:paddingBottom="0dp"
- 	    android:paddingTop="0dp"
- 	    app:customPadding="@dimen/brick_flow_layout_padding"
- 	    app:horizontalSpacing="@dimen/brick_flow_layout_spacing"
- 	    app:verticalSpacing="@dimen/brick_flow_layout_spacing" >
+ 	    app:horizontalSpacing="@dimen/brick_flow_layout_horizontal_spacing"
+ 	    app:verticalSpacing="@dimen/brick_flow_layout_vertical_spacing" >
  	    
  	    <!--  
  	    <TextView

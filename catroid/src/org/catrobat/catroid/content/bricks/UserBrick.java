@@ -22,10 +22,18 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -39,18 +47,10 @@ import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.ui.BrickLayout;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author forestjohnson
@@ -353,7 +353,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 					currentTextView.setTextAppearance(context, R.style.BrickEditText);
 
 					c.variableFormula.setTextFieldId(currentTextView.getId());
-					String formulaString = c.variableFormula.getFormulaString(currentTextView.getContext());
+					String formulaString = c.variableFormula.getDisplayString(currentTextView.getContext());
 					c.variableFormula.refreshTextField(currentTextView, formulaString);
 					//Log.d("FOREST", "UB.onLayoutChanged: " + currentTextView.getText().toString());
 					// This stuff isn't being included by the style when I use setTextAppearance.

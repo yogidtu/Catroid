@@ -168,6 +168,7 @@ public class UiTestUtils {
 	public static final String TEST_USER_BRICK_NAME = "Test User Brick";
 
 	private static final int ACTION_MODE_ACCEPT_IMAGE_BUTTON_INDEX = 0;
+	private static final int DRAG_FRAMES = 35;
 
 	public static final int SCRIPTS_INDEX = 0;
 	public static final int LOOKS_INDEX = 1;
@@ -279,10 +280,11 @@ public class UiTestUtils {
 	 * For bricks using the FormulaEditor. Tests starting the FE, entering a new number/formula and
 	 * ensures its set correctly to the brick´s edit text field
 	 */
-	public static void testBrickWithFormulaEditor(Solo solo, int editTextNumber, int numberOfEditTextsInBrick,
-			double newValue, String fieldName, Brick theBrick) {
+	public static void testBrickWithFormulaEditor(Solo solo, int editTextId, double newValue, String fieldName,
+			Brick theBrick) {
 
-		solo.clickOnEditText(editTextNumber);
+		solo.clickOnView(solo.getView(editTextId));
+
 		insertDoubleIntoEditText(solo, newValue);
 
 		assertEquals(
@@ -297,13 +299,13 @@ public class UiTestUtils {
 
 		assertEquals("Wrong text in field", newValue, formula.interpretDouble(theBrick.getSprite()), 0.01f);
 		assertEquals("Text not updated in the brick list", newValue,
-				Double.parseDouble(solo.getEditText(editTextNumber).getText().toString().replace(',', '.')), 0.01f);
+				Double.parseDouble(((TextView) solo.getView(editTextId)).getText().toString().replace(',', '.')), 0.01f);
 
 	}
 
-	public static void insertValueViaFormulaEditor(Solo solo, int editTextNumber, double value) {
+	public static void insertValueViaFormulaEditor(Solo solo, int editTextId, double value) {
 
-		solo.clickOnEditText(editTextNumber);
+		solo.clickOnView(solo.getView(editTextId));
 		UiTestUtils.insertDoubleIntoEditText(solo, value);
 
 		assertEquals("Text not updated within FormulaEditor", value,
@@ -312,8 +314,8 @@ public class UiTestUtils {
 		solo.sleep(200);
 	}
 
-	public static void clickEnterClose(Solo solo, int editTextIndex, String value) {
-		solo.clickOnEditText(editTextIndex);
+	public static void clickEnterClose(Solo solo, int editTextNumber, String value) {
+		solo.clickOnEditText(editTextNumber);
 		solo.clearEditText(0);
 		solo.enterText(0, value);
 		String buttonPositiveText = solo.getString(R.string.ok);
@@ -416,8 +418,8 @@ public class UiTestUtils {
 
 	public static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
-		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 5000)) {
-			fail("Text not shown in 5 secs!");
+		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 2000)) {
+			fail("Text not shown in 2 secs!");
 		}
 
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
@@ -426,34 +428,86 @@ public class UiTestUtils {
 			fail("add brick fragment should appear");
 		}
 
-		if (solo.searchText(brickName, nThElement, true)) {
-			clickOnBrickInAddBrickFragment(solo, brickName, true);
-		} else {
-			fail("add brick named " + brickName + " should appear");
+		solo.sleep(600);
+		boolean succeeded = clickOnBrickInAddBrickFragment(solo, brickName, true);
+		if (!succeeded) {
+			fail(brickName + " should appear. Failed to scroll to find it.");
 		}
 		solo.sleep(600);
 	}
 
-	public static void clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
-		ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
-		for (TextView v : array) {
-			if (v.getText().toString().equals(brickName)) {
-				ViewParent p = v.getParent().getParent().getParent().getParent();
-				if (p instanceof View && ((View) p).getId() == R.id.add_brick_fragment_list) {
-					solo.clickOnView(v);
+	public static boolean clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
+		boolean success = false;
+		int lowestIdTimeBeforeLast = -2;
+		int lowestIdLastTime = -1;
+
+		while (!success && lowestIdLastTime != lowestIdTimeBeforeLast) {
+
+			lowestIdTimeBeforeLast = lowestIdLastTime;
+			int farthestDownThisTime = -999999;
+			int highestUpThisTime = 999999;
+
+			ArrayList<TextView> array = solo.getCurrentViews(TextView.class);
+			for (TextView candidate : array) {
+				View greatGreatGrandParent = greatGreatGrandParent(candidate);
+				if (greatGreatGrandParent != null && greatGreatGrandParent.getId() == R.id.add_brick_fragment_list) {
+					int bottom = getBottomOfBrickGivenViewInsideThatBrick(candidate);
+					if (farthestDownThisTime < bottom) {
+						farthestDownThisTime = bottom;
+						lowestIdLastTime = candidate.getId();
+					}
+					if (highestUpThisTime > bottom) {
+						highestUpThisTime = bottom;
+					}
+					if (candidate.getText().toString().equals(brickName)) {
+						solo.clickOnView(candidate);
+						success = true;
+						break;
+					}
 				}
 			}
-		}
-		if (addToScript) {
-			String addBrick = solo.getCurrentActivity().getString(R.string.brick_context_dialog_add_to_script);
-			boolean foundAddBrickText = solo.waitForText(addBrick, 0, 200);
 
-			if (foundAddBrickText) {
-				solo.clickOnText(addBrick);
+			if (!success) {
+				int difference = farthestDownThisTime - highestUpThisTime;
+				solo.drag(40, 40, difference * 0.75f, 40, DRAG_FRAMES);
 			}
-
-			solo.sleep(50);
 		}
+		return success;
+	}
+
+	private static int getBottomOfBrickGivenViewInsideThatBrick(View view) {
+		return ((View) (view.getParent().getParent())).getBottom();
+	}
+
+	private static View greatGreatGrandParent(View view) {
+		ViewParent parent = view.getParent();
+		int i = 0;
+		while (i < 3 && parent != null) {
+			parent = parent.getParent();
+			i++;
+		}
+
+		return (parent != null && parent instanceof View ? ((View) parent) : null);
+	}
+
+	public static int[] tapFloatingBrick(Solo solo) {
+		return dragFloatingBrick(solo, 0);
+	}
+
+	public static int[] dragFloatingBrickUpwards(Solo solo) {
+		return dragFloatingBrick(solo, -1);
+	}
+
+	public static int[] dragFloatingBrickUpwards(Solo solo, int bricks) {
+		return dragFloatingBrick(solo, -bricks);
+	}
+
+	public static int[] dragFloatingBrickDownwards(Solo solo) {
+		return dragFloatingBrick(solo, 1);
+	}
+
+	public static int[] dragFloatingBrickDownwards(Solo solo, int bricks) {
+		return dragFloatingBrick(solo, bricks);
 	}
 
 	public static int[] dragFloatingBrick(Solo solo, float offsetY) {
@@ -462,12 +516,12 @@ public class UiTestUtils {
 		int height = 0;
 
 		ArrayList<View> views = solo.getCurrentViews();
-		for (View v : views) {
-			if (v.getId() == R.id.drag_and_drop_list_view_image_view) {
+		for (View view : views) {
+			if (view.getId() == R.id.drag_and_drop_list_view_image_view) {
 				location = new int[2];
-				v.getLocationOnScreen(location);
-				width = v.getWidth();
-				height = v.getHeight();
+				view.getLocationOnScreen(location);
+				width = view.getWidth();
+				height = view.getHeight();
 			}
 		}
 
@@ -476,7 +530,7 @@ public class UiTestUtils {
 		int destinationX = originX;
 		int destinationY = Math.round(originY + height * offsetY);
 
-		solo.drag(originX, destinationX, originY, destinationY, 70);
+		solo.drag(originX, destinationX, originY, destinationY, DRAG_FRAMES);
 
 		location[0] = destinationX;
 		location[1] = destinationY;

@@ -132,7 +132,7 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 		UserVariable variable = getItem(position);
 		View view = convertView;
 		ViewHolder holder;
-		if (view == null) {
+		if (view == null || !(view.getTag() instanceof ViewHolder)) {
 			view = View.inflate(context, itemLayout, null);
 			holder = new ViewHolder();
 			holder.checkbox = (CheckBox) view.findViewById(checkboxId);
@@ -166,7 +166,7 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 		if (onListItemClickListener != null) {
 			view.setOnClickListener(new View.OnClickListener() {
 				@Override
-				public void onClick(View v) {
+				public void onClick(View view) {
 					onListItemClickListener.onListItemClick(position);
 				}
 			});

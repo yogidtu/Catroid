@@ -45,6 +45,9 @@
     <dimen name="text_size_brick_category">22sp</dimen>
     <dimen name="brick_data_edit_spacing">10dp</dimen>
     <dimen name="brick_data_edit_cursor_size">58dp</dimen>
-    <dimen name="brick_flow_layout_spacing">1dp</dimen>
+    
+    <dimen name="brick_flow_layout_vertical_spacing">0dp</dimen>
+    <dimen name="brick_flow_layout_horizontal_spacing">3dp</dimen>
     <dimen name="brick_flow_layout_padding">10dp</dimen>
+
 </resources>
