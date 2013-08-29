@@ -161,7 +161,7 @@ public class FormulaEditorEditText extends EditText implements OnTouchListener {
 		String resultingText = updateTextAndCursorFromInternFormula();
 		setSelection(absoluteCursorPosition);
 
-		formulaEditorFragment.saveFormulaIfPossibleQuiet();
+		formulaEditorFragment.refreshFormulaPreviewString(resultingText);
 	}
 
 	public String getStringFromInternFormula() {

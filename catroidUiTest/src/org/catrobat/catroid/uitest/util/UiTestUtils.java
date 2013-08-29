@@ -292,7 +292,7 @@ public class UiTestUtils {
 				newValue,
 				Double.parseDouble(((EditText) solo.getView(R.id.formula_editor_edit_field)).getText().toString()
 						.replace(',', '.')));
-		solo.goBack();
+		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_ok));
 		solo.sleep(200);
 
 		Formula formula = (Formula) Reflection.getPrivateField(theBrick, fieldName);
@@ -308,9 +308,12 @@ public class UiTestUtils {
 		solo.clickOnView(solo.getView(editTextId));
 		UiTestUtils.insertDoubleIntoEditText(solo, value);
 
-		assertEquals("Text not updated within FormulaEditor", value,
-				Double.parseDouble(((EditText) solo.getView(R.id.formula_editor_edit_field)).getText().toString()));
-		solo.goBack();
+		assertEquals(
+				"Text not updated within FormulaEditor",
+				value,
+				Double.parseDouble(((EditText) solo.getView(R.id.formula_editor_edit_field)).getText().toString()
+						.replace(',', '.')));
+		solo.clickOnView(solo.getView(R.id.formula_editor_keyboard_ok));
 		solo.sleep(200);
 	}
 
@@ -419,7 +422,7 @@ public class UiTestUtils {
 	public static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
 		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 2000)) {
-			fail("Text not shown in 2 secs!");
+			fail("Text not shown in 5 secs!");
 		}
 
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
@@ -1570,17 +1573,11 @@ public class UiTestUtils {
 	public static void cancelAllNotifications(Context context) {
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancelAll();
+
 		@SuppressWarnings("unchecked")
 		SparseArray<NotificationData> notificationMap = (SparseArray<NotificationData>) Reflection.getPrivateField(
 				StatusBarNotificationManager.class, StatusBarNotificationManager.getInstance(), "notificationDataMap");
-		if (notificationMap == null) {
-			return;
-		}
-
-		for (int i = 0; i < notificationMap.size(); i++) {
-			notificationManager.cancel(notificationMap.keyAt(i));
-		}
-
 		notificationMap.clear();
 	}
 

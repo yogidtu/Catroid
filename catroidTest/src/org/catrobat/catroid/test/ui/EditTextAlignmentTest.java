@@ -70,9 +70,11 @@ public class EditTextAlignmentTest extends AndroidTestCase {
 						int editTextId = idField.getInt(null);
 
 						TextView edit = (TextView) brickView.findViewById(editTextId);
-						LayoutParams lp = (LayoutParams) edit.getLayoutParams();
 
-						if (lp.getInputType() == InputType.NUMBER) {
+						LayoutParams layoutParams = (LayoutParams) edit.getLayoutParams();
+
+						if (layoutParams.getInputType() == InputType.NUMBER) {
+
 							assertEquals("Brick " + layoutName + " does not have correct gravity (Gravity.RIGHT)",
 									Gravity.RIGHT, Gravity.RIGHT & edit.getGravity());
 						} else {
