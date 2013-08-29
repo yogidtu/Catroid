@@ -37,7 +37,7 @@ import java.lang.reflect.Field;
 
 public class EditTextAlignmentTest extends AndroidTestCase {
 
-	static private LayoutInflater inflater;
+	private static LayoutInflater inflater;
 	private Context context;
 
 	@Override

@@ -22,8 +22,9 @@
  */
 package org.catrobat.catroid.test.content.bricks;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.test.AndroidTestCase;
+
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Project;
@@ -35,7 +36,6 @@ import org.catrobat.catroid.content.bricks.ChangeXByNBrick;
 import org.catrobat.catroid.content.bricks.LegoNxtMotorStopBrick;
 import org.catrobat.catroid.content.bricks.LegoNxtMotorStopBrick.Motor;
 import org.catrobat.catroid.content.bricks.UserBrick;
-import org.catrobat.catroid.content.bricks.UserBrickUIComponent;
 import org.catrobat.catroid.content.bricks.UserBrickUIDataArray;
 import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
@@ -44,9 +44,8 @@ import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.Reflection.ParameterList;
 
-import android.test.AndroidTestCase;
-
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserBrickTest extends AndroidTestCase {
 	private Sprite sprite;
@@ -74,13 +73,13 @@ public class UserBrickTest extends AndroidTestCase {
 
 	public void testSpriteInit() {
 
-		ArrayList<Script> array = (ArrayList<Script>) Reflection.getPrivateField(sprite, "userBricks");
+		ArrayList<?> array = (ArrayList<?>) Reflection.getPrivateField(sprite, "userBricks");
 
 		assertTrue("the sprite should have zero user bricks after being created and initialized.", array.size() == 0);
 
 		Reflection.invokeMethod(sprite, "getUserBrickListAtLeastOneBrick", new ParameterList("Example", "Variable 1"));
 
-		array = (ArrayList<Script>) Reflection.getPrivateField(sprite, "userBricks");
+		array = (ArrayList<?>) Reflection.getPrivateField(sprite, "userBricks");
 
 		assertTrue("the sprite should have one user brick after getUserBrickList()", array.size() == 1);
 
@@ -95,7 +94,7 @@ public class UserBrickTest extends AndroidTestCase {
 
 		userScript.addBrick(new ChangeXByNBrick(sprite, 1));
 
-		ArrayList<Script> array = (ArrayList<Script>) Reflection.getPrivateField(sprite, "userBricks");
+		ArrayList<?> array = (ArrayList<?>) Reflection.getPrivateField(sprite, "userBricks");
 
 		assertTrue("the sprite should have one user brick after we added a user brick to it, has " + array.size(),
 				array.size() == 1);
@@ -198,11 +197,10 @@ public class UserBrickTest extends AndroidTestCase {
 	}
 
 	public void testGetRequiredResources() {
-		int moveValue = 6;
 
 		UserBrick brick = new UserBrick(sprite, 0);
 
-		assertEquals("brick.getRequiredResources(): ", brick.NO_RESOURCES, brick.getRequiredResources());
+		assertEquals("brick.getRequiredResources(): ", UserBrick.NO_RESOURCES, brick.getRequiredResources());
 
 		Script userScript = addUserBrickToSpriteAndGetUserScript(brick, sprite);
 
@@ -210,7 +208,7 @@ public class UserBrickTest extends AndroidTestCase {
 
 		userScript.addBrick(legoBrick);
 
-		assertNotSame("legoBrick.getRequiredResources(): ", brick.NO_RESOURCES, legoBrick.getRequiredResources());
+		assertNotSame("legoBrick.getRequiredResources(): ", UserBrick.NO_RESOURCES, legoBrick.getRequiredResources());
 
 		assertEquals("brick.getRequiredResources(): ", legoBrick.getRequiredResources(), brick.getRequiredResources());
 
@@ -238,10 +236,8 @@ public class UserBrickTest extends AndroidTestCase {
 		assertTrue("The cloned brick has a different UserScriptDefinitionBrick than the original brick",
 				userScript == clonedUserScript);
 
-		ArrayList<UserBrickUIComponent> componentArray = (ArrayList<UserBrickUIComponent>) Reflection.getPrivateField(
-				brick, "uiComponents");
-		ArrayList<UserBrickUIComponent> clonedComponentArray = (ArrayList<UserBrickUIComponent>) Reflection
-				.getPrivateField(cloneBrick, "uiComponents");
+		ArrayList<?> componentArray = (ArrayList<?>) Reflection.getPrivateField(brick, "uiComponents");
+		ArrayList<?> clonedComponentArray = (ArrayList<?>) Reflection.getPrivateField(cloneBrick, "uiComponents");
 		assertTrue("The cloned brick has a different uiDataArray than the original brick",
 				componentArray != clonedComponentArray);
 	}

@@ -22,17 +22,16 @@
  */
 package org.catrobat.catroid.test.userbricks;
 
-import java.util.ArrayList;
+import android.test.AndroidTestCase;
 
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.UserScript;
 import org.catrobat.catroid.content.bricks.UserBrick;
-import org.catrobat.catroid.content.bricks.UserBrickUIComponent;
 import org.catrobat.catroid.content.bricks.UserBrickUIDataArray;
 import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 import org.catrobat.catroid.test.utils.Reflection;
 
-import android.test.AndroidTestCase;
+import java.util.ArrayList;
 
 public class AddNewUserBrickTest extends AndroidTestCase {
 	private Sprite sprite;
@@ -66,10 +65,8 @@ public class AddNewUserBrickTest extends AndroidTestCase {
 		assertTrue("The cloned brick has a different UserScriptDefinitionBrick than the original brick",
 				userScript == clonedUserScript);
 
-		ArrayList<UserBrickUIComponent> componentArray = (ArrayList<UserBrickUIComponent>) Reflection.getPrivateField(
-				brick, "uiComponents");
-		ArrayList<UserBrickUIComponent> clonedComponentArray = (ArrayList<UserBrickUIComponent>) Reflection
-				.getPrivateField(cloneBrick, "uiComponents");
+		ArrayList<?> componentArray = (ArrayList<?>) Reflection.getPrivateField(brick, "uiComponents");
+		ArrayList<?> clonedComponentArray = (ArrayList<?>) Reflection.getPrivateField(cloneBrick, "uiComponents");
 		assertTrue("The cloned brick has a different uiDataArray than the original brick",
 				componentArray != clonedComponentArray);
 	}
