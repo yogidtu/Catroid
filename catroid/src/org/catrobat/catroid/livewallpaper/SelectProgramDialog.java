@@ -104,26 +104,34 @@ public class SelectProgramDialog extends Dialog {
 
 			@Override
 			public void onClick(View v) {
-				if (selectedProject != null
-						&& !selectedProject.equals(ProjectManager.getInstance().getCurrentProject().getName())) {
 
-					Project project = StorageHandler.getInstance().loadProject(selectedProject);
-					if (project != null) {
-						ProjectManager.getInstance().setProject(project);
-						LiveWallpaper.liveWallpaperEngine.changeWallpaperProgram();
-						SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-						Editor editor = sharedPreferences.edit();
-						editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
-						editor.commit();
-						dismiss();
-						//display toast
-
-					} else {
-						//display toast, not successful  - error???????
-					}
-				} else {
+				if (selectedProject == null) {
 					dismiss();
+					return;
 				}
+
+				ProjectManager projectManager = ProjectManager.getInstance();
+				if (projectManager.getCurrentProject() != null
+						&& projectManager.getCurrentProject().getName().equals(selectedProject)) {
+					dismiss();
+					return;
+				}
+
+				Project project = StorageHandler.getInstance().loadProject(selectedProject);
+				if (project != null) {
+					projectManager.setProject(project);
+					SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+					Editor editor = sharedPreferences.edit();
+					editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
+					editor.commit();
+					LiveWallpaper.liveWallpaperEngine.changeWallpaperProgram();
+					dismiss();
+					//display toast
+
+				} else {
+					//display toast, not successful  - error???????
+				}
+
 			}
 		});
 	}

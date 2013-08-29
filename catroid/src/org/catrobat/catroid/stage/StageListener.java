@@ -206,7 +206,7 @@ public class StageListener implements ApplicationListener {
 		for (Sprite sprite : sprites) {
 			sprite.resume();
 		}
-		Log.i("LWP", "RESUMED " + hashCode());
+		Log.i("LWP", "MENU RESUMED " + hashCode());
 
 	}
 
@@ -220,7 +220,7 @@ public class StageListener implements ApplicationListener {
 			sprite.pause();
 		}
 
-		Log.i("LWP", "PAUSED SL" + hashCode());
+		Log.i("LWP", "MENU PAUSED SL" + hashCode());
 
 	}
 
@@ -241,6 +241,7 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void resume() {
+		Log.v("LWP", "RESUME - overriden");
 		if (!paused) {
 			SoundManager.getInstance().resume();
 			for (Sprite sprite : sprites) {
@@ -256,6 +257,7 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void pause() {
+		Log.v("LWP", "PAUSE - overriden");
 		if (finished || (sprites == null)) {
 			return;
 		}
@@ -390,6 +392,7 @@ public class StageListener implements ApplicationListener {
 
 		if (!finished) {
 			stage.draw();
+
 		}
 
 		if (makeAutomaticScreenshot) {
@@ -455,7 +458,10 @@ public class StageListener implements ApplicationListener {
 		if (!finished) {
 			this.finish();
 		}
-		stage.dispose();
+		if (stage != null) {
+			stage.dispose();
+		}
+
 		font.dispose();
 		axes.dispose();
 		disposeTextures();

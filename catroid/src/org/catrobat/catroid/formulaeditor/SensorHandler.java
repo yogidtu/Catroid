@@ -45,6 +45,7 @@ public class SensorHandler implements SensorEventListener, SensorCustomEventList
 	private float loudness = 0f;
 
 	private SensorHandler(Context context) {
+		Log.v("LWP", "CREATING ENW SENSOR HANDLER");
 		sensorManager = new SensorManager(
 				(android.hardware.SensorManager) context.getSystemService(Context.SENSOR_SERVICE));
 		accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);

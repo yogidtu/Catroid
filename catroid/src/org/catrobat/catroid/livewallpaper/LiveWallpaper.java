@@ -109,7 +109,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			super();
 			this.localStageListener = stageListener;
 			SensorHandler.startSensorListener(getApplicationContext());
-
 		}
 
 		@Override
@@ -121,19 +120,18 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		@Override
 		public void onResume() {
 			Log.d("LWP", "VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
-			mHandler.postDelayed(mUpdateDisplay, 300);
-			SensorHandler.startSensorListener(getApplicationContext());
 			localStageListener.menuResume();
+			SensorHandler.startSensorListener(getApplicationContext());
+			mHandler.postDelayed(mUpdateDisplay, 300);
 			if (!SoundManager.getInstance().soundDisabledByLwp) {
 				SoundManager.getInstance().resume();
 			}
-
 		}
 
 		@Override
 		public void onPause() {
-			localStageListener.menuPause();
 			SensorHandler.stopSensorListeners();
+			localStageListener.menuPause();
 			Log.d("LWP", "NOT VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
 			mHandler.removeCallbacks(mUpdateDisplay);
 			SoundManager.getInstance().pause();

@@ -193,6 +193,7 @@ public class Look extends Image {
 	@Override
 	public void draw(SpriteBatch batch, float parentAlpha) {
 		checkImageChanged();
+
 		batch.setShader(shader);
 		if (alpha == 0.0f) {
 			setVisible(false);
@@ -202,6 +203,7 @@ public class Look extends Image {
 		if (this.visible && this.getDrawable() != null) {
 			super.draw(batch, this.alpha);
 		}
+
 	}
 
 	@Override
