@@ -22,11 +22,6 @@
  */
 package org.catrobat.catroid.ui.dialogs;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.catrobat.catroid.R;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -43,6 +38,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
+
+import org.catrobat.catroid.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserBrickEditElementDialog extends SherlockDialogFragment {
 

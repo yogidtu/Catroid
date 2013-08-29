@@ -22,9 +22,9 @@
  */
 package org.catrobat.catroid.content;
 
-import java.util.List;
-
 import org.catrobat.catroid.content.bricks.UserBrickVariable;
+
+import java.util.List;
 
 /**
  * @author forestjohnson

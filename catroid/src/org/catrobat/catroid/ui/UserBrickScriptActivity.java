@@ -27,8 +27,6 @@ import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
 
-import android.util.Log;
-
 /**
  * @author forestjohnson
  * 

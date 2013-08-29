@@ -22,11 +22,11 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import java.io.Serializable;
+import android.widget.TextView;
 
 import org.catrobat.catroid.formulaeditor.Formula;
 
-import android.widget.TextView;
+import java.io.Serializable;
 
 /**
  * @author forestjohnson

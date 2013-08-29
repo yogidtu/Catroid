@@ -1,8 +1,5 @@
 package org.catrobat.catroid.ui;
 
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.ScreenValues;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -12,6 +9,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.ScreenValues;
 
 /**
  * Author: Romain Guy, Forest Johnson
@@ -30,8 +30,8 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 	private boolean dragging;
 
-	private final float BIAS_SAME_LINE_FUDGE_FACTOR = 10;
-	private final int MIN_MILLISECONDS_FOR_TAP = 300;
+	private static final float BIAS_SAME_LINE_FUDGE_FACTOR = 10;
+	private static final int MIN_MILLISECONDS_FOR_TAP = 300;
 
 	private int lastInsertableSpaceIndex;
 	private boolean justStartedDragging;

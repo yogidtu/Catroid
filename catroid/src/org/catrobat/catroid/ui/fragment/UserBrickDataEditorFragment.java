@@ -22,22 +22,6 @@
  */
 package org.catrobat.catroid.ui.fragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.bricks.UserBrick;
-import org.catrobat.catroid.content.bricks.UserBrickUIData;
-import org.catrobat.catroid.formulaeditor.UserVariable;
-import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
-import org.catrobat.catroid.ui.BottomBar;
-import org.catrobat.catroid.ui.DragAndDropBrickLayoutListener;
-import org.catrobat.catroid.ui.DragNDropBrickLayout;
-import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.dialogs.UserBrickEditElementDialog;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -54,11 +38,26 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.UserBrick;
+import org.catrobat.catroid.content.bricks.UserBrickUIData;
+import org.catrobat.catroid.formulaeditor.UserVariable;
+import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
+import org.catrobat.catroid.ui.BottomBar;
+import org.catrobat.catroid.ui.DragAndDropBrickLayoutListener;
+import org.catrobat.catroid.ui.DragNDropBrickLayout;
+import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.dialogs.UserBrickEditElementDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener,
 		DragAndDropBrickLayoutListener, UserBrickEditElementDialog.DialogListener {
@@ -326,10 +325,6 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 		getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.brick_data_editor_title));
 
 		super.onPrepareOptionsMenu(menu);
-	}
-
-	private void showToast(int ressourceId) {
-		Toast.makeText(context, getString(ressourceId), Toast.LENGTH_LONG).show();
 	}
 
 	@Override

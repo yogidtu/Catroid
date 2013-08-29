@@ -22,15 +22,15 @@
  */
 package org.catrobat.catroid.content.actions;
 
+import android.util.Log;
+
+import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.UserBrickStageToken;
 import org.catrobat.catroid.content.bricks.UserBrickVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
-
-import android.util.Log;
-
-import com.badlogic.gdx.scenes.scene2d.actions.DelegateAction;
 
 public class UserBrickAction extends DelegateAction {
 

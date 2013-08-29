@@ -351,7 +351,7 @@ public class ExtendedActions extends Actions {
 		return action;
 	}
 
-	static public UserBrickAction userBrick(Sprite sprite, Action repeatedAction, UserBrickStageToken stageToken) {
+	public static UserBrickAction userBrick(Sprite sprite, Action repeatedAction, UserBrickStageToken stageToken) {
 		UserBrickAction action = action(UserBrickAction.class);
 		action.setAction(repeatedAction);
 		action.setUserBrickStageToken(stageToken);
