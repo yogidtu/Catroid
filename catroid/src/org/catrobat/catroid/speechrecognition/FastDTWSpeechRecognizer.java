@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.catrobat.catroid.speechrecognition.signalprocessing.FFT;
-import org.catrobat.catroid.speechrecognition.signalprocessing.MelFrequencyFilterBank;
+import org.catrobat.catroid.speechrecognition.signalprocessing.PLPFrequencyFilterBank;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -51,6 +51,9 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 	private int maxClusterSize = 5;
 	private int maxClusterMatches = 5;
 	private int targetTimePerFrame = 256;
+
+	private double globalThreshold = 2000.0;
+	private double minClusterDistance = 1000.0;
 
 	private int samplesPerFrame;
 	private FFT preCalculatedFFT;
@@ -86,8 +89,9 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 				double[] frameBuffer = audioByteToDouble(frameRawBuffer, inputStream.getSampleSizeInBits() / 8);
 				preCalculatedFFT.fft(frameBuffer, imageArray);
 				frameBuffer = preCalculatedFFT.getMagnitude(frameBuffer, imageArray);
-				MelFrequencyFilterBank filterBank = new MelFrequencyFilterBank(130, inputStream.getSampleRate() / 2, 13);
-				frameBuffer = filterBank.process(frameBuffer, inputStream.getSampleRate());
+				//								MelFrequencyFilterBank filterBank = new MelFrequencyFilterBank(130, inputStream.getSampleRate() / 2, 32);
+				PLPFrequencyFilterBank filterBank = new PLPFrequencyFilterBank(130, inputStream.getSampleRate() / 2, 32);
+				frameBuffer = filterBank.processFrame(frameBuffer, inputStream.getSampleRate());
 				if (frameNumber >= currentLMD.length) {
 					double[][] growingBuffer = new double[currentLMD.length * 2][];
 					System.arraycopy(currentLMD, 0, growingBuffer, 0, currentLMD.length);
@@ -103,18 +107,19 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 			e.printStackTrace();
 		}
 
+		long DTWTime = System.currentTimeMillis();
 		final DistanceFunction distanceFunktion = DistanceFunctionFactory.getDistFnByName("EuclideanDistance");
 		final TimeSeries timeSerieInput = new TimeSeries(currentLMD);
 
-		double[] nearestDistances = new double[] { 1000d, 1000d };
+		double[] nearestDistances = new double[] { 3 * globalThreshold, 3 * globalThreshold };
 		ArrayList<Integer> successCluster = null;
 		ArrayList<String> matches = null;
 		synchronized (matchCluster) {
 			Iterator<Entry<ArrayList<String>, ArrayList<Integer>>> it = matchCluster.entrySet().iterator();
 			while (it.hasNext()) {
 				Entry<ArrayList<String>, ArrayList<Integer>> cluster = it.next();
+				Log.v(TAG, "cluster --------------------" + cluster.getKey().toString());
 				double clusterMinDistance = 1000d;
-				long DTWTime = System.currentTimeMillis();
 				for (int featureFile : cluster.getValue()) {
 					final TimeSeries timeSerieReference = new TimeSeries(processedFilePaths.get(featureFile), false,
 							false, ',');
@@ -135,21 +140,21 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 				} else if (clusterMinDistance < nearestDistances[1]) {
 					nearestDistances[1] = clusterMinDistance;
 				}
-				Log.v(TAG, "cluster of " + cluster.getKey() + " read, got minDist of " + clusterMinDistance + " in "
-						+ (System.currentTimeMillis() - DTWTime) + "ms");
 			}
 		}
 
-		if (nearestDistances[1] - nearestDistances[0] >= 2.5 && nearestDistances[0] < 10.0) {
-			Log.v(TAG, "Has resut for " + identifier);
+		if (nearestDistances[1] - nearestDistances[0] >= minClusterDistance && nearestDistances[0] <= globalThreshold) {
+			//			Log.v(TAG, "Result " + identifier);
 			sendResults(matches, Thread.currentThread(), true);
-			if (successCluster.size() < 5) {
+			if (successCluster.size() < maxClusterSize) {
 				successCluster.add(identifier);
 			}
 		} else {
-			Log.v(TAG, "Has no result for " + identifier);
+			//			Log.v(TAG, "Has no result for " + identifier);
 			sendResults(new ArrayList<String>());
 		}
+
+		Log.v(TAG, "Ended process in " + (System.currentTimeMillis() - DTWTime) + "ms");
 
 		String newFile = workingDirectory + "/" + System.currentTimeMillis() + ".fastdtw";
 		try {
@@ -185,16 +190,27 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 					Entry<ArrayList<String>, ArrayList<Integer>> cluster = it.next();
 					ArrayList<String> cachedMatches = cluster.getKey();
 					if (emptySearch && cachedMatches.size() == 0) {
-						Log.v(TAG, "Added result to cluster.");
-						cluster.getValue().add(identifier);
+						if (cluster.getValue().size() >= maxClusterSize) {
+							int oldestClusterIndex = cluster.getValue().get(0);
+							File tooMuch = new File(processedFilePaths.get(oldestClusterIndex));
+							tooMuch.delete();
+							cluster.getValue().remove(0);
+							cluster.getValue().add(identifier);
+							Log.v(TAG, "Deleted specific file, enough for this cluster.");
+						} else {
+							Log.v(TAG, "Added result to cluster.");
+							cluster.getValue().add(identifier);
+						}
 						added = true;
 						break;
 					}
 					for (String itemMatch : cachedMatches) {
-						if (resultMatches.contains(itemMatch)) {
+						if (resultMatches.contains(itemMatch) && cachedMatches.indexOf(itemMatch) <= 2) {
 							if (cluster.getValue().size() >= maxClusterSize) {
-								File tooMuch = new File(processedFilePaths.get(identifier));
+								File tooMuch = new File(processedFilePaths.get(cluster.getValue().get(0)));
 								tooMuch.delete();
+								cluster.getValue().remove(0);
+								cluster.getValue().add(identifier);
 								Log.v(TAG, "Deleted specific file, enough for this cluster.");
 							} else {
 								Log.v(TAG, "Added result to cluster.");
@@ -228,11 +244,11 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		ArrayList<String> copyClusterMatches = new ArrayList<String>(clusterMatches);
 		clusterMatches.clear();
 		clusterMatches.add(duplicateItem);
-		for (int i = 0; i < duplicateIndex; i++) {
+		for (int i = 0; i < maxClusterMatches / 2; i++) {
 			clusterMatches.add(copyClusterMatches.get(i));
-		}
-		for (int i = 0; i < maxClusterMatches - duplicateIndex - 1; i++) {
-			clusterMatches.add(recievedMatches.get(i));
+			if (recievedMatches.size() > i) {
+				clusterMatches.add(recievedMatches.get(i));
+			}
 		}
 
 	}

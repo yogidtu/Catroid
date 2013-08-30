@@ -48,6 +48,7 @@ import android.util.Log;
 
 public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
+	private static final String TAG = GoogleOnlineSpeechRecognizer.class.getSimpleName();
 	private static final String API_URL = "http://www.google.com/speech-api/v1/recognize?client=chromium&lang=de-DE&maxresults=5";
 	private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.77 Safari/535.7";
 
@@ -57,6 +58,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 	@Override
 	protected void runRecognitionTask(AudioInputStream inputStream) {
+		Log.w(TAG, "Started Google Recognizer!");
 		InputStream flacInputStream = startEncoding(inputStream);
 		if (flacInputStream == null) {
 			return;
@@ -142,13 +144,11 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 		HttpResponse response;
 		try {
 			if (DEBUG_OUTPUT) {
-				Log.v("GoogleSpeechRecog", "Starting request" + Thread.currentThread() + " id " + getMyIdentifier()
-						+ " ...");
+				Log.v(TAG, "Starting request" + Thread.currentThread() + " id " + getMyIdentifier() + " ...");
 			}
 			response = httpclient.execute(httppost);
 			if (DEBUG_OUTPUT) {
-				Log.v("GoogleSpeechRecog", "Finished request" + Thread.currentThread() + " id " + getMyIdentifier()
-						+ "...");
+				Log.v(TAG, "Finished request" + Thread.currentThread() + " id " + getMyIdentifier() + "...");
 			}
 		} catch (ClientProtocolException cpe) {
 			sendError(RecognizerCallback.ERROR_NONETWORK, "Executing the postrequest failed.");
