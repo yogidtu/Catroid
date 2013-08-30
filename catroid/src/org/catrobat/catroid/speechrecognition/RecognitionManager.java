@@ -63,8 +63,8 @@ public class RecognitionManager implements RecognizerCallback {
 	private boolean paused = false;
 	private int targetFrameTime = 10;
 	private int silenceBeforeVoiceMs = 200;
-	private int minActiveVoiceTimeMs = 40;
-	private int silenceAfterVoiceInMs = 260;
+	private int minActiveVoiceTimeMs = 50;
+	private int silenceAfterVoiceInMs = 270;
 	private ArrayList<OutputStream> currentOpenStreamList = new ArrayList<OutputStream>();
 	private int currentIdentifier = 0;
 
@@ -72,9 +72,9 @@ public class RecognitionManager implements RecognizerCallback {
 	protected ArrayList<RecognizerCallback> recognizerSelfListenerList = new ArrayList<RecognizerCallback>();
 	protected ArrayList<VoiceDetection> detectorList = new ArrayList<VoiceDetection>();
 	protected ArrayList<SpeechRecognizer> recognizerList = new ArrayList<SpeechRecognizer>();
-	protected HashMap<Long, ArrayList<SpeechRecognizer>> recognitionTasks = new HashMap<Long, ArrayList<SpeechRecognizer>>();
-	protected HashMap<Long, ByteArrayOutputStream> recognitionPlayback = new HashMap<Long, ByteArrayOutputStream>();
-	protected HashMap<Long, ArrayList<String>> recognitionMatches = new HashMap<Long, ArrayList<String>>();
+	protected HashMap<Integer, ArrayList<SpeechRecognizer>> recognitionTasks = new HashMap<Integer, ArrayList<SpeechRecognizer>>();
+	protected HashMap<Integer, ByteArrayOutputStream> recognitionPlayback = new HashMap<Integer, ByteArrayOutputStream>();
+	protected HashMap<Integer, ArrayList<String>> recognitionMatches = new HashMap<Integer, ArrayList<String>>();
 
 	public RecognitionManager(AudioInputStream speechInputStream) {
 		this.inputStream = speechInputStream;
@@ -312,7 +312,7 @@ public class RecognitionManager implements RecognizerCallback {
 					System.arraycopy(frameBuffer, 0, preBuffer, preBuffer.length - frameSize, frameSize);
 
 					if (DEBUG_OUTPUT && processedActiveFrames != 0) {
-						Log.v(TAG, "resetting proccessed active frames");
+						//						Log.v(TAG, "resetting proccessed active frames");
 					}
 					processedSilentFrames++;
 					processedActiveFrames = 0;
@@ -336,7 +336,7 @@ public class RecognitionManager implements RecognizerCallback {
 							ByteArrayOutputStream serialPlaybackStream = new ByteArrayOutputStream(
 									DEFAULT_SERIAL_BUFFER_SIZE);
 							currentOpenStreamList.add(serialPlaybackStream);
-							recognitionPlayback.put((long) currentIdentifier, serialPlaybackStream);
+							recognitionPlayback.put(currentIdentifier, serialPlaybackStream);
 							break;
 						}
 					}
@@ -349,8 +349,8 @@ public class RecognitionManager implements RecognizerCallback {
 							currentOpenStreamList.remove(feedStream);
 						}
 					}
-					recognitionTasks.put((long) currentIdentifier, new ArrayList<SpeechRecognizer>(recognizerList));
-					recognitionMatches.put((long) currentIdentifier, new ArrayList<String>());
+					recognitionTasks.put(currentIdentifier, new ArrayList<SpeechRecognizer>(recognizerList));
+					recognitionMatches.put(currentIdentifier, new ArrayList<String>());
 					recognizerAreListening = true;
 				}
 			}
@@ -411,14 +411,14 @@ public class RecognitionManager implements RecognizerCallback {
 		return;
 	}
 
-	private boolean markUsedAndCheckRemaining(long identifier, String workerName) {
+	private boolean markUsedAndCheckRemaining(int identifier, String workerName) throws IllegalArgumentException {
 		SpeechRecognizer caller = null;
 		ArrayList<SpeechRecognizer> taskWorker = recognitionTasks.get(identifier);
 		if (taskWorker == null) {
 			if (DEBUG_OUTPUT) {
 				Log.w(TAG, "No worker found for id:" + identifier);
 			}
-			return false;
+			throw new IllegalArgumentException();
 		}
 		for (SpeechRecognizer recognizer : taskWorker) {
 			if (recognizer.toString().compareTo(workerName) == 0) {
@@ -429,11 +429,10 @@ public class RecognitionManager implements RecognizerCallback {
 			if (DEBUG_OUTPUT) {
 				Log.w(TAG, "Caller was not found in markUsed");
 			}
-			return false;
+			throw new IllegalArgumentException();
 		}
 		taskWorker.remove(caller);
 		if (taskWorker.size() == 0) {
-			sendResultsToListener(identifier);
 			recognitionTasks.remove(identifier);
 			recognitionPlayback.remove(identifier);
 			if (DEBUG_OUTPUT) {
@@ -442,11 +441,14 @@ public class RecognitionManager implements RecognizerCallback {
 			return false;
 		} else {
 			recognitionTasks.put(identifier, taskWorker);
+			if (DEBUG_OUTPUT) {
+				Log.v(TAG, "recieved result, continuing for id:" + identifier);
+			}
 		}
 		return true;
 	}
 
-	private void startNextRecognizerInSerie(long identifier) {
+	private void startNextRecognizerInSerie(int identifier) {
 		ByteArrayOutputStream byteOutputStream = recognitionPlayback.get(identifier);
 		if (byteOutputStream == null) {
 			return;
@@ -472,7 +474,7 @@ public class RecognitionManager implements RecognizerCallback {
 
 	@Override
 	public void onRecognizerResult(int resultCode, Bundle resultBundle) {
-		Long identifier = resultBundle.getLong(BUNDLE_IDENTIFIER);
+		int identifier = resultBundle.getInt(BUNDLE_IDENTIFIER);
 		synchronized (recognitionTasks) {
 			if (!recognitionTasks.containsKey(identifier)) {
 				if (DEBUG_OUTPUT) {
@@ -480,20 +482,32 @@ public class RecognitionManager implements RecognizerCallback {
 				}
 				return;
 			}
+			boolean remainingRecognizer;
+			try {
+				remainingRecognizer = markUsedAndCheckRemaining(identifier, resultBundle.getString(BUNDLE_SENDERCLASS));
+			} catch (IllegalArgumentException e) {
+				return;
+			}
+
 			if (resultCode == RESULT_OK) {
 				ArrayList<String> matches = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES);
 				ArrayList<String> allMatches = recognitionMatches.get(identifier);
 				allMatches.addAll(matches);
 				recognitionMatches.put(identifier, allMatches);
+
+				if (stopAfterFirstSuccessRecognition && resultBundle.getBoolean(BUNDLE_RESULT_RECOGNIZED)) {
+					sendResultsToListener(identifier);
+					recognitionTasks.remove(identifier);
+					recognitionPlayback.remove(identifier);
+					return;
+				}
 			}
-			if (!markUsedAndCheckRemaining(identifier, resultBundle.getString(BUNDLE_SENDERCLASS))) {
+
+			if (!remainingRecognizer) {
 				sendResultsToListener(identifier);
-				return;
-			}
-			if (stopAfterFirstSuccessRecognition && resultCode == RecognizerCallback.RESULT_OK) {
-				sendResultsToListener(identifier);
-				recognitionTasks.remove(identifier);
-				recognitionPlayback.remove(identifier);
+				if (DEBUG_OUTPUT) {
+					Log.v(TAG, "Recieved Result broadcasted and no remaining recognizer");
+				}
 				return;
 			}
 			if (!parallelRecognition) {
@@ -502,18 +516,21 @@ public class RecognitionManager implements RecognizerCallback {
 		}
 	}
 
-	private void sendResultsToListener(long identifier) {
+	private void sendResultsToListener(int identifier) {
 		if (!recognitionMatches.containsKey(identifier)) {
+			Log.v(TAG, "No Matches found");
 			return;
 		}
 		ArrayList<String> matches = recognitionMatches.get(identifier);
 		if (matches.size() == 0 && broadcastOnlySuccessResults) {
+			Log.v(TAG, "Matchsize null");
 			return;
 		}
 		ArrayList<RecognizerCallback> listenerListCopy = new ArrayList<RecognizerCallback>(askerList);
 		Bundle resultBundle = new Bundle();
 		resultBundle.putStringArrayList(BUNDLE_RESULT_MATCHES, matches);
 		resultBundle.putLong(BUNDLE_IDENTIFIER, identifier);
+		Log.v(TAG, "Sending results out");
 		for (RecognizerCallback listener : listenerListCopy) {
 			listener.onRecognizerResult(matches.size() > 0 ? RESULT_OK : RESULT_NOMATCH, resultBundle);
 		}
@@ -534,7 +551,7 @@ public class RecognitionManager implements RecognizerCallback {
 					"Recieved Error: " + errorBundle.getInt(BUNDLE_ERROR_CODE) + " - "
 							+ errorBundle.getString(BUNDLE_ERROR_MESSAGE));
 		}
-		Long identifier = errorBundle.getLong(BUNDLE_IDENTIFIER);
+		int identifier = errorBundle.getInt(BUNDLE_IDENTIFIER);
 		synchronized (recognitionTasks) {
 			if (!recognitionTasks.containsKey(identifier)) {
 				return;

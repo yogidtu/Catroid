@@ -30,6 +30,7 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.FastDTWSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.RecognitionManager;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
@@ -41,6 +42,7 @@ import org.catrobat.catroid.test.utils.TestUtils;
 
 import android.media.AudioFormat;
 import android.os.Bundle;
+import android.os.Environment;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
@@ -76,6 +78,209 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 
 		RecognitionManager manager = new RecognitionManager(audioFileStream);
 		manager.registerContinuousSpeechListener(this);
+		manager.start();
+
+		int i = 15;
+		do {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
+
+		assertTrue("Error occured:\n" + lastErrorMessage, lastErrorMessage == "");
+		assertTrue("Timed out.", i > 0);
+		assertTrue("There was no recognition", lastMatches.size() > 0);
+
+		assertTrue("\"links\" was not recognized.", matchesContainString("links"));
+		assertTrue("\"rechts\" was not recognized.", matchesContainString("rechts"));
+		assertTrue("\"rauf\" was not recognized.", matchesContainString("rauf"));
+		assertTrue("\"runter\" was not recognized.", matchesContainString("runter"));
+		assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
+		manager.unregisterContinuousSpeechListener(this);
+		manager.stop();
+	}
+
+	public void testOnlineLocalRecognition() throws IOException {
+		PipedOutputStream controlableStream = new PipedOutputStream();
+		InputStream controlledInputStream = new PipedInputStream(controlableStream);
+		AudioInputStream controlledAudioStream = new AudioInputStream(controlledInputStream,
+				AudioFormat.ENCODING_PCM_16BIT, 1, 16000, 256, ByteOrder.LITTLE_ENDIAN, true);
+
+		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+			fail();
+		}
+
+		InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
+				.openRawResource(R.raw.mixed_commands);
+		//		AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
+		//				1, 16000, 512, ByteOrder.LITTLE_ENDIAN, true);
+
+		RecognitionManager manager = new RecognitionManager(controlledAudioStream);
+		FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
+		localRecognizer.setSavingDirectory(Environment.getExternalStorageDirectory().getAbsolutePath());
+		manager.addSpeechRecognizer(localRecognizer);
+		manager.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
+		manager.registerContinuousSpeechListener(this);
+		manager.setParalellChunkProcessing(false);
+		manager.setProcessChunkOnlyTillFirstSuccessRecognizer(true);
+		manager.start();
+
+		int readedByte = 0;
+		while ((readedByte = realAudioExampleStream.read()) != -1) {
+			controlableStream.write(readedByte);
+		}
+		//		controlableStream.write(-1);
+
+		int i = 15;
+		do {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
+
+		i = 0;
+		String all = "";
+		for (String match : lastMatches) {
+			all += match;
+
+			i++;
+			if (i % 5 == 0) {
+				all += "\n";
+				i = 0;
+			}
+		}
+
+		Log.v("SebiTest", "All the results:\n" + all);
+
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		realAudioExampleStream = getInstrumentation().getContext().getResources()
+				.openRawResource(R.raw.speechsample_directions);
+		readedByte = 0;
+		while ((readedByte = realAudioExampleStream.read()) != -1) {
+			controlableStream.write(readedByte);
+		}
+		controlableStream.write(-1);
+
+		i = 15;
+		do {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
+
+		i = 0;
+		all = "[";
+		for (String match : lastMatches) {
+			all += match + " ";
+
+			i++;
+			if (i % 5 == 0) {
+				all += "]\n[";
+				i = 0;
+			}
+		}
+		Log.v("SebiTest", "All the results:\n" + all);
+
+		//		Log.v("SebiTest", "Starting next frame left 03");
+		//
+		//		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.links03);
+		//
+		//		readedByte = 0;
+		//		while ((readedByte = realAudioExampleStream.read()) != -1) {
+		//			controlableStream.write(readedByte);
+		//		}
+		//
+		//		i = 15;
+		//		do {
+		//			try {
+		//				Thread.sleep(1000);
+		//			} catch (InterruptedException e) {
+		//				e.printStackTrace();
+		//			}
+		//		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
+		//
+		//		Log.v("SebiTest", "Starting next frame right 2");
+		//
+		//		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.right02);
+		//
+		//		readedByte = 0;
+		//		while ((readedByte = realAudioExampleStream.read()) != -1) {
+		//			controlableStream.write(readedByte);
+		//		}
+		//
+		//		i = 15;
+		//		do {
+		//			try {
+		//				Thread.sleep(1000);
+		//			} catch (InterruptedException e) {
+		//				e.printStackTrace();
+		//			}
+		//		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
+		//
+		//		Log.v("SebiTest", "Starting next frame left 01");
+		//
+		//		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.links01);
+		//
+		//		readedByte = 0;
+		//		while ((readedByte = realAudioExampleStream.read()) != -1) {
+		//			controlableStream.write(readedByte);
+		//		}
+		//
+		//		i = 15;
+		//		do {
+		//			try {
+		//				Thread.sleep(1000);
+		//			} catch (InterruptedException e) {
+		//				e.printStackTrace();
+		//			}
+		//		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
+
+		assertTrue("Error occured:\n" + lastErrorMessage, lastErrorMessage == "");
+		assertTrue("Timed out.", i > 0);
+		assertTrue("There was no recognition", lastMatches.size() > 0);
+
+		assertTrue("\"links\" was not recognized.", matchesContainString("links"));
+		assertTrue("\"rechts\" was not recognized.", matchesContainString("rechts"));
+		assertTrue("\"rauf\" was not recognized.", matchesContainString("rauf"));
+		assertTrue("\"runter\" was not recognized.", matchesContainString("runter"));
+		assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
+		manager.unregisterContinuousSpeechListener(this);
+		manager.stop();
+	}
+
+	public void testOnlineAndLocalRecognition() throws IOException {
+		//		PipedOutputStream controlableStream = new PipedOutputStream();
+		//		InputStream controlledInputStream = new PipedInputStream(controlableStream);
+		//		AudioInputStream controlledAudioStream = new AudioInputStream(controlledInputStream,
+		//				AudioFormat.ENCODING_PCM_16BIT, 1, 16000, 256, ByteOrder.LITTLE_ENDIAN, true);
+		//
+		//		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+		//			fail();
+		//		}
+
+		InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
+				.openRawResource(R.raw.mixed_commands);
+		AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
+				1, 16000, 512, ByteOrder.LITTLE_ENDIAN, true);
+
+		RecognitionManager manager = new RecognitionManager(audioFileStream);
+		FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
+		localRecognizer.setSavingDirectory(Environment.getExternalStorageDirectory().getAbsolutePath());
+		manager.addSpeechRecognizer(localRecognizer);
+		manager.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
+		manager.registerContinuousSpeechListener(this);
+		manager.setParalellChunkProcessing(false);
+		manager.setProcessChunkOnlyTillFirstSuccessRecognizer(true);
 		manager.start();
 
 		int i = 15;

@@ -42,7 +42,7 @@ public abstract class SpeechRecognizer {
 	private static final int STATE_INIT = 0x1;
 	private static final int STATE_PREPARED = 0x2;
 	private ArrayList<RecognizerCallback> resultListeners = new ArrayList<RecognizerCallback>();
-	private HashMap<Thread, Long> taskQuqe = new HashMap<Thread, Long>();
+	private HashMap<Thread, Integer> taskQuqe = new HashMap<Thread, Integer>();
 	private int currentState = STATE_INIT;
 
 	public abstract boolean isAudioFormatSupported(AudioInputStream streamToCheck);
@@ -61,7 +61,7 @@ public abstract class SpeechRecognizer {
 		}
 	}
 
-	public void startRecognizeInput(final AudioInputStream inputStream, long identifier)
+	public void startRecognizeInput(final AudioInputStream inputStream, int identifier)
 			throws IllegalArgumentException, IllegalStateException {
 
 		if (currentState != STATE_PREPARED) {
@@ -83,7 +83,7 @@ public abstract class SpeechRecognizer {
 
 	public void startRecognizeInput(AudioInputStream inputStream) throws IllegalArgumentException,
 			IllegalStateException {
-		this.startRecognizeInput(inputStream, System.currentTimeMillis());
+		this.startRecognizeInput(inputStream, (int) System.currentTimeMillis());
 	}
 
 	public void startRecognizeInputWAVFile(String inputWAVFilePath, long identifier) throws IOException,
@@ -115,6 +115,10 @@ public abstract class SpeechRecognizer {
 	}
 
 	protected synchronized void sendResults(ArrayList<String> matches, Thread caller) {
+		sendResults(matches, Thread.currentThread(), true);
+	}
+
+	protected synchronized void sendResults(ArrayList<String> matches, Thread caller, boolean recognizedResult) {
 		if (!taskQuqe.containsKey(caller)) {
 			if (DEBUG_OUTPUT) {
 				Thread.dumpStack();
@@ -122,27 +126,26 @@ public abstract class SpeechRecognizer {
 			}
 			return;
 		}
-		long identifier = taskQuqe.get(caller);
+		int identifier = taskQuqe.get(caller);
 		taskQuqe.remove(caller);
 		Bundle resultBundle = new Bundle();
 		if (identifier != 0) {
-			resultBundle.putLong(RecognizerCallback.BUNDLE_IDENTIFIER, identifier);
+			resultBundle.putInt(RecognizerCallback.BUNDLE_IDENTIFIER, identifier);
 		}
+		resultBundle.putBoolean(RecognizerCallback.BUNDLE_RESULT_RECOGNIZED, recognizedResult);
 		resultBundle.putString(RecognizerCallback.BUNDLE_SENDERCLASS, this.toString());
 		synchronized (resultListeners) {
 			if (matches != null && matches.size() > 0) {
 				resultBundle.putStringArrayList(RecognizerCallback.BUNDLE_RESULT_MATCHES, matches);
 				if (DEBUG_OUTPUT) {
-					Log.v(TAG,
-							"we are sending Results: " + matches.toString() + " from Thread" + Thread.currentThread());
+					Log.v(TAG, "we are sending Results: " + matches.toString() + " from:" + runningInstance);
 				}
 				for (RecognizerCallback listener : resultListeners) {
 					listener.onRecognizerResult(RecognizerCallback.RESULT_OK, resultBundle);
 				}
 			} else {
 				if (DEBUG_OUTPUT) {
-					Log.v(TAG, "we are sending empty results from Thread" + Thread.currentThread() + "and caller:"
-							+ runningInstance);
+					Log.v(TAG, "we are sending empty results from:" + runningInstance);
 				}
 				for (RecognizerCallback listener : resultListeners) {
 					listener.onRecognizerResult(RecognizerCallback.RESULT_NOMATCH, resultBundle);
@@ -155,6 +158,10 @@ public abstract class SpeechRecognizer {
 		sendError(errorCode, errorMessage, Thread.currentThread());
 	}
 
+	protected int getMyIdentifier() {
+		return taskQuqe.get(Thread.currentThread());
+	}
+
 	protected synchronized void sendError(int errorCode, String errorMessage, Thread caller) {
 		if (!taskQuqe.containsKey(caller)) {
 			if (DEBUG_OUTPUT) {
@@ -163,12 +170,12 @@ public abstract class SpeechRecognizer {
 			}
 			return;
 		}
-		long identifier = taskQuqe.get(caller);
+		int identifier = taskQuqe.get(caller);
 		taskQuqe.remove(caller);
 
 		Bundle errorBundle = new Bundle();
 		if (identifier != 0) {
-			errorBundle.putLong(RecognizerCallback.BUNDLE_IDENTIFIER, identifier);
+			errorBundle.putInt(RecognizerCallback.BUNDLE_IDENTIFIER, identifier);
 		}
 
 		synchronized (resultListeners) {
