@@ -38,7 +38,7 @@ public class Formula implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private FormulaElement formulaTree;
-	private transient Integer formulaTextFieldId = null;
+	private Integer formulaTextFieldId = null;
 	private transient InternFormula internFormula = null;
 	private transient String displayText = null;
 
@@ -160,7 +160,7 @@ public class Formula implements Serializable {
 	}
 
 	public void prepareToRemove() {
-		formulaTextFieldId = null;
+		//		formulaTextFieldId = null;
 	}
 
 	public InternFormulaState getInternFormulaState() {
