@@ -36,6 +36,8 @@ import org.catrobat.catroid.bluetooth.DeviceListActivity;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.FastDTWSpeechRecognizer;
+import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.RecognitionManager;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.utils.MicrophoneGrabber;
@@ -51,6 +53,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -130,6 +133,14 @@ public class PreStageActivity extends Activity {
 					MicrophoneGrabber.frameByteSize, ByteOrder.LITTLE_ENDIAN, true);
 
 			speechToText = new RecognitionManager(microphoneStream);
+			FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
+			localRecognizer.setSavingDirectory(Environment.getExternalStorageDirectory().getAbsolutePath());
+			speechToText.addSpeechRecognizer(localRecognizer);
+			speechToText.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
+			//			speechToText.registerContinuousSpeechListener(this);
+			speechToText.setParalellChunkProcessing(false);
+			speechToText.setProcessChunkOnlyTillFirstSuccessRecognizer(true);
+
 			resourceInitialized();
 		}
 		if (requiredResourceCounter == Brick.NO_RESOURCES) {
@@ -379,13 +390,13 @@ public class PreStageActivity extends Activity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(builderContext);
 
 		ArrayList<Brick> networkBrickList = getBricksRequieringResource(Brick.NETWORK_CONNECTION);
-		View dialogLayout = View.inflate(builder.getContext(), R.layout.dialog_error_networkconnection, null);
+		View dialogLayout = View.inflate(builderContext, R.layout.dialog_error_networkconnection, null);
 		LinearLayout imageLayout = (LinearLayout) dialogLayout
 				.findViewById(R.id.dialog_error_network_brickimages_layout);
 
 		for (Brick networkBrick : networkBrickList) {
-			ImageView brickImageView = new ImageView(builder.getContext());
-			View brickView = networkBrick.getPrototypeView(builder.getContext());
+			ImageView brickImageView = new ImageView(builderContext);
+			View brickView = networkBrick.getPrototypeView(builderContext);
 			brickView.setDrawingCacheEnabled(true);
 			brickView.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
 					MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));

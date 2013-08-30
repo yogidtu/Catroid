@@ -142,11 +142,13 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 		HttpResponse response;
 		try {
 			if (DEBUG_OUTPUT) {
-				Log.w("GoogleSpeechRecog", "Starting request" + Thread.currentThread() + " ...");
+				Log.v("GoogleSpeechRecog", "Starting request" + Thread.currentThread() + " id " + getMyIdentifier()
+						+ " ...");
 			}
 			response = httpclient.execute(httppost);
 			if (DEBUG_OUTPUT) {
-				Log.w("GoogleSpeechRecog", "Finished request" + Thread.currentThread() + "...");
+				Log.v("GoogleSpeechRecog", "Finished request" + Thread.currentThread() + " id " + getMyIdentifier()
+						+ "...");
 			}
 		} catch (ClientProtocolException cpe) {
 			sendError(RecognizerCallback.ERROR_NONETWORK, "Executing the postrequest failed.");
@@ -176,7 +178,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 		String resp = builder.toString();
 		if (resp.contains("NO_MATCH")) {
-			sendResults(new ArrayList<String>());
+			sendResults(new ArrayList<String>(), Thread.currentThread(), true);
 			return null;
 		}
 

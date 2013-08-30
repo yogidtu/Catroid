@@ -25,8 +25,6 @@ package org.catrobat.catroid.speechrecognition;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import android.util.Log;
-
 public class AdaptiveEnergyVoiceDetection extends VoiceDetection {
 	/*
 	 * Implemented after

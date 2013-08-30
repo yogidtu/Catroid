@@ -35,6 +35,7 @@ public abstract interface RecognizerCallback {
 	public static final int ERROR_OTHER = 0x4;
 
 	public static final String BUNDLE_RESULT_MATCHES = "RESULT";
+	public static final String BUNDLE_RESULT_RECOGNIZED = "RECOGNIZED";
 	public static final String BUNDLE_ERROR_MESSAGE = "ERROR_MESSAGE";
 	public static final String BUNDLE_ERROR_CODE = "ERROR_CODE";
 	public static final String BUNDLE_ERROR_FATAL_FLAG = "ERROR_FATAL_FLAG";
