@@ -135,7 +135,7 @@ public abstract class SpeechRecognizer {
 		resultBundle.putBoolean(RecognizerCallback.BUNDLE_RESULT_RECOGNIZED, recognizedResult);
 		resultBundle.putString(RecognizerCallback.BUNDLE_SENDERCLASS, this.toString());
 		synchronized (resultListeners) {
-			if (matches != null && matches.size() > 0) {
+			if (recognizedResult) {
 				resultBundle.putStringArrayList(RecognizerCallback.BUNDLE_RESULT_MATCHES, matches);
 				if (DEBUG_OUTPUT) {
 					Log.v(TAG, "we are sending Results: " + matches.toString() + " from:" + runningInstance);

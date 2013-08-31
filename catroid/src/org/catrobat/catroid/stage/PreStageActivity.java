@@ -25,6 +25,7 @@ package org.catrobat.catroid.stage;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 
 import org.catrobat.catroid.ProjectManager;
@@ -35,6 +36,7 @@ import org.catrobat.catroid.bluetooth.BluetoothManager;
 import org.catrobat.catroid.bluetooth.DeviceListActivity;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.WhenSpeechReceiverBrick;
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
 import org.catrobat.catroid.speechrecognition.FastDTWSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
@@ -53,7 +55,6 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -152,7 +153,14 @@ public class PreStageActivity extends Activity {
 
 			speechToText = new RecognitionManager(microphoneStream);
 			FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
-			localRecognizer.setSavingDirectory(Environment.getExternalStorageDirectory().getAbsolutePath());
+			HashSet<String> targetStrings = new HashSet<String>();
+			for (Brick recognitionBrick : getBricksRequieringResource(Brick.SPEECH_TO_TEXT, false)) {
+				if (recognitionBrick instanceof WhenSpeechReceiverBrick) {
+					targetStrings.add(((WhenSpeechReceiverBrick) recognitionBrick).getBroadcastMessage());
+				}
+			}
+			Log.v("SebiTest", "Registering Strings: " + targetStrings);
+			localRecognizer.setFixedClusterLabels(new ArrayList<String>(targetStrings));
 			speechToText.addSpeechRecognizer(localRecognizer);
 			speechToText.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
 			//			speechToText.registerContinuousSpeechListener(this);
@@ -258,6 +266,10 @@ public class PreStageActivity extends Activity {
 	}
 
 	private static ArrayList<Brick> getBricksRequieringResource(int resource) {
+		return getBricksRequieringResource(resource, true);
+	}
+
+	private static ArrayList<Brick> getBricksRequieringResource(int resource, boolean typeFiltered) {
 		ArrayList<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance().getCurrentProject()
 				.getSpriteList();
 		ArrayList<Brick> brickList = new ArrayList<Brick>();
@@ -265,17 +277,20 @@ public class PreStageActivity extends Activity {
 		for (Sprite sprite : spriteList) {
 			brickList.addAll(sprite.getBricksRequiringResource(resource));
 		}
-		ArrayList<Brick> filterBrickList = new ArrayList<Brick>(brickList);
-		for (Brick filterType : filterBrickList) {
-			boolean contained = false;
-			for (Brick realType : brickList) {
-				if (filterType.getClass() == realType.getClass() && filterType != realType) {
-					contained = true;
-					break;
+
+		if (typeFiltered) {
+			ArrayList<Brick> filterBrickList = new ArrayList<Brick>(brickList);
+			for (Brick filterType : filterBrickList) {
+				boolean contained = false;
+				for (Brick realType : brickList) {
+					if (filterType.getClass() == realType.getClass() && filterType != realType) {
+						contained = true;
+						break;
+					}
 				}
-			}
-			if (contained) {
-				brickList.remove(filterType);
+				if (contained) {
+					brickList.remove(filterType);
+				}
 			}
 		}
 		return brickList;

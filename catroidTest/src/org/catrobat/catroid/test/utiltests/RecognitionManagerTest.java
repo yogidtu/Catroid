@@ -119,7 +119,6 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 
 		RecognitionManager manager = new RecognitionManager(controlledAudioStream);
 		FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
-		localRecognizer.setSavingDirectory(Environment.getExternalStorageDirectory().getAbsolutePath());
 		manager.addSpeechRecognizer(localRecognizer);
 		manager.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
 		manager.registerContinuousSpeechListener(this);
@@ -259,15 +258,6 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 	}
 
 	public void testOnlineAndLocalRecognition() throws IOException {
-		//		PipedOutputStream controlableStream = new PipedOutputStream();
-		//		InputStream controlledInputStream = new PipedInputStream(controlableStream);
-		//		AudioInputStream controlledAudioStream = new AudioInputStream(controlledInputStream,
-		//				AudioFormat.ENCODING_PCM_16BIT, 1, 16000, 256, ByteOrder.LITTLE_ENDIAN, true);
-		//
-		//		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-		//			fail();
-		//		}
-
 		InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
 				.openRawResource(R.raw.mixed_commands);
 		AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
@@ -275,7 +265,6 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 
 		RecognitionManager manager = new RecognitionManager(audioFileStream);
 		FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
-		localRecognizer.setSavingDirectory(Environment.getExternalStorageDirectory().getAbsolutePath());
 		manager.addSpeechRecognizer(localRecognizer);
 		manager.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
 		manager.registerContinuousSpeechListener(this);

@@ -22,21 +22,18 @@
  */
 package org.catrobat.catroid.speechrecognition;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 
 import org.catrobat.catroid.speechrecognition.signalprocessing.FFT;
-import org.catrobat.catroid.speechrecognition.signalprocessing.PLPFrequencyFilterBank;
+import org.catrobat.catroid.speechrecognition.signalprocessing.MelFrequencyFilterBank;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 
 import com.dtw.DTW;
+import com.dtw.TimeWarpInfo;
 import com.timeseries.TimeSeries;
 import com.util.DistanceFunction;
 import com.util.DistanceFunctionFactory;
@@ -44,22 +41,39 @@ import com.util.DistanceFunctionFactory;
 public class FastDTWSpeechRecognizer extends SpeechRecognizer implements RecognizerCallback {
 
 	private static final String TAG = FastDTWSpeechRecognizer.class.getSimpleName();
-	private SparseArray<String> processedFilePaths = new SparseArray<String>();
-	private HashMap<ArrayList<String>, ArrayList<Integer>> matchCluster = new HashMap<ArrayList<String>, ArrayList<Integer>>();
+	private SparseArray<TimeSeries> unassociatedFingerprints = new SparseArray<TimeSeries>();
+	private ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
+	//	private HashMap<ArrayList<String>, ArrayList<Integer>> matchCluster = new HashMap<ArrayList<String>, ArrayList<Integer>>();
 	private String workingDirectory = "";
+	private boolean fixedClusters = false;
 
-	private int maxClusterSize = 5;
-	private int maxClusterMatches = 5;
-	private int targetTimePerFrame = 256;
-
-	private double globalThreshold = 2000.0;
-	private double minClusterDistance = 1000.0;
+	private int targetTimePerFrame = 32;
+	private int overlappingFrameTime = 0;
+	private int filters = 32;
+	private double globalThreshold = 15.0;
+	private double minClusterDistance = 3.0;
 
 	private int samplesPerFrame;
+	private int samplesPerOverlap;
 	private FFT preCalculatedFFT;
 
-	public void setSavingDirectory(String dirPath) {
-		workingDirectory = dirPath;
+	//	public void setSavingDirectory(String dirPath) {
+	//		workingDirectory = dirPath;
+	//	}
+
+	public void setFixedClusterLabels(ArrayList<String> labels) {
+		clusterList.clear();
+		for (String label : labels) {
+			Cluster fixedCluster = new Cluster();
+			ArrayList<String> clusterLabel = new ArrayList<String>();
+			clusterLabel.add(label);
+			fixedCluster.setLabel(clusterLabel);
+			clusterList.add(fixedCluster);
+		}
+		Cluster emptyCluster = new Cluster();
+		emptyCluster.setLabel(new ArrayList<String>());
+		clusterList.add(emptyCluster);
+		fixedClusters = true;
 	}
 
 	@Override
@@ -67,6 +81,7 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		int tmpSamplesPerFrame = (int) (streamToCheck.getSampleRate() / 1000f * targetTimePerFrame);
 		if (tmpSamplesPerFrame != samplesPerFrame) {
 			samplesPerFrame = tmpSamplesPerFrame;
+			samplesPerOverlap = (int) (streamToCheck.getSampleRate() / 1000f * overlappingFrameTime);
 			Log.v(TAG, "Samples per Frame: " + samplesPerFrame);
 			preCalculatedFFT = new FFT(samplesPerFrame);
 		}
@@ -77,21 +92,24 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 	protected void runRecognitionTask(AudioInputStream inputStream) {
 
 		int identifier = getMyIdentifier();
-		int samplesPerFrame = (int) (inputStream.getSampleRate() / 1000f * targetTimePerFrame);
 		double[][] currentLMD = new double[50][];
 		byte[] frameRawBuffer = new byte[samplesPerFrame * (inputStream.getSampleSizeInBits() / 8)];
 		double[] imageArray = new double[samplesPerFrame];
+		byte[] overlapBuffer = new byte[samplesPerOverlap * (inputStream.getSampleSizeInBits() / 8)];
 
 		int frameNumber = 0;
 		try {
-			while (inputStream.read(frameRawBuffer, 0, frameRawBuffer.length) > 0) {
+			while (inputStream.read(frameRawBuffer, overlapBuffer.length, frameRawBuffer.length - overlapBuffer.length) > 0) {
+				System.arraycopy(overlapBuffer, 0, frameRawBuffer, 0, overlapBuffer.length);
 				//Log.v(TAG, "Start converting to features");
 				double[] frameBuffer = audioByteToDouble(frameRawBuffer, inputStream.getSampleSizeInBits() / 8);
 				preCalculatedFFT.fft(frameBuffer, imageArray);
 				frameBuffer = preCalculatedFFT.getMagnitude(frameBuffer, imageArray);
-				//								MelFrequencyFilterBank filterBank = new MelFrequencyFilterBank(130, inputStream.getSampleRate() / 2, 32);
-				PLPFrequencyFilterBank filterBank = new PLPFrequencyFilterBank(130, inputStream.getSampleRate() / 2, 32);
-				frameBuffer = filterBank.processFrame(frameBuffer, inputStream.getSampleRate());
+				MelFrequencyFilterBank filterBank = new MelFrequencyFilterBank(130, inputStream.getSampleRate(),
+						filters);
+				//				PLPFrequencyFilterBank filterBank = new PLPFrequencyFilterBank(130, inputStream.getSampleRate() / 2,
+				//						filters);
+				frameBuffer = filterBank.process(frameBuffer, inputStream.getSampleRate());
 				if (frameNumber >= currentLMD.length) {
 					double[][] growingBuffer = new double[currentLMD.length * 2][];
 					System.arraycopy(currentLMD, 0, growingBuffer, 0, currentLMD.length);
@@ -99,6 +117,8 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 				}
 				currentLMD[frameNumber] = frameBuffer;
 				frameNumber++;
+				System.arraycopy(frameRawBuffer, frameRawBuffer.length - overlapBuffer.length, overlapBuffer, 0,
+						overlapBuffer.length);
 			}
 			double[][] buffer = new double[frameNumber][];
 			System.arraycopy(currentLMD, 0, buffer, 0, frameNumber);
@@ -111,32 +131,31 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		final DistanceFunction distanceFunktion = DistanceFunctionFactory.getDistFnByName("EuclideanDistance");
 		final TimeSeries timeSerieInput = new TimeSeries(currentLMD);
 
-		double[] nearestDistances = new double[] { 3 * globalThreshold, 3 * globalThreshold };
-		ArrayList<Integer> successCluster = null;
+		double[] nearestDistances = new double[] { Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY };
+		Cluster successCluster = null;
 		ArrayList<String> matches = null;
-		synchronized (matchCluster) {
-			Iterator<Entry<ArrayList<String>, ArrayList<Integer>>> it = matchCluster.entrySet().iterator();
-			while (it.hasNext()) {
-				Entry<ArrayList<String>, ArrayList<Integer>> cluster = it.next();
-				Log.v(TAG, "cluster --------------------" + cluster.getKey().toString());
-				double clusterMinDistance = 1000d;
-				for (int featureFile : cluster.getValue()) {
-					final TimeSeries timeSerieReference = new TimeSeries(processedFilePaths.get(featureFile), false,
-							false, ',');
-					Double result = DTW.getWarpDistBetween(timeSerieInput, timeSerieReference, distanceFunktion);
-					//				result = result / ((Math.max(currentLMD.length, timeSerieReference.numOfPts())) * targetTimePerFrame);
-					result = result / (currentLMD.length * targetTimePerFrame);
-					int compareableDistance = result.intValue();
-					Log.v(TAG, "We get distance for " + featureFile + "FILE of " + compareableDistance + " (id:"
-							+ identifier + ")");
-					if (clusterMinDistance > compareableDistance) {
-						clusterMinDistance = compareableDistance;
-					}
+		ArrayList<Cluster> clusterCopyList = new ArrayList<Cluster>(clusterList);
+		for (Cluster cluster : clusterCopyList) {
+			double clusterMinDistance = Double.POSITIVE_INFINITY;
+			Log.v(TAG, "cluster --------------------" + cluster.getClusterLabels().toString());
+			for (TimeSeries timeSerieReference : cluster.getClusterFiles()) {
+
+				TimeWarpInfo twi = DTW.getWarpInfoBetween(timeSerieInput, timeSerieReference, distanceFunktion);
+				//				Log.v(TAG, "Warp path size: " + twi.getPath().size());
+				//Double result = DTW.getWarpDistBetween(timeSerieInput, timeSerieReference, distanceFunktion);
+				//				result = result / ((Math.max(currentLMD.length, timeSerieReference.numOfPts())) * targetTimePerFrame);
+				Double result = twi.getDistance();
+				result = result
+						/ (currentLMD.length * timeSerieReference.numOfPts() * 1000 * targetTimePerFrame * filters);
+				int compareableDistance = result.intValue();
+				Log.v(TAG, "We get distance of " + compareableDistance);
+				if (clusterMinDistance > compareableDistance) {
+					clusterMinDistance = compareableDistance;
 				}
 				if (clusterMinDistance < nearestDistances[0]) {
 					nearestDistances[0] = clusterMinDistance;
-					matches = cluster.getKey();
-					successCluster = cluster.getValue();
+					matches = cluster.getClusterLabels();
+					successCluster = cluster;
 				} else if (clusterMinDistance < nearestDistances[1]) {
 					nearestDistances[1] = clusterMinDistance;
 				}
@@ -144,93 +163,64 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		}
 
 		if (nearestDistances[1] - nearestDistances[0] >= minClusterDistance && nearestDistances[0] <= globalThreshold) {
-			//			Log.v(TAG, "Result " + identifier);
-			sendResults(matches, Thread.currentThread(), true);
-			if (successCluster.size() < maxClusterSize) {
-				successCluster.add(identifier);
-			}
+			Log.w(TAG, "Sending results");
+			successCluster.addFingerprint(timeSerieInput);
+			sendResults(matches);
 		} else {
-			//			Log.v(TAG, "Has no result for " + identifier);
-			sendResults(new ArrayList<String>());
+			unassociatedFingerprints.put(identifier, timeSerieInput);
+			sendResults(new ArrayList<String>(), Thread.currentThread(), false);
 		}
 
 		Log.v(TAG, "Ended process in " + (System.currentTimeMillis() - DTWTime) + "ms");
-
-		String newFile = workingDirectory + "/" + System.currentTimeMillis() + ".fastdtw";
-		try {
-			timeSerieInput.save(new File(newFile));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		processedFilePaths.put(identifier, newFile);
-		Log.v(TAG, "Saved file " + newFile);
-
 	}
 
 	@Override
 	public void onRecognizerResult(int resultCode, Bundle resultBundle) {
 		if (resultBundle.getString(BUNDLE_SENDERCLASS).contains(FastDTWSpeechRecognizer.class.getSimpleName())) {
-			//			Log.v(TAG, "Discarding.");
 			return;
 		}
 		if (resultBundle.getBoolean(BUNDLE_RESULT_RECOGNIZED)) {
 			int identifier = resultBundle.getInt(BUNDLE_IDENTIFIER);
-			//			cachedMatches.put(identifier, resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES));
 			ArrayList<String> resultMatches = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES);
 			boolean emptySearch = false;
 			if (resultMatches == null) {
 				resultMatches = new ArrayList<String>();
+			}
+			if (resultMatches.size() == 0) {
 				emptySearch = true;
 			}
 
 			boolean added = false;
-			synchronized (matchCluster) {
-				Iterator<Entry<ArrayList<String>, ArrayList<Integer>>> it = matchCluster.entrySet().iterator();
-				while (it.hasNext()) {
-					Entry<ArrayList<String>, ArrayList<Integer>> cluster = it.next();
-					ArrayList<String> cachedMatches = cluster.getKey();
-					if (emptySearch && cachedMatches.size() == 0) {
-						if (cluster.getValue().size() >= maxClusterSize) {
-							int oldestClusterIndex = cluster.getValue().get(0);
-							File tooMuch = new File(processedFilePaths.get(oldestClusterIndex));
-							tooMuch.delete();
-							cluster.getValue().remove(0);
-							cluster.getValue().add(identifier);
-							Log.v(TAG, "Deleted specific file, enough for this cluster.");
-						} else {
-							Log.v(TAG, "Added result to cluster.");
-							cluster.getValue().add(identifier);
-						}
-						added = true;
-						break;
+			for (Cluster cluster : clusterList) {
+				ArrayList<String> cachedMatches = cluster.getClusterLabels();
+				if (emptySearch && cachedMatches.size() == 0) {
+					cluster.addFingerprint(unassociatedFingerprints.get(identifier));
+					unassociatedFingerprints.remove(identifier);
+					Log.v(TAG, "Results added.");
+					added = true;
+					break;
+				}
+				if (cluster.belongsToCluster(resultMatches)) {
+					cluster.addFingerprint(unassociatedFingerprints.get(identifier));
+					unassociatedFingerprints.remove(identifier);
+					Log.v(TAG, "Results added.");
+					if (!fixedClusters) {
+						cluster.mergeResults(resultMatches);
 					}
-					for (String itemMatch : cachedMatches) {
-						if (resultMatches.contains(itemMatch) && cachedMatches.indexOf(itemMatch) <= 2) {
-							if (cluster.getValue().size() >= maxClusterSize) {
-								File tooMuch = new File(processedFilePaths.get(cluster.getValue().get(0)));
-								tooMuch.delete();
-								cluster.getValue().remove(0);
-								cluster.getValue().add(identifier);
-								Log.v(TAG, "Deleted specific file, enough for this cluster.");
-							} else {
-								Log.v(TAG, "Added result to cluster.");
-								cluster.getValue().add(identifier);
-							}
-							mergeClusterMatches(cachedMatches, resultMatches, itemMatch);
-
-							added = true;
-							break;
-						}
-					}
-					if (added) {
-						break;
-					}
+					added = true;
+					break;
+				}
+				if (added) {
+					break;
 				}
 			}
-			if (!added) {
-				ArrayList<Integer> matchIdentifiers = new ArrayList<Integer>();
-				matchIdentifiers.add(identifier);
-				matchCluster.put(resultMatches, matchIdentifiers);
+			if (!added && !fixedClusters) {
+				Cluster additionalCluster = new Cluster();
+				additionalCluster.addFingerprint(unassociatedFingerprints.get(identifier));
+				additionalCluster.setLabel(resultMatches);
+				unassociatedFingerprints.remove(identifier);
+
+				clusterList.add(additionalCluster);
 				Log.v(TAG, "New Cluster added.");
 			}
 		} else {
@@ -238,33 +228,16 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		}
 	}
 
-	private void mergeClusterMatches(ArrayList<String> clusterMatches, ArrayList<String> recievedMatches,
-			String duplicateItem) {
-		int duplicateIndex = clusterMatches.indexOf(duplicateItem);
-		ArrayList<String> copyClusterMatches = new ArrayList<String>(clusterMatches);
-		clusterMatches.clear();
-		clusterMatches.add(duplicateItem);
-		for (int i = 0; i < maxClusterMatches / 2; i++) {
-			clusterMatches.add(copyClusterMatches.get(i));
-			if (recievedMatches.size() > i) {
-				clusterMatches.add(recievedMatches.get(i));
-			}
-		}
-
-	}
-
-	@Override
-	public void prepare() throws IllegalStateException {
-		if (workingDirectory == "") {
-			throw new IllegalStateException();
-		}
-		super.prepare();
-	}
+	//	@Override
+	//	public void prepare() throws IllegalStateException {
+	//		if (workingDirectory == "") {
+	//			throw new IllegalStateException();
+	//		}
+	//		super.prepare();
+	//	}
 
 	@Override
 	public void onRecognizerError(Bundle errorBundle) {
-		// TODO Auto-generated method stub
-
 	}
 
 	private static double[] audioByteToDouble(byte[] samples, int bytesPerSample) {

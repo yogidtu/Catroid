@@ -35,7 +35,6 @@ import org.catrobat.catroid.speechrecognition.FastDTWSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.Utils;
 
 import android.media.AudioFormat;
 import android.os.Bundle;
@@ -70,7 +69,6 @@ public class FastDTWRecognizerTest extends InstrumentationTestCase implements Re
 						.getTargetContext()));
 
 		FastDTWSpeechRecognizer recognizer = new FastDTWSpeechRecognizer();
-		recognizer.setSavingDirectory(Utils.buildProjectPath(testProjectName));
 		recognizer.addCallbackListener(this);
 		recognizer.prepare();
 
