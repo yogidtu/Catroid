@@ -32,14 +32,17 @@ package org.catrobat.catroid.utils;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -312,6 +315,26 @@ public class Utils {
 		return stringToAdapt.replaceAll("[\"*/:<>?\\\\|]", "");
 	}
 
+	public static String getUniqueObjectName(String name) {
+		return searchForNonExistingObjectName(name, 0);
+	}
+
+	private static String searchForNonExistingObjectName(String name, int nextNumber) {
+		String newName;
+
+		if (nextNumber == 0) {
+			newName = name;
+		} else {
+			newName = name + nextNumber;
+		}
+
+		if (ProjectManager.getInstance().spriteExists(newName)) {
+			return searchForNonExistingObjectName(name, ++nextNumber);
+		}
+
+		return newName;
+	}
+
 	public static String getUniqueLookName(String name) {
 		return searchForNonExistingLookName(name, 0);
 	}
@@ -386,7 +409,6 @@ public class Utils {
 		}
 		return pixmap;
 	}
-
 	public static String getUniqueProjectName() {
 		String projectName = "project_" + String.valueOf(System.currentTimeMillis());
 		while (StorageHandler.getInstance().projectExists(projectName)) {

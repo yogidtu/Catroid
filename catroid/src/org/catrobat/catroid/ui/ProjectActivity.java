@@ -123,6 +123,8 @@ public class ProjectActivity extends BaseActivity {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
 		if (requestCode == PreStageActivity.REQUEST_RESOURCES_INIT && resultCode == RESULT_OK) {
 			SensorHandler.startSensorListener(this);
 			Intent intent = new Intent(ProjectActivity.this, StageActivity.class);
