@@ -145,7 +145,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 			if (width > height) {
 				Toast.makeText(context, "This wallpaper doesn't support landscape", Toast.LENGTH_LONG).show();
-				SoundManager.getInstance().soundDisabledByLwp = true;
 				localStageListener.finish();
 			}
 
