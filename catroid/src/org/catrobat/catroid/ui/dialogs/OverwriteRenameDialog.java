@@ -39,7 +39,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import org.catrobat.catroid.R;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.utils.DownloadUtil;
 import org.catrobat.catroid.utils.Utils;
 

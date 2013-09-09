@@ -27,7 +27,7 @@ import android.os.Bundle;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
-import org.catrobat.catroid.R;
+import org.catrobat.catroid.livewallpaper.R;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 

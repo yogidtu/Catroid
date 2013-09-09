@@ -22,7 +22,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.catrobat.catroid"
+    package="org.catrobat.catroid.livewallpaper"
     android:installLocation="auto"
     android:versionCode="9"
     android:versionName="0.9.2" >
@@ -58,7 +58,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Light.NoTitleBar" >
         
-         <service android:name=".livewallpaper.LiveWallpaper" 
+         <service android:name="org.catrobat.catroid.livewallpaper.LiveWallpaper" 
         	android:label="@string/app_name" 
         	android:permission="android.permission.BIND_WALLPAPER" 
         	android:enabled="true"> 
@@ -70,7 +70,7 @@
         </service>
         
 		<activity
-     		 android:name=".livewallpaper.LiveWallpaperSettings" android:exported="true" > 
+     		 android:name="org.catrobat.catroid.livewallpaper.LiveWallpaperSettings" android:exported="true" > 
 		</activity>
          
  <!--        <activity

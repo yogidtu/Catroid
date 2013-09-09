@@ -34,7 +34,7 @@ import android.widget.SpinnerAdapter;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-import org.catrobat.catroid.R;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.common.MessageContainer;
 import org.catrobat.catroid.content.BroadcastMessage;
 import org.catrobat.catroid.content.BroadcastScript;

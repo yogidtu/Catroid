@@ -31,7 +31,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;import android.widget.TextView;
 
-import org.catrobat.catroid.R;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.content.Sprite;
 
 public class LoopEndlessBrick extends LoopEndBrick implements DeadEndBrick {

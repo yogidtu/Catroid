@@ -32,7 +32,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;import android.widg
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-import org.catrobat.catroid.R;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 
