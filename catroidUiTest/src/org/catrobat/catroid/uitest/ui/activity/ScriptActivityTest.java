@@ -78,23 +78,23 @@ public class ScriptActivityTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testMainMenuButton() {
-		UiTestUtils.waitForFragment(solo, R.id.fragment_script_relative_layout);
+		UiTestUtils.waitForFragment(solo, R.id.fragment_script);
 
 		checkMainMenuButton();
 
 		UiTestUtils.getIntoLooksFromMainMenu(solo, true);
-		UiTestUtils.waitForFragment(solo, R.id.fragment_look_relative_layout);
+		UiTestUtils.waitForFragment(solo, R.id.fragment_look);
 
 		checkMainMenuButton();
 
 		UiTestUtils.getIntoSoundsFromMainMenu(solo);
-		UiTestUtils.waitForFragment(solo, R.id.fragment_sound_relative_layout);
+		UiTestUtils.waitForFragment(solo, R.id.fragment_sound);
 
 		checkMainMenuButton();
 	}
 
 	public void testPlayProgramButton() {
-		UiTestUtils.waitForFragment(solo, R.id.fragment_script_relative_layout);
+		UiTestUtils.waitForFragment(solo, R.id.fragment_script);
 
 		String currentSprite = ProjectManager.getInstance().getCurrentSprite().getName();
 		assertEquals("Current sprite name is not shown as actionbar title or is wrong", "cat", currentSprite);
@@ -113,7 +113,7 @@ public class ScriptActivityTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testOverflowMenuItemSettings() {
-		UiTestUtils.waitForFragment(solo, R.id.fragment_script_relative_layout);
+		UiTestUtils.waitForFragment(solo, R.id.fragment_script);
 
 		String currentSprite = ProjectManager.getInstance().getCurrentSprite().getName();
 		assertEquals("Current sprite name is not shown as actionbar title or is wrong", "cat", currentSprite);
@@ -123,7 +123,7 @@ public class ScriptActivityTest extends BaseActivityInstrumentationTestCase<Main
 		solo.goBack();
 		solo.waitForActivity(ProgramMenuActivity.class);
 		solo.clickOnText(solo.getString(R.string.background));
-		UiTestUtils.waitForFragment(solo, R.id.fragment_look_relative_layout);
+		UiTestUtils.waitForFragment(solo, R.id.fragment_look);
 		assertEquals("Current sprite name is not shown as actionbar title or is wrong", "cat", currentSprite);
 
 		checkSettingsAndGoBack();
@@ -131,7 +131,7 @@ public class ScriptActivityTest extends BaseActivityInstrumentationTestCase<Main
 		solo.goBack();
 		solo.waitForActivity(ProgramMenuActivity.class);
 		solo.clickOnText(solo.getString(R.string.sounds));
-		UiTestUtils.waitForFragment(solo, R.id.fragment_sound_relative_layout);
+		UiTestUtils.waitForFragment(solo, R.id.fragment_sound);
 		assertEquals("Current sprite name is not shown as actionbar title or is wrong", "cat", currentSprite);
 
 		checkSettingsAndGoBack();
@@ -144,7 +144,14 @@ public class ScriptActivityTest extends BaseActivityInstrumentationTestCase<Main
 		solo.waitForView(solo.getView(R.id.brick_set_size_to_edit_text));
 		solo.clickOnView(solo.getView(R.id.brick_set_size_to_edit_text));
 		assertTrue("FormulaEditor title not found", solo.waitForText(solo.getString(R.string.formula_editor_title)));
+
 		solo.goBack();
+		// workaround for testdevice - Bug in Catroid-multi-job
+		// for some reason the discard changes dialog appears without changing anything
+		if (solo.searchText(solo.getString(R.string.formula_editor_discard_changes_dialog_title))) {
+			solo.clickOnText(solo.getString(R.string.no));
+		}
+		solo.sleep(200);
 		assertTrue("Sprite name not found", solo.waitForText("cat"));
 	}
 
