@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -29,6 +30,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -46,10 +48,11 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 	private StageListener stageListener;
 	private AndroidApplicationConfiguration cfg;
 	public static LiveWallpaperEngine liveWallpaperEngine;
+	private Context context;
 
 	@Override
 	public void onCreate() {
-		//android.os.Debug.waitForDebugger();
+		//		android.os.Debug.waitForDebugger();
 		super.onCreate();
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
@@ -58,7 +61,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		SoundManager.getInstance().soundDisabledByLwp = sharedPreferences.getBoolean(Constants.PREF_SOUND_DISABLED,
 				false);
-
+		context = this;
 	}
 
 	@Override
@@ -139,13 +142,19 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 		@Override
 		public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+			if (width > height) {
+				Toast.makeText(context, "This wallpaper doesn't support landscape", Toast.LENGTH_LONG).show();
+				SoundManager.getInstance().soundDisabledByLwp = true;
+				localStageListener.finish();
+			}
+
 			if (mVisible) {
 				mHandler.postDelayed(mUpdateDisplay, 300);
 			} else {
 				mHandler.removeCallbacks(mUpdateDisplay);
 			}
 			super.onSurfaceChanged(holder, format, width, height);
-
 		}
 
 		@Override
@@ -166,7 +175,5 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		public void changeWallpaperProgram() {
 			this.localStageListener.reloadProject(getApplicationContext(), null);
 		}
-
 	}
-
 }
