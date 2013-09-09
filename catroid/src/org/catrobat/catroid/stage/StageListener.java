@@ -172,11 +172,13 @@ public class StageListener implements ApplicationListener {
 
 		sprites = project.getSpriteList();
 
-		for (Sprite sprite : sprites) {
-			sprite.resetSprite();
-			sprite.look.createBrightnessContrastShader();
-			stage.addActor(sprite.look);
-			sprite.resume();
+		if (!finished) {
+			for (Sprite sprite : sprites) {
+				sprite.resetSprite();
+				sprite.look.createBrightnessContrastShader();
+				stage.addActor(sprite.look);
+				sprite.resume();
+			}
 		}
 
 		if (sprites.size() > 0) {
@@ -198,7 +200,7 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void menuResume() {
-		if (reloadProject || !paused) {
+		if (reloadProject || !paused || finished) {
 			return;
 		}
 		paused = false;
@@ -219,9 +221,6 @@ public class StageListener implements ApplicationListener {
 		for (Sprite sprite : sprites) {
 			sprite.pause();
 		}
-
-		Log.i("LWP", "MENU PAUSED SL" + hashCode());
-
 	}
 
 	public void reloadProject(Context context, StageDialog stageDialog) {
@@ -241,7 +240,9 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void resume() {
-		Log.v("LWP", "RESUME - overriden");
+		if (finished) {
+			return;
+		}
 		if (!paused) {
 			SoundManager.getInstance().resume();
 			for (Sprite sprite : sprites) {
@@ -257,7 +258,6 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void pause() {
-		Log.v("LWP", "PAUSE - overriden");
 		if (finished || (sprites == null)) {
 			return;
 		}
@@ -454,7 +454,6 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void dispose() {
-		Log.v("LWP", "disposing the stage listener " + this.toString());
 		if (!finished) {
 			this.finish();
 		}
@@ -586,5 +585,9 @@ public class StageListener implements ApplicationListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isFinished() {
+		return finished;
 	}
 }

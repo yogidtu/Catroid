@@ -122,6 +122,9 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 		@Override
 		public void onResume() {
+			if (localStageListener.isFinished()) {
+				return;
+			}
 			Log.d("LWP", "VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
 			localStageListener.menuResume();
 			SensorHandler.startSensorListener(getApplicationContext());
@@ -133,6 +136,9 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 		@Override
 		public void onPause() {
+			if (localStageListener.isFinished()) {
+				return;
+			}
 			SensorHandler.stopSensorListeners();
 			localStageListener.menuPause();
 			Log.d("LWP", "NOT VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
