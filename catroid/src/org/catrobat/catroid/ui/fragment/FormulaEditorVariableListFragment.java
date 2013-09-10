@@ -39,7 +39,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -182,8 +182,8 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 		super.onStart();
 	}
 
-	public void setAddButtonListener(SherlockFragmentActivity sherlokActivity) {
-		LinearLayout buttonAdd = (LinearLayout) sherlokActivity.findViewById(R.id.button_add);
+	public void setAddButtonListener(SherlockFragmentActivity sherlockActivity) {
+		ImageButton buttonAdd = (ImageButton) sherlockActivity.findViewById(R.id.button_add);
 		buttonAdd.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -238,11 +238,9 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 				.findFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
 		fragTransaction.hide(formulaEditorFragment);
 
-		//Log.d("FOREST", "FEVLF.showFragment");
-		BottomBar.setButtonsVisible(activity, true);
-		BottomBar.disablePlayButton(activity);
+		BottomBar.showBottomBar(activity);
+		BottomBar.hidePlayButton(activity);
 
-		BottomBar.setButtonsClickable(activity, true);
 		fragTransaction.show(this);
 		fragTransaction.commit();
 
@@ -269,8 +267,7 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 	public boolean onKey(DialogInterface d, int keyCode, KeyEvent event) {
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
-				//Log.d("FOREST", "FEVLF.onKey");
-				BottomBar.setButtonsVisible(getActivity(), false);
+				BottomBar.hideBottomBar(getActivity());
 				((ScriptActivity) getSherlockActivity()).updateHandleAddButtonClickListener();
 
 				FragmentTransaction fragmentTransaction = getSherlockActivity().getSupportFragmentManager()
@@ -299,8 +296,7 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 					+ getActivity().getResources().getQuantityString(
 							R.plurals.formula_editor_variable_context_action_item_selected, 0));
 
-			//Log.d("FOREST", "FEVLF.mContextModeCallback");
-			BottomBar.setButtonsVisible(getActivity(), false);
+			BottomBar.hideBottomBar(getActivity());
 			return true;
 		}
 

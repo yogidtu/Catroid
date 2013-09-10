@@ -141,14 +141,12 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 			fragTransaction.add(R.id.script_fragment_container, formulaEditorFragment, FORMULA_EDITOR_FRAGMENT_TAG);
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(formulaEditorFragment);
-			//Log.d("FOREST", "FEF.showFragment null");
-			BottomBar.setButtonsVisible(activity, false);
+			BottomBar.hideBottomBar(activity);
 		} else if (formulaEditorFragment.isHidden()) {
 			formulaEditorFragment.updateBrickViewAndFormula(brick, formula);
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(formulaEditorFragment);
-			//Log.d("FOREST", "FEF.showFragment hidden");
-			BottomBar.setButtonsVisible(activity, false);
+			BottomBar.hideBottomBar(activity);
 		} else {
 			//Log.d("FOREST", "FEF.showFragment SET_FORMULA_ON_SWITCH_EDIT_TEXT");
 			formulaEditorFragment.setInputFormula(formula, SET_FORMULA_ON_SWITCH_EDIT_TEXT);
@@ -194,9 +192,8 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 
 		resetActionBar();
 
-		//Log.d("FOREST", "FEF.onUserDismiss");
-		BottomBar.setButtonsVisible(activity, true);
-
+		BottomBar.showBottomBar(activity);
+		BottomBar.showPlayButton(activity);
 	}
 
 	@Override

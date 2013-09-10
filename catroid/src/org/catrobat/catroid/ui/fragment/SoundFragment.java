@@ -59,7 +59,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.actionbarsherlock.view.ActionMode;
@@ -122,14 +122,14 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 
 	private OnSoundInfoListChangedAfterNewListener soundInfoListChangedAfterNewListener;
 
-	private LinearLayout addButton;
+	private ImageButton addButton;
 
 	public void setOnSoundInfoListChangedAfterNewListener(OnSoundInfoListChangedAfterNewListener listener) {
 		soundInfoListChangedAfterNewListener = listener;
 	}
 
 	private void setHandleAddbutton() {
-		addButton = (LinearLayout) getSherlockActivity().findViewById(R.id.button_add);
+		addButton = (ImageButton) getSherlockActivity().findViewById(R.id.button_add);
 		addButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -265,6 +265,10 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 			getActivity().unregisterReceiver(soundDeletedReceiver);
 		}
 
+		if (soundCopiedReceiver != null) {
+			getActivity().unregisterReceiver(soundCopiedReceiver);
+		}
+
 		if (soundsListInitReceiver != null) {
 			getActivity().unregisterReceiver(soundsListInitReceiver);
 		}
@@ -287,12 +291,11 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 
 	@Override
 	public void startCopyActionMode() {
-
 		if (actionMode == null) {
 			stopSoundAndUpdateList();
 			actionMode = getSherlockActivity().startActionMode(copyModeCallBack);
 			unregisterForContextMenu(listView);
-			BottomBar.setButtonsClickable(getActivity(), false);
+			BottomBar.hideBottomBar(getActivity());
 			isRenameActionMode = false;
 		}
 
@@ -304,19 +307,18 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 			stopSoundAndUpdateList();
 			actionMode = getSherlockActivity().startActionMode(renameModeCallBack);
 			unregisterForContextMenu(listView);
-			BottomBar.setButtonsClickable(getActivity(), false);
+			BottomBar.hideBottomBar(getActivity());
 			isRenameActionMode = true;
 		}
 	}
 
 	@Override
 	public void startDeleteActionMode() {
-
 		if (actionMode == null) {
 			stopSoundAndUpdateList();
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
 			unregisterForContextMenu(listView);
-			BottomBar.setButtonsClickable(getActivity(), false);
+			BottomBar.hideBottomBar(getActivity());
 			isRenameActionMode = false;
 		}
 	}
@@ -516,7 +518,7 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 		switch (item.getItemId()) {
 
 			case R.id.context_menu_copy:
-				copySound();
+				copySound(selectedSoundPosition);
 				break;
 
 			case R.id.context_menu_cut:
@@ -537,21 +539,6 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 				break;
 		}
 		return super.onContextItemSelected(item);
-	}
-
-	/**
-	 * 
-	 */
-	private void copySound() {
-
-		try {
-			StorageHandler.getInstance().copySoundFile(selectedSoundInfo.getAbsolutePath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		updateSoundAdapter(selectedSoundInfo.getTitle(), selectedSoundInfo.getSoundFileName());
-
 	}
 
 	@Override
@@ -760,12 +747,15 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 
 		try {
 			StorageHandler.getInstance().copySoundFile(soundInfo.getAbsolutePath());
+
+			String soundName = soundInfo.getTitle() + "_" + getString(R.string.copy_addition);
+			String soundFileName = soundInfo.getSoundFileName();
+
+			updateSoundAdapter(soundName, soundFileName);
 		} catch (IOException e) {
+			Utils.showErrorDialog(getActivity(), getString(R.string.error_load_sound));
 			e.printStackTrace();
 		}
-
-		updateSoundAdapter(soundInfo.getTitle(), soundInfo.getSoundFileName());
-
 	}
 
 	private ActionMode.Callback deleteModeCallBack = new ActionMode.Callback() {
@@ -913,7 +903,7 @@ public class SoundFragment extends ScriptActivityFragment implements OnSoundEdit
 		setActionModeActive(false);
 
 		registerForContextMenu(listView);
-		BottomBar.setButtonsClickable(getActivity(), true);
+		BottomBar.showBottomBar(getActivity());
 	}
 
 	private void handleAddButtonFromNew() {

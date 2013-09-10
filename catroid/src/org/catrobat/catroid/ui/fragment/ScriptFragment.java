@@ -39,7 +39,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.actionbarsherlock.view.ActionMode;
@@ -106,7 +105,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_script, null);
 
-		listView = (DragAndDropListView) rootView.findViewById(R.id.brick_list_view);
+		listView = (DragAndDropListView) rootView.findViewById(android.R.id.list);
 
 		return rootView;
 	}
@@ -152,8 +151,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		if (sprite == null) {
 			return;
 		}
-		//Log.d("FOREST", "SF.onStart");
-		BottomBar.setButtonsVisible(getActivity(), true);
+		BottomBar.showBottomBar(getActivity());
 
 		initListeners();
 	}
@@ -180,14 +178,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		IntentFilter filterBrickListChanged = new IntentFilter(ScriptActivity.ACTION_BRICK_LIST_CHANGED);
 		getActivity().registerReceiver(brickListChangedReceiver, filterBrickListChanged);
 
-		//Log.d("FOREST", "SF.onResume");
-		BottomBar.setButtonsVisible(getActivity(), true);
-
-		LinearLayout bottomBarLayout = (LinearLayout) getActivity().findViewById(R.id.bottom_bar);
-		//Log.d("FOREST", "SF.onResume: " + bottomBarLayout.findViewById(R.id.button_add).getVisibility() + ", "
-		//		+ View.VISIBLE);
-
-		//Log.d("FOREST", "SF.onResume: " + getActivity().toString());
+		BottomBar.showBottomBar(getActivity());
 
 		initListeners();
 
@@ -324,7 +315,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 	@Override
 	public void startCopyActionMode() {
-
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(copyModeCallBack);
 
@@ -333,8 +323,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			}
 
 			unregisterForContextMenu(listView);
-			//Log.d("FOREST", "SF.startCopyActionMode");
-			BottomBar.setButtonsClickable(getActivity(), true);
+			BottomBar.hideBottomBar(getActivity());
 			adapter.setCheckboxVisibility(View.VISIBLE);
 			adapter.setActionMode(true);
 		}
@@ -379,7 +368,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 	@Override
 	public void startDeleteActionMode() {
-
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
 
@@ -388,8 +376,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			}
 
 			unregisterForContextMenu(listView);
-			//Log.d("FOREST", "SF.startDeleteActionMode");
-			BottomBar.setButtonsClickable(getActivity(), false);
+			BottomBar.hideBottomBar(getActivity());
 			adapter.setCheckboxVisibility(View.VISIBLE);
 			adapter.setActionMode(true);
 		}
@@ -516,8 +503,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			setActionModeActive(false);
 
 			registerForContextMenu(listView);
-			//Log.d("FOREST", "SF.copyModeCallBack.onDestroyActionMode");
-			BottomBar.setButtonsClickable(getActivity(), true);
+			BottomBar.showBottomBar(getActivity());
 			adapter.setActionMode(false);
 
 		}
@@ -549,6 +535,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		scriptList = ProjectManager.getInstance().getCurrentScript();
 		scriptList.addBrick(copy);
 		adapter.addNewMultipleBricks(newPosition, copy);
+		adapter.initBrickList();
 
 		ProjectManager.getInstance().saveProject();
 		adapter.notifyDataSetChanged();
@@ -626,8 +613,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		setActionModeActive(false);
 
 		registerForContextMenu(listView);
-		//Log.d("FOREST", "SF.clearCheckedBricksAndEnableButtons");
-		BottomBar.setButtonsClickable(getActivity(), true);
+		BottomBar.showBottomBar(getActivity());
 		adapter.setActionMode(false);
 	}
 

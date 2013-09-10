@@ -31,7 +31,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -96,7 +96,7 @@ public class ScriptActivity extends BaseActivity {
 	private boolean isLookFragmentFromSetLookBrickNew = false;
 	private boolean isLookFragmentHandleAddButtonHandled = false;
 
-	private LinearLayout buttonAdd = null;
+	private ImageButton buttonAdd = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -123,7 +123,7 @@ public class ScriptActivity extends BaseActivity {
 		//Log.d("FOREST", "SA.onCreate");
 		setupBottomBar();
 
-		buttonAdd = (LinearLayout) findViewById(R.id.button_add);
+		buttonAdd = (ImageButton) findViewById(R.id.button_add);
 		updateHandleAddButtonClickListener();
 	}
 
@@ -139,9 +139,9 @@ public class ScriptActivity extends BaseActivity {
 	}
 
 	public void setupBottomBar() {
-		BottomBar.setButtonsClickable(this, true);
-		BottomBar.setButtonsVisible(this, true);
-		buttonAdd = (LinearLayout) findViewById(R.id.button_add);
+		BottomBar.showBottomBar(this);
+		BottomBar.showAddButton(this);
+		BottomBar.showPlayButton(this);
 		updateHandleAddButtonClickListener();
 	}
 
@@ -155,7 +155,7 @@ public class ScriptActivity extends BaseActivity {
 
 	public void updateHandleAddButtonClickListener() {
 		if (buttonAdd == null) {
-			buttonAdd = (LinearLayout) findViewById(R.id.button_add);
+			buttonAdd = (ImageButton) findViewById(R.id.button_add);
 		}
 		buttonAdd.setOnClickListener(new OnClickListener() {
 			@Override

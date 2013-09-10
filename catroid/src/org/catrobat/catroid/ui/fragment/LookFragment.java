@@ -65,6 +65,7 @@ import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.badlogic.gdx.graphics.Pixmap;
 
+import org.catrobat.catroid.BuildConfig;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
@@ -163,11 +164,11 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		lookDataList = ProjectManager.getInstance().getCurrentSprite().getLookDataList();
 
 		if (ProjectManager.getInstance().getCurrentSpritePosition() == 0) {
-			TextView watermarkHeading = (TextView) getActivity().findViewById(R.id.fragment_look_text_heading);
-			watermarkHeading.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60.0f);
-			watermarkHeading.setText(R.string.backgrounds);
-			TextView watermarkDescription = (TextView) getActivity().findViewById(R.id.fragment_look_text_description);
-			watermarkDescription.setText(R.string.fragment_background_text_description);
+			TextView emptyViewHeading = (TextView) getActivity().findViewById(R.id.fragment_look_text_heading);
+			emptyViewHeading.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60.0f);
+			emptyViewHeading.setText(R.string.backgrounds);
+			TextView emptyViewDescription = (TextView) getActivity().findViewById(R.id.fragment_look_text_description);
+			emptyViewDescription.setText(R.string.fragment_background_text_description);
 		}
 
 		adapter = new LookAdapter(getActivity(), R.layout.fragment_look_looklist_item, lookDataList, false);
@@ -462,8 +463,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(copyModeCallBack);
 			unregisterForContextMenu(listView);
-			//Log.d("FOREST", "LF.startCopyActionMode");
-			BottomBar.setButtonsClickable(getActivity(), false);
+			BottomBar.hideBottomBar(getActivity());
 			isRenameActionMode = false;
 		}
 	}
@@ -473,8 +473,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(renameModeCallBack);
 			unregisterForContextMenu(listView);
-			//Log.d("FOREST", "LF.startRenameActionMode");
-			BottomBar.setButtonsClickable(getActivity(), false);
+			BottomBar.hideBottomBar(getActivity());
 			isRenameActionMode = true;
 		}
 	}
@@ -484,8 +483,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(editInPocketPaintCallBack);
 			unregisterForContextMenu(listView);
-			//Log.d("FOREST", "LF.startEditInPocketPaintActionMode");
-			BottomBar.setButtonsClickable(getActivity(), false);
+			BottomBar.hideBottomBar(getActivity());
 			isRenameActionMode = true;
 		}
 	}
@@ -495,8 +493,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
 			unregisterForContextMenu(listView);
-			//Log.d("FOREST", "LF.startDeleteActionMode");
-			BottomBar.setButtonsClickable(getActivity(), false);
+			BottomBar.hideBottomBar(getActivity());
 			isRenameActionMode = false;
 		}
 	}
@@ -744,9 +741,16 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 					.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
-							Intent downloadPocketPaintIntent = new Intent(Intent.ACTION_VIEW, Uri
-									.parse(Constants.POCKET_PAINT_DOWNLOAD_LINK));
-							startActivity(downloadPocketPaintIntent);
+
+							if (BuildConfig.DEBUG) {
+								Intent downloadPocketPaintIntent = new Intent(Intent.ACTION_VIEW, Uri
+										.parse(Constants.POCKET_PAINT_DOWNLOAD_LINK_NIGHTLY));
+								startActivity(downloadPocketPaintIntent);
+							} else {
+								Intent downloadPocketPaintIntent = new Intent(Intent.ACTION_VIEW, Uri
+										.parse(Constants.POCKET_PAINT_DOWNLOAD_LINK));
+								startActivity(downloadPocketPaintIntent);
+							}
 						}
 					}).setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
 						@Override
@@ -1017,8 +1021,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		registerForContextMenu(listView);
 
-		//Log.d("FOREST", "LF.clearCheckedLooksAndEnableButtons");
-		BottomBar.setButtonsClickable(getActivity(), true);
+		BottomBar.showBottomBar(getActivity());
 	}
 
 	private void copyLook(int position) {
@@ -1029,7 +1032,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 			StorageHandler.getInstance().copyImage(projectName, lookData.getAbsolutePath(), null);
 
-			String imageName = lookData.getLookName() + "_" + getString(R.string.copy_look_addition);
+			String imageName = lookData.getLookName() + "_" + getString(R.string.copy_addition);
 			String imageFileName = lookData.getLookFileName();
 
 			updateLookAdapter(imageName, imageFileName);

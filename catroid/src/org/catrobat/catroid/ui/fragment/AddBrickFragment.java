@@ -132,7 +132,7 @@ public class AddBrickFragment extends SherlockListFragment {
 
 			//Log.d("FOREST", "ABF.setupSelectedCategory: // enable add button");
 			// enable add button
-			BottomBar.disablePlayButton(getActivity());
+			BottomBar.hidePlayButton(getActivity());
 		}
 	}
 
@@ -214,11 +214,10 @@ public class AddBrickFragment extends SherlockListFragment {
 		resetActionBar();
 		addButtonHandler = null;
 
-		//Log.d("FOREST", "ABF.onDestroy: ");
 		if (cameDirectlyFromScriptActivity) {
-			BottomBar.setButtonsVisible(getActivity(), true);
+			BottomBar.showBottomBar(getActivity());
 		} else {
-			BottomBar.setButtonsVisible(getActivity(), false);
+			BottomBar.hideBottomBar(getActivity());
 		}
 
 		super.onDestroy();
@@ -328,8 +327,7 @@ public class AddBrickFragment extends SherlockListFragment {
 		}
 		fragmentTransaction.commit();
 
-		//Log.d("FOREST", "ABF.addBrickToScript");
-		BottomBar.setButtonsVisible(getActivity(), true);
+		BottomBar.showBottomBar(getActivity());
 	}
 
 	public void launchBrickScriptActivityOnBrick(Context context, Brick brick) {

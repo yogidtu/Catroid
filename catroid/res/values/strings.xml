@@ -32,6 +32,7 @@
     <string name="copy">Copy</string>
     <string name="cut">Cut</string>
     <string name="move">Move</string>
+    <string name="copy_addition">copy</string>
     <!--  -->
 
 
@@ -50,8 +51,8 @@
     <string name="main_menu_new">New</string>
     <string name="main_menu_continue">Continue</string>
     <string name="main_menu_programs">Programs</string>
-    <string name="main_menu_forum">Forum</string>
-    <string name="main_menu_web">Community</string>
+    <string name="main_menu_forum">Discuss</string>
+    <string name="main_menu_web">Explore</string>
     <string name="main_menu_upload">Upload</string>
     <string name="main_menu_settings">Settings</string>
     <string name="main_menu_about_pocketcode">About Pocket Code</string>
@@ -133,7 +134,6 @@
     <string name="fragment_background_text_description">Click \"+\" to add Backgrounds</string>
     <string name="rename_look_dialog">Rename Look</string>
     <string name="lookname_invalid">This look\'s name is invalid</string>
-    <string name="copy_look_addition">copy</string>
     <string name="pocket_paint_not_installed">Pocket Paint is not installed!\nDo you want to install it?</string>
     <string name="default_look_name">look</string>
     <string name="delete_look_dialog">Delete look?</string>
@@ -182,7 +182,7 @@
     <string name="soundrecorder_name">Pocket Code Recorder</string>
     <string name="soundrecorder_error">Sound recording failed</string>
     <string name="soundrecorder_recorded_filename">record</string>
-    <string name="soundrecorder_text_view">Press icon below to start and stop recording.</string>
+    <string name="soundrecorder_text_view">Press icon above to start and stop recording.</string>
     <!--  -->
 
 
