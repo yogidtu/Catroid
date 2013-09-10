@@ -38,7 +38,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.bluetooth.BluetoothManager;
 import org.catrobat.catroid.bluetooth.DeviceListActivity;
 import org.catrobat.catroid.common.Constants;
@@ -46,6 +45,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.legonxt.LegoNXT;
 import org.catrobat.catroid.legonxt.LegoNXTBtCommunicator;
+import org.catrobat.catroid.livewallpaper.R;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -267,6 +267,10 @@ public class PreStageActivity extends Activity {
 			HashMap<String, String> speakParameter) {
 		if (text == null) {
 			text = "";
+		}
+
+		if (onUtteranceCompletedListenerContainer == null) {
+			onUtteranceCompletedListenerContainer = new OnUtteranceCompletedListenerContainer();
 		}
 
 		if (onUtteranceCompletedListenerContainer.addOnUtteranceCompletedListener(speechFile, listener,
