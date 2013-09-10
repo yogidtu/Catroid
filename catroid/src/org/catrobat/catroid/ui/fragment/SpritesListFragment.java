@@ -46,6 +46,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListFragment;
@@ -173,6 +174,8 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 				.getApplicationContext());
 
 		setShowDetails(settings.getBoolean(SHARED_PREFERENCE_NAME, false));
+
+		updateWatermark();
 	}
 
 	@Override
@@ -418,6 +421,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 			projectManager.setCurrentSprite(null);
 		}
 		projectManager.getCurrentProject().getSpriteList().remove(spriteToEdit);
+		updateWatermark();
 	}
 
 	private void deleteCheckedSprites() {
@@ -430,6 +434,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 			deleteSprite();
 			numDeleted++;
 		}
+		updateWatermark();
 	}
 
 	private void clearCheckedSpritesAndEnableButtons() {
@@ -480,6 +485,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 			if (intent.getAction().equals(ScriptActivity.ACTION_SPRITES_LIST_CHANGED)) {
 				spriteAdapter.notifyDataSetChanged();
 				final ListView listView = getListView();
+				updateWatermark();
 				listView.post(new Runnable() {
 					@Override
 					public void run() {
@@ -657,6 +663,16 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 
 		for (SoundInfo currentSoundInfo : soundInfoList) {
 			StorageHandler.getInstance().deleteFile(currentSoundInfo.getAbsolutePath());
+		}
+	}
+
+	private void updateWatermark() {
+		RelativeLayout spritesEmptyLayout = (RelativeLayout) getActivity().findViewById(R.id.fragment_sprites_empty);
+		Log.d("Catroid", "spritelist size:" + spriteList.size());
+		if (spriteList.size() > 1) {
+			spritesEmptyLayout.setVisibility(View.GONE);
+		} else {
+			spritesEmptyLayout.setVisibility(View.VISIBLE);
 		}
 	}
 }

@@ -409,7 +409,9 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 		try {
 			projectList.remove(projectToEdit);
 			if (projectList.size() == 0) {
-				projectManager.initializeDefaultProject(getActivity());
+				//projectManager.initializeDefaultProject(getActivity());
+				Log.d("ProjectsListFragment", "set current project to null");
+				projectManager.setProject(null);
 			} else {
 
 				projectManager.loadProject((projectList.get(0)).projectName, getActivity(), false);

@@ -105,6 +105,7 @@
     <string name="copy_sprite_finished"> kopiert.</string>
     <string name="copy_sprite_prefix">Objekt:</string>
     <string name="copy_sprite_name_suffix">_Kopie</string>
+    <string name="fragment_sprites_text_description">Klicke auf \"+\" um Objekte hinzuzufügen</string>
     <!--  -->
 
 
@@ -174,6 +175,7 @@
     <string name="dialog_confirm_delete_program_message">Kann nicht rückgängig gemacht werden!</string>
     <string name="details_date_today">Heute</string>
     <string name="details_date_yesterday">Gestern</string>
+    <string name="fragment_projects_text_description">Klicke auf \"+\" um Programme hinzuzufügen</string>
     <!--  -->
 
 

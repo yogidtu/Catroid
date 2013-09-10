@@ -858,6 +858,43 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		assertTrue("Second project has been deleted!", solo.searchText(UiTestUtils.PROJECTNAME1));
 	}
 
+	public void testEmptyView() {
+		createProjects();
+		solo.sleep(200);
+		assertTrue(solo.waitForActivity(MainMenuActivity.class.getSimpleName()));
+		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
+		assertTrue(solo.waitForActivity(MyProjectsActivity.class.getSimpleName()));
+		assertTrue(solo.waitForFragmentById(R.id.fragment_projects_list));
+		TextView emptyViewHeading = (TextView) solo.getCurrentActivity().findViewById(
+				R.id.fragment_projects_text_heading);
+		TextView emptyViewDescription = (TextView) solo.getCurrentActivity().findViewById(
+				R.id.fragment_projects_text_description);
+
+		// The Views are gone, we can still make assumptions about them
+		assertEquals("Empty View heading is not correct", solo.getString(R.string.programs), emptyViewHeading.getText()
+				.toString());
+		assertEquals("Empty View description is not correct",
+				solo.getString(R.string.fragment_projects_text_description), emptyViewDescription.getText().toString());
+
+		assertEquals("Empty View shown although there are items in the list!", View.GONE,
+				solo.getView(android.R.id.empty).getVisibility());
+
+		//TODO delete projects
+
+		emptyViewHeading = (TextView) solo.getCurrentActivity().findViewById(R.id.fragment_projects_text_heading);
+		emptyViewDescription = (TextView) solo.getCurrentActivity().findViewById(
+				R.id.fragment_projects_text_description);
+
+		assertEquals("Empty View heading is not correct", solo.getString(R.string.programs), emptyViewHeading.getText()
+				.toString());
+		assertEquals("Empty View description is not correct",
+				solo.getString(R.string.fragment_projects_text_description), emptyViewDescription.getText().toString());
+
+		solo.sleep(200);
+		//		assertEquals("Empty View not shown although there are items in the list!", View.VISIBLE,
+		//				solo.getView(android.R.id.empty).getVisibility());
+	}
+
 	public void testLongClickCancelDeleteAndCopy() {
 
 		String delete = solo.getString(R.string.delete);

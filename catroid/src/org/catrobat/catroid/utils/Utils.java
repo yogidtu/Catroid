@@ -287,18 +287,22 @@ public class Utils {
 				ProjectManager.getInstance().loadProject(context.getString(R.string.default_project_name), context,
 						false);
 			} else {
-				ProjectManager.getInstance().initializeDefaultProject(context);
+				//ProjectManager.getInstance().initializeDefaultProject(context);
 			}
 		}
 	}
 
 	public static String getCurrentProjectName(Context context) {
 		if (ProjectManager.getInstance().getCurrentProject() == null) {
+			Log.d("UTILS", "first if");
 			SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 			String currentProjectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
-			if (currentProjectName == null) {
+			if (currentProjectName == null || checkIfProjectExistsOrIsDownloadingIgnoreCase(currentProjectName)) {
+				Log.d("UTILS", "second if");
 				currentProjectName = UtilFile.getProjectNames(new File(Constants.DEFAULT_ROOT)).get(0);
 			}
+			Log.d("UTILS", "name: " + currentProjectName);
+
 			return currentProjectName;
 		}
 		return ProjectManager.getInstance().getCurrentProject().getName();
