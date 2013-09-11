@@ -23,9 +23,11 @@
 package org.catrobat.catroid.livewallpaper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.speech.tts.TextToSpeech;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -40,6 +42,7 @@ import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.io.SoundManager;
+import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.utils.Utils;
 
@@ -62,6 +65,20 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		SoundManager.getInstance().soundDisabledByLwp = sharedPreferences.getBoolean(Constants.PREF_SOUND_DISABLED,
 				false);
 		context = this;
+
+		if (PreStageActivity.initTextToSpeech(context) != 0) {
+
+			Intent installIntent = new Intent();
+			installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+			startActivity(installIntent);
+		}
+
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		PreStageActivity.shutDownTextToSpeech();
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -261,6 +262,25 @@ public class PreStageActivity extends Activity {
 				resourceFailed();
 				break;
 		}
+	}
+
+	public static int initTextToSpeech(Context context) {
+		textToSpeech = new TextToSpeech(context, new OnInitListener() {
+			@Override
+			public void onInit(int status) {
+				onUtteranceCompletedListenerContainer = new OnUtteranceCompletedListenerContainer();
+				textToSpeech.setOnUtteranceCompletedListener(onUtteranceCompletedListenerContainer);
+			}
+		});
+
+		if (textToSpeech.isLanguageAvailable(Locale.getDefault()) == TextToSpeech.LANG_MISSING_DATA) {
+			return -1;
+		}
+		return 0;
+	}
+
+	public static void shutDownTextToSpeech() {
+		textToSpeech.shutdown();
 	}
 
 	public static void textToSpeech(String text, File speechFile, OnUtteranceCompletedListener listener,
