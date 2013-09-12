@@ -65,20 +65,12 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		SoundManager.getInstance().soundDisabledByLwp = sharedPreferences.getBoolean(Constants.PREF_SOUND_DISABLED,
 				false);
 		context = this;
-
-		if (PreStageActivity.initTextToSpeech(context) != 0) {
-
-			Intent installIntent = new Intent();
-			installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-			startActivity(installIntent);
-		}
-
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		PreStageActivity.shutDownTextToSpeech();
+		PreStageActivity.shutDownTextToSpeechForLiveWallpaper();
 	}
 
 	@Override
@@ -100,6 +92,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		Utils.loadProjectIfNeeded(getApplicationContext());
 		stageListener = new StageListener(true);
 		LiveWallpaper.liveWallpaperEngine = new LiveWallpaperEngine(this.stageListener);
+		activateTextToSpeechIfNeeded();
 		return LiveWallpaper.liveWallpaperEngine;
 	}
 
@@ -108,6 +101,14 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			float yOffsetStep, int xPixelOffset, int yPixelOffset) {
 		// TODO Auto-generated method stub
 
+	}
+
+	private void activateTextToSpeechIfNeeded() {
+		if (PreStageActivity.initTextToSpeechForLiveWallpaper(context) != 0) {
+			Intent installIntent = new Intent();
+			installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+			startActivity(installIntent);
+		}
 	}
 
 	class LiveWallpaperEngine extends AndroidWallpaperEngine {
@@ -180,11 +181,15 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		}
 
 		@Override
+		public void onSurfaceCreated(SurfaceHolder holder) {
+			super.onSurfaceCreated(holder);
+		}
+
+		@Override
 		public void onSurfaceDestroyed(SurfaceHolder holder) {
 			mVisible = false;
 			mHandler.removeCallbacks(mUpdateDisplay);
 			super.onSurfaceDestroyed(holder);
-
 		}
 
 		@Override
@@ -196,6 +201,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 		public void changeWallpaperProgram() {
 			this.localStageListener.reloadProject(getApplicationContext(), null);
+			activateTextToSpeechIfNeeded();
 		}
 	}
 }

@@ -168,7 +168,7 @@ public class PreStageActivity extends Activity {
 		this.startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
 	}
 
-	private int getRequiredRessources() {
+	private static int getRequiredRessources() {
 		ArrayList<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance().getCurrentProject()
 				.getSpriteList();
 
@@ -264,22 +264,25 @@ public class PreStageActivity extends Activity {
 		}
 	}
 
-	public static int initTextToSpeech(Context context) {
-		textToSpeech = new TextToSpeech(context, new OnInitListener() {
-			@Override
-			public void onInit(int status) {
-				onUtteranceCompletedListenerContainer = new OnUtteranceCompletedListenerContainer();
-				textToSpeech.setOnUtteranceCompletedListener(onUtteranceCompletedListenerContainer);
-			}
-		});
+	public static int initTextToSpeechForLiveWallpaper(Context context) {
 
-		if (textToSpeech.isLanguageAvailable(Locale.getDefault()) == TextToSpeech.LANG_MISSING_DATA) {
-			return -1;
+		if (getRequiredRessources() == Brick.TEXT_TO_SPEECH && textToSpeech == null) {
+			textToSpeech = new TextToSpeech(context, new OnInitListener() {
+				@Override
+				public void onInit(int status) {
+					onUtteranceCompletedListenerContainer = new OnUtteranceCompletedListenerContainer();
+					textToSpeech.setOnUtteranceCompletedListener(onUtteranceCompletedListenerContainer);
+				}
+			});
+
+			if (textToSpeech.isLanguageAvailable(Locale.getDefault()) == TextToSpeech.LANG_MISSING_DATA) {
+				return -1;
+			}
 		}
 		return 0;
 	}
 
-	public static void shutDownTextToSpeech() {
+	public static void shutDownTextToSpeechForLiveWallpaper() {
 		textToSpeech.shutdown();
 	}
 
