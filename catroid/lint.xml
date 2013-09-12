@@ -31,11 +31,6 @@
         <ignore path="res/values-ru/strings.xml" />
         <ignore path="res/values-nl/strings.xml" />
     </issue>
-    <issue id="IconDensities">
-        <ignore path="res/drawable-mdpi" />
-        <ignore path="res/drawable-hdpi" />
-        <ignore path="res/drawable-xhdpi" />
-    </issue>
     <issue id="InvalidPackage" severity="ignore" />
     <issue id="MissingTranslation" severity="ignore">
         <ignore path="res/values/strings-global.xml" />
