@@ -230,6 +230,9 @@ public class DragNDropBrickLayout extends BrickLayout {
 		for (BrickLayout.LineData line : lines) {
 			int elementIndex = 0;
 			for (BrickLayout.ElementData e : line.elements) {
+				if (e.view == null) {
+					continue;
+				}
 
 				float edgeX = e.posX;
 				float edgeY = e.posY;

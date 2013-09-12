@@ -129,6 +129,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 		if (activity instanceof ScriptActivity) {
 			((ScriptActivity) activity).setupActionBar();
+			((ScriptActivity) activity).redrawBricks();
 		} else {
 			Log.e("userbricks",
 					"UserBrickDataEditor.onUserDismiss() called when the parent activity is not a UserBrickScriptActivity!\n"
@@ -271,7 +272,8 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			}
 		}
 		if (found > -1) {
-			currentBrick.removeDataAt(found);
+			currentBrick.removeDataAt(found, theView.getContext());
+
 			updateBrickView();
 		}
 	}

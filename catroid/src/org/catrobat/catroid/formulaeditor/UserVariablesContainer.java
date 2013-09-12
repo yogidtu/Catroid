@@ -130,10 +130,12 @@ public class UserVariablesContainer implements Serializable {
 		if (currentUserBrick != null) {
 			userBrickId = currentUserBrick.getDefinitionBrick().getUserBrickId();
 		}
-		UserVariable variableToDelete = getUserVariable(userVariableName, userBrickId, currentSprite);
-		if (variableToDelete != null) {
-			List<UserVariable> context = variableToDelete.getContext();
-			context.remove(variableToDelete);
+		List<UserVariable> contextList = getUserVariableContext(userVariableName, userBrickId, currentSprite);
+		if (contextList != null) {
+			UserVariable variableToDelete = findUserVariable(userVariableName, contextList);
+			if (variableToDelete != null) {
+				contextList.remove(variableToDelete);
+			}
 		}
 	}
 
@@ -184,32 +186,37 @@ public class UserVariablesContainer implements Serializable {
 		return nextUserBrickId++;
 	}
 
+	public UserVariable getUserVariable(String name, int userBrickId, Sprite currentSprite) {
+		List<UserVariable> contextList = getUserVariableContext(name, userBrickId, currentSprite);
+		return findUserVariable(name, contextList);
+	}
+
 	/**
 	 * This function finds the user variable with userVariableName in the current context.
 	 * 
 	 * The current context consists of all global variables, the sprite variables for the current sprite,
 	 * and the user brick variables for the current user brick.
 	 */
-	public UserVariable getUserVariable(String name, int userBrickId, Sprite currentSprite) {
+	public List<UserVariable> getUserVariableContext(String name, int userBrickId, Sprite currentSprite) {
 
 		UserVariable variableToReturn;
 		List<UserVariable> spriteVariables = getOrCreateVariableListForSprite(currentSprite);
 		variableToReturn = findUserVariable(name, spriteVariables);
 		if (variableToReturn != null) {
-			return variableToReturn;
+			return spriteVariables;
 		}
 
 		if (userBrickId != -1) {
 			List<UserVariable> userBrickVariables = getOrCreateVariableListForUserBrick(userBrickId);
 			variableToReturn = findUserVariable(name, userBrickVariables);
 			if (variableToReturn != null) {
-				return variableToReturn;
+				return userBrickVariables;
 			}
 		}
 
 		variableToReturn = findUserVariable(name, projectVariables);
 		if (variableToReturn != null) {
-			return variableToReturn;
+			return projectVariables;
 		}
 		return null;
 	}

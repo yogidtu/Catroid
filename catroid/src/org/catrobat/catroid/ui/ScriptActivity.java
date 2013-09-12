@@ -567,6 +567,10 @@ public class ScriptActivity extends BaseActivity {
 		this.scriptFragment = scriptFragment;
 	}
 
+	public void redrawBricks() {
+		scriptFragment.getAdapter().notifyDataSetInvalidated();
+	}
+
 	public void switchToFragmentFromScriptFragment(int fragmentPosition) {
 
 		ScriptActivityFragment scriptFragment = getFragment(ScriptActivity.FRAGMENT_SCRIPTS);

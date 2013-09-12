@@ -132,6 +132,7 @@ public class AddBrickFragment extends SherlockListFragment {
 
 			//Log.d("FOREST", "ABF.setupSelectedCategory: // enable add button");
 			// enable add button
+			BottomBar.showBottomBar(getActivity());
 			BottomBar.hidePlayButton(getActivity());
 		}
 	}

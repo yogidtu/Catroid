@@ -139,7 +139,20 @@ public class InternFormula {
 
 	public void updateVariableReferences(String oldName, String newName, Context context) {
 		for (InternToken internToken : internTokenFormulaList) {
-			internToken.replaceVariableReferences(oldName, newName);
+			internToken.updateVariableReferences(oldName, newName);
+		}
+		generateExternFormulaStringAndInternExternMapping(context);
+	}
+
+	public void removeVariableReferences(String name, Context context) {
+		LinkedList<InternToken> toRemove = new LinkedList<InternToken>();
+		for (InternToken internToken : internTokenFormulaList) {
+			if (internToken.isUserVariable(name)) {
+				toRemove.add(internToken);
+			}
+		}
+		for (InternToken internToken : toRemove) {
+			internTokenFormulaList.remove(internToken);
 		}
 		generateExternFormulaStringAndInternExternMapping(context);
 	}
@@ -949,4 +962,5 @@ public class InternFormula {
 		}
 		return true;
 	}
+
 }

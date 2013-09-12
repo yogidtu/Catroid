@@ -103,6 +103,22 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 		}
 	}
 
+	public void removeVariablesInFormulas(String name, Context context) {
+		List<Brick> brickList = userScript.getBrickList();
+		for (Brick b : brickList) {
+			if (b instanceof MultiFormulaBrick) {
+				List<Formula> formulaList = ((MultiFormulaBrick) b).getFormulas();
+				for (Formula formula : formulaList) {
+					formula.removeVariableReferences(name, context);
+				}
+			}
+			if (b instanceof FormulaBrick) {
+				Formula formula = ((FormulaBrick) b).getFormula();
+				formula.removeVariableReferences(name, context);
+			}
+		}
+	}
+
 	@Override
 	public View getView(final Context context, int brickId, final BaseAdapter baseAdapter) {
 		if (animationState) {
@@ -272,4 +288,5 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 
 		return toReturn;
 	}
+
 }

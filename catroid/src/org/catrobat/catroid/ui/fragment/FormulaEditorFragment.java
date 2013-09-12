@@ -93,7 +93,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 
 	public boolean restoreInstance = false;
 	private View fragmentView;
-	private VariableDeletedReceiver variableDeletedReceiver;
+	private VariableChangedReceiver variableDeletedReceiver;
 
 	public FormulaEditorFragment() {
 	}
@@ -561,7 +561,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		formulaEditorEditText.handleKeyEvent(0, userVariableName);
 	}
 
-	private class VariableDeletedReceiver extends BroadcastReceiver {
+	private class VariableChangedReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(ScriptActivity.ACTION_VARIABLE_DELETED)) {
@@ -584,7 +584,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		super.onResume();
 
 		if (variableDeletedReceiver == null) {
-			variableDeletedReceiver = new VariableDeletedReceiver();
+			variableDeletedReceiver = new VariableChangedReceiver();
 		}
 
 		IntentFilter filterVariableDeleted = new IntentFilter(ScriptActivity.ACTION_VARIABLE_DELETED);

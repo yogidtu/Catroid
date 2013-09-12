@@ -38,7 +38,8 @@ public class UserVariable implements Serializable {
 		this.value = 0.0;
 	}
 
-	public UserVariable(final String name, final double value) {
+	public UserVariable(final String name, final double value, List<UserVariable> context) {
+		this.context = context;
 		this.name = name;
 		this.value = value;
 	}

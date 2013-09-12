@@ -197,4 +197,9 @@ public class Formula implements Serializable {
 		return new Formula(0);
 	}
 
+	public void removeVariableReferences(String name, Context context) {
+		internFormula.removeVariableReferences(name, context);
+
+	}
+
 }

@@ -175,7 +175,14 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 		}
 	}
 
-	public void removeDataAt(int id) {
+	public void removeDataAt(int id, Context context) {
+		definitionBrick.removeVariablesInFormulas(uiData.get(id).name, context);
+
+		if (uiData.get(id).isVariable && ProjectManager.getInstance().getCurrentProject() != null) {
+			UserVariablesContainer variablesContainer = null;
+			variablesContainer = ProjectManager.getInstance().getCurrentProject().getUserVariables();
+			variablesContainer.deleteUserVariableFromUserBrick(userBrickId, uiData.get(id).name);
+		}
 		uiData.remove(id);
 		uiData.version++;
 	}
