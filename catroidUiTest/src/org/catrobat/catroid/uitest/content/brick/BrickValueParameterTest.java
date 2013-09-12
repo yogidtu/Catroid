@@ -248,6 +248,7 @@ public class BrickValueParameterTest extends BaseActivityInstrumentationTestCase
 		solo.clickOnScreen(200, 200);
 
 		TextView changeBrightnessEditText = (TextView) solo.getView(R.id.brick_change_brightness_edit_text);
+
 		float changeBrightnessEditTextValue = Float.parseFloat(changeBrightnessEditText.getText().toString()
 				.replace(',', '.'));
 

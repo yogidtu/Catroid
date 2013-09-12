@@ -61,6 +61,7 @@ import org.catrobat.catroid.content.bricks.PointInDirectionBrick;
 import org.catrobat.catroid.content.bricks.PointInDirectionBrick.Direction;
 import org.catrobat.catroid.content.bricks.PointToBrick;
 import org.catrobat.catroid.content.bricks.RepeatBrick;
+import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.SetBrightnessBrick;
 import org.catrobat.catroid.content.bricks.SetGhostEffectBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
@@ -81,28 +82,56 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.formulaeditor.Operators;
+import org.catrobat.catroid.ui.UserBrickScriptActivity;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CategoryBricksFactory {
 
 	public List<Brick> getBricks(String category, Sprite sprite, Context context) {
-		if (category.equals(context.getString(R.string.category_control))) {
-			return setupControlCategoryList(sprite, context);
-		} else if (category.equals(context.getString(R.string.category_motion))) {
-			return setupMotionCategoryList(sprite);
-		} else if (category.equals(context.getString(R.string.category_sound))) {
-			return setupSoundCategoryList(sprite, context);
-		} else if (category.equals(context.getString(R.string.category_looks))) {
-			return setupLooksCategoryList(sprite);
-		} else if (category.equals(context.getString(R.string.category_variables))) {
-			return setupVariablesCategoryList(sprite);
-		} else if (category.equals(context.getString(R.string.category_lego_nxt))) {
-			return setupLegoNxtCategoryList(sprite);
+
+		UserBrickScriptActivity activity;
+		try {
+			activity = (UserBrickScriptActivity) context;
+		} catch (ClassCastException e) {
+			activity = null;
 		}
 
-		return new ArrayList<Brick>();
+		boolean isUserScriptMode = activity != null;
+		List<Brick> tempList = new LinkedList<Brick>();
+		List<Brick> toReturn = new ArrayList<Brick>();
+
+		if (category.equals(context.getString(R.string.category_control))) {
+			tempList = setupControlCategoryList(sprite, context);
+		} else if (category.equals(context.getString(R.string.category_motion))) {
+			tempList = setupMotionCategoryList(sprite);
+		} else if (category.equals(context.getString(R.string.category_sound))) {
+			tempList = setupSoundCategoryList(sprite, context);
+		} else if (category.equals(context.getString(R.string.category_looks))) {
+			tempList = setupLooksCategoryList(sprite);
+		} else if (category.equals(context.getString(R.string.category_variables))) {
+			tempList = setupVariablesCategoryList(sprite);
+		} else if (category.equals(context.getString(R.string.category_user_bricks))) {
+			return setupUserBricksCategoryList(sprite, context);
+		} else if (category.equals(context.getString(R.string.category_lego_nxt))) {
+			tempList = setupLegoNxtCategoryList(sprite);
+		}
+
+		for (Brick b : tempList) {
+			ScriptBrick brickAsScriptBrick;
+			try {
+				brickAsScriptBrick = (ScriptBrick) b;
+			} catch (ClassCastException e) {
+				brickAsScriptBrick = null;
+			}
+			if (!isUserScriptMode || brickAsScriptBrick == null) {
+				toReturn.add(b);
+			}
+		}
+
+		return toReturn;
 	}
 
 	private List<Brick> setupControlCategoryList(Sprite sprite, Context context) {
@@ -192,6 +221,13 @@ public class CategoryBricksFactory {
 		userVariablesBrickList.add(new SetVariableBrick(sprite, 0));
 		userVariablesBrickList.add(new ChangeVariableBrick(sprite, 0));
 		return userVariablesBrickList;
+	}
+
+	private List<Brick> setupUserBricksCategoryList(Sprite sprite, Context context) {
+		String defaultText = context.getString(R.string.example_user_brick);
+		String defaultVariable = context.getString(R.string.example_user_brick_variable);
+		return ProjectManager.getInstance().getCurrentSprite()
+				.getUserBrickListAtLeastOneBrick(defaultText, defaultVariable);
 	}
 
 	private List<Brick> setupLegoNxtCategoryList(Sprite sprite) {

@@ -21,48 +21,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Copyright 2010 Romain Guy
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- *  Copyright (c) 2011, Artem Votincev (apmem.org)
- *  All rights reserved.
- *  
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *      * Redistributions of source code must retain the above copyright
- *        notice, this list of conditions and the following disclaimer.
- *      * Redistributions in binary form must reproduce the above copyright
- *        notice, this list of conditions and the following disclaimer in the
- *        documentation and/or other materials provided with the distribution.
- *      * Neither the name of the apmem.org nor the
- *        names of its contributors may be used to endorse or promote products
- *        derived from this software without specific prior written permission.
- *  
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *  DISCLAIMED. IN NO EVENT SHALL ARTEM VOTINCEV BE LIABLE FOR ANY
- *  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- *  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package org.catrobat.catroid.ui;
 
 import android.content.Context;
@@ -153,7 +111,7 @@ public class BrickLayout extends ViewGroup {
 
 		int lineThicknessWithorizontalSpacing = 0;
 		int lineThickness = 0;
-		int lineLengthWithHorizontalSpacing = 0;
+		int lineLengthWithorizontalSpacing = 0;
 		int lineLength = 0;
 
 		int prevLinePosition = 0;
@@ -207,8 +165,8 @@ public class BrickLayout extends ViewGroup {
 			LayoutParams layoutParams = (LayoutParams) child.getLayoutParams();
 			int childWidth = preLayoutMeasureWidth(child, sizeWidth, sizeHeight, modeWidth, modeHeight);
 
-			lineLength = lineLengthWithHorizontalSpacing + childWidth;
-			lineLengthWithHorizontalSpacing = lineLength + horizontalSpacing;
+			lineLength = lineLengthWithorizontalSpacing + childWidth;
+			lineLengthWithorizontalSpacing = lineLength + horizontalSpacing;
 
 			boolean newLine = (layoutParams.newLine && totalLengthOfContent - combinedLengthOfPreviousLines > sizeWidth);
 
@@ -229,7 +187,7 @@ public class BrickLayout extends ViewGroup {
 
 				combinedLengthOfPreviousLines += (lineLength - (childWidth + horizontalSpacing));
 				lineLength = childWidth;
-				lineLengthWithHorizontalSpacing = lineLength + horizontalSpacing;
+				lineLengthWithorizontalSpacing = lineLength + horizontalSpacing;
 
 				elementInLineIndex = 0;
 			}
@@ -269,7 +227,7 @@ public class BrickLayout extends ViewGroup {
 
 		lineThicknessWithorizontalSpacing = 0;
 		lineThickness = 0;
-		lineLengthWithHorizontalSpacing = 0;
+		lineLengthWithorizontalSpacing = 0;
 		lineLength = 0;
 
 		prevLinePosition = 0;
@@ -309,12 +267,12 @@ public class BrickLayout extends ViewGroup {
 				boolean updateSmallestHeight = currentLine.minHeight == 0 || currentLine.minHeight > childHeight;
 				currentLine.minHeight = (updateSmallestHeight ? childHeight : currentLine.minHeight);
 
-				lineLength = lineLengthWithHorizontalSpacing + childWidth;
-				lineLengthWithHorizontalSpacing = lineLength + horizontalSpacing;
+				lineLength = lineLengthWithorizontalSpacing + childWidth;
+				lineLengthWithorizontalSpacing = lineLength + horizontalSpacing;
 
 				if (layoutParams.newLine && !newLine) {
 					lineLength += horizontalSpacing;
-					lineLengthWithHorizontalSpacing += horizontalSpacing;
+					lineLengthWithorizontalSpacing += horizontalSpacing;
 				}
 
 				if (newLine) {
@@ -326,7 +284,7 @@ public class BrickLayout extends ViewGroup {
 					lineThickness = childHeight;
 					lineLength = childWidth;
 					lineThicknessWithorizontalSpacing = childHeight + verticalSpacing;
-					lineLengthWithHorizontalSpacing = lineLength + horizontalSpacing;
+					lineLengthWithorizontalSpacing = lineLength + horizontalSpacing;
 				}
 
 				lineThicknessWithorizontalSpacing = Math.max(lineThicknessWithorizontalSpacing, childHeight
@@ -477,8 +435,8 @@ public class BrickLayout extends ViewGroup {
 	}
 
 	@Override
-	protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams layoutParams) {
-		return new LayoutParams(layoutParams);
+	protected LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+		return new LayoutParams(p);
 	}
 
 	private void readStyleParameters(Context context, AttributeSet attributeSet) {

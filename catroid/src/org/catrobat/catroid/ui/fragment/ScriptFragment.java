@@ -151,6 +151,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		if (sprite == null) {
 			return;
 		}
+		BottomBar.showBottomBar(getActivity());
 
 		initListeners();
 	}
@@ -177,7 +178,11 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		IntentFilter filterBrickListChanged = new IntentFilter(ScriptActivity.ACTION_BRICK_LIST_CHANGED);
 		getActivity().registerReceiver(brickListChangedReceiver, filterBrickListChanged);
 
+		BottomBar.showBottomBar(getActivity());
+
 		initListeners();
+
+		adapter.resetAlphas();
 	}
 
 	@Override
@@ -212,6 +217,8 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 	@Override
 	public void onCategorySelected(String category) {
+		Log.d("F2", this.toString() + "onCategorySelected");
+
 		selectedCategory = category;
 		AddBrickFragment addBrickFragment = AddBrickFragment.newInstance(selectedCategory, this);
 		FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -221,10 +228,12 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		fragmentTransaction.addToBackStack(null);
 		fragmentTransaction.commit();
 		adapter.notifyDataSetChanged();
-
 	}
 
 	public void updateAdapterAfterAddNewBrick(Brick brickToBeAdded) {
+
+		Log.d("F2", this.toString() + "updateAdapterAfterAddNewBrick " + adapter.toString());
+
 		if (addNewScript) {
 			addNewScript = false;
 		} else {
@@ -253,6 +262,8 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 		adapter = new BrickAdapter(getActivity(), sprite, listView);
 		adapter.setOnBrickEditListener(this);
+		ScriptActivity activity = (ScriptActivity) getActivity();
+		activity.setupBrickAdapter(adapter);
 
 		if (ProjectManager.getInstance().getCurrentSprite().getNumberOfScripts() > 0) {
 			ProjectManager.getInstance().setCurrentScript(((ScriptBrick) adapter.getItem(0)).initScript(sprite));
@@ -266,6 +277,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	}
 
 	private void showCategoryFragment() {
+
 		BrickCategoryFragment brickCategoryFragment = new BrickCategoryFragment();
 		brickCategoryFragment.setOnCategorySelectedListener(this);
 		FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -321,6 +333,12 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	@Override
 	public void handleAddButton() {
 		if (!viewSwitchLock.tryLock()) {
+			return;
+		}
+
+		// addButtonHandler != null when the user brick category is open in the AddBrickFragment
+		if (AddBrickFragment.addButtonHandler != null) {
+			AddBrickFragment.addButtonHandler.handleAddButton();
 			return;
 		}
 

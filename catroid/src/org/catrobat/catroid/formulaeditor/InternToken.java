@@ -46,6 +46,12 @@ public class InternToken {
 		return this.tokenStringValue;
 	}
 
+	public void replaceVariableReferences(String oldName, String newName) {
+		if (internTokenType == InternTokenType.USER_VARIABLE && tokenStringValue.equals(oldName)) {
+			tokenStringValue = newName;
+		}
+	}
+
 	public boolean isNumber() {
 		if (internTokenType == InternTokenType.NUMBER) {
 			return true;

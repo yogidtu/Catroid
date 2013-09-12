@@ -39,6 +39,7 @@ public class SetVariableAction extends TemporalAction {
 		if (userVariable == null) {
 			return;
 		}
+		//Log.d("FOREST", "SVA.update: " + userVariable.getName() + " = " + changeVariable.interpretDouble(sprite));
 		double value = changeVariable.interpretDouble(sprite);
 		userVariable.setValue(value);
 

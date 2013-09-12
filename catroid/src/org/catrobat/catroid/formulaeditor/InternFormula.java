@@ -107,7 +107,6 @@ public class InternFormula {
 		CursorTokenPropertiesAfterModification cursorTokenPropertiesAfterInput = CursorTokenPropertiesAfterModification.DO_NOT_MODIFY;
 
 		if (resourceId == R.id.formula_editor_edit_field_clear) {
-
 			cursorTokenPropertiesAfterInput = handleDeletion();
 
 		} else if (isTokenSelected()) {
@@ -136,6 +135,13 @@ public class InternFormula {
 		updateExternCursorPosition(cursorTokenPropertiesAfterInput);
 		updateInternCursorPosition();
 
+	}
+
+	public void updateVariableReferences(String oldName, String newName, Context context) {
+		for (InternToken internToken : internTokenFormulaList) {
+			internToken.replaceVariableReferences(oldName, newName);
+		}
+		generateExternFormulaStringAndInternExternMapping(context);
 	}
 
 	public void updateInternCursorPosition() {

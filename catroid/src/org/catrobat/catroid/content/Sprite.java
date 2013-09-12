@@ -31,6 +31,7 @@ import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 
@@ -45,6 +46,8 @@ public class Sprite implements Serializable, Cloneable {
 	private ArrayList<LookData> lookList;
 	private ArrayList<SoundInfo> soundList;
 	public transient Look look;
+	private ArrayList<Brick> userBricks;
+	private int newUserBrickNext = 1;
 
 	public transient boolean isPaused;
 
@@ -78,6 +81,9 @@ public class Sprite implements Serializable, Cloneable {
 		if (scriptList == null) {
 			scriptList = new ArrayList<Script>();
 		}
+		if (userBricks == null) {
+			userBricks = new ArrayList<Brick>();
+		}
 	}
 
 	public void resetSprite() {
@@ -96,6 +102,33 @@ public class Sprite implements Serializable, Cloneable {
 	}
 
 	public Sprite() {
+
+	}
+
+	public UserBrick addUserBrick(UserBrick b) {
+		if (userBricks == null) {
+			userBricks = new ArrayList<Brick>();
+		}
+		userBricks.add(b);
+		return b;
+	}
+
+	public List<Brick> getUserBrickListAtLeastOneBrick(String defaultText, String defaultVariable) {
+		if (userBricks == null || userBricks.size() == 0) {
+			int newBrickId = ProjectManager.getInstance().getCurrentProject().getUserVariables()
+					.getAndIncrementUserBrickId();
+			initUserBrickList(defaultText, defaultVariable, newBrickId);
+		}
+		return userBricks;
+	}
+
+	void initUserBrickList(String defaultText, String defaultVariable, int nextUserBrickID) {
+		userBricks = new ArrayList<Brick>();
+
+		// the UserBrick constructor will insert the UserBrick into this Sprite's userBricks list.
+		UserBrick exampleBrick = new UserBrick(this, nextUserBrickID);
+		exampleBrick.addUIText(defaultText);
+		exampleBrick.addUIVariable(defaultVariable);
 
 	}
 
@@ -284,6 +317,10 @@ public class Sprite implements Serializable, Cloneable {
 			ressources |= script.getRequiredResources();
 		}
 		return ressources;
+	}
+
+	public int getNextNewUserBrickId() {
+		return newUserBrickNext++;
 	}
 
 	@Override
