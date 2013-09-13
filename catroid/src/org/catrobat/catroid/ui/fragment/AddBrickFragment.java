@@ -166,7 +166,6 @@ public class AddBrickFragment extends SherlockListFragment {
 
 	public void handleAddButton() {
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
-		Context context = getActivity();
 		int newBrickId = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 				.getAndIncrementUserBrickId();
 		UserBrick newBrick = new UserBrick(currentSprite, newBrickId);
@@ -252,7 +251,6 @@ public class AddBrickFragment extends SherlockListFragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-				Context context = getActivity();
 				Brick clickedBrick = adapter.getItem(position);
 
 				if (clickedBrick instanceof UserBrick) {
