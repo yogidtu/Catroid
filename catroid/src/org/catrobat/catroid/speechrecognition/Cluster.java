@@ -23,24 +23,60 @@
 package org.catrobat.catroid.speechrecognition;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import android.util.Log;
 
+import com.dtw.DTW;
 import com.timeseries.TimeSeries;
+import com.util.DistanceFunction;
+import com.util.EuclideanDistance;
 
 public class Cluster {
 
 	private static final String TAG = Cluster.class.getSimpleName();
-	private static int maxClusterSize = 5;
+	private static int maxClusterSize = 6;
 	private static int maxClusterMatches = 5;
-
-	private ArrayList<TimeSeries> fingerprintFiles = new ArrayList<TimeSeries>();
+	private HashMap<TimeSeries, Double> templates = new HashMap<TimeSeries, Double>();
 	private ArrayList<String> clusterLabels = new ArrayList<String>();
 
 	public void addFingerprint(TimeSeries fingerprint) {
-		fingerprintFiles.add(fingerprint);
-		if (fingerprintFiles.size() > maxClusterSize) {
-			fingerprintFiles.remove(0);
+		synchronized (templates) {
+			final DistanceFunction distanceFunktion = new EuclideanDistance();
+			double minDistance = Double.MAX_VALUE;
+			double highDistance = Double.MIN_NORMAL;
+			double nearestThreshold = 0;
+			TimeSeries nearestTemplate = null;
+			TimeSeries farTemplate = null;
+
+			Iterator<Entry<TimeSeries, Double>> it = templates.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<TimeSeries, Double> template = it.next();
+				double distance = DTW.getWarpDistBetween(fingerprint, template.getKey(), distanceFunktion);
+				double templateThreshold = template.getValue();
+				if (distance < minDistance) {
+					minDistance = distance;
+					if (templateThreshold <= 1) {
+						templateThreshold = distance;
+					}
+					nearestThreshold = (distance + templateThreshold) / 2;
+					nearestTemplate = template.getKey();
+				}
+				if (distance > highDistance) {
+					farTemplate = template.getKey();
+				}
+
+			}
+
+			if (templates.size() >= maxClusterSize && farTemplate != null && farTemplate != nearestTemplate) {
+				templates.remove(farTemplate);
+			}
+			if (nearestTemplate != null) {
+				templates.put(nearestTemplate, nearestThreshold);
+			}
+			templates.put(fingerprint, nearestThreshold);
 		}
 	}
 
@@ -77,15 +113,20 @@ public class Cluster {
 	}
 
 	public boolean removeFingerprint(TimeSeries fingerprint) {
-		if (!fingerprintFiles.contains(fingerprint)) {
-			return false;
+		synchronized (templates) {
+
+			if (!templates.containsKey(fingerprint)) {
+				return false;
+			}
+			templates.remove(fingerprint);
 		}
-		fingerprintFiles.remove(fingerprint);
 		return true;
 	}
 
-	public ArrayList<TimeSeries> getClusterFiles() {
-		return new ArrayList<TimeSeries>(fingerprintFiles);
+	public HashMap<TimeSeries, Double> getClusterFiles() {
+		synchronized (templates) {
+			return templates;
+		}
 	}
 
 	public ArrayList<String> getClusterLabels() {

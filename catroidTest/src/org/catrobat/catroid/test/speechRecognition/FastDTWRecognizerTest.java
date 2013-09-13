@@ -69,6 +69,10 @@ public class FastDTWRecognizerTest extends InstrumentationTestCase implements Re
 						.getTargetContext()));
 
 		FastDTWSpeechRecognizer recognizer = new FastDTWSpeechRecognizer();
+		ArrayList<String> labels = new ArrayList<String>();
+		labels.add("links");
+		labels.add("rechts");
+		recognizer.setFixedClusterLabels(labels);
 		recognizer.addCallbackListener(this);
 		recognizer.prepare();
 
@@ -113,6 +117,15 @@ public class FastDTWRecognizerTest extends InstrumentationTestCase implements Re
 			}
 		} while (recognizer.getRunningTaskCount() > 0 && i-- > 0);
 		assertTrue("Timed out", i > 0);
+
+		matches = new ArrayList<String>();
+		matches.add("rechts");
+		mocketResultBundle = new Bundle();
+		mocketResultBundle.putStringArrayList(BUNDLE_RESULT_MATCHES, matches);
+		mocketResultBundle.putBoolean(BUNDLE_RESULT_RECOGNIZED, true);
+		mocketResultBundle.putInt(BUNDLE_IDENTIFIER, identifier);
+		mocketResultBundle.putString(BUNDLE_SENDERCLASS, this.toString());
+		recognizer.onRecognizerResult(RESULT_OK, mocketResultBundle);
 
 		Log.v("SebiTest", "We are analysing ----------------------- left01");
 		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.links01);
@@ -177,74 +190,14 @@ public class FastDTWRecognizerTest extends InstrumentationTestCase implements Re
 		} while (recognizer.getRunningTaskCount() > 0 && i-- > 0);
 		assertTrue("Timed out", i > 0);
 
-		Log.v("SebiTest", "We are analysing ----------------------- links02");
-		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.links02);
-		audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT, 1, 16000,
-				frameSize, ByteOrder.LITTLE_ENDIAN, true);
-		recognizer.startRecognizeInput(audioFileStream, ++identifier);
-
-		i = 40;
-		do {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			}
-		} while (recognizer.getRunningTaskCount() > 0 && i-- > 0);
-		assertTrue("Timed out", i > 0);
-
-		Log.v("SebiTest", "We are analysing ----------------------- right03");
-		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.right03);
-		audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT, 1, 16000,
-				frameSize, ByteOrder.LITTLE_ENDIAN, true);
-		recognizer.startRecognizeInput(audioFileStream, ++identifier);
-
-		i = 40;
-		do {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			}
-		} while (recognizer.getRunningTaskCount() > 0 && i-- > 0);
-		assertTrue("Timed out", i > 0);
-
-		Log.v("SebiTest", "We are analysing ----------------------- right04 (is left)");
-		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.right04);
-		audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT, 1, 16000,
-				frameSize, ByteOrder.LITTLE_ENDIAN, true);
-		recognizer.startRecognizeInput(audioFileStream, ++identifier);
-
-		i = 40;
-		do {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			}
-		} while (recognizer.getRunningTaskCount() > 0 && i-- > 0);
-		assertTrue("Timed out", i > 0);
-		//
-		//		matches = new ArrayList<String>();
-		//		matches.add("links");
-		//		mocketResultBundle = new Bundle();
-		//		mocketResultBundle.putStringArrayList(BUNDLE_RESULT_MATCHES, matches);
-		//		mocketResultBundle.putBoolean(BUNDLE_RESULT_RECOGNIZED, true);
-		//		mocketResultBundle.putInt(BUNDLE_IDENTIFIER, identifier);
-		//		mocketResultBundle.putString(BUNDLE_SENDERCLASS, this.toString());
-		//		recognizer.onRecognizerResult(RESULT_OK, mocketResultBundle);
-
-		Log.v("SebiTest", "We are analysing ----------------------- links01");
-		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.links01);
-		audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT, 1, 16000,
-				frameSize, ByteOrder.LITTLE_ENDIAN, true);
-		recognizer.startRecognizeInput(audioFileStream, ++identifier);
-
-		i = 40;
-		do {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			}
-		} while (recognizer.getRunningTaskCount() > 0 && i-- > 0);
-		assertTrue("Timed out", i > 0);
+		matches = new ArrayList<String>();
+		matches.add("rechts");
+		mocketResultBundle = new Bundle();
+		mocketResultBundle.putStringArrayList(BUNDLE_RESULT_MATCHES, matches);
+		mocketResultBundle.putBoolean(BUNDLE_RESULT_RECOGNIZED, true);
+		mocketResultBundle.putInt(BUNDLE_IDENTIFIER, identifier);
+		mocketResultBundle.putString(BUNDLE_SENDERCLASS, this.toString());
+		recognizer.onRecognizerResult(RESULT_OK, mocketResultBundle);
 
 		Log.v("SebiTest", "We are analysing ----------------------- links02");
 		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.links02);
@@ -260,6 +213,15 @@ public class FastDTWRecognizerTest extends InstrumentationTestCase implements Re
 			}
 		} while (recognizer.getRunningTaskCount() > 0 && i-- > 0);
 		assertTrue("Timed out", i > 0);
+
+		matches = new ArrayList<String>();
+		matches.add("links");
+		mocketResultBundle = new Bundle();
+		mocketResultBundle.putStringArrayList(BUNDLE_RESULT_MATCHES, matches);
+		mocketResultBundle.putBoolean(BUNDLE_RESULT_RECOGNIZED, true);
+		mocketResultBundle.putInt(BUNDLE_IDENTIFIER, identifier);
+		mocketResultBundle.putString(BUNDLE_SENDERCLASS, this.toString());
+		recognizer.onRecognizerResult(RESULT_OK, mocketResultBundle);
 
 		Log.v("SebiTest", "We are analysing ----------------------- links03");
 		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.links03);
@@ -275,6 +237,15 @@ public class FastDTWRecognizerTest extends InstrumentationTestCase implements Re
 			}
 		} while (recognizer.getRunningTaskCount() > 0 && i-- > 0);
 		assertTrue("Timed out", i > 0);
+
+		matches = new ArrayList<String>();
+		matches.add("links");
+		mocketResultBundle = new Bundle();
+		mocketResultBundle.putStringArrayList(BUNDLE_RESULT_MATCHES, matches);
+		mocketResultBundle.putBoolean(BUNDLE_RESULT_RECOGNIZED, true);
+		mocketResultBundle.putInt(BUNDLE_IDENTIFIER, identifier);
+		mocketResultBundle.putString(BUNDLE_SENDERCLASS, this.toString());
+		recognizer.onRecognizerResult(RESULT_OK, mocketResultBundle);
 
 		Log.v("SebiTest", "We are analysing ----------------------- links04");
 		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.links04);
@@ -306,21 +277,6 @@ public class FastDTWRecognizerTest extends InstrumentationTestCase implements Re
 		} while (recognizer.getRunningTaskCount() > 0 && i-- > 0);
 		assertTrue("Timed out", i > 0);
 
-		Log.v("SebiTest", "We are analysing ----------------------- allofthem");
-		realAudioExampleStream = getInstrumentation().getContext().getResources()
-				.openRawResource(R.raw.speechsample_directions);
-		audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT, 1, 16000,
-				frameSize, ByteOrder.LITTLE_ENDIAN, true);
-		recognizer.startRecognizeInput(audioFileStream, ++identifier);
-
-		i = 40;
-		do {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-			}
-		} while (recognizer.getRunningTaskCount() > 0 && i-- > 0);
-		assertTrue("Timed out", i > 0);
 	}
 
 	public void onRecognizerResult(int resultCode, Bundle resultBundle) {

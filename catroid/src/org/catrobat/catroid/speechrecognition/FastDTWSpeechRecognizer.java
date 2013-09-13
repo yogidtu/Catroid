@@ -24,8 +24,9 @@ package org.catrobat.catroid.speechrecognition;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
-import org.catrobat.catroid.speechrecognition.signalprocessing.FFT;
 import org.catrobat.catroid.speechrecognition.signalprocessing.MelFrequencyFilterBank;
 
 import android.os.Bundle;
@@ -33,33 +34,28 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.dtw.DTW;
-import com.dtw.TimeWarpInfo;
 import com.timeseries.TimeSeries;
 import com.util.DistanceFunction;
-import com.util.DistanceFunctionFactory;
+import com.util.EuclideanDistance;
+
+import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 public class FastDTWSpeechRecognizer extends SpeechRecognizer implements RecognizerCallback {
 
 	private static final String TAG = FastDTWSpeechRecognizer.class.getSimpleName();
 	private SparseArray<TimeSeries> unassociatedFingerprints = new SparseArray<TimeSeries>();
 	private ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
-	//	private HashMap<ArrayList<String>, ArrayList<Integer>> matchCluster = new HashMap<ArrayList<String>, ArrayList<Integer>>();
-	private String workingDirectory = "";
 	private boolean fixedClusters = false;
 
-	private int targetTimePerFrame = 32;
-	private int overlappingFrameTime = 0;
-	private int filters = 32;
-	private double globalThreshold = 15.0;
-	private double minClusterDistance = 3.0;
+	private int targetTimePerFrame = 64;
+	private int overlappingFrameTime = targetTimePerFrame / 2;
+	private int filters = 12;
+	//	private double globalThreshold = 8000.0;
+	//	private double minClusterDistance = globalThreshold / 2;
 
 	private int samplesPerFrame;
 	private int samplesPerOverlap;
-	private FFT preCalculatedFFT;
-
-	//	public void setSavingDirectory(String dirPath) {
-	//		workingDirectory = dirPath;
-	//	}
+	private DoubleFFT_1D fft;
 
 	public void setFixedClusterLabels(ArrayList<String> labels) {
 		clusterList.clear();
@@ -82,8 +78,6 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		if (tmpSamplesPerFrame != samplesPerFrame) {
 			samplesPerFrame = tmpSamplesPerFrame;
 			samplesPerOverlap = (int) (streamToCheck.getSampleRate() / 1000f * overlappingFrameTime);
-			Log.v(TAG, "Samples per Frame: " + samplesPerFrame);
-			preCalculatedFFT = new FFT(samplesPerFrame);
 		}
 		return true;
 	}
@@ -94,27 +88,30 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		int identifier = getMyIdentifier();
 		double[][] currentLMD = new double[50][];
 		byte[] frameRawBuffer = new byte[samplesPerFrame * (inputStream.getSampleSizeInBits() / 8)];
-		double[] imageArray = new double[samplesPerFrame];
 		byte[] overlapBuffer = new byte[samplesPerOverlap * (inputStream.getSampleSizeInBits() / 8)];
 
 		int frameNumber = 0;
 		try {
-			while (inputStream.read(frameRawBuffer, overlapBuffer.length, frameRawBuffer.length - overlapBuffer.length) > 0) {
-				System.arraycopy(overlapBuffer, 0, frameRawBuffer, 0, overlapBuffer.length);
-				//Log.v(TAG, "Start converting to features");
+			while (inputStream.read(frameRawBuffer, frameNumber > 0 ? overlapBuffer.length : 0,
+					frameNumber > 0 ? (frameRawBuffer.length - overlapBuffer.length) : frameRawBuffer.length) > 0) {
+				if (frameNumber > 0) {
+					System.arraycopy(overlapBuffer, 0, frameRawBuffer, 0, overlapBuffer.length);
+				}
 				double[] frameBuffer = audioByteToDouble(frameRawBuffer, inputStream.getSampleSizeInBits() / 8);
-				preCalculatedFFT.fft(frameBuffer, imageArray);
-				frameBuffer = preCalculatedFFT.getMagnitude(frameBuffer, imageArray);
-				MelFrequencyFilterBank filterBank = new MelFrequencyFilterBank(130, inputStream.getSampleRate(),
-						filters);
-				//				PLPFrequencyFilterBank filterBank = new PLPFrequencyFilterBank(130, inputStream.getSampleRate() / 2,
-				//						filters);
-				frameBuffer = filterBank.process(frameBuffer, inputStream.getSampleRate());
+				double frameEnergy = calculateEnergyOfFrame(frameBuffer);
+				frameBuffer = hammingWindow(frameBuffer, 0, frameBuffer.length);
+
+				double[] powerSpectrum = new double[frameBuffer.length / 2];
+				fftMagnitude(frameBuffer, powerSpectrum);
+				MelFrequencyFilterBank filterBank = new MelFrequencyFilterBank(130, 6800, filters);
+				frameBuffer = filterBank.process(powerSpectrum, inputStream.getSampleRate(), 1);
+
 				if (frameNumber >= currentLMD.length) {
 					double[][] growingBuffer = new double[currentLMD.length * 2][];
 					System.arraycopy(currentLMD, 0, growingBuffer, 0, currentLMD.length);
 					currentLMD = growingBuffer;
 				}
+				frameBuffer[frameBuffer.length - 1] = frameEnergy;
 				currentLMD[frameNumber] = frameBuffer;
 				frameNumber++;
 				System.arraycopy(frameRawBuffer, frameRawBuffer.length - overlapBuffer.length, overlapBuffer, 0,
@@ -128,43 +125,49 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		}
 
 		long DTWTime = System.currentTimeMillis();
-		final DistanceFunction distanceFunktion = DistanceFunctionFactory.getDistFnByName("EuclideanDistance");
+		final DistanceFunction distanceFunktion = new EuclideanDistance();
 		final TimeSeries timeSerieInput = new TimeSeries(currentLMD);
 
-		double[] nearestDistances = new double[] { Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY };
 		Cluster successCluster = null;
 		ArrayList<String> matches = null;
 		ArrayList<Cluster> clusterCopyList = new ArrayList<Cluster>(clusterList);
 		for (Cluster cluster : clusterCopyList) {
-			double clusterMinDistance = Double.POSITIVE_INFINITY;
+			int hitCounter = 0;
 			Log.v(TAG, "cluster --------------------" + cluster.getClusterLabels().toString());
-			for (TimeSeries timeSerieReference : cluster.getClusterFiles()) {
+			Iterator<Entry<TimeSeries, Double>> it = cluster.getClusterFiles().entrySet().iterator();
+			int clusterNumber = 0;
+			int clusterSize = cluster.getClusterFiles().size();
+			while (it.hasNext()) {
+				clusterNumber++;
+				Entry<TimeSeries, Double> template = it.next();
+				Double compareableDistance = DTW
+						.getWarpDistBetween(timeSerieInput, template.getKey(), distanceFunktion);
+				Log.v(TAG, "Compareable:" + compareableDistance);
+				Log.v(TAG, "Threshold:" + template.getValue());
 
-				TimeWarpInfo twi = DTW.getWarpInfoBetween(timeSerieInput, timeSerieReference, distanceFunktion);
-				//				Log.v(TAG, "Warp path size: " + twi.getPath().size());
-				//Double result = DTW.getWarpDistBetween(timeSerieInput, timeSerieReference, distanceFunktion);
-				//				result = result / ((Math.max(currentLMD.length, timeSerieReference.numOfPts())) * targetTimePerFrame);
-				Double result = twi.getDistance();
-				result = result
-						/ (currentLMD.length * timeSerieReference.numOfPts() * 1000 * targetTimePerFrame * filters);
-				int compareableDistance = result.intValue();
-				Log.v(TAG, "We get distance of " + compareableDistance);
-				if (clusterMinDistance > compareableDistance) {
-					clusterMinDistance = compareableDistance;
+				if (compareableDistance < template.getValue()) {
+					Log.v(TAG, "We have a hit!");
+					hitCounter++;
 				}
-				if (clusterMinDistance < nearestDistances[0]) {
-					nearestDistances[0] = clusterMinDistance;
-					matches = cluster.getClusterLabels();
-					successCluster = cluster;
-				} else if (clusterMinDistance < nearestDistances[1]) {
-					nearestDistances[1] = clusterMinDistance;
+				if (clusterNumber > clusterSize / 2 && hitCounter == 0) {
+					break;
 				}
+
+			}
+			if (hitCounter >= clusterSize / 2 && clusterSize >= 2) {
+				Log.v(TAG, "HITHITHITHIT");
+				if (successCluster != null) {
+					//multi-hit
+					successCluster = null;
+					break;
+				}
+				matches = cluster.getClusterLabels();
+				successCluster = cluster;
 			}
 		}
 
-		if (nearestDistances[1] - nearestDistances[0] >= minClusterDistance && nearestDistances[0] <= globalThreshold) {
+		if (successCluster != null) {
 			Log.w(TAG, "Sending results");
-			successCluster.addFingerprint(timeSerieInput);
 			sendResults(matches);
 		} else {
 			unassociatedFingerprints.put(identifier, timeSerieInput);
@@ -181,6 +184,9 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		}
 		if (resultBundle.getBoolean(BUNDLE_RESULT_RECOGNIZED)) {
 			int identifier = resultBundle.getInt(BUNDLE_IDENTIFIER);
+			if (unassociatedFingerprints.get(identifier) == null) {
+				return;
+			}
 			ArrayList<String> resultMatches = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES);
 			boolean emptySearch = false;
 			if (resultMatches == null) {
@@ -228,14 +234,6 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		}
 	}
 
-	//	@Override
-	//	public void prepare() throws IllegalStateException {
-	//		if (workingDirectory == "") {
-	//			throw new IllegalStateException();
-	//		}
-	//		super.prepare();
-	//	}
-
 	@Override
 	public void onRecognizerError(Bundle errorBundle) {
 	}
@@ -244,7 +242,7 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 
 		double[] micBufferData = new double[samples.length / bytesPerSample];
 
-		final double amplification = 100.0;
+		final double amplification = 1000.0;
 		for (int index = 0, floatIndex = 0; index < samples.length - bytesPerSample + 1; index += bytesPerSample, floatIndex++) {
 			double sample = 0;
 			for (int b = 0; b < bytesPerSample; b++) {
@@ -258,5 +256,34 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 			micBufferData[floatIndex] = sample32;
 		}
 		return micBufferData;
+	}
+
+	private double[] hammingWindow(double[] signal_in, int pos, int size) {
+		for (int i = pos; i < pos + size; i++) {
+			int j = i - pos;
+			signal_in[i] = signal_in[i] * 0.46 * (1.0 - Math.cos(2.0 * Math.PI * j / size));
+		}
+		return signal_in;
+	}
+
+	private double calculateEnergyOfFrame(double[] frame) {
+		double sum = 0.0d;
+		for (double sample : frame) {
+			sum += (sample * sample);
+		}
+
+		return sum / frame.length;
+	}
+
+	public void fftMagnitude(double[] x, double[] ac) {
+		int n = x.length;
+		// Assumes n is even.
+
+		fft = new DoubleFFT_1D(n);
+		fft.realForward(x);
+		ac[0] = x[0];
+		for (int i = 1; i < n / 2 - 1; i++) {
+			ac[i] = x[2 * i] * x[2 * i] + x[2 * i + 1] * x[2 * i + 1];
+		}
 	}
 }

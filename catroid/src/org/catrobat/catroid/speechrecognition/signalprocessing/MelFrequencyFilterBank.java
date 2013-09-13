@@ -266,7 +266,8 @@ public class MelFrequencyFilterBank {
 	 * @throws java.lang.IllegalArgumentException
 	 * 
 	 */
-	public double[] process(double[] input, int inputSampleRate) throws IllegalArgumentException {
+	public double[] process(double[] input, int inputSampleRate, int additionalBufferSpace)
+			throws IllegalArgumentException {
 		//		double[] in = input.getValues();
 
 		if (filter == null || sampleRate != inputSampleRate) {
@@ -277,7 +278,7 @@ public class MelFrequencyFilterBank {
 			throw new IllegalArgumentException("Window size is incorrect: in.length == " + input.length
 					+ ", numberFftPoints == " + ((numberFftPoints >> 1) + 1));
 		}
-		double[] output = new double[numberFilters];
+		double[] output = new double[numberFilters + additionalBufferSpace];
 		/**
 		 * Filter input power spectrum
 		 */
