@@ -22,6 +22,8 @@
  */
 package org.catrobat.catroid.ui;
 
+import android.os.Bundle;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.UserBrick;
@@ -33,11 +35,30 @@ import org.catrobat.catroid.ui.adapter.BrickAdapter;
  */
 public class UserBrickScriptActivity extends ScriptActivity {
 
-	public static UserBrick userBrick;
+	private static UserBrick cachedUserBrick;
+	private UserBrick userBrick;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setUserBrickIfJustCreated();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		setUserBrickIfJustCreated();
+	}
+
+	public void setUserBrickIfJustCreated() {
+		if (UserBrickScriptActivity.cachedUserBrick != null) {
+			userBrick = UserBrickScriptActivity.cachedUserBrick;
+			UserBrickScriptActivity.cachedUserBrick = null;
+		}
+	}
 
 	public static void setUserBrick(Brick userBrick) {
-		//Log.d("FOREST", "UBSA.setUserBrick");
-		UserBrickScriptActivity.userBrick = (UserBrick) userBrick;
+		cachedUserBrick = (UserBrick) userBrick;
 		ProjectManager.getInstance().setCurrentUserBrick((UserBrick) userBrick);
 	}
 
