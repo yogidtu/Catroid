@@ -51,6 +51,7 @@ import org.catrobat.catroid.content.bricks.UserBrickUIData;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.ui.BottomBar;
+import org.catrobat.catroid.ui.BrickLayout;
 import org.catrobat.catroid.ui.DragAndDropBrickLayoutListener;
 import org.catrobat.catroid.ui.DragNDropBrickLayout;
 import org.catrobat.catroid.ui.ScriptActivity;
@@ -295,6 +296,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			} else {
 				dataView = View.inflate(context, R.layout.brick_user_data_text, null);
 			}
+
 			TextView textView = (TextView) dataView.findViewById(R.id.text_view);
 
 			textView.setText(d.name);
@@ -307,6 +309,9 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			});
 
 			layout.addView(dataView);
+			BrickLayout.LayoutParams params = (BrickLayout.LayoutParams) dataView.getLayoutParams();
+			params.setNewLine(true);
+
 		}
 
 		//if(onTouchListener)

@@ -386,6 +386,9 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 
 			layout2.addView(currentTextView);
 
+			BrickLayout.LayoutParams params = (BrickLayout.LayoutParams) currentTextView.getLayoutParams();
+			params.setNewLine(true);
+
 			if (prototype) {
 				c.prototypeView = currentTextView;
 			} else {

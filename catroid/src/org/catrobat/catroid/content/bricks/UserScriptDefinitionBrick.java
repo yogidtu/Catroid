@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,6 +78,11 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 
 	public void appendBrickToScript(Brick brick) {
 		userScript.addBrick(brick);
+	}
+
+	@Override
+	public CheckBox getCheckBox() {
+		return null;
 	}
 
 	@Override

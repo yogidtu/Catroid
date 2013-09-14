@@ -589,6 +589,10 @@ public class BrickLayout extends ViewGroup {
 			this.width = width;
 		}
 
+		public void setNewLine(boolean newLine) {
+			this.newLine = newLine;
+		}
+
 		public InputType getInputType() {
 			return inputType;
 		}

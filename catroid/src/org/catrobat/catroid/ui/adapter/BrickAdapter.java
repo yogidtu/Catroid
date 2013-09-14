@@ -1336,7 +1336,9 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				} else {
 					to = brickList.indexOf(currentBrick);
 				}
-				currentBrick.getCheckBox().setChecked(checked);
+				if (currentBrick.getCheckBox() != null) {
+					currentBrick.getCheckBox().setChecked(checked);
+				}
 			}
 			if (from > to) {
 				int temp = from;
@@ -1352,7 +1354,9 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 				} else {
 					checkedBricks.remove(currentBrick);
 				}
-				currentBrick.getCheckBox().setChecked(checked);
+				if (currentBrick.getCheckBox() != null) {
+					currentBrick.getCheckBox().setChecked(checked);
+				}
 				handleBrickEnabledState(currentBrick, !checked);
 				from++;
 			}
