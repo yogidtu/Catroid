@@ -54,6 +54,7 @@ import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.BrickLayout;
 import org.catrobat.catroid.ui.DragAndDropBrickLayoutListener;
 import org.catrobat.catroid.ui.DragNDropBrickLayout;
+import org.catrobat.catroid.ui.LineBreakListener;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.dialogs.UserBrickEditElementDialog;
 
@@ -61,7 +62,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserBrickDataEditorFragment extends SherlockFragment implements OnKeyListener,
-		DragAndDropBrickLayoutListener, UserBrickEditElementDialog.DialogListener {
+		DragAndDropBrickLayoutListener, UserBrickEditElementDialog.DialogListener, LineBreakListener {
 
 	public static final String BRICK_DATA_EDITOR_FRAGMENT_TAG = "brick_data_editor_fragment";
 	private static final String BRICK_BUNDLE_ARGUMENT = "current_brick";
@@ -166,11 +167,15 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 				String[] actions = res.getStringArray(R.array.data_editor_buttons);
 
 				String action = actions[position];
+
 				if (action.equals(res.getString(R.string.add_text))) {
 					addTextDialog();
 				}
 				if (action.equals(res.getString(R.string.add_variable))) {
 					addVariableDialog();
+				}
+				if (action.equals(res.getString(R.string.add_line_break))) {
+					addLineBreak();
 				}
 				if (action.equals(res.getString(R.string.close))) {
 					onUserDismiss();
@@ -184,16 +189,21 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 	public void addTextDialog() {
 		int indexOfNewText = currentBrick.addUIText("");
-
 		editElementDialog(indexOfNewText, "", false, R.string.add_text, R.string.text_hint);
 		indexOfCurrentlyEditedElement = indexOfNewText;
+		updateBrickView();
+	}
 
+	public void addLineBreak() {
+		currentBrick.addUILineBreak();
+		updateBrickView();
 	}
 
 	public void addVariableDialog() {
 		int indexOfNewText = currentBrick.addUIVariable("");
 		editElementDialog(indexOfNewText, "", false, R.string.add_variable, R.string.variable_hint);
 		indexOfCurrentlyEditedElement = indexOfNewText;
+		updateBrickView();
 	}
 
 	public void editElementDialog(int id, CharSequence text, boolean editMode, int title, int defaultText) {
@@ -256,7 +266,7 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 	@Override
 	public void click(int id) {
 		UserBrickUIData d = currentBrick.uiData.get(id);
-		if (d != null) {
+		if (d != null && !d.isEditModeLineBreak) {
 			int title = d.isVariable ? R.string.edit_variable : R.string.edit_text;
 			int defaultText = d.isVariable ? R.string.variable_hint : R.string.text_hint;
 			editElementDialog(id, d.name, true, title, defaultText);
@@ -291,15 +301,21 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 
 		for (UserBrickUIData d : currentBrick.uiData) {
 			View dataView = null;
-			if (d.isVariable) {
-				dataView = View.inflate(context, R.layout.brick_user_data_variable, null);
+			if (d.isEditModeLineBreak) {
+				dataView = View.inflate(context, R.layout.brick_user_data_line_break, null);
 			} else {
-				dataView = View.inflate(context, R.layout.brick_user_data_text, null);
+				if (d.isVariable) {
+					dataView = View.inflate(context, R.layout.brick_user_data_variable, null);
+				} else {
+					dataView = View.inflate(context, R.layout.brick_user_data_text, null);
+				}
 			}
 
 			TextView textView = (TextView) dataView.findViewById(R.id.text_view);
 
-			textView.setText(d.name);
+			if (textView != null) {
+				textView.setText(d.name);
+			}
 			Button button = (Button) dataView.findViewById(R.id.button);
 			button.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -309,12 +325,26 @@ public class UserBrickDataEditorFragment extends SherlockFragment implements OnK
 			});
 
 			layout.addView(dataView);
-			BrickLayout.LayoutParams params = (BrickLayout.LayoutParams) dataView.getLayoutParams();
-			params.setNewLine(true);
 
+			if (d.isEditModeLineBreak) {
+				BrickLayout.LayoutParams params = (BrickLayout.LayoutParams) dataView.getLayoutParams();
+				params.setNewLine(true);
+			}
+
+			layout.registerLineBreakListener(this);
 		}
 
 		//if(onTouchListener)
+	}
+
+	@Override
+	public void setBreaks(List<Integer> breaks) {
+		for (UserBrickUIData data : currentBrick.uiData) {
+			data.newLineHint = false;
+		}
+		for (int breakIndex : breaks) {
+			currentBrick.uiData.get(breakIndex).newLineHint = true;
+		}
 	}
 
 	@Override

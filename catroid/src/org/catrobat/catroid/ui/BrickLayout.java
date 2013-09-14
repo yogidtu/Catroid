@@ -85,7 +85,7 @@ public class BrickLayout extends ViewGroup {
 		this.readStyleParameters(context, attributeSet);
 	}
 
-	private void allocateLineData() {
+	protected void allocateLineData() {
 		lines = new LinkedList<LineData>();
 		for (int i = 0; i < linesToAllocate; i++) {
 			allocateNewLine();
@@ -361,7 +361,7 @@ public class BrickLayout extends ViewGroup {
 		return childWidth;
 	}
 
-	private LineData getNextLine(LineData currentLine) {
+	protected LineData getNextLine(LineData currentLine) {
 		int index = lines.indexOf(currentLine) + 1;
 		if (index < lines.size()) {
 			return lines.get(index);
@@ -370,7 +370,7 @@ public class BrickLayout extends ViewGroup {
 		}
 	}
 
-	private ElementData getElement(LineData currentLine, int elementInLineIndex) {
+	protected ElementData getElement(LineData currentLine, int elementInLineIndex) {
 		if (elementInLineIndex < currentLine.elements.size()) {
 			return currentLine.elements.get(elementInLineIndex);
 		} else {
@@ -380,7 +380,7 @@ public class BrickLayout extends ViewGroup {
 		}
 	}
 
-	private int getHorizontalSpacing(LayoutParams layoutParams) {
+	protected int getHorizontalSpacing(LayoutParams layoutParams) {
 		int verticalSpacing;
 		if (layoutParams.verticalSpacingSpecified()) {
 			verticalSpacing = layoutParams.verticalSpacing;
@@ -390,7 +390,7 @@ public class BrickLayout extends ViewGroup {
 		return verticalSpacing;
 	}
 
-	private int getVerticalSpacing(LayoutParams layoutParams) {
+	protected int getVerticalSpacing(LayoutParams layoutParams) {
 		int verticalSpacing;
 		if (layoutParams.verticalSpacingSpecified()) {
 			verticalSpacing = layoutParams.verticalSpacing;
@@ -591,6 +591,10 @@ public class BrickLayout extends ViewGroup {
 
 		public void setNewLine(boolean newLine) {
 			this.newLine = newLine;
+		}
+
+		public boolean getNewLine() {
+			return newLine;
 		}
 
 		public InputType getInputType() {

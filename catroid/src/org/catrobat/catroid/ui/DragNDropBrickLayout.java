@@ -9,9 +9,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.ScreenValues;
+
+import java.util.LinkedList;
 
 /**
  * Author: Romain Guy, Forest Johnson
@@ -51,6 +54,8 @@ public class DragNDropBrickLayout extends BrickLayout {
 	private WeirdFloatingWindowData dragView;
 	private WeirdFloatingWindowData dragCursor1;
 	private WeirdFloatingWindowData dragCursor2;
+	private LineBreakListener lineBreakListener;
+	private LinkedList<Integer> breaks;
 
 	public DragAndDropBrickLayoutListener parent;
 
@@ -68,6 +73,183 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 	public void setListener(DragAndDropBrickLayoutListener parent) {
 		this.parent = parent;
+	}
+
+	public void registerLineBreakListener(LineBreakListener listener) {
+		lineBreakListener = listener;
+	}
+
+	@Override
+	protected void allocateLineData() {
+		breaks = new LinkedList<Integer>();
+		super.allocateLineData();
+	}
+
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		int sizeWidth = MeasureSpec.getSize(widthMeasureSpec) - this.getPaddingRight() - this.getPaddingLeft();
+		int sizeHeight = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
+
+		int modeWidth = MeasureSpec.getMode(widthMeasureSpec);
+		int modeHeight = MeasureSpec.getMode(heightMeasureSpec);
+
+		int lineThicknessWithorizontalSpacing = 0;
+		int lineThickness = 0;
+		int lineLengthWithHorizontalSpacing = 0;
+		int lineLength = 0;
+
+		int prevLinePosition = 0;
+
+		int controlMaxLength = 0;
+		int controlMaxThickness = 0;
+
+		for (LineData lineData : lines) {
+			lineData.allowableTextFieldWidth = 0;
+			lineData.height = 0;
+			lineData.minHeight = 0;
+			lineData.numberOfTextFields = 0;
+			lineData.totalTextFieldWidth = 0;
+			for (ElementData elementData : lineData.elements) {
+				elementData.height = 0;
+				elementData.width = 0;
+				elementData.posY = 0;
+				elementData.posX = 0;
+				elementData.view = null;
+			}
+		}
+
+		LineData currentLine = lines.getFirst();
+
+		lineThicknessWithorizontalSpacing = 0;
+		lineThickness = 0;
+		lineLengthWithHorizontalSpacing = 0;
+		lineLength = 0;
+
+		prevLinePosition = 0;
+
+		controlMaxLength = 0;
+		controlMaxThickness = 0;
+		currentLine = lines.getFirst();
+
+		int elementInLineIndex = 0;
+		for (int i = 0; i < getChildCount(); i++) {
+			final View child = getChildAt(i);
+			if (child.getVisibility() == GONE) {
+				continue;
+			}
+			boolean forceNewLine = false;
+			LayoutParams layoutParams = (LayoutParams) child.getLayoutParams();
+			int horizontalSpacing = getHorizontalSpacing(layoutParams);
+			int verticalSpacing = getVerticalSpacing(layoutParams);
+
+			if (child instanceof Spinner) {
+				child.measure(MeasureSpec.makeMeasureSpec(sizeWidth, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(
+						sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeHeight));
+			} else if (layoutParams.getNewLine()) {
+				int width = sizeWidth - (lineLengthWithHorizontalSpacing + horizontalSpacing);
+				if (width <= horizontalSpacing * 2) {
+					forceNewLine = true;
+					width = sizeWidth - (horizontalSpacing * 4);
+				}
+				child.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(
+						sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeHeight));
+			} else {
+				child.measure(MeasureSpec.makeMeasureSpec(sizeWidth,
+						modeWidth == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST : modeWidth), MeasureSpec
+						.makeMeasureSpec(sizeHeight, modeHeight == MeasureSpec.EXACTLY ? MeasureSpec.AT_MOST
+								: modeHeight));
+			}
+
+			int childWidth = child.getMeasuredWidth();
+			int childHeight = child.getMeasuredHeight();
+
+			boolean updateSmallestHeight = currentLine.minHeight == 0 || currentLine.minHeight > childHeight;
+			currentLine.minHeight = (updateSmallestHeight ? childHeight : currentLine.minHeight);
+
+			lineLength = lineLengthWithHorizontalSpacing + childWidth;
+			lineLengthWithHorizontalSpacing = lineLength + horizontalSpacing;
+
+			boolean previousWasNewLine = false;
+			if (i > 0) {
+				LayoutParams previousLayoutParams = (LayoutParams) getChildAt(i - 1).getLayoutParams();
+				previousWasNewLine = previousLayoutParams.getNewLine();
+			}
+
+			if (lineLength > sizeWidth || previousWasNewLine || forceNewLine) {
+				prevLinePosition = prevLinePosition + lineThicknessWithorizontalSpacing;
+
+				currentLine = getNextLine(currentLine);
+				elementInLineIndex = 0;
+
+				lineThickness = childHeight;
+				lineLength = childWidth;
+				lineThicknessWithorizontalSpacing = childHeight + verticalSpacing;
+				lineLengthWithHorizontalSpacing = lineLength + horizontalSpacing;
+			}
+
+			lineThicknessWithorizontalSpacing = Math.max(lineThicknessWithorizontalSpacing, childHeight
+					+ verticalSpacing);
+			lineThickness = Math.max(lineThickness, childHeight);
+
+			currentLine.height = lineThickness;
+
+			int posX = getPaddingLeft() + lineLength - childWidth;
+			int posY = getPaddingTop() + prevLinePosition;
+
+			ElementData element = getElement(currentLine, elementInLineIndex);
+			element.view = child;
+			element.posX = posX;
+			element.posY = posY;
+			element.width = childWidth;
+			element.height = childHeight;
+			elementInLineIndex++;
+
+			controlMaxLength = Math.max(controlMaxLength, lineLength);
+			controlMaxThickness = prevLinePosition + lineThickness;
+		}
+
+		int x = controlMaxLength;
+		int y = controlMaxThickness;
+
+		y += getPaddingTop() + getPaddingBottom();
+
+		int centerVertically = 0;
+		if (y < getSuggestedMinimumHeight()) {
+			centerVertically = (getSuggestedMinimumHeight() - y) / 2;
+		}
+
+		y = Math.max(y, getSuggestedMinimumHeight());
+
+		int i = 0;
+		breaks.clear();
+		for (LineData lineData : lines) {
+			boolean firstInLine = true;
+			for (ElementData elementData : lineData.elements) {
+				if (elementData.view != null) {
+					if (firstInLine && i != 0) {
+						breaks.add(i);
+					}
+					firstInLine = false;
+
+					int centerVerticallyWithinLine = 0;
+					if (elementData.height < lineData.height) {
+						centerVerticallyWithinLine = Math.round((lineData.height - elementData.height) * 0.5f);
+					}
+
+					elementData.posY += centerVertically + centerVerticallyWithinLine;
+					LayoutParams layoutParams = (LayoutParams) elementData.view.getLayoutParams();
+					layoutParams.setPosition(elementData.posX, elementData.posY);
+
+					i++;
+				}
+			}
+		}
+
+		if (lineBreakListener != null) {
+			lineBreakListener.setBreaks(breaks);
+		}
+
+		this.setMeasuredDimension(resolveSize(x, widthMeasureSpec), resolveSize(y, heightMeasureSpec));
 	}
 
 	@Override
@@ -106,12 +288,15 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 		for (BrickLayout.LineData line : lines) {
 			for (BrickLayout.ElementData e : line.elements) {
-				if (x > e.posX && y > e.posY && x < e.posX + e.width && y < e.posY + e.height) {
-					dragPointOffsetX = (e.posX - x);
-					dragPointOffsetY = (e.posY - y);
-					return itemPosition;
+				if (e.view != null) {
+					if (x > e.posX && y > e.posY && x < e.posX + e.width && y < e.posY + e.height) {
+
+						dragPointOffsetX = (e.posX - x);
+						dragPointOffsetY = (e.posY - y);
+						return itemPosition;
+					}
+					itemPosition++;
 				}
-				itemPosition++;
 			}
 		}
 		return -1;
@@ -211,7 +396,11 @@ public class DragNDropBrickLayout extends BrickLayout {
 	private int countElements() {
 		int previousElementIndex = 0;
 		for (BrickLayout.LineData line : lines) {
-			previousElementIndex += line.elements.size();
+			for (BrickLayout.ElementData element : line.elements) {
+				if (element.view != null) {
+					previousElementIndex++;
+				}
+			}
 		}
 		return previousElementIndex;
 	}
@@ -230,40 +419,38 @@ public class DragNDropBrickLayout extends BrickLayout {
 		for (BrickLayout.LineData line : lines) {
 			int elementIndex = 0;
 			for (BrickLayout.ElementData e : line.elements) {
-				if (e.view == null) {
-					continue;
-				}
+				if (e.view != null) {
+					float edgeX = e.posX;
+					float edgeY = e.posY;
+					if (e.view.getVisibility() != GONE) {
+						edgeX -= (e.width * 0.5f);
+					}
 
-				float edgeX = e.posX;
-				float edgeY = e.posY;
-				if (e.view.getVisibility() != GONE) {
-					edgeX -= (e.width * 0.5f);
-				}
+					float dx = edgeX - x;
+					float dy = edgeY - y;
+					float d = dx * dx + dy * dy * BIAS_SAME_LINE_FUDGE_FACTOR;
 
-				float dx = edgeX - x;
-				float dy = edgeY - y;
-				float d = dx * dx + dy * dy * BIAS_SAME_LINE_FUDGE_FACTOR;
+					if (d < closestDistance) {
+						closestDistance = d;
+						closestPreviousElementIndex = previousElementIndex;
+					}
+					previousElementIndex++;
 
-				if (d < closestDistance) {
-					closestDistance = d;
-					closestPreviousElementIndex = previousElementIndex;
-				}
-				previousElementIndex++;
+					edgeX = e.posX;
+					if (elementIndex == line.elements.size() - 1 || line.elements.get(elementIndex + 1).view == null) {
+						edgeX = (edgeX + (e.width * 0.5f) + getMeasuredWidth()) * 0.5f;
+					} else if (e.view.getVisibility() != GONE) {
+						edgeX += (e.width * 0.5f);
+					}
+					dx = edgeX - x;
+					d = dx * dx + dy * dy * BIAS_SAME_LINE_FUDGE_FACTOR;
 
-				edgeX = e.posX;
-				if (elementIndex == line.elements.size() - 1) {
-					edgeX = (edgeX + (e.width * 0.5f) + getMeasuredWidth()) * 0.5f;
-				} else if (e.view.getVisibility() != GONE) {
-					edgeX += (e.width * 0.5f);
+					if (d < closestDistance) {
+						closestDistance = d;
+						closestPreviousElementIndex = previousElementIndex;
+					}
+					elementIndex++;
 				}
-				dx = edgeX - x;
-				d = dx * dx + dy * dy * BIAS_SAME_LINE_FUDGE_FACTOR;
-
-				if (d < closestDistance) {
-					closestDistance = d;
-					closestPreviousElementIndex = previousElementIndex;
-				}
-				elementIndex++;
 			}
 		}
 		return closestPreviousElementIndex;
@@ -300,10 +487,12 @@ public class DragNDropBrickLayout extends BrickLayout {
 
 		for (BrickLayout.LineData line : lines) {
 			for (BrickLayout.ElementData e : line.elements) {
-				if (index == i) {
-					return e;
+				if (e.view != null) {
+					if (index == i) {
+						return e;
+					}
+					index++;
 				}
-				index++;
 			}
 		}
 		return null;

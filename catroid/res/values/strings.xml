@@ -573,6 +573,7 @@
     <string name="edit_text">Edit Text</string>
     <string name="text_hint">Brick Text</string>
     <string name="add_variable">Add Variable</string>
+    <string name="add_line_break">Add Line Break</string>
     <string name="edit_variable">Edit Variable</string>
     <string name="variable_hint">Variable Name</string>
     <!--  -->

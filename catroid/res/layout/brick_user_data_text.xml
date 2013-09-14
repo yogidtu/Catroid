@@ -39,8 +39,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="0dp"
-				android:paddingLeft="3dp"
-				android:paddingRight="5dp"
+			android:paddingLeft="3dp"
+			android:paddingRight="5dp"
             android:textColor="@color/solid_white"
             android:textStyle="bold" 
             android:textSize="16sp" >

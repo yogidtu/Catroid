@@ -105,24 +105,38 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 	public int addUILocalizedString(Context context, int id) {
 		UserBrickUIData data = new UserBrickUIData();
 		data.isVariable = false;
+		data.isEditModeLineBreak = false;
 		data.name = context.getResources().getString(id);
+		int toReturn = uiData.size();
 		uiData.add(data);
 		uiData.version++;
-		return uiData.size() - 1;
+		return toReturn;
 	}
 
 	public int addUIText(String text) {
 		UserBrickUIData data = new UserBrickUIData();
 		data.isVariable = false;
+		data.isEditModeLineBreak = false;
 		data.name = text;
+		int toReturn = uiData.size();
 		uiData.add(data);
 		uiData.version++;
-		return uiData.size() - 1;
+		return toReturn;
+	}
+
+	public void addUILineBreak() {
+		UserBrickUIData data = new UserBrickUIData();
+		data.isVariable = false;
+		data.isEditModeLineBreak = true;
+		data.name = "linebreak";
+		uiData.add(data);
+		uiData.version++;
 	}
 
 	public int addUILocalizedVariable(Context context, int id) {
 		UserBrickUIData data = new UserBrickUIData();
 		data.isVariable = true;
+		data.isEditModeLineBreak = false;
 		data.name = context.getResources().getString(id);
 
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
@@ -131,14 +145,16 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 			variablesContainer.addUserBrickUserVariableToUserBrick(userBrickId, data.name);
 		}
 
+		int toReturn = uiData.size();
 		uiData.add(data);
 		uiData.version++;
-		return uiData.size() - 1;
+		return toReturn;
 	}
 
 	public int addUIVariable(String id) {
 		UserBrickUIData comp = new UserBrickUIData();
 		comp.isVariable = true;
+		comp.isEditModeLineBreak = false;
 		comp.name = id;
 
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
@@ -147,9 +163,10 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 			variablesContainer.addUserBrickUserVariableToUserBrick(userBrickId, comp.name);
 		}
 
+		int toReturn = uiData.size();
 		uiData.add(comp);
 		uiData.version++;
-		return uiData.size() - 1;
+		return toReturn;
 	}
 
 	public void renameUIElement(String oldName, String newName, Context context) {
@@ -349,6 +366,9 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 		for (UserBrickUIComponent c : uiComponents) {
 			TextView currentTextView = null;
 			UserBrickUIData d = uiData.get(c.dataIndex);
+			if (d.isEditModeLineBreak) {
+				continue;
+			}
 			if (d.isVariable) {
 				currentTextView = new EditText(context);
 
@@ -386,8 +406,11 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 
 			layout2.addView(currentTextView);
 
-			BrickLayout.LayoutParams params = (BrickLayout.LayoutParams) currentTextView.getLayoutParams();
-			params.setNewLine(true);
+			if (d.newLineHint) {
+				BrickLayout.LayoutParams params = (BrickLayout.LayoutParams) currentTextView.getLayoutParams();
+				params.setNewLine(true);
+				currentTextView.setLayoutParams(params);
+			}
 
 			if (prototype) {
 				c.prototypeView = currentTextView;

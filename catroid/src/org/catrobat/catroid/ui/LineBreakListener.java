@@ -20,21 +20,11 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.content.bricks;
+package org.catrobat.catroid.ui;
 
-import java.io.Serializable;
+import java.util.List;
 
-/**
- * @author forestjohnson
- * 
- */
-public class UserBrickUIData implements Serializable {
+public interface LineBreakListener {
 
-	private static final long serialVersionUID = 1L;
-
-	public int key;
-	public boolean isVariable;
-	public boolean isEditModeLineBreak;
-	public boolean newLineHint;
-	public String name = "";
+	void setBreaks(List<Integer> breaks);
 }
