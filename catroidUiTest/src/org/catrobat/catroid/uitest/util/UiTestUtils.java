@@ -437,6 +437,15 @@ public class UiTestUtils {
 		if (!succeeded) {
 			fail(brickName + " should appear. Failed to scroll to find it.");
 		}
+
+		if (categoryStringId == R.string.category_user_bricks) {
+			String stringOnAddToScriptButton = solo.getCurrentActivity().getString(
+					R.string.brick_context_dialog_add_to_script);
+			if (!solo.waitForText(stringOnAddToScriptButton, 0, 2000)) {
+				fail("Text '" + stringOnAddToScriptButton + "' not shown in 5 secs!");
+			}
+			solo.clickOnText(stringOnAddToScriptButton);
+		}
 		solo.sleep(600);
 	}
 
@@ -527,6 +536,10 @@ public class UiTestUtils {
 				width = view.getWidth();
 				height = view.getHeight();
 			}
+		}
+
+		if (location == null) {
+			return null;
 		}
 
 		int originX = location[0] + Math.round(width * 0.2f);

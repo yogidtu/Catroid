@@ -465,6 +465,10 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 		return new UserBrickStageToken(theList, userBrickId);
 	}
 
+	public int getId() {
+		return userBrickId;
+	}
+
 	public UserScriptDefinitionBrick getDefinitionBrick() {
 		return definitionBrick;
 	}
