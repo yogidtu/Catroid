@@ -22,10 +22,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/userBrickDataTextBackground"
     android:id="@+id/brick_data_text"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/brick_data_round_rect"
     android:baselineAligned="true"
     android:measureWithLargestChild="false"
     android:orientation="horizontal"

@@ -21,6 +21,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Author: Romain Guy
+ * <p/>
+ * Using example: <?xml version="4.0" encoding="utf-8"?> <com.example.android.layout.FlowLayout
+ * xmlns:f="http://schemas.android.com/apk/res/org.apmem.android"
+ * xmlns:android="http://schemas.android.com/apk/res/android" f:horizontalSpacing="6dip" f:verticalSpacing="12dip"
+ * android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="6dip"
+ * android:paddingTop="6dip" android:paddingRight="12dip"> <Button android:layout_width="wrap_content"
+ * android:layout_height="wrap_content" f:layout_horizontalSpacing="32dip" f:layout_breakLine="true"
+ * android:text="Cancel" />
+ * <p/>
+ * </com.example.android.layout.FlowLayout>
+ */
+
 package org.catrobat.catroid.ui;
 
 import android.content.Context;
@@ -38,20 +52,6 @@ import android.widget.TextView;
 import org.catrobat.catroid.R;
 
 import java.util.LinkedList;
-
-/**
- * Author: Romain Guy
- * <p/>
- * Using example: <?xml version="4.0" encoding="utf-8"?> <com.example.android.layout.FlowLayout
- * xmlns:f="http://schemas.android.com/apk/res/org.apmem.android"
- * xmlns:android="http://schemas.android.com/apk/res/android" f:horizontalSpacing="6dip" f:verticalSpacing="12dip"
- * android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="6dip"
- * android:paddingTop="6dip" android:paddingRight="12dip"> <Button android:layout_width="wrap_content"
- * android:layout_height="wrap_content" f:layout_horizontalSpacing="32dip" f:layout_breakLine="true"
- * android:text="Cancel" />
- * <p/>
- * </com.example.android.layout.FlowLayout>
- */
 
 public class BrickLayout extends ViewGroup {
 	public static final int HORIZONTAL = 0;

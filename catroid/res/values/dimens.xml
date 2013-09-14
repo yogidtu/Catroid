@@ -45,7 +45,6 @@
     <dimen name="text_size_brick_category">22sp</dimen>
     
     <!-- UserBrickDataEditorFragment -->
-    <dimen name="brick_data_edit_spacing">10dp</dimen>
     <dimen name="brick_data_edit_cursor_size">58dp</dimen>
     <!--  -->
 

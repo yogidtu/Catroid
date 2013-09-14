@@ -23,11 +23,11 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
+    style="@style/userBrickDataTextBackground"
     android:id="@+id/brick_data_line_break"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="right"
-    android:background="@drawable/brick_data_round_rect"
     android:baselineAligned="true"
     android:orientation="horizontal"
     android:paddingTop="8dp" 

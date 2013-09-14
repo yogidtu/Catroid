@@ -366,6 +366,10 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="NoBackgroundStyle">
+	
+    </style>
+    
     <style name="FormulaEditorButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:background">@drawable/formula_editor_keyboard_button</item>
@@ -492,5 +496,9 @@
         <item name="android:textSize">14sp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+    
+    <style name="userBrickDataTextBackground">
+        <item name="android:background">@drawable/brick_data_round_rect</item>
     </style>
 </resources>

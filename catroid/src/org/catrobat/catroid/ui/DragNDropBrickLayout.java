@@ -1,3 +1,40 @@
+/**
+ *  Catroid: An on-device visual programming system for Android devices
+ *  Copyright (C) 2010-2013 The Catrobat Team
+ *  (<http://developer.catrobat.org/credits>)
+ *  
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *  
+ *  An additional term exception under section 7 of the GNU Affero
+ *  General Public License, version 3, is available at
+ *  http://developer.catrobat.org/license_additional_term
+ *  
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * Author: Romain Guy
+ * <p/>
+ * Using example: <?xml version="4.0" encoding="utf-8"?> <com.example.android.layout.FlowLayout
+ * xmlns:f="http://schemas.android.com/apk/res/org.apmem.android"
+ * xmlns:android="http://schemas.android.com/apk/res/android" f:horizontalSpacing="6dip" f:verticalSpacing="12dip"
+ * android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="6dip"
+ * android:paddingTop="6dip" android:paddingRight="12dip"> <Button android:layout_width="wrap_content"
+ * android:layout_height="wrap_content" f:layout_horizontalSpacing="32dip" f:layout_breakLine="true"
+ * android:text="Cancel" />
+ * <p/>
+ * </com.example.android.layout.FlowLayout>
+ */
+
 package org.catrobat.catroid.ui;
 
 import android.content.Context;
@@ -16,19 +53,6 @@ import org.catrobat.catroid.common.ScreenValues;
 
 import java.util.LinkedList;
 
-/**
- * Author: Romain Guy, Forest Johnson
- * <p/>
- * Using example: <?xml version="4.0" encoding="utf-8"?> <com.example.android.layout.FlowLayout
- * xmlns:f="http://schemas.android.com/apk/res/org.apmem.android"
- * xmlns:android="http://schemas.android.com/apk/res/android" f:horizontalSpacing="6dip" f:verticalSpacing="12dip"
- * android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="6dip"
- * android:paddingTop="6dip" android:paddingRight="12dip"> <Button android:layout_width="wrap_content"
- * android:layout_height="wrap_content" f:layout_horizontalSpacing="32dip" f:layout_breakLine="true"
- * android:text="Cancel" />
- * <p/>
- * </com.example.android.layout.FlowLayout>
- */
 public class DragNDropBrickLayout extends BrickLayout {
 
 	private boolean dragging;
