@@ -423,9 +423,9 @@ public class UiTestUtils {
 	public static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
 		solo.sleep(500);
-		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
+		clickOnBrickCategory(solo, solo.getCurrentActivity().getString(categoryStringId));
 
-		boolean fragmentAppeared = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 1000);
+		boolean fragmentAppeared = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 5000);
 		if (!fragmentAppeared) {
 			fail("add brick fragment should appear");
 		}
@@ -445,6 +445,13 @@ public class UiTestUtils {
 			solo.clickOnText(stringOnAddToScriptButton);
 		}
 		solo.sleep(600);
+	}
+
+	public static void clickOnBrickCategory(Solo solo, String category) {
+		if (!solo.waitForText(category, 0, 300)) {
+			solo.drag(40, 40, 300, 40, DRAG_FRAMES);
+		}
+		solo.clickOnText(category);
 	}
 
 	public static boolean clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
