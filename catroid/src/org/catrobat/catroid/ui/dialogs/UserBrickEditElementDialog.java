@@ -157,6 +157,7 @@ public class UserBrickEditElementDialog extends SherlockDialogFragment {
 		EditText dialogEditText = (EditText) dialogNewVariable
 				.findViewById(R.id.dialog_brick_editor_edit_element_edit_text);
 
+		dialogEditText.selectAll();
 		dialogEditText.setHint(stringResourceOfHintText);
 
 		InputMethodManager inputMethodManager = (InputMethodManager) getSherlockActivity().getSystemService(

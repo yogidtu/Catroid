@@ -28,6 +28,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -94,17 +95,20 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 	}
 
 	public void renameVariablesInFormulas(String oldName, String newName, Context context) {
+		Log.d("FOREST", "USDB.renameVariablesInFormulas" + oldName + " -> " + newName);
 		List<Brick> brickList = userScript.getBrickList();
 		for (Brick b : brickList) {
 			if (b instanceof MultiFormulaBrick) {
 				List<Formula> formulaList = ((MultiFormulaBrick) b).getFormulas();
 				for (Formula formula : formulaList) {
 					formula.updateVariableReferences(oldName, newName, context);
+					Log.d("FOREST", b.getClass().toString() + ", " + oldName + " -> " + newName);
 				}
 			}
 			if (b instanceof FormulaBrick) {
 				Formula formula = ((FormulaBrick) b).getFormula();
 				formula.updateVariableReferences(oldName, newName, context);
+				Log.d("FOREST", b.getClass().toString() + ", " + oldName + " -> " + newName);
 			}
 		}
 	}
@@ -156,10 +160,13 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 		ImageView preview = getBorderedPreview(brickImage);
 
 		TextView define = new TextView(context);
-		define.setTextAppearance(context, R.style.BrickText_Multiple);
-		define.setText("\ndefine  ");
+		define.setTextAppearance(context, R.style.BrickText);
+		define.setText(context.getString(R.string.define));
+		define.setText(define.getText() + "  ");
 
-		define.setGravity(Gravity.CENTER_HORIZONTAL);
+		layout.addView(define);
+		LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) define.getLayoutParams();
+		params.gravity = Gravity.CENTER_VERTICAL;
 
 		// This stuff isn't being included by the style when I use setTextAppearance.
 		define.setFocusable(false);
@@ -173,8 +180,6 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 		preview.setOnClickListener(this);
 		layout.setOnClickListener(this);
 		define.setOnClickListener(this);
-
-		layout.addView(define);
 
 		layout.addView(preview);
 	}

@@ -24,6 +24,7 @@ package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -170,6 +171,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 	}
 
 	public void renameUIElement(String oldName, String newName, Context context) {
+		Log.d("FOREST", "UB.renameUIElement");
 		UserBrickUIData variable = null;
 		boolean isVariable = false;
 		for (UserBrickUIData data : uiData) {

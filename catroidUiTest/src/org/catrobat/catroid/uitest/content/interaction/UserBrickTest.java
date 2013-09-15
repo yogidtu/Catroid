@@ -30,9 +30,6 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.ui.MainMenuActivity;
-import org.catrobat.catroid.ui.UserBrickScriptActivity;
-import org.catrobat.catroid.ui.fragment.AddBrickFragment;
-import org.catrobat.catroid.ui.fragment.UserBrickDataEditorFragment;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 public class UserBrickTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
@@ -82,7 +79,7 @@ public class UserBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 
 		solo.sleep(200);
 
-		showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME);
+		UiTestUtils.showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME, solo);
 
 		// add a new brick to the internal script of the user brick
 		UiTestUtils.addNewBrick(solo, R.string.brick_change_y_by);
@@ -108,62 +105,10 @@ public class UserBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		// click on the location the brick was just dragged to.
 		solo.clickLongOnScreen(location[0], location[1], 10);
 
-		showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME);
+		UiTestUtils.showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME, solo);
 
 		String brickAddedToUserBrickScriptName = solo.getCurrentActivity().getString(R.string.brick_change_y_by);
 		assertTrue("was not able to find the script we added to the other instance",
 				solo.searchText(brickAddedToUserBrickScriptName));
 	}
-
-	public void testCantEditBrickDataWhileAddingNewBrick() throws InterruptedException {
-		UiTestUtils.addNewBrick(solo, R.string.category_user_bricks, UiTestUtils.TEST_USER_BRICK_NAME, 0);
-		UiTestUtils.dragFloatingBrick(solo, -1);
-		solo.sleep(200);
-
-		// click on the user brick in the list to open it's menu
-		solo.clickOnText(UiTestUtils.TEST_USER_BRICK_NAME);
-
-		solo.sleep(200);
-
-		showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME);
-
-		// add a new brick to the internal script of the user brick
-		UiTestUtils.addNewBrick(solo, R.string.brick_change_y_by);
-
-		// place it (this should click on the define brick)
-		UiTestUtils.dragFloatingBrick(solo, -1);
-
-		boolean wentToDataEditor = solo.waitForFragmentByTag(
-				UserBrickDataEditorFragment.BRICK_DATA_EDITOR_FRAGMENT_TAG, 800);
-
-		assertTrue("the userBrickDataEditor should not be open!!", !wentToDataEditor);
-	}
-
-	public void showSourceAndEditBrick(String brickName) {
-		solo.clickOnText(UiTestUtils.TEST_USER_BRICK_NAME);
-
-		String stringOnShowSourceButton = solo.getCurrentActivity()
-				.getString(R.string.brick_context_dialog_show_source);
-		solo.waitForText(stringOnShowSourceButton);
-		solo.clickOnText(stringOnShowSourceButton);
-
-		boolean addBrickShowedUp = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 1000);
-		assertTrue("addBrickShowedUp should have showed up", addBrickShowedUp);
-
-		boolean clicked = UiTestUtils.clickOnBrickInAddBrickFragment(solo, brickName, false);
-		assertTrue("was unable to click on " + brickName + "!", clicked);
-
-		String stringOnEditButton = solo.getCurrentActivity().getString(R.string.brick_context_dialog_edit_brick);
-
-		boolean editButtonShowedUp = solo.waitForText(stringOnEditButton, 0, 2000);
-		assertTrue(stringOnEditButton + " should have showed up", editButtonShowedUp);
-
-		solo.clickOnText(stringOnEditButton);
-
-		boolean activityShowedUp = solo.waitForActivity(UserBrickScriptActivity.class, 500);
-		assertTrue("UserBrickScriptActivity should have showed up", activityShowedUp);
-
-		solo.sleep(50);
-	}
-
 }

@@ -150,8 +150,9 @@ public class ScriptActivity extends BaseActivity {
 	public void onResume() {
 		super.onResume();
 		setupActionBar();
-		//Log.d("FOREST", "SA.onResume");
 		setupBottomBar();
+
+		Log.d("FOREST", "SA.onResume");
 	}
 
 	public void updateHandleAddButtonClickListener() {

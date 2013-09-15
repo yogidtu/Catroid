@@ -683,6 +683,10 @@ public class UiTestUtils {
 
 		Script testScript = new StartScript(firstSprite);
 
+		projectManager.setProject(project);
+		projectManager.setCurrentSprite(firstSprite);
+		projectManager.setCurrentScript(testScript);
+
 		ArrayList<Brick> brickList = new ArrayList<Brick>();
 		brickList.add(new HideBrick(firstSprite));
 		brickList.add(new ShowBrick(firstSprite));
@@ -705,9 +709,6 @@ public class UiTestUtils {
 		project.addSprite(firstSprite);
 
 		projectManager.setFileChecksumContainer(new FileChecksumContainer());
-		projectManager.setProject(project);
-		projectManager.setCurrentSprite(firstSprite);
-		projectManager.setCurrentScript(testScript);
 		StorageHandler.getInstance().saveProject(project);
 
 		return brickList;

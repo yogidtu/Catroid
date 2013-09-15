@@ -182,6 +182,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 		initListeners();
 
+		Log.d("FOREST", "SF.onResume");
 		adapter.resetAlphas();
 	}
 

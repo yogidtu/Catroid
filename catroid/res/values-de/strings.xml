@@ -578,11 +578,11 @@
     <!--  -->
     
     <!-- User Bricks strings  -->
+    <string name="define">CHANGEME</string>
     <string name="example_user_brick">CHANGEME</string>
     <string name="example_user_brick_variable">CHANGEME</string>
     <string name="new_user_brick">CHANGEME</string>
     <string name="new_user_brick_variable">CHANGEME</string>
-    
     <!--  -->
 
 </resources>
