@@ -422,11 +422,9 @@ public class UiTestUtils {
 
 	public static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
-		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 5000)) {
-			fail("Text not shown in 5 secs!");
-		}
-
+		solo.sleep(500);
 		solo.clickOnText(solo.getCurrentActivity().getString(categoryStringId));
+
 		boolean fragmentAppeared = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 1000);
 		if (!fragmentAppeared) {
 			fail("add brick fragment should appear");

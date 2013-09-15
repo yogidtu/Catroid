@@ -102,7 +102,7 @@ public class BrickDragAndDropTest extends BaseActivityInstrumentationTestCase<Ma
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_wait);
 		solo.sleep(500);
-		UiTestUtils.dragFloatingBrickDownwards(solo);
+		UiTestUtils.dragFloatingBrickDownwards(solo, 3);
 		solo.sleep(500);
 
 		if (solo.searchText(solo.getString(R.string.brick_context_dialog_move_brick), true)) {

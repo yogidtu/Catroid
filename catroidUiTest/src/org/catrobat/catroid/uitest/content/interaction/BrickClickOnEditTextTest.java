@@ -81,7 +81,7 @@ public class BrickClickOnEditTextTest extends BaseActivityInstrumentationTestCas
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_set_y);
 		solo.sleep(500);
-		UiTestUtils.dragFloatingBrickDownwards(solo);
+		UiTestUtils.dragFloatingBrickUpwards(solo);
 		solo.sleep(500);
 
 		brickListToCheck = ProjectManager.getInstance().getCurrentScript().getBrickList();

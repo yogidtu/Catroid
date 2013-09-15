@@ -76,7 +76,7 @@ public class ScriptDeleteTest extends BaseActivityInstrumentationTestCase<MainMe
 		UiTestUtils.addNewBrick(solo, R.string.brick_broadcast_receive);
 
 		solo.sleep(500);
-		UiTestUtils.dragFloatingBrickDownwards(solo);
+		UiTestUtils.dragFloatingBrick(solo, 0);
 		solo.sleep(500);
 
 		int numberOfScripts = ProjectManager.getInstance().getCurrentSprite().getNumberOfScripts();
