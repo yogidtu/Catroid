@@ -422,7 +422,7 @@ public class UiTestUtils {
 
 	public static void addNewBrick(Solo solo, int categoryStringId, String brickName, int nThElement) {
 		clickOnBottomBar(solo, R.id.button_add);
-		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 2000)) {
+		if (!solo.waitForText(solo.getCurrentActivity().getString(categoryStringId), nThElement, 5000)) {
 			fail("Text not shown in 5 secs!");
 		}
 
