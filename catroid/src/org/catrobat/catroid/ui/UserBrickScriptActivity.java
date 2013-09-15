@@ -55,11 +55,19 @@ public class UserBrickScriptActivity extends ScriptActivity {
 			userBrick = UserBrickScriptActivity.cachedUserBrick;
 			UserBrickScriptActivity.cachedUserBrick = null;
 		}
+		if (userBrick != null) {
+			ProjectManager.getInstance().setCurrentUserBrick(userBrick);
+		}
 	}
 
 	public static void setUserBrick(Brick userBrick) {
 		cachedUserBrick = (UserBrick) userBrick;
-		ProjectManager.getInstance().setCurrentUserBrick((UserBrick) userBrick);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		ProjectManager.getInstance().setCurrentUserBrick(null);
 	}
 
 	@Override

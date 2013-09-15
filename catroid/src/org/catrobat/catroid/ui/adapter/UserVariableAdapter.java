@@ -56,11 +56,13 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 	private int textViewId2;
 	private int linearLayoutLocalId;
 	private int linearLayoutGlobalId;
+	private int linearLayoutUserBrickId;
 
 	private static class ViewHolder {
 		private CheckBox checkbox;
 		private TextView text1;
 		private TextView text2;
+		private LinearLayout userbrickHeadline;
 		private LinearLayout localHeadline;
 		private LinearLayout globalHeadline;
 	}
@@ -78,6 +80,7 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 		this.textViewId2 = R.id.fragment_formula_editor_variablelist_item_value_text_view;
 		this.linearLayoutGlobalId = R.id.variablelist_global_headline;
 		this.linearLayoutLocalId = R.id.variablelist_local_headline;
+		this.linearLayoutUserBrickId = R.id.variablelist_userbrick_headline;
 	}
 
 	public void setItemLayout(int itemLayout, int textViewId) {
@@ -138,6 +141,7 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 			holder.checkbox = (CheckBox) view.findViewById(checkboxId);
 			holder.text1 = (TextView) view.findViewById(textViewId);
 			holder.text2 = (TextView) view.findViewById(textViewId2);
+			holder.userbrickHeadline = (LinearLayout) view.findViewById(linearLayoutUserBrickId);
 			holder.localHeadline = (LinearLayout) view.findViewById(linearLayoutLocalId);
 			holder.globalHeadline = (LinearLayout) view.findViewById(linearLayoutGlobalId);
 			view.setTag(holder);
@@ -150,16 +154,23 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 			holder.text2.setText(String.valueOf(variable.getValue()));
 		}
 
-		if (holder.localHeadline != null && holder.globalHeadline != null) {
-			if (spriteVariables.size() != 0 && position == 0) {
+		if (holder.localHeadline != null && holder.userbrickHeadline != null && holder.globalHeadline != null) {
+			if (brickVariables.size() != 0 && position == 0) {
+				holder.localHeadline.setVisibility(View.GONE);
+				holder.globalHeadline.setVisibility(View.GONE);
+				holder.userbrickHeadline.setVisibility(View.VISIBLE);
+			} else if (spriteVariables.size() != 0 && position == brickVariables.size()) {
 				holder.localHeadline.setVisibility(View.VISIBLE);
 				holder.globalHeadline.setVisibility(View.GONE);
-			} else if (projectVariables.size() != 0 && position == spriteVariables.size()) {
+				holder.userbrickHeadline.setVisibility(View.GONE);
+			} else if (projectVariables.size() != 0 && position == brickVariables.size() + spriteVariables.size()) {
 				holder.localHeadline.setVisibility(View.GONE);
 				holder.globalHeadline.setVisibility(View.VISIBLE);
+				holder.userbrickHeadline.setVisibility(View.GONE);
 			} else {
 				holder.localHeadline.setVisibility(View.GONE);
 				holder.globalHeadline.setVisibility(View.GONE);
+				holder.userbrickHeadline.setVisibility(View.GONE);
 			}
 		}
 
