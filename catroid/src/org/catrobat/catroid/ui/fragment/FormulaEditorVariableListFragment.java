@@ -230,6 +230,7 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 	}
 
 	public void showFragment(Context context) {
+		Log.d("FOREST", "showFragment! ");
 		SherlockFragmentActivity activity = (SherlockFragmentActivity) context;
 		FragmentManager fragmentManager = activity.getSupportFragmentManager();
 		FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
@@ -253,6 +254,7 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 		UserBrick currentBrick = ProjectManager.getInstance().getCurrentUserBrick();
 		int userBrickId = (currentBrick == null ? -1 : currentBrick.getDefinitionBrick().getUserBrickId());
+		Log.d("FOREST", "initializeUserVariableAdapter: " + userBrickId);
 		Project currentProject = ProjectManager.getInstance().getCurrentProject();
 		UserVariablesContainer userVariableContainer = currentProject.getUserVariables();
 

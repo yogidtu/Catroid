@@ -131,6 +131,7 @@ import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.UserBrickScriptActivity;
 import org.catrobat.catroid.ui.fragment.AddBrickFragment;
 import org.catrobat.catroid.utils.NotificationData;
 import org.catrobat.catroid.utils.StatusBarNotificationManager;
@@ -167,6 +168,7 @@ public class UiTestUtils {
 	public static final String JAPANESE_PROJECT_NAME = "これは例の説明です。";
 
 	public static final String TEST_USER_BRICK_NAME = "Test User Brick";
+	public static final String TEST_USER_BRICK_VARIABLE = "test";
 
 	private static final int ACTION_MODE_ACCEPT_IMAGE_BUTTON_INDEX = 0;
 	private static final int DRAG_FRAMES = 35;
@@ -454,6 +456,41 @@ public class UiTestUtils {
 		solo.clickOnText(category);
 	}
 
+	public static void showSourceAndEditBrick(String brickName, Solo solo) {
+		solo.clickOnText(UiTestUtils.TEST_USER_BRICK_NAME);
+
+		String stringOnShowSourceButton = solo.getCurrentActivity()
+				.getString(R.string.brick_context_dialog_show_source);
+		solo.waitForText(stringOnShowSourceButton);
+		solo.clickOnText(stringOnShowSourceButton);
+
+		boolean addBrickShowedUp = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 1000);
+		if (!addBrickShowedUp) {
+			fail("addBrickShowedUp should have showed up");
+		}
+
+		boolean clicked = UiTestUtils.clickOnBrickInAddBrickFragment(solo, brickName, false);
+		if (!clicked) {
+			fail("was unable to click on " + brickName + "!");
+		}
+
+		String stringOnEditButton = solo.getCurrentActivity().getString(R.string.brick_context_dialog_edit_brick);
+
+		boolean editButtonShowedUp = solo.waitForText(stringOnEditButton, 0, 2000);
+		if (!editButtonShowedUp) {
+			fail(stringOnEditButton + " should have showed up");
+		}
+
+		solo.clickOnText(stringOnEditButton);
+
+		boolean activityShowedUp = solo.waitForActivity(UserBrickScriptActivity.class, 500);
+		if (!activityShowedUp) {
+			fail("UserBrickScriptActivity should have showed up");
+		}
+
+		solo.sleep(50);
+	}
+
 	public static boolean clickOnBrickInAddBrickFragment(Solo solo, String brickName, boolean addToScript) {
 		boolean success = false;
 		int lowestIdTimeBeforeLast = -2;
@@ -662,7 +699,7 @@ public class UiTestUtils {
 
 		UserBrick firstUserBrick = new UserBrick(firstSprite, 0);
 		firstUserBrick.addUIText(TEST_USER_BRICK_NAME);
-		firstUserBrick.addUIVariable("test1");
+		firstUserBrick.addUIVariable(TEST_USER_BRICK_VARIABLE);
 		firstUserBrick.appendBrickToScript(new ChangeXByNBrick(firstSprite, BrickValues.CHANGE_X_BY));
 
 		project.addSprite(firstSprite);
@@ -674,6 +711,39 @@ public class UiTestUtils {
 		StorageHandler.getInstance().saveProject(project);
 
 		return brickList;
+	}
+
+	public static void createTestProjectWithNestedUserBrick() {
+		Project project = new Project(null, DEFAULT_TEST_PROJECT_NAME);
+		Sprite firstSprite = new Sprite("cat");
+
+		Script testScript = new StartScript(firstSprite);
+
+		UserBrick firstUserBrick = new UserBrick(firstSprite, 0);
+		firstUserBrick.addUIText(TEST_USER_BRICK_NAME + "2");
+		firstUserBrick.addUIVariable(TEST_USER_BRICK_VARIABLE + "2");
+		firstUserBrick.appendBrickToScript(new ChangeXByNBrick(firstSprite, BrickValues.CHANGE_X_BY));
+
+		UserBrick secondUserBrick = new UserBrick(firstSprite, 1);
+		secondUserBrick.addUIText(TEST_USER_BRICK_NAME);
+		secondUserBrick.addUIVariable(TEST_USER_BRICK_VARIABLE);
+		secondUserBrick.appendBrickToScript(firstUserBrick);
+		secondUserBrick.appendBrickToScript(new ChangeYByNBrick(firstSprite, BrickValues.CHANGE_Y_BY));
+
+		testScript.addBrick(secondUserBrick);
+		testScript.addBrick(new SetSizeToBrick(firstSprite, BrickValues.SET_SIZE_TO));
+		testScript.addBrick(new SetVariableBrick(firstSprite, BrickValues.SET_BRIGHTNESS_TO));
+
+		firstSprite.addScript(testScript);
+
+		project.addSprite(firstSprite);
+
+		projectManager.setCurrentUserBrick(firstUserBrick);
+		projectManager.setFileChecksumContainer(new FileChecksumContainer());
+		projectManager.setProject(project);
+		projectManager.setCurrentSprite(firstSprite);
+		projectManager.setCurrentScript(testScript);
+		StorageHandler.getInstance().saveProject(project);
 	}
 
 	public static List<Brick> createTestProjectIfBricks() {

@@ -140,19 +140,18 @@ public class UserBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 	}
 
 	public void showSourceAndEditBrick(String brickName) {
+		solo.clickOnText(UiTestUtils.TEST_USER_BRICK_NAME);
+
 		String stringOnShowSourceButton = solo.getCurrentActivity()
 				.getString(R.string.brick_context_dialog_show_source);
+		solo.waitForText(stringOnShowSourceButton);
 		solo.clickOnText(stringOnShowSourceButton);
-
-		//Log.d("FOREST", "showSourceAndEditBrick: waitForFragmentByTag");
 
 		boolean addBrickShowedUp = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 1000);
 		assertTrue("addBrickShowedUp should have showed up", addBrickShowedUp);
 
-		boolean brickShowedUp = solo.waitForText(brickName, 0, 1000);
-		assertTrue(brickName + " should have showed up", brickShowedUp);
-
-		UiTestUtils.clickOnBrickInAddBrickFragment(solo, brickName, false);
+		boolean clicked = UiTestUtils.clickOnBrickInAddBrickFragment(solo, brickName, false);
+		assertTrue("was unable to click on " + brickName + "!", clicked);
 
 		String stringOnEditButton = solo.getCurrentActivity().getString(R.string.brick_context_dialog_edit_brick);
 

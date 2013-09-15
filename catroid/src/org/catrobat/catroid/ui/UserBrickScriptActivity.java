@@ -23,6 +23,7 @@
 package org.catrobat.catroid.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.bricks.Brick;
@@ -56,6 +57,7 @@ public class UserBrickScriptActivity extends ScriptActivity {
 			UserBrickScriptActivity.cachedUserBrick = null;
 		}
 		if (userBrick != null) {
+			Log.d("FOREST", "do ba day");
 			ProjectManager.getInstance().setCurrentUserBrick(userBrick);
 		}
 	}
