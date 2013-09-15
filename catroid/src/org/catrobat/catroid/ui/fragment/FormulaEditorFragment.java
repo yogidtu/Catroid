@@ -106,7 +106,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		setUpActionBar();
 		currentBrick = (Brick) getArguments().getSerializable(BRICK_BUNDLE_ARGUMENT);
 		currentFormula = (Formula) getArguments().getSerializable(FORMULA_BUNDLE_ARGUMENT);
-		//Log.d("FOREST", "FEF.onCreate" + currentFormula.toString());
 	}
 
 	private void setUpActionBar() {
@@ -148,7 +147,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 			fragTransaction.show(formulaEditorFragment);
 			BottomBar.hideBottomBar(activity);
 		} else {
-			//Log.d("FOREST", "FEF.showFragment SET_FORMULA_ON_SWITCH_EDIT_TEXT");
 			formulaEditorFragment.setInputFormula(formula, SET_FORMULA_ON_SWITCH_EDIT_TEXT);
 		}
 		fragTransaction.commit();
@@ -159,8 +157,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	}
 
 	private void updateBrickView(Brick newBrick) {
-		//Log.d("FOREST", "FEF.updateBrickView");
-
 		currentBrick = newBrick;
 		formulaEditorBrick.removeAllViews();
 		View newBrickView = newBrick.getView(context, 0, null);
@@ -198,7 +194,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		//Log.d("FOREST", "FEF.onCreateView");
 
 		fragmentView = inflater.inflate(R.layout.fragment_formula_editor, container, false);
 		fragmentView.setFocusableInTouchMode(true);
@@ -557,7 +552,6 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	}
 
 	public void addUserVariableToActiveFormula(String userVariableName) {
-		//Log.d("FOREST", "FEF.addUserVariableToActiveFormula: " + currentFormula.toString());
 		formulaEditorEditText.handleKeyEvent(0, userVariableName);
 	}
 

@@ -121,7 +121,6 @@ public class ScriptActivity extends BaseActivity {
 		fragmentTransaction.commit();
 
 		setupActionBar();
-		//Log.d("FOREST", "SA.onCreate");
 		setupBottomBar();
 
 		buttonAdd = (ImageButton) findViewById(R.id.button_add);
@@ -151,8 +150,6 @@ public class ScriptActivity extends BaseActivity {
 		super.onResume();
 		setupActionBar();
 		setupBottomBar();
-
-		Log.d("FOREST", "SA.onResume");
 	}
 
 	public void updateHandleAddButtonClickListener() {

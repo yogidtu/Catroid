@@ -28,7 +28,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -95,20 +94,17 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 	}
 
 	public void renameVariablesInFormulas(String oldName, String newName, Context context) {
-		Log.d("FOREST", "USDB.renameVariablesInFormulas" + oldName + " -> " + newName);
 		List<Brick> brickList = userScript.getBrickList();
 		for (Brick b : brickList) {
 			if (b instanceof MultiFormulaBrick) {
 				List<Formula> formulaList = ((MultiFormulaBrick) b).getFormulas();
 				for (Formula formula : formulaList) {
 					formula.updateVariableReferences(oldName, newName, context);
-					Log.d("FOREST", b.getClass().toString() + ", " + oldName + " -> " + newName);
 				}
 			}
 			if (b instanceof FormulaBrick) {
 				Formula formula = ((FormulaBrick) b).getFormula();
 				formula.updateVariableReferences(oldName, newName, context);
-				Log.d("FOREST", b.getClass().toString() + ", " + oldName + " -> " + newName);
 			}
 		}
 	}

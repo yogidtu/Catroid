@@ -159,6 +159,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	@Override
 	public void onResume() {
 		super.onResume();
+		Log.d("FOREST", "SF.onResume");
 
 		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
 			return;
@@ -179,10 +180,11 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		getActivity().registerReceiver(brickListChangedReceiver, filterBrickListChanged);
 
 		BottomBar.showBottomBar(getActivity());
+		BottomBar.showPlayButton(getActivity());
+		BottomBar.showAddButton(getActivity());
 
 		initListeners();
 
-		Log.d("FOREST", "SF.onResume");
 		adapter.resetAlphas();
 	}
 

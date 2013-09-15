@@ -24,7 +24,6 @@ package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
@@ -171,7 +170,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 	}
 
 	public void renameUIElement(String oldName, String newName, Context context) {
-		Log.d("FOREST", "UB.renameUIElement");
 		UserBrickUIData variable = null;
 		boolean isVariable = false;
 		for (UserBrickUIData data : uiData) {
@@ -215,7 +213,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 	}
 
 	public void updateUIComponents(Context context) {
-		//Log.d("FOREST", "UB.updateUIComponents");
 		ArrayList<UserBrickUIComponent> newUIComponents = new ArrayList<UserBrickUIComponent>();
 
 		for (int i = 0; i < uiData.size(); i++) {
@@ -249,7 +246,6 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 
 	private void copyFormulasMatchingNames(ArrayList<UserBrickUIComponent> from, ArrayList<UserBrickUIComponent> to,
 			Context context) {
-		//Log.d("FOREST", "UB.copyFormulasMatchingNames");
 
 		for (UserBrickUIComponent fromElement : from) {
 			if (fromElement.dataIndex < uiData.size()) {
@@ -384,7 +380,7 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 					c.variableFormula.setTextFieldId(currentTextView.getId());
 					String formulaString = c.variableFormula.getDisplayString(currentTextView.getContext());
 					c.variableFormula.refreshTextField(currentTextView, formulaString);
-					//Log.d("FOREST", "UB.onLayoutChanged: " + currentTextView.getText().toString());
+
 					// This stuff isn't being included by the style when I use setTextAppearance.
 					currentTextView.setFocusable(false);
 					currentTextView.setFocusableInTouchMode(false);

@@ -78,7 +78,6 @@ public class AddBrickFragment extends SherlockListFragment {
 	private boolean cameDirectlyFromScriptActivity = false;
 
 	public static void setBrickFocus(UserBrick b) {
-		//Log.d("FOREST", "ABF.setBrickFocus");
 		brickToFocus = b;
 	}
 

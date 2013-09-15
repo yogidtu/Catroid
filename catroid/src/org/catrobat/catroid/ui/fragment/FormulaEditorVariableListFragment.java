@@ -230,7 +230,6 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 	}
 
 	public void showFragment(Context context) {
-		Log.d("FOREST", "showFragment! ");
 		SherlockFragmentActivity activity = (SherlockFragmentActivity) context;
 		FragmentManager fragmentManager = activity.getSupportFragmentManager();
 		FragmentTransaction fragTransaction = fragmentManager.beginTransaction();

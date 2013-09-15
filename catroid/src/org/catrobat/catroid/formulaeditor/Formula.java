@@ -25,7 +25,6 @@ package org.catrobat.catroid.formulaeditor;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -130,14 +129,11 @@ public class Formula implements Serializable {
 
 	public String getDisplayString(Context context) {
 		if (displayText != null) {
-			Log.d("FOREST", "F.getDisplayString.displayText=" + displayText);
 			return displayText;
 		} else {
 			if (context != null) {
-				Log.d("FOREST", "F.getDisplayString.generateExternFormulaStringAndInternExternMapping");
 				internFormula.generateExternFormulaStringAndInternExternMapping(context);
 			}
-			Log.d("FOREST", "F.getDisplayString.getExternFormulaString=" + internFormula.getExternFormulaString());
 			return internFormula.getExternFormulaString();
 		}
 	}
