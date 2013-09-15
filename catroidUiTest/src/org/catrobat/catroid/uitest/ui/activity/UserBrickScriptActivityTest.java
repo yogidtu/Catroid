@@ -91,17 +91,17 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 		ProjectManager.getInstance().getCurrentProject().getUserVariables().addSpriteUserVariable("spriteVar");
 
 		String textOnSetSizeToBrickTextField = "" + Math.round(BrickValues.SET_SIZE_TO);
-		checkVariableScope(textOnSetSizeToBrickTextField, false);
+		checkVariableScope(textOnSetSizeToBrickTextField, 0, false);
 
 		UiTestUtils.showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME, solo);
 
 		String textOnChangeXBrickTextField = "" + Math.round(BrickValues.CHANGE_X_BY);
-		checkVariableScope(textOnChangeXBrickTextField, true);
+		checkVariableScope(textOnChangeXBrickTextField, 1, true);
 
 		solo.goBack();
 		solo.goBack();
 
-		checkVariableScope(textOnSetSizeToBrickTextField, false);
+		checkVariableScope(textOnSetSizeToBrickTextField, 0, false);
 	}
 
 	public void testCantEditBrickDataWhileAddingNewBrick() throws InterruptedException {
@@ -119,7 +119,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 		assertTrue("the userBrickDataEditor should not be open!!", !wentToDataEditor);
 	}
 
-	private void checkVariableScope(String valueOnBrick, boolean expectedBrickVariable) {
+	private void checkVariableScope(String valueOnBrick, int depth, boolean expectedBrickVariable) {
 		if (!solo.waitForText(valueOnBrick, 0, 2000)) {
 			fail("'" + valueOnBrick + "' should have appeared");
 		}
@@ -130,7 +130,7 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 		}
 
 		String stringOnVariablesButton = solo.getCurrentActivity().getString(R.string.formula_editor_variables);
-		solo.clickOnText(stringOnVariablesButton);
+		solo.clickOnText(stringOnVariablesButton, depth);
 
 		String stringOnGlobalTag = solo.getCurrentActivity().getString(
 				R.string.formula_editor_variable_dialog_for_all_sprites);

@@ -719,6 +719,10 @@ public class UiTestUtils {
 
 		Script testScript = new StartScript(firstSprite);
 
+		projectManager.setProject(project);
+		projectManager.setCurrentSprite(firstSprite);
+		projectManager.setCurrentScript(testScript);
+
 		UserBrick firstUserBrick = new UserBrick(firstSprite, 0);
 		firstUserBrick.addUIText(TEST_USER_BRICK_NAME + "2");
 		firstUserBrick.addUIVariable(TEST_USER_BRICK_VARIABLE + "2");
@@ -737,12 +741,7 @@ public class UiTestUtils {
 		firstSprite.addScript(testScript);
 
 		project.addSprite(firstSprite);
-
-		projectManager.setCurrentUserBrick(firstUserBrick);
 		projectManager.setFileChecksumContainer(new FileChecksumContainer());
-		projectManager.setProject(project);
-		projectManager.setCurrentSprite(firstSprite);
-		projectManager.setCurrentScript(testScript);
 		StorageHandler.getInstance().saveProject(project);
 	}
 

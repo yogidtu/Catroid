@@ -67,8 +67,6 @@ public class BrickClickOnEditTextTest extends BaseActivityInstrumentationTestCas
 	}
 
 	public void testIfEditTextAreVisibleAndClickOnTextSetXandYInAddBrickDialog() {
-		ArrayList<Integer> yPosition;
-		int addedYPosition;
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_set_x);
 		solo.sleep(500);

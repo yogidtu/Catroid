@@ -23,6 +23,7 @@
 package org.catrobat.catroid.formulaeditor;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -63,8 +64,10 @@ public class UserVariablesContainer implements Serializable {
 		List<UserVariable> userBrickVariables = null;
 		if (userBrickId == -1) {
 			userBrickVariables = new LinkedList<UserVariable>();
+			Log.d("FOREST", "userBrickVariables null");
 		} else {
 			userBrickVariables = getOrCreateVariableListForUserBrick(userBrickId);
+			Log.d("FOREST", "userBrickVariables" + userBrickVariables.size());
 		}
 		List<UserVariable> spriteVariables = getOrCreateVariableListForSprite(sprite);
 		return new UserVariableAdapter(context, userBrickVariables, spriteVariables, projectVariables);
@@ -153,6 +156,7 @@ public class UserVariablesContainer implements Serializable {
 		if (variables == null) {
 			variables = new ArrayList<UserVariable>();
 			userBrickVariables.put(userBrickId, variables);
+			Log.d("FOREST", "put: " + userBrickId);
 		}
 		return variables;
 	}

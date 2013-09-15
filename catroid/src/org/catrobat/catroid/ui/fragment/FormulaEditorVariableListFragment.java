@@ -254,7 +254,7 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
 		UserBrick currentBrick = ProjectManager.getInstance().getCurrentUserBrick();
 		int userBrickId = (currentBrick == null ? -1 : currentBrick.getDefinitionBrick().getUserBrickId());
-		Log.d("FOREST", "initializeUserVariableAdapter: " + userBrickId);
+
 		Project currentProject = ProjectManager.getInstance().getCurrentProject();
 		UserVariablesContainer userVariableContainer = currentProject.getUserVariables();
 
