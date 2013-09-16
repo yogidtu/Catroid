@@ -1097,7 +1097,6 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			ScriptFragment theScriptFragment = ((ScriptFragment) scriptFragment);
 			theScriptFragment.onCategorySelected(context.getString(R.string.category_user_bricks));
 		}
-		//launchBrickScriptActivityOnBrickAt(context, itemPosition);
 	}
 
 	protected void copyBrickListAndProject(int itemPosition, boolean b) {

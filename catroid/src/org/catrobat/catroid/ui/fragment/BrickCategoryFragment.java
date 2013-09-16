@@ -25,6 +25,7 @@ package org.catrobat.catroid.ui.fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,9 +103,10 @@ public class BrickCategoryFragment extends SherlockListFragment {
 
 	@Override
 	public void onPause() {
-
+		super.onPause();
 		BottomBar.showBottomBar(getSherlockActivity());
 		BottomBar.showPlayButton(getSherlockActivity());
+		Log.d("FOREST", "BCF.onPause");
 	}
 
 	@Override
@@ -114,6 +116,7 @@ public class BrickCategoryFragment extends SherlockListFragment {
 		BottomBar.showBottomBar(getSherlockActivity());
 		BottomBar.showPlayButton(getSherlockActivity());
 		super.onDestroy();
+		Log.d("FOREST", "BCF.onDestroy");
 	}
 
 	@Override
