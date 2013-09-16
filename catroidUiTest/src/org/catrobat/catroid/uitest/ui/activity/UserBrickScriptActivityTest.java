@@ -63,21 +63,21 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 	public void testNestedUserBrickScriptActivities() throws InterruptedException {
 		UiTestUtils.showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME, solo);
 
-		String textOnChangeXByNBrick = solo.getCurrentActivity().getString(R.string.brick_change_x_by);
-		boolean foundText = solo.waitForText(textOnChangeXByNBrick, 0, 300);
-		assertTrue("Did not find '" + textOnChangeXByNBrick + "'", foundText);
+		String textOnChangeYByNBrick = solo.getCurrentActivity().getString(R.string.brick_change_y_by);
+		boolean foundText = solo.waitForText(textOnChangeYByNBrick, 0, 2000);
+		assertTrue("Did not find '" + textOnChangeYByNBrick + "'", foundText);
 
 		UiTestUtils.showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME + "2", solo);
 
-		String textOnChangeYByNBrick = solo.getCurrentActivity().getString(R.string.brick_change_y_by);
-		foundText = solo.waitForText(textOnChangeYByNBrick, 0, 300);
-		assertTrue("Did not find '" + textOnChangeYByNBrick + "'", foundText);
-
-		solo.goBack();
-		solo.goBack();
-
+		String textOnChangeXByNBrick = solo.getCurrentActivity().getString(R.string.brick_change_x_by);
 		foundText = solo.waitForText(textOnChangeXByNBrick, 0, 300);
 		assertTrue("Did not find '" + textOnChangeXByNBrick + "'", foundText);
+
+		solo.goBack();
+		solo.goBack();
+
+		foundText = solo.waitForText(textOnChangeYByNBrick, 0, 300);
+		assertTrue("Did not find '" + textOnChangeYByNBrick + "'", foundText);
 
 		solo.goBack();
 		solo.goBack();

@@ -171,7 +171,7 @@ public class UiTestUtils {
 	public static final String TEST_USER_BRICK_VARIABLE = "test";
 
 	private static final int ACTION_MODE_ACCEPT_IMAGE_BUTTON_INDEX = 0;
-	private static final int DRAG_FRAMES = 35;
+	public static final int DRAG_FRAMES = 35;
 
 	public static final int SCRIPTS_INDEX = 0;
 	public static final int LOOKS_INDEX = 1;

@@ -64,7 +64,7 @@ public class UserBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		// click on position x brick-heights above/below the place where the brick currently is
 		int[] location = UiTestUtils.dragFloatingBrick(solo, -1);
 		assertTrue("was not able to find the brick we just added: first user brick", location != null);
-		solo.sleep(200);
+		solo.sleep(600);
 
 		Script currentScript = UiTestUtils.getProjectManager().getCurrentScript();
 		int indexOfUserBrickInScript = currentScript.containsBrickOfTypeReturnsFirstIndex(UserBrick.class);
@@ -73,11 +73,6 @@ public class UserBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 
 		UserBrick userBrick = (UserBrick) currentScript.getBrick(indexOfUserBrickInScript);
 		assertTrue("we should be able to cast the brick we found to a User Brick.", userBrick != null);
-
-		// click on the user brick in the list to open it's menu
-		solo.clickOnText(UiTestUtils.TEST_USER_BRICK_NAME);
-
-		solo.sleep(200);
 
 		UiTestUtils.showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME, solo);
 
