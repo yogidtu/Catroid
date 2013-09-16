@@ -215,6 +215,7 @@ public class AddBrickFragment extends SherlockListFragment {
 
 		if (cameDirectlyFromScriptActivity) {
 			BottomBar.showBottomBar(getActivity());
+			BottomBar.showPlayButton(getActivity());
 		} else {
 			BottomBar.hideBottomBar(getActivity());
 		}
@@ -231,7 +232,6 @@ public class AddBrickFragment extends SherlockListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		//Log.d("FOREST", "ABF.onResume: " + (brickToFocus == null ? "null" : "not null"));
 		setupSelectedBrickCategory();
 		addButtonHandler = this;
 
