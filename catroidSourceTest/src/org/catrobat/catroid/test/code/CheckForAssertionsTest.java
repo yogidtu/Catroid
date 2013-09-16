@@ -53,6 +53,7 @@ public class CheckForAssertionsTest extends TestCase {
 				reader.close();
 				return;
 			}
+
 			if (line.matches("[^(//)]*fail[A-Za-z]+\\(.*")) {
 				reader.close();
 				return;
