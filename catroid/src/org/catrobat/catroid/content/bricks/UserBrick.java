@@ -493,6 +493,10 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 		return userBrickId;
 	}
 
+	public void setId(int newId) {
+		userBrickId = newId;
+	}
+
 	public UserScriptDefinitionBrick getDefinitionBrick() {
 		return definitionBrick;
 	}

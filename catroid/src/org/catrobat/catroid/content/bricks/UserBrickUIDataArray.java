@@ -35,4 +35,9 @@ public class UserBrickUIDataArray extends ArrayList<UserBrickUIData> implements 
 
 	public int version = 0;
 
+	@Override
+	public UserBrickUIDataArray clone() {
+		return (UserBrickUIDataArray) super.clone();
+	}
+
 }

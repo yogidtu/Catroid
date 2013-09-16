@@ -75,6 +75,7 @@ import org.catrobat.catroid.content.bricks.SpeakBrick;
 import org.catrobat.catroid.content.bricks.StopAllSoundsBrick;
 import org.catrobat.catroid.content.bricks.TurnLeftBrick;
 import org.catrobat.catroid.content.bricks.TurnRightBrick;
+import org.catrobat.catroid.content.bricks.UserBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.content.bricks.WhenBrick;
 import org.catrobat.catroid.content.bricks.WhenStartedBrick;
@@ -226,8 +227,13 @@ public class CategoryBricksFactory {
 	private List<Brick> setupUserBricksCategoryList(Sprite sprite, Context context) {
 		String defaultText = context.getString(R.string.example_user_brick);
 		String defaultVariable = context.getString(R.string.example_user_brick_variable);
-		return ProjectManager.getInstance().getCurrentSprite()
+		List<UserBrick> userBrickList = ProjectManager.getInstance().getCurrentSprite()
 				.getUserBrickListAtLeastOneBrick(defaultText, defaultVariable);
+		ArrayList<Brick> newList = new ArrayList<Brick>();
+		for (UserBrick brick : userBrickList) {
+			newList.add(brick);
+		}
+		return newList;
 	}
 
 	private List<Brick> setupLegoNxtCategoryList(Sprite sprite) {

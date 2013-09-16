@@ -517,7 +517,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		if (brick instanceof ScriptBrick) {
 			scriptToEdit = ((ScriptBrick) brick).initScript(ProjectManager.getInstance().getCurrentSprite());
 
-			Script clonedScript = scriptToEdit.copyScriptForSprite(sprite);
+			Script clonedScript = scriptToEdit.copyScriptForSprite(sprite, sprite.getUserBrickList());
 
 			sprite.addScript(clonedScript);
 			adapter.initBrickList();

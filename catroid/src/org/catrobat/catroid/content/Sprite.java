@@ -32,6 +32,7 @@ import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.UserBrick;
+import org.catrobat.catroid.content.bricks.UserScriptDefinitionBrick;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 
@@ -46,7 +47,7 @@ public class Sprite implements Serializable, Cloneable {
 	private ArrayList<LookData> lookList;
 	private ArrayList<SoundInfo> soundList;
 	public transient Look look;
-	private ArrayList<Brick> userBricks;
+	private ArrayList<UserBrick> userBricks;
 	private int newUserBrickNext = 1;
 
 	public transient boolean isPaused;
@@ -82,7 +83,7 @@ public class Sprite implements Serializable, Cloneable {
 			scriptList = new ArrayList<Script>();
 		}
 		if (userBricks == null) {
-			userBricks = new ArrayList<Brick>();
+			userBricks = new ArrayList<UserBrick>();
 		}
 	}
 
@@ -107,13 +108,20 @@ public class Sprite implements Serializable, Cloneable {
 
 	public UserBrick addUserBrick(UserBrick b) {
 		if (userBricks == null) {
-			userBricks = new ArrayList<Brick>();
+			userBricks = new ArrayList<UserBrick>();
 		}
 		userBricks.add(b);
 		return b;
 	}
 
-	public List<Brick> getUserBrickListAtLeastOneBrick(String defaultText, String defaultVariable) {
+	public List<UserBrick> getUserBrickList() {
+		if (userBricks == null) {
+			userBricks = new ArrayList<UserBrick>();
+		}
+		return userBricks;
+	}
+
+	public List<UserBrick> getUserBrickListAtLeastOneBrick(String defaultText, String defaultVariable) {
 		if (userBricks == null || userBricks.size() == 0) {
 			int newBrickId = ProjectManager.getInstance().getCurrentProject().getUserVariables()
 					.getAndIncrementUserBrickId();
@@ -123,7 +131,7 @@ public class Sprite implements Serializable, Cloneable {
 	}
 
 	void initUserBrickList(String defaultText, String defaultVariable, int nextUserBrickID) {
-		userBricks = new ArrayList<Brick>();
+		userBricks = new ArrayList<UserBrick>();
 
 		// the UserBrick constructor will insert the UserBrick into this Sprite's userBricks list.
 		UserBrick exampleBrick = new UserBrick(this, nextUserBrickID);
@@ -174,13 +182,46 @@ public class Sprite implements Serializable, Cloneable {
 		}
 		cloneSprite.soundList = cloneSoundList;
 
+		ArrayList<UserBrick> cloneUserBrickList = new ArrayList<UserBrick>();
+		for (Brick brick : this.userBricks) {
+			UserBrick original = (UserBrick) brick;
+
+			UserBrick deepClone = new UserBrick(cloneSprite, original.getId());
+			deepClone.uiData = original.uiData.clone();
+
+			UserScriptDefinitionBrick clonedDefinitionBrick = new UserScriptDefinitionBrick(cloneSprite, deepClone,
+					original.getId());
+			deepClone.setDefinitionBrick(clonedDefinitionBrick);
+
+			cloneUserBrickList.add(deepClone);
+		}
+
+		// once all the UserBricks have been copied over, we can copy thier scripts over as well
+		// (preserve recursive references)
+		for (Brick cloneBrick : cloneUserBrickList) {
+			UserBrick deepClone = (UserBrick) cloneBrick;
+			UserBrick original = findBrickWithId(userBricks, deepClone.getId());
+
+			UserScript originalScript = original.getDefinitionBrick().getUserScript();
+			UserScript newScript = originalScript.copyScriptForSprite(cloneSprite, cloneUserBrickList);
+			deepClone.getDefinitionBrick().setUserScript(newScript);
+		}
+
 		//The scripts have to be the last copied items
 		List<Script> cloneScriptList = new ArrayList<Script>();
 		for (Script element : this.scriptList) {
-			Script addElement = element.copyScriptForSprite(cloneSprite);
+			Script addElement = element.copyScriptForSprite(cloneSprite, cloneUserBrickList);
 			cloneScriptList.add(addElement);
 		}
 		cloneSprite.scriptList = cloneScriptList;
+
+		for (UserBrick cloneBrick : cloneUserBrickList) {
+			cloneBrick.setId(cloneBrick.getId() + cloneUserBrickList.size());
+			UserScriptDefinitionBrick definitionBrick = cloneBrick.getDefinitionBrick();
+			definitionBrick.setUserBrickId(definitionBrick.getUserBrickId() + cloneUserBrickList.size());
+
+		}
+		cloneSprite.userBricks = cloneUserBrickList;
 
 		cloneSprite.init();
 
@@ -193,6 +234,15 @@ public class Sprite implements Serializable, Cloneable {
 
 		return cloneSprite;
 
+	}
+
+	protected UserBrick findBrickWithId(List<UserBrick> list, int id) {
+		for (UserBrick brick : list) {
+			if (brick.getId() == id) {
+				return brick;
+			}
+		}
+		return null;
 	}
 
 	public void createWhenScriptActionSequence(String action) {

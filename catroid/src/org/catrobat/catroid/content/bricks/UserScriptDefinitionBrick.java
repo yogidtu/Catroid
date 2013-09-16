@@ -62,13 +62,17 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 
 	public UserScriptDefinitionBrick(Sprite sprite, UserBrick brick, int userBrickId) {
 		this.userBrickId = userBrickId;
-		this.setUserScript(new UserScript(sprite, this));
+		this.userScript = new UserScript(sprite, this);
 		this.sprite = sprite;
 		this.brick = brick;
 	}
 
 	public int getUserBrickId() {
 		return userBrickId;
+	}
+
+	public void setUserBrickId(int newId) {
+		userBrickId = newId;
 	}
 
 	@Override
@@ -83,6 +87,13 @@ public class UserScriptDefinitionBrick extends ScriptBrick implements OnClickLis
 	@Override
 	public CheckBox getCheckBox() {
 		return null;
+	}
+
+	public void copyScriptFrom(Sprite sprite, UserScriptDefinitionBrick other) {
+		userScript = new UserScript(sprite, this);
+		for (Brick brick : other.getUserScript().getBrickList()) {
+			userScript.addBrick(brick.copyBrickForSprite(sprite, userScript));
+		}
 	}
 
 	@Override
