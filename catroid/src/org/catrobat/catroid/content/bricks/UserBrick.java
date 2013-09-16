@@ -324,6 +324,9 @@ public class UserBrick extends BrickBaseType implements OnClickListener, MultiFo
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
+		if (view == null) {
+			return null;
+		}
 		if (lastDataVersion < uiData.version || uiComponents == null) {
 			updateUIComponents(view.getContext());
 			onLayoutChanged(view);

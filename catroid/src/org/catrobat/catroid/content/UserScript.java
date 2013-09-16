@@ -59,7 +59,10 @@ public class UserScript extends Script {
 
 	@Override
 	public UserScript copyScriptForSprite(Sprite copySprite, List<UserBrick> preCopiedUserBricks) {
-		UserScript cloneScript = new UserScript(copySprite, null);
+		UserScriptDefinitionBrick preCopiedDefinitionBrick = findBrickWithId(preCopiedUserBricks,
+				definitionBrick.getUserBrickId()).getDefinitionBrick();
+
+		UserScript cloneScript = new UserScript(copySprite, preCopiedDefinitionBrick);
 		ArrayList<Brick> cloneBrickList = cloneScript.getBrickList();
 
 		for (Brick brick : getBrickList()) {
@@ -68,7 +71,7 @@ public class UserScript extends Script {
 				UserBrick precopiedRootBrick = findBrickWithId(preCopiedUserBricks, ((UserBrick) brick).getId());
 				copiedBrick = precopiedRootBrick.copyBrickForSprite(copySprite, cloneScript);
 			} else {
-				brick.copyBrickForSprite(copySprite, cloneScript);
+				copiedBrick = brick.copyBrickForSprite(copySprite, cloneScript);
 			}
 
 			if (copiedBrick instanceof IfLogicEndBrick) {

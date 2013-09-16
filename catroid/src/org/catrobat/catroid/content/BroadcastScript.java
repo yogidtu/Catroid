@@ -82,7 +82,7 @@ public class BroadcastScript extends Script implements BroadcastMessage {
 				UserBrick precopiedRootBrick = findBrickWithId(preCopiedUserBricks, ((UserBrick) brick).getId());
 				copiedBrick = precopiedRootBrick.copyBrickForSprite(copySprite, cloneScript);
 			} else {
-				brick.copyBrickForSprite(copySprite, cloneScript);
+				copiedBrick = brick.copyBrickForSprite(copySprite, cloneScript);
 			}
 
 			if (copiedBrick instanceof IfLogicEndBrick) {

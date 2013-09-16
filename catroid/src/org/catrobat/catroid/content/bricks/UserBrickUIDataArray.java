@@ -37,7 +37,17 @@ public class UserBrickUIDataArray extends ArrayList<UserBrickUIData> implements 
 
 	@Override
 	public UserBrickUIDataArray clone() {
-		return (UserBrickUIDataArray) super.clone();
+		UserBrickUIDataArray result = new UserBrickUIDataArray();
+		for (UserBrickUIData original : this) {
+			UserBrickUIData clone = new UserBrickUIData();
+			clone.isEditModeLineBreak = original.isEditModeLineBreak;
+			clone.isVariable = original.isVariable;
+			clone.key = original.key;
+			clone.name = original.name;
+			clone.newLineHint = original.newLineHint;
+			result.add(clone);
+		}
+		result.version = 0;
+		return result;
 	}
-
 }

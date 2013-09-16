@@ -188,6 +188,7 @@ public class Sprite implements Serializable, Cloneable {
 
 			UserBrick deepClone = new UserBrick(cloneSprite, original.getId());
 			deepClone.uiData = original.uiData.clone();
+			deepClone.updateUIComponents(null);
 
 			UserScriptDefinitionBrick clonedDefinitionBrick = new UserScriptDefinitionBrick(cloneSprite, deepClone,
 					original.getId());
@@ -219,7 +220,6 @@ public class Sprite implements Serializable, Cloneable {
 			cloneBrick.setId(cloneBrick.getId() + cloneUserBrickList.size());
 			UserScriptDefinitionBrick definitionBrick = cloneBrick.getDefinitionBrick();
 			definitionBrick.setUserBrickId(definitionBrick.getUserBrickId() + cloneUserBrickList.size());
-
 		}
 		cloneSprite.userBricks = cloneUserBrickList;
 
