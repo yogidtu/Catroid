@@ -56,7 +56,7 @@ public class BrickDragAndDropTest extends BaseActivityInstrumentationTestCase<Ma
 
 	public void testClickOnEmptySpace() {
 		solo.clickOnScreen(20, ScreenValues.SCREEN_HEIGHT - 150);
-		solo.sleep(200);
+		solo.sleep(2000);
 		assertFalse("Brickcategories should not be shown", solo.searchText(solo.getString(R.string.categories)));
 	}
 
@@ -102,7 +102,7 @@ public class BrickDragAndDropTest extends BaseActivityInstrumentationTestCase<Ma
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_wait);
 		solo.sleep(500);
-		UiTestUtils.dragFloatingBrickDownwards(solo, 3);
+		UiTestUtils.dragFloatingBrickUpwards(solo, 2);
 		solo.sleep(500);
 
 		if (solo.searchText(solo.getString(R.string.brick_context_dialog_move_brick), true)) {
@@ -129,14 +129,14 @@ public class BrickDragAndDropTest extends BaseActivityInstrumentationTestCase<Ma
 		@SuppressWarnings("deprecation")
 		int height = display.getHeight();
 
-		solo.sleep(200);
+		solo.sleep(2000);
 		solo.drag(20, 20, 300, height - 20, 100);
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
 			// just to get focus and get the correct list
 			currentSprite = ProjectManager.getInstance().getCurrentSprite().getName();
 			solo.clickOnText(currentSprite);
 		}
-		solo.sleep(400);
+		solo.sleep(2000);
 		assertTrue("Last Brick should now be WaitBrick", adapter.getItem(3) instanceof WaitBrick);
 	}
 

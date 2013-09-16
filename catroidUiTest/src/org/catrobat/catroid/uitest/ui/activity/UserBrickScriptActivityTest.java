@@ -114,13 +114,13 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 		UiTestUtils.dragFloatingBrick(solo, -1);
 
 		boolean wentToDataEditor = solo.waitForFragmentByTag(
-				UserBrickDataEditorFragment.BRICK_DATA_EDITOR_FRAGMENT_TAG, 800);
+				UserBrickDataEditorFragment.BRICK_DATA_EDITOR_FRAGMENT_TAG, 5000);
 
 		assertTrue("the userBrickDataEditor should not be open!!", !wentToDataEditor);
 	}
 
 	private void checkVariableScope(String valueOnBrick, int depth, boolean expectedBrickVariable) {
-		if (!solo.waitForText(valueOnBrick, 0, 2000)) {
+		if (!solo.waitForText(valueOnBrick, 0, 5000)) {
 			fail("'" + valueOnBrick + "' should have appeared");
 		}
 		solo.clickOnText(valueOnBrick);
@@ -134,13 +134,13 @@ public class UserBrickScriptActivityTest extends ActivityInstrumentationTestCase
 
 		String stringOnGlobalTag = solo.getCurrentActivity().getString(
 				R.string.formula_editor_variable_dialog_for_all_sprites);
-		boolean gotIntoVariableList = solo.waitForText(stringOnGlobalTag, 0, 500);
+		boolean gotIntoVariableList = solo.waitForText(stringOnGlobalTag, 0, 5000);
 		if (!gotIntoVariableList) {
 			fail("'" + stringOnGlobalTag + "' should have appeared");
 		}
 
 		String stringOnUserBrickVar = UiTestUtils.TEST_USER_BRICK_VARIABLE;
-		boolean hasBrickVariable = solo.waitForText(stringOnUserBrickVar, 0, 100);
+		boolean hasBrickVariable = solo.waitForText(stringOnUserBrickVar, 0, 5000);
 		if (hasBrickVariable != expectedBrickVariable) {
 			fail("'" + stringOnUserBrickVar + "' appeared: " + (hasBrickVariable ? "true" : "false"));
 		}

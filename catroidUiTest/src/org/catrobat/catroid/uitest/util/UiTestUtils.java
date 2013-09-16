@@ -457,17 +457,25 @@ public class UiTestUtils {
 	}
 
 	public static void showSourceAndEditBrick(String brickName, Solo solo) {
-		solo.clickOnText(UiTestUtils.TEST_USER_BRICK_NAME);
+		showSourceAndEditBrick(brickName, true, solo);
+	}
+
+	public static void showSourceAndEditBrick(String brickName, boolean click, Solo solo) {
+		if (click) {
+			solo.clickOnText(UiTestUtils.TEST_USER_BRICK_NAME);
+		}
 
 		String stringOnShowSourceButton = solo.getCurrentActivity()
 				.getString(R.string.brick_context_dialog_show_source);
 		solo.waitForText(stringOnShowSourceButton);
 		solo.clickOnText(stringOnShowSourceButton);
 
-		boolean addBrickShowedUp = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 1000);
+		boolean addBrickShowedUp = solo.waitForFragmentByTag(AddBrickFragment.ADD_BRICK_FRAGMENT_TAG, 2000);
 		if (!addBrickShowedUp) {
-			fail("addBrickShowedUp should have showed up");
+			fail("addBrickFragment should have showed up");
 		}
+
+		solo.sleep(1000);
 
 		boolean clicked = UiTestUtils.clickOnBrickInAddBrickFragment(solo, brickName, false);
 		if (!clicked) {
@@ -476,14 +484,14 @@ public class UiTestUtils {
 
 		String stringOnEditButton = solo.getCurrentActivity().getString(R.string.brick_context_dialog_edit_brick);
 
-		boolean editButtonShowedUp = solo.waitForText(stringOnEditButton, 0, 2000);
+		boolean editButtonShowedUp = solo.waitForText(stringOnEditButton, 0, 3000);
 		if (!editButtonShowedUp) {
 			fail(stringOnEditButton + " should have showed up");
 		}
 
 		solo.clickOnText(stringOnEditButton);
 
-		boolean activityShowedUp = solo.waitForActivity(UserBrickScriptActivity.class, 500);
+		boolean activityShowedUp = solo.waitForActivity(UserBrickScriptActivity.class, 3000);
 		if (!activityShowedUp) {
 			fail("UserBrickScriptActivity should have showed up");
 		}

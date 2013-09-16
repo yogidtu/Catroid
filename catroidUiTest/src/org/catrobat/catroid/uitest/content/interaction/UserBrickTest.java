@@ -61,10 +61,11 @@ public class UserBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 	public void testUserBrickEditInstanceScriptChangesOtherInstanceScript() throws InterruptedException {
 		UiTestUtils.addNewBrick(solo, R.string.category_user_bricks, UiTestUtils.TEST_USER_BRICK_NAME, 0);
 
+		solo.sleep(1000);
 		// click on position x brick-heights above/below the place where the brick currently is
 		int[] location = UiTestUtils.dragFloatingBrick(solo, -1);
 		assertTrue("was not able to find the brick we just added: first user brick", location != null);
-		solo.sleep(600);
+		solo.sleep(4000);
 
 		Script currentScript = UiTestUtils.getProjectManager().getCurrentScript();
 		int indexOfUserBrickInScript = currentScript.containsBrickOfTypeReturnsFirstIndex(UserBrick.class);
@@ -82,25 +83,25 @@ public class UserBrickTest extends ActivityInstrumentationTestCase2<MainMenuActi
 		// place it
 		location = UiTestUtils.dragFloatingBrick(solo, 1);
 		assertTrue("was not able to find the brick we just added: brick inside user brick", location != null);
-		solo.sleep(200);
+		solo.sleep(1000);
 
 		// go back to normal script activity
 		solo.goBack();
-		solo.sleep(600);
+		solo.sleep(2000);
 		solo.goBack();
-		solo.sleep(600);
+		solo.sleep(2000);
 
 		UiTestUtils.addNewBrick(solo, R.string.category_user_bricks, UiTestUtils.TEST_USER_BRICK_NAME, 0);
 
 		location = UiTestUtils.dragFloatingBrick(solo, 1);
 		assertTrue("was not able to find the brick we just added: second user brick", location != null);
 
-		solo.sleep(200);
+		solo.sleep(2000);
 
 		// click on the location the brick was just dragged to.
 		solo.clickLongOnScreen(location[0], location[1], 10);
 
-		UiTestUtils.showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME, solo);
+		UiTestUtils.showSourceAndEditBrick(UiTestUtils.TEST_USER_BRICK_NAME, false, solo);
 
 		String brickAddedToUserBrickScriptName = solo.getCurrentActivity().getString(R.string.brick_change_y_by);
 		assertTrue("was not able to find the script we added to the other instance",
