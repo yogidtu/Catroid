@@ -51,6 +51,7 @@ public class ProjectManager {
 	private FileChecksumContainer fileChecksumContainer = new FileChecksumContainer();
 
 	private ProjectManager() {
+
 	}
 
 	public static ProjectManager getInstance() {
