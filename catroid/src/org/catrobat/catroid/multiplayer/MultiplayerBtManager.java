@@ -22,11 +22,6 @@
  */
 package org.catrobat.catroid.multiplayer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.UUID;
-
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -35,6 +30,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.UUID;
 
 public class MultiplayerBtManager {
 	public static final UUID CONNECTION_UUID = UUID.fromString("a4eae22c-ac9d-424b-8e28-8b9fbc3d814f");
@@ -49,7 +49,7 @@ public class MultiplayerBtManager {
 		this.btAdapter = BluetoothAdapter.getDefaultAdapter();
 	}
 
-	public void connectToMACAddress(String mac_address) {
+	public BluetoothSocket connectToMACAddress(String mac_address) {
 		BluetoothDevice multiplayerDevice = null;
 		btAdapter.cancelDiscovery();
 		multiplayerDevice = btAdapter.getRemoteDevice(mac_address);
@@ -69,11 +69,12 @@ public class MultiplayerBtManager {
 
 		try {
 			btInStream = btSocket.getInputStream();
-			//			receiver = new MultiplayerBtReceiver(instream);
 			messageReceiver.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		return btSocket;
 	}
 
 	public void createInputOutputStreams(BluetoothSocket btSocket) {

@@ -22,25 +22,34 @@
  */
 package org.catrobat.catroid.multiplayer;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.formulaeditor.UserVariableShared;
-
 import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.formulaeditor.UserVariableShared;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.util.Random;
+
 public class Multiplayer {
 	public static final String SHARED_VARIABLE_NAME = "shared_variable_name";
 	public static final String SHARED_VARIABLE_VALUE = "shared_variable_value";
+	public static final String MAGIC_PACKET = "><(((°>";
 	public static final int STATE_CONNECTED = 1001;
 
 	private static Multiplayer instance = null;
 	private MultiplayerBtManager multiplayerBtManager = null;
+	private Object lock = new Object();
 	private static Handler btHandler;
 	private static boolean initialized = false;
 	private Handler receiverHandler;
+	private Integer randomNumber = 0;
 
 	private Multiplayer() {
 	}
@@ -57,15 +66,18 @@ public class Multiplayer {
 	}
 
 	public void createBtManager(String mac_address) {
-
-		if (!initialized) {
-			if (multiplayerBtManager == null) {
-				multiplayerBtManager = new MultiplayerBtManager();
-				btHandler = multiplayerBtManager.getHandler();
-				initialized = true;
+		synchronized (lock) {
+			if (!initialized) {
+				if (multiplayerBtManager == null) {
+					multiplayerBtManager = new MultiplayerBtManager();
+					btHandler = multiplayerBtManager.getHandler();
+					initialized = true;
+				}
 			}
+		}
 
-			multiplayerBtManager.connectToMACAddress(mac_address);
+		if (handleDoubleConnectionClient(multiplayerBtManager.connectToMACAddress(mac_address))) {
+
 		}
 		//move to multiplayerBtManger
 		// everything was OK
@@ -75,13 +87,84 @@ public class Multiplayer {
 	}
 
 	public void createBtManager(BluetoothSocket btSocket) {
-		if (multiplayerBtManager == null) {
-			multiplayerBtManager = new MultiplayerBtManager();
-			btHandler = multiplayerBtManager.getHandler();
-			initialized = true;
-		}
+		if (handleDoubleConnectionServer(btSocket)) {
+			synchronized (lock) {
+				if (multiplayerBtManager == null) {
+					multiplayerBtManager = new MultiplayerBtManager();
+					btHandler = multiplayerBtManager.getHandler();
+					initialized = true;
+				}
+			}
 
-		multiplayerBtManager.createInputOutputStreams(btSocket);
+			multiplayerBtManager.createInputOutputStreams(btSocket);
+		}
+	}
+
+	public boolean handleDoubleConnectionClient(BluetoothSocket btSocket) {
+		try {
+			OutputStream btOutStream;
+			synchronized (randomNumber) {
+				if (randomNumber < 0) {
+					return false;
+				}
+				btOutStream = btSocket.getOutputStream();
+				Random generator = new Random();
+				randomNumber = generator.nextInt(Integer.MAX_VALUE - 1) + 1;
+			}
+			byte[] buffer = new byte[64];
+			ByteBuffer.wrap(buffer).put(MAGIC_PACKET.getBytes());
+			ByteBuffer.wrap(buffer).putInt(MAGIC_PACKET.length(), randomNumber);
+			btOutStream.write(buffer, 0, MAGIC_PACKET.length() + Integer.SIZE);
+
+			int receivedbytes = 0;
+			InputStream btInStream = btSocket.getInputStream();
+			receivedbytes = btInStream.read(buffer);
+			if (receivedbytes < 0) {
+				return false;
+			}
+
+			if (MAGIC_PACKET.equals(new String(buffer, 0, MAGIC_PACKET.length(), "ASCII"))) {
+				return true;
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean handleDoubleConnectionServer(BluetoothSocket btSocket) {
+		byte[] buffer = new byte[64];
+		int receivedbytes = 0;
+
+		try {
+			InputStream btInStream = btSocket.getInputStream();
+			receivedbytes = btInStream.read(buffer);
+			if (!MAGIC_PACKET.equals(new String(buffer, 0, MAGIC_PACKET.length(), "ASCII"))) {
+				// error wrong magic packet / RETURN FROM FUNCTION
+			}
+			Log.d("Multiplayer", "" + new String(buffer, 0, MAGIC_PACKET.length(), "ASCII") + "  rand: " + randomNumber);
+			synchronized (randomNumber) {
+				if (randomNumber == 0) {
+					randomNumber = -1;
+					// now btSocket is the correct Server Socket!!
+					return true;
+				}
+			}
+			Integer recivedRandomNumber = ByteBuffer.wrap(buffer).getInt(MAGIC_PACKET.length());
+			if (randomNumber < recivedRandomNumber) { // what's if randomNumber == recivedRandomNumber !!
+				btSocket.close();
+				return false;
+			}
+
+			OutputStream btOutStream = btSocket.getOutputStream();
+			btOutStream.write(buffer, 0, MAGIC_PACKET.length());
+
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	public void destroyMultiplayerManager() {

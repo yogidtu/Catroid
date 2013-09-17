@@ -42,11 +42,6 @@
  */
 package org.catrobat.catroid.bluetooth;
 
-import java.io.IOException;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.multiplayer.Multiplayer;
-import org.catrobat.catroid.multiplayer.MultiplayerBtManager;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -69,7 +64,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.multiplayer.Multiplayer;
+import org.catrobat.catroid.multiplayer.MultiplayerBtManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -84,6 +83,8 @@ public class DeviceListActivity extends Activity {
 	private ArrayAdapter<String> pairedDevicesArrayAdapter;
 	private ArrayAdapter<String> newDevicesArrayAdapter;
 	private boolean autoConnect = true;
+	private boolean avoidDoubleConnection = false;
+	private Object lock = new Object();
 	private static ArrayList<String> autoConnectIDs = new ArrayList<String>();
 	private String deviceTitle;
 
@@ -220,23 +221,27 @@ public class DeviceListActivity extends Activity {
 	private OnItemClickListener deviceClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> av, View view, int arg2, long arg3) {
+			synchronized (lock) {
+				if (!avoidDoubleConnection) {
+					avoidDoubleConnection = true;
+					String info = ((TextView) view).getText().toString();
+					if (info.lastIndexOf('-') != info.length() - 18) {
+						return;
+					}
 
-			String info = ((TextView) view).getText().toString();
-			if (info.lastIndexOf('-') != info.length() - 18) {
-				return;
+					btAdapter.cancelDiscovery();
+					String address = info.substring(info.lastIndexOf('-') + 1);
+					Intent intent = new Intent();
+					Bundle data = new Bundle();
+					data.putString(DEVICE_NAME_AND_ADDRESS, info);
+					data.putString(EXTRA_DEVICE_ADDRESS, address);
+					data.putBoolean(PAIRING, av.getId() == R.id.new_devices);
+					data.putBoolean(AUTO_CONNECT, false);
+					intent.putExtras(data);
+					setResult(RESULT_OK, intent);
+					finish();
+				}
 			}
-
-			btAdapter.cancelDiscovery();
-			String address = info.substring(info.lastIndexOf('-') + 1);
-			Intent intent = new Intent();
-			Bundle data = new Bundle();
-			data.putString(DEVICE_NAME_AND_ADDRESS, info);
-			data.putString(EXTRA_DEVICE_ADDRESS, address);
-			data.putBoolean(PAIRING, av.getId() == R.id.new_devices);
-			data.putBoolean(AUTO_CONNECT, false);
-			intent.putExtras(data);
-			setResult(RESULT_OK, intent);
-			finish();
 		}
 	};
 
@@ -274,12 +279,18 @@ public class DeviceListActivity extends Activity {
 				BluetoothSocket btSocket = btServerSocket.accept();
 				Multiplayer.getInstance().createBtManager(btSocket);
 
-				Intent intent = new Intent();
-				Bundle data = new Bundle();
-				data.putString(EXTRA_DEVICE_ADDRESS, "connected");
-				intent.putExtras(data);
-				setResult(RESULT_OK, intent);
-				finish();
+				synchronized (lock) {
+					if (!avoidDoubleConnection) {
+						avoidDoubleConnection = true;
+						Intent intent = new Intent();
+						Bundle data = new Bundle();
+						data.putString(EXTRA_DEVICE_ADDRESS, "connected");
+						intent.putExtras(data);
+						setResult(RESULT_OK, intent);
+						finish();
+					}
+				}
+				Log.d("Multiplayer", "RRRUUUUUUNNNNNNIIIIIIINNNNNGGGG!!!!");
 			} catch (IOException e) {
 				Log.d("Multiplayer", "ServerSocket closed!");
 			}
