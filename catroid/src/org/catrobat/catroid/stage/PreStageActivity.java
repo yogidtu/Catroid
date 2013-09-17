@@ -23,8 +23,6 @@
 package org.catrobat.catroid.stage;
 
 import android.annotation.SuppressLint;
-import org.catrobat.catroid.multiplayer.Multiplayer;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -48,6 +46,7 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.legonxt.LegoNXT;
 import org.catrobat.catroid.legonxt.LegoNXTBtCommunicator;
+import org.catrobat.catroid.multiplayer.Multiplayer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -87,14 +86,13 @@ public class PreStageActivity extends Activity {
 			startActivityForResult(checkIntent, REQUEST_TEXT_TO_SPEECH);
 		}
 		if ((requiredResources & Brick.BLUETOOTH_LEGO_NXT) > 0) {
-				&& ((required_resources & Brick.BLUETOOTH_LEGO_NXT) > 0)) {
 			Toast.makeText(PreStageActivity.this, R.string.notification_bluetooth_error_nxt_and_shared_variables_both,
 					Toast.LENGTH_LONG).show();
 			finish();
 			return;
 		} else {
 
-			if ((required_resources & Brick.BLUETOOTH_MULTIPLAYER) > 0) {
+			if ((requiredResources & Brick.BLUETOOTH_MULTIPLAYER) > 0) {
 				// TODO: handle bluetooth connection 
 				BluetoothManager bluetoothManager = new BluetoothManager(this);
 				int bluetoothState = bluetoothManager.activateBluetooth();
@@ -114,7 +112,7 @@ public class PreStageActivity extends Activity {
 					startBluetoothCommunication(false, bluetoothDeviceName, bluetoothDeviceWaitingText);
 				}
 
-			} else if ((required_resources & Brick.BLUETOOTH_LEGO_NXT) > 0) {
+			} else if ((requiredResources & Brick.BLUETOOTH_LEGO_NXT) > 0) {
 				BluetoothManager bluetoothManager = new BluetoothManager(this);
 
 				int bluetoothState = bluetoothManager.activateBluetooth();
