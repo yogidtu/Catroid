@@ -66,7 +66,10 @@ public class MultiplayerBtManager {
 
 			connected = true;
 		}
+		return btSocket;
+	}
 
+	public void startReceiverThread() {
 		try {
 			btInStream = btSocket.getInputStream();
 			messageReceiver.start();
@@ -74,7 +77,6 @@ public class MultiplayerBtManager {
 			e.printStackTrace();
 		}
 
-		return btSocket;
 	}
 
 	public void createInputOutputStreams(BluetoothSocket btSocket) {
@@ -153,7 +155,9 @@ public class MultiplayerBtManager {
 					Multiplayer.updateSharedVariable(variableName, variableValue);
 
 				} catch (IOException e) {
+
 					Log.d("Multiplayer", "Receiver Thread END");
+					e.printStackTrace();
 					break;
 				}
 			}

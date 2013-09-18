@@ -277,6 +277,7 @@ public class DeviceListActivity extends Activity {
 				btServerSocket = BluetoothAdapter.getDefaultAdapter().listenUsingRfcommWithServiceRecord(
 						MultiplayerBtManager.MULTIPLAYER_BT_CONNECT, MultiplayerBtManager.CONNECTION_UUID);
 				BluetoothSocket btSocket = btServerSocket.accept();
+				Log.d("Multiplayer", "-------------accept-------------!!!!");
 				Multiplayer.getInstance().createBtManager(btSocket);
 
 				synchronized (lock) {

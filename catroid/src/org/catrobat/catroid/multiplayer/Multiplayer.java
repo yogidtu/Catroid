@@ -66,17 +66,21 @@ public class Multiplayer {
 	}
 
 	public void createBtManager(String mac_address) {
-		synchronized (lock) {
-			if (!initialized) {
-				if (multiplayerBtManager == null) {
-					multiplayerBtManager = new MultiplayerBtManager();
-					btHandler = multiplayerBtManager.getHandler();
-					initialized = true;
+		if (!mac_address.equals("connected")) {
+			synchronized (lock) {
+				if (!initialized) {
+					if (multiplayerBtManager == null) {
+						multiplayerBtManager = new MultiplayerBtManager();
+						btHandler = multiplayerBtManager.getHandler();
+						Log.d("Multiplayer", "----------createBtManager(String mac_address)---------!!!!");
+						initialized = true;
+					}
 				}
 			}
-		}
 
-		if (handleDoubleConnectionClient(multiplayerBtManager.connectToMACAddress(mac_address))) {
+			if (handleDoubleConnectionClient(multiplayerBtManager.connectToMACAddress(mac_address))) {
+				multiplayerBtManager.startReceiverThread();
+			}
 
 		}
 		//move to multiplayerBtManger
@@ -93,6 +97,7 @@ public class Multiplayer {
 					multiplayerBtManager = new MultiplayerBtManager();
 					btHandler = multiplayerBtManager.getHandler();
 					initialized = true;
+					Log.d("Multiplayer", "----------createBtManager(BluetoothSocket btSocket)---------!!!!");
 				}
 			}
 
@@ -143,24 +148,24 @@ public class Multiplayer {
 			if (!MAGIC_PACKET.equals(new String(buffer, 0, MAGIC_PACKET.length(), "ASCII"))) {
 				// error wrong magic packet / RETURN FROM FUNCTION
 			}
-			Log.d("Multiplayer", "" + new String(buffer, 0, MAGIC_PACKET.length(), "ASCII") + "  rand: " + randomNumber);
+			Integer recivedRandomNumber = ByteBuffer.wrap(buffer).getInt(MAGIC_PACKET.length());
+			Log.d("Multiplayer", "" + new String(buffer, 0, MAGIC_PACKET.length(), "ASCII") + "  rand: "
+					+ recivedRandomNumber);
 			synchronized (randomNumber) {
 				if (randomNumber == 0) {
 					randomNumber = -1;
 					// now btSocket is the correct Server Socket!!
-					return true;
+				} else if (randomNumber < recivedRandomNumber) { // what's if randomNumber == recivedRandomNumber !!
+					btSocket.close();
+					return false;
 				}
-			}
-			Integer recivedRandomNumber = ByteBuffer.wrap(buffer).getInt(MAGIC_PACKET.length());
-			if (randomNumber < recivedRandomNumber) { // what's if randomNumber == recivedRandomNumber !!
-				btSocket.close();
-				return false;
 			}
 
 			OutputStream btOutStream = btSocket.getOutputStream();
 			btOutStream.write(buffer, 0, MAGIC_PACKET.length());
 
 			return true;
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
