@@ -22,22 +22,19 @@
  */
 package org.catrobat.catroid.speechrecognition.recognizer;
 
+import com.dtw.DTW;
+import com.timeseries.TimeSeries;
+import com.util.DistanceFunction;
+import com.util.EuclideanDistance;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
 
-import android.util.Log;
-
-import com.dtw.DTW;
-import com.timeseries.TimeSeries;
-import com.util.DistanceFunction;
-import com.util.EuclideanDistance;
-
 public class LocalTemplateCluster {
 
-	private static final String TAG = LocalTemplateCluster.class.getSimpleName();
 	private static int maxClusterSize = 6;
 	private static int maxClusterMatches = 5;
 	private HashMap<TimeSeries, Double> templates = new HashMap<TimeSeries, Double>();
@@ -140,6 +137,5 @@ public class LocalTemplateCluster {
 			label.toLowerCase(Locale.getDefault());
 			clusterLabels.add(label);
 		}
-		Log.v(TAG, "Set labels to " + clusterLabels);
 	}
 }

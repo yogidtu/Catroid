@@ -22,16 +22,16 @@
  */
 package org.catrobat.catroid.speechrecognition;
 
+import android.media.AudioFormat;
+import android.os.Bundle;
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import android.media.AudioFormat;
-import android.os.Bundle;
-import android.util.Log;
 
 public abstract class SpeechRecognizer {
 
@@ -162,7 +162,7 @@ public abstract class SpeechRecognizer {
 	}
 
 	protected int getMyIdentifier() {
-		return taskQuqe.get(Thread.currentThread());
+		return taskQuqe.get(Thread.currentThread()) == null ? 0 : taskQuqe.get(Thread.currentThread());
 	}
 
 	protected synchronized void sendError(int errorCode, String errorMessage, Thread caller) {

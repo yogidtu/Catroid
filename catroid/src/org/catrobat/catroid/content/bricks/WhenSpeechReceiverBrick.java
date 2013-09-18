@@ -22,17 +22,6 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import java.util.List;
-
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.content.BroadcastMessage;
-import org.catrobat.catroid.content.RecognitionScript;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.speechrecognition.RecognitionManager;
-import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.dialogs.BrickTextDialog;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -46,10 +35,20 @@ import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.BroadcastMessage;
+import org.catrobat.catroid.content.RecognitionScript;
+import org.catrobat.catroid.content.Script;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.speechrecognition.RecognitionManager;
+import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.dialogs.BrickTextDialog;
+
+import java.util.List;
 
 public class WhenSpeechReceiverBrick extends ScriptBrick implements BroadcastMessage {
 	private static final long serialVersionUID = 1L;
@@ -258,7 +257,7 @@ public class WhenSpeechReceiverBrick extends ScriptBrick implements BroadcastMes
 
 		if (view != null) {
 
-			LinearLayout layout = (LinearLayout) view.findViewById(R.id.brick_when_speech_layout);
+			View layout = view.findViewById(R.id.brick_when_speech_layout);
 			Drawable background = layout.getBackground();
 			background.setAlpha(alphaValue);
 			this.alphaValue = (alphaValue);

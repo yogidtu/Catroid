@@ -22,26 +22,24 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import org.catrobat.catroid.utils.MicrophoneGrabber;
+
+import java.io.BufferedInputStream;
+import java.util.ArrayList;
 
 public class SensorLoudness {
 
 	private static SensorLoudness instance = null;
-	private final double SCALE_RANGE = 100d;
-	private final long UPDATE_INTERVAL_MS = 50;
-
-	private final double MAX_AMP_VALUE = 1000.0d;
+	private static final double SCALERANGE = 100d;
+	private static final long UPDATEINTERVALMS = 50;
+	private static final double MAXAMPVALUE = 1000.0d;
 	private ArrayList<SensorCustomEventListener> listenerList = new ArrayList<SensorCustomEventListener>();
 	private float lastValue = 0f;
 	private float currentValue = 0;
 	private BufferedInputStream microphoneInput = null;
 
-	private int processByteBufferLength = MicrophoneGrabber.frameByteSize * 5;
-	private double[] microphoneData = new double[processByteBufferLength / MicrophoneGrabber.bytesPerSample];
+	private int processByteBufferLength = MicrophoneGrabber.FRAMEBYTESIZE * 5;
+	private double[] microphoneData = new double[processByteBufferLength / MicrophoneGrabber.BYTESPERSAMPLE];
 
 	private SensorLoudness() {
 	}
@@ -69,10 +67,10 @@ public class SensorLoudness {
 							try {
 								microphoneInput.read(recievedBuffer, 0, recievedBuffer.length);
 								microphoneInput.skip(microphoneInput.available());
-							} catch (IOException e) {
+							} catch (Exception e) {
 								try {
 									microphoneInput.close();
-								} catch (IOException e1) {
+								} catch (Exception e1) {
 								}
 								microphoneInput = new BufferedInputStream(MicrophoneGrabber.getInstance()
 										.getMicrophoneStream());
@@ -81,7 +79,7 @@ public class SensorLoudness {
 							updateLoudnessValue(recievedBuffer);
 
 							try {
-								Thread.sleep(UPDATE_INTERVAL_MS);
+								Thread.sleep(UPDATEINTERVALMS);
 							} catch (InterruptedException e) {
 							}
 						}
@@ -101,7 +99,7 @@ public class SensorLoudness {
 			if (listenerList.size() == 0 && microphoneInput != null) {
 				try {
 					microphoneInput.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 				}
 				microphoneInput = null;
 			}
@@ -118,7 +116,7 @@ public class SensorLoudness {
 		}
 
 		float[] loudness = new float[1];
-		loudness[0] = (float) (SCALE_RANGE / MAX_AMP_VALUE) * currentValue;
+		loudness[0] = (float) (SCALERANGE / MAXAMPVALUE) * currentValue;
 		if (lastValue != loudness[0] && loudness[0] != 0f) {
 			lastValue = loudness[0];
 			SensorCustomEvent event = new SensorCustomEvent(Sensors.LOUDNESS, loudness);

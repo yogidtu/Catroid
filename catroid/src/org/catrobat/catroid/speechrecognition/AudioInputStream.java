@@ -22,11 +22,11 @@
  */
 package org.catrobat.catroid.speechrecognition;
 
+import android.media.AudioFormat;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteOrder;
-
-import android.media.AudioFormat;
 
 public class AudioInputStream extends InputStream {
 

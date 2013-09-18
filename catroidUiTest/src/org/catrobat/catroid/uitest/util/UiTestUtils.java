@@ -130,6 +130,7 @@ import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.fragment.AddBrickFragment;
+import org.catrobat.catroid.utils.MicrophoneGrabber;
 import org.catrobat.catroid.utils.NotificationData;
 import org.catrobat.catroid.utils.StatusBarNotificationManager;
 import org.catrobat.catroid.utils.UtilFile;
@@ -1494,6 +1495,7 @@ public class UiTestUtils {
 
 	public static void prepareStageForTest() {
 		Reflection.setPrivateField(StageListener.class, "DYNAMIC_SAMPLING_RATE_FOR_ACTIONS", false);
+		Reflection.setPrivateField(MicrophoneGrabber.class, "TESTRUNS", true);
 	}
 
 	/*

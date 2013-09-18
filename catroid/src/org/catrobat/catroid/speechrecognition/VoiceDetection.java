@@ -28,9 +28,9 @@ public abstract class VoiceDetection {
 		HIGH, NORMAL, LOW;
 	}
 
-	abstract public boolean isFrameWithVoice(double[] frame);
+	public abstract boolean isFrameWithVoice(double[] frame);
 
-	abstract public void resetState();
+	public abstract void resetState();
 
-	abstract public void setSensibility(VoiceDetectionSensibility Sensibility);
+	public abstract void setSensibility(VoiceDetectionSensibility sensibility);
 }

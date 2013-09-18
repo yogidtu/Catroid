@@ -22,50 +22,52 @@
  */
 package org.catrobat.catroid.utils;
 
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
+import java.util.ArrayList;
 
 public class MicrophoneGrabber extends Thread {
 	private static MicrophoneGrabber instance = null;
 
-	public static final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
-	public static final int channelConfiguration = AudioFormat.CHANNEL_IN_MONO;
-	public static final int sampleRate = 16000;
-	public static final int frameByteSize = 256;
-	public static final int bytesPerSample = 2;
-	private static final int DEFAULT_PIPE_BUFFERSIZE = frameByteSize * 10;
+	public static final int AUDIOENCODING = AudioFormat.ENCODING_PCM_16BIT;
+	public static final int CHANNELCONFIGURATION = AudioFormat.CHANNEL_IN_MONO;
+	public static final int SAMPLERATE = 16000;
+	public static final int FRAMEBYTESIZE = 512;
+	public static final int BYTESPERSAMPLE = 2;
+	private static final String TAG = MicrophoneGrabber.class.getSimpleName();
 
-	private HashMap<PipedOutputStream, PipedInputStream> microphoneStreamList = new HashMap<PipedOutputStream, PipedInputStream>();
+	private static final boolean TESTRUNS = Boolean.valueOf(false);
+	private ArrayList<PipedOutputStream> microphoneStreamList = new ArrayList<PipedOutputStream>();
 	private boolean isRecording;
-	public boolean isPaused = false;
 	private AudioRecord audioRecord;
 	private byte[] buffer;
 
 	@Override
 	public MicrophoneGrabber clone() {
 		MicrophoneGrabber newGrabber = new MicrophoneGrabber();
-		newGrabber.microphoneStreamList.putAll(microphoneStreamList);
+		newGrabber.microphoneStreamList.addAll(this.microphoneStreamList);
 		newGrabber.isRecording = false;
-		newGrabber.isPaused = this.isPaused;
 		newGrabber.audioRecord = this.audioRecord;
 		MicrophoneGrabber.instance = newGrabber;
 		return newGrabber;
 	}
 
 	private MicrophoneGrabber() {
-		int recBufSize = AudioRecord.getMinBufferSize(sampleRate, channelConfiguration, audioEncoding);
-		audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, sampleRate, channelConfiguration,
-				audioEncoding, recBufSize);
-		buffer = new byte[frameByteSize];
+		if (!TESTRUNS) {
+			int recBufSize = AudioRecord.getMinBufferSize(SAMPLERATE, CHANNELCONFIGURATION, AUDIOENCODING); // need to be larger than size of a frame
+			audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, SAMPLERATE,
+					CHANNELCONFIGURATION, AUDIOENCODING, recBufSize);
+		} else {
+			audioRecord = null;
+		}
+		buffer = new byte[FRAMEBYTESIZE];
 	}
 
 	public static MicrophoneGrabber getInstance() {
@@ -79,13 +81,14 @@ public class MicrophoneGrabber extends Thread {
 		PipedOutputStream outputPipe = new PipedOutputStream();
 		PipedInputStream inputPipe;
 		try {
-			inputPipe = new PipedInputStream(outputPipe, DEFAULT_PIPE_BUFFERSIZE);
+			inputPipe = new PipedInputStream(outputPipe, FRAMEBYTESIZE * 10);
 		} catch (IOException e) {
+			Log.w(TAG, "Unable to create new Pipe");
 			return null;
 		}
 		synchronized (microphoneStreamList) {
-			microphoneStreamList.put(outputPipe, inputPipe);
-			if (!isRecording && !isPaused) {
+			microphoneStreamList.add(outputPipe);
+			if (!isRecording) {
 				if (this.isAlive()) {
 					isRecording = true;
 				} else {
@@ -107,27 +110,19 @@ public class MicrophoneGrabber extends Thread {
 			int offset = 0;
 			int shortRead = 0;
 
-			while (offset < frameByteSize) {
-				shortRead = audioRecord.read(buffer, offset, frameByteSize - offset);
+			while (offset < FRAMEBYTESIZE) {
+				shortRead = audioRecord.read(buffer, offset, FRAMEBYTESIZE - offset);
 				offset += shortRead;
 			}
 
-			HashMap<PipedOutputStream, PipedInputStream> outPipeCopy = new HashMap<PipedOutputStream, PipedInputStream>(
-					microphoneStreamList);
-			Iterator<Entry<PipedOutputStream, PipedInputStream>> it = outPipeCopy.entrySet().iterator();
-			while (it.hasNext()) {
-				Entry<PipedOutputStream, PipedInputStream> entry = it.next();
+			ArrayList<PipedOutputStream> currentStreams = new ArrayList<PipedOutputStream>(microphoneStreamList);
+			for (PipedOutputStream outputPipe : currentStreams) {
 				try {
-					if (DEFAULT_PIPE_BUFFERSIZE - entry.getValue().available() >= offset) {
-						entry.getKey().write(buffer);
-					} else {
-						//						Log.v(TAG, "We skipping buffer, too slow read: "
-						//								+ (DEFAULT_PIPE_BUFFERSIZE - entry.getValue().available()) + " < " + offset);
-					}
+					outputPipe.write(buffer);
 				} catch (IOException e) {
 					try {
-						microphoneStreamList.remove(entry.getKey());
-						entry.getKey().close();
+						microphoneStreamList.remove(outputPipe);
+						outputPipe.close();
 					} catch (IOException e1) {
 					}
 				}
@@ -138,29 +133,31 @@ public class MicrophoneGrabber extends Thread {
 		}
 
 		audioRecord.stop();
+		audioRecord.release();
 	}
 
 	public boolean isRecording() {
-		return this.isAlive() && isRecording;
+		return this.isAlive() && isRecording && microphoneStreamList.size() > 0;
 	}
 
-	public static void audioByteToDouble(byte[] samples, double[] result) {
-		if (result.length != samples.length / bytesPerSample) {
+	public static void audioByteToDouble(byte[] samples, double[] resultBuffer) {
+
+		if (resultBuffer.length != samples.length / BYTESPERSAMPLE) {
 			return;
 		}
 
 		final double amplification = 1000.0;
-		for (int index = 0, floatIndex = 0; index < samples.length - bytesPerSample + 1; index += bytesPerSample, floatIndex++) {
+		for (int index = 0, floatIndex = 0; index < samples.length - BYTESPERSAMPLE + 1; index += BYTESPERSAMPLE, floatIndex++) {
 			double sample = 0;
-			for (int b = 0; b < bytesPerSample; b++) {
+			for (int b = 0; b < BYTESPERSAMPLE; b++) {
 				int v = samples[index + b];
-				if (b < bytesPerSample - 1 || bytesPerSample == 1) {
+				if (b < BYTESPERSAMPLE - 1 || BYTESPERSAMPLE == 1) {
 					v &= 0xFF;
 				}
 				sample += v << (b * 8);
 			}
 			double sample32 = amplification * (sample / 32768.0);
-			result[floatIndex] = sample32;
+			resultBuffer[floatIndex] = sample32;
 		}
 		return;
 	}

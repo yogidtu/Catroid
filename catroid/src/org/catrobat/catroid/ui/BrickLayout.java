@@ -423,13 +423,13 @@ public class BrickLayout extends ViewGroup {
 	}
 
 	private int getHorizontalSpacing(LayoutParams layoutParams) {
-		int verticalSpacing;
-		if (layoutParams.verticalSpacingSpecified()) {
-			verticalSpacing = layoutParams.verticalSpacing;
+		int horizontalSpacing;
+		if (layoutParams.horizontalSpacingSpecified()) {
+			horizontalSpacing = layoutParams.horizontalSpacing;
 		} else {
-			verticalSpacing = this.verticalSpacing;
+			horizontalSpacing = this.horizontalSpacing;
 		}
-		return verticalSpacing;
+		return horizontalSpacing;
 	}
 
 	private int getVerticalSpacing(LayoutParams layoutParams) {

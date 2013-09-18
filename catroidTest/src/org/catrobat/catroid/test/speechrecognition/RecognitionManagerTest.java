@@ -20,7 +20,22 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.test.speechRecognition;
+package org.catrobat.catroid.test.speechrecognition;
+
+import android.media.AudioFormat;
+import android.os.Bundle;
+import android.test.InstrumentationTestCase;
+import android.util.Log;
+
+import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.RecognitionManager;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
+import org.catrobat.catroid.speechrecognition.VoiceDetection;
+import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
+import org.catrobat.catroid.speechrecognition.voicedetection.ZeroCrossingVoiceDetection;
+import org.catrobat.catroid.test.R;
+import org.catrobat.catroid.test.utils.TestUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,22 +43,6 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-
-import org.catrobat.catroid.speechrecognition.AudioInputStream;
-import org.catrobat.catroid.speechrecognition.RecognitionManager;
-import org.catrobat.catroid.speechrecognition.RecognizerCallback;
-import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
-import org.catrobat.catroid.speechrecognition.VoiceDetection;
-import org.catrobat.catroid.speechrecognition.recognizer.FastDTWSpeechRecognizer;
-import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
-import org.catrobat.catroid.speechrecognition.voicedetection.ZeroCrossingVoiceDetection;
-import org.catrobat.catroid.test.R;
-import org.catrobat.catroid.test.utils.TestUtils;
-
-import android.media.AudioFormat;
-import android.os.Bundle;
-import android.test.InstrumentationTestCase;
-import android.util.Log;
 
 public class RecognitionManagerTest extends InstrumentationTestCase implements RecognizerCallback {
 
@@ -99,48 +98,48 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		manager.stop();
 	}
 
-	public void testOnlineAndLocalRecognition() throws IOException {
-		InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
-				.openRawResource(R.raw.speechsample_directions);
-		AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
-				1, 16000, 512, ByteOrder.LITTLE_ENDIAN, true);
-
-		RecognitionManager manager = new RecognitionManager(audioFileStream);
-		FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
-		manager.addSpeechRecognizer(localRecognizer);
-		manager.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
-		manager.registerContinuousSpeechListener(this);
-		manager.setParalellChunkProcessing(false);
-		manager.setProcessChunkOnlyTillFirstSuccessRecognizer(true);
-		manager.start();
-
-		int i = 15;
-		do {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
-
-		assertTrue("Error occured:\n" + lastErrorMessage, lastErrorMessage == "");
-		assertTrue("Timed out.", i > 0);
-		assertTrue("There was no recognition", lastMatches.size() > 0);
-
-		assertTrue("\"links\" was not recognized.", matchesContainString("links"));
-		assertTrue("\"rechts\" was not recognized.", matchesContainString("rechts"));
-		assertTrue("\"rauf\" was not recognized.", matchesContainString("rauf"));
-		assertTrue("\"runter\" was not recognized.", matchesContainString("runter"));
-		assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
-		manager.unregisterContinuousSpeechListener(this);
-		manager.stop();
-	}
+	//		public void testOnlineAndLocalRecognition() throws IOException {
+	//			InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
+	//					.openRawResource(R.raw.speechsample_directions);
+	//			AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
+	//					1, 16000, 512, ByteOrder.LITTLE_ENDIAN, true);
+	//	
+	//			RecognitionManager manager = new RecognitionManager(audioFileStream);
+	//			FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
+	//			manager.addSpeechRecognizer(localRecognizer);
+	//			manager.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
+	//			manager.registerContinuousSpeechListener(this);
+	//			manager.setParalellChunkProcessing(false);
+	//			manager.setProcessChunkOnlyTillFirstSuccessRecognizer(true);
+	//			manager.start();
+	//	
+	//			int i = 15;
+	//			do {
+	//				try {
+	//					Thread.sleep(1000);
+	//				} catch (InterruptedException e) {
+	//					e.printStackTrace();
+	//				}
+	//			} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
+	//	
+	//			assertTrue("Error occured:\n" + lastErrorMessage, lastErrorMessage == "");
+	//			assertTrue("Timed out.", i > 0);
+	//			assertTrue("There was no recognition", lastMatches.size() > 0);
+	//	
+	//			assertTrue("\"links\" was not recognized.", matchesContainString("links"));
+	//			assertTrue("\"rechts\" was not recognized.", matchesContainString("rechts"));
+	//			assertTrue("\"rauf\" was not recognized.", matchesContainString("rauf"));
+	//			assertTrue("\"runter\" was not recognized.", matchesContainString("runter"));
+	//			assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
+	//			manager.unregisterContinuousSpeechListener(this);
+	//			manager.stop();
+	//		}
 
 	public void testParalellRecognition() throws IOException {
 		VoiceDetection alwaysTrueDetection = new VoiceDetection() {
 
 			@Override
-			public void setSensibility(VoiceDetectionSensibility Sensibility) {
+			public void setSensibility(VoiceDetectionSensibility sensibility) {
 			}
 
 			@Override
@@ -241,7 +240,7 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		VoiceDetection alwaysTrueDetection = new VoiceDetection() {
 
 			@Override
-			public void setSensibility(VoiceDetectionSensibility Sensibility) {
+			public void setSensibility(VoiceDetectionSensibility sensibility) {
 			}
 
 			@Override
@@ -356,7 +355,7 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		VoiceDetection alwaysTrueDetection = new VoiceDetection() {
 
 			@Override
-			public void setSensibility(VoiceDetectionSensibility Sensibility) {
+			public void setSensibility(VoiceDetectionSensibility sensibility) {
 			}
 
 			@Override
@@ -497,8 +496,9 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 					return false;
 				}
 			});
-			fail("Recognizer didn't check compatibility of module and stream.");
+			fail("Manager didn't check compatibility of module and stream.");
 		} catch (IllegalArgumentException e) {
+			//expected
 		}
 
 		zeroAudioStream = new AudioInputStream(zeroStream, AudioFormat.ENCODING_PCM_16BIT, 1, 16000, 256,
@@ -506,8 +506,9 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		manager = new RecognitionManager(zeroAudioStream);
 		try {
 			manager.start();
-			fail("Recognizer didn't test listener.");
+			fail("Manager didn't test if somebody even listens.");
 		} catch (IllegalStateException e) {
+			//expected
 		}
 		manager.registerContinuousSpeechListener(this);
 		try {
@@ -521,11 +522,14 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 			manager.addVoiceDetector(new ZeroCrossingVoiceDetection());
 			fail("Recognizer added detecor during runtime (not supported yet).");
 		} catch (IllegalStateException e) {
+			//expected
 		}
+
 		try {
 			manager.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
 			fail("Recognizer added detecor during runtime (not supported yet).");
 		} catch (IllegalStateException e) {
+			//expected
 		}
 
 		manager.unregisterContinuousSpeechListener(this);
@@ -543,9 +547,9 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		AudioInputStream zeroAudioStream = new AudioInputStream(zeroStream, AudioFormat.ENCODING_PCM_16BIT, 1, 16000,
 				256, ByteOrder.LITTLE_ENDIAN, true);
 
-		VoiceDetection AlwaysTrueDetection = new VoiceDetection() {
+		VoiceDetection alwaysTrueDetection = new VoiceDetection() {
 			@Override
-			public void setSensibility(VoiceDetectionSensibility Sensibility) {
+			public void setSensibility(VoiceDetectionSensibility sensibility) {
 			}
 
 			@Override
@@ -561,7 +565,6 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		SpeechRecognizer faultyRecognizer = new SpeechRecognizer() {
 			@Override
 			protected void runRecognitionTask(AudioInputStream inputStream) {
-				Log.v("SebiTest", "Fault will send...");
 				sendError(ERROR_API_CHANGED, "my API was bad since birth");
 			}
 
@@ -583,7 +586,6 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 						break;
 					}
 				}
-				Log.v("SebiTest", "Good will send...");
 				sendResults(null);
 			}
 
@@ -596,7 +598,7 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		RecognitionManager manager = new RecognitionManager(zeroAudioStream);
 		manager.addSpeechRecognizer(faultyRecognizer);
 		manager.addSpeechRecognizer(braveRecognizer);
-		manager.addVoiceDetector(AlwaysTrueDetection);
+		manager.addVoiceDetector(alwaysTrueDetection);
 		manager.setRecorderMinVoiceChunkTime(0);
 		manager.setRecorderPreSilenceChunkTime(0);
 		manager.registerContinuousSpeechListener(this);
@@ -615,11 +617,11 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		assertFalse("Recognizer should still be working", lastErrorBundle.getBoolean(BUNDLE_ERROR_FATAL_FLAG));
 		assertTrue("Recognizer died with a module, but others are still remaining", manager.isRecognitionRunning());
 
-		controlableStream.close();
 		controlableStream.flush();
+		controlableStream.close();
 
 		try {
-			Thread.sleep(100L);
+			Thread.sleep(300L);
 		} catch (InterruptedException e) {
 		}
 

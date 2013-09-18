@@ -20,21 +20,21 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.test.speechRecognition;
+package org.catrobat.catroid.test.speechrecognition;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
+import android.media.AudioFormat;
+import android.os.Bundle;
+import android.test.InstrumentationTestCase;
 
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.test.R;
 
-import android.media.AudioFormat;
-import android.os.Bundle;
-import android.test.InstrumentationTestCase;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
 
 public class GoogleSpeechRecognizerTest extends InstrumentationTestCase implements RecognizerCallback {
 

@@ -22,14 +22,9 @@
  */
 package org.catrobat.catroid.speechrecognition;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.ArrayList;
+import android.os.Bundle;
+import android.util.Log;
+import android.util.SparseArray;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -40,12 +35,16 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.voicedetection.AdaptiveEnergyVoiceDetection;
-import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.utils.MicrophoneGrabber;
 
-import android.os.Bundle;
-import android.util.Log;
-import android.util.SparseArray;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.util.ArrayList;
 
 public class RecognitionManager implements RecognizerCallback {
 	private static final String TAG = RecognitionManager.class.getSimpleName();
@@ -54,7 +53,6 @@ public class RecognitionManager implements RecognizerCallback {
 	private static final int MAX_SPEECH_CHUNK_TIME = 30000;
 	private static final boolean DEBUG_OUTPUT = true;
 
-	private static StageActivity currentRunningStage = null;
 	private static String lastAnswer;
 	private AudioInputStream inputStream = null;
 	private Thread worker = null;
@@ -76,40 +74,11 @@ public class RecognitionManager implements RecognizerCallback {
 	protected ArrayList<VoiceDetection> detectorList = new ArrayList<VoiceDetection>();
 	protected ArrayList<SpeechRecognizer> recognizerList = new ArrayList<SpeechRecognizer>();
 	protected SparseArray<ArrayList<SpeechRecognizer>> recognitionTasks = new SparseArray<ArrayList<SpeechRecognizer>>();
-	//	protected HashMap<Integer, ArrayList<SpeechRecognizer>> recognitionTasks = new HashMap<Integer, ArrayList<SpeechRecognizer>>();
 	protected SparseArray<ByteArrayOutputStream> recognitionPlayback = new SparseArray<ByteArrayOutputStream>();
-	//	protected HashMap<Integer, ByteArrayOutputStream> recognitionPlayback = new HashMap<Integer, ByteArrayOutputStream>();
 	protected SparseArray<ArrayList<String>> recognitionMatches = new SparseArray<ArrayList<String>>();
-
-	//	protected HashMap<Integer, ArrayList<String>> recognitionMatches = new HashMap<Integer, ArrayList<String>>();
 
 	public RecognitionManager(AudioInputStream speechInputStream) {
 		this.inputStream = speechInputStream;
-	}
-
-	public static void setStageActivity(StageActivity currentStage) {
-		currentRunningStage = currentStage;
-	}
-
-	public static void askUserViaIntent(String question, final RecognizerCallback originCallback) {
-		currentRunningStage.askForSpeechInput(question, new RecognizerCallback() {
-
-			@Override
-			public void onRecognizerResult(int resultCode, Bundle resultBundle) {
-				if (resultCode == RESULT_OK) {
-					lastAnswer = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES).toString();
-				} else {
-					lastAnswer = "";
-				}
-				originCallback.onRecognizerResult(resultCode, resultBundle);
-			}
-
-			@Override
-			public void onRecognizerError(Bundle errorBundle) {
-				lastAnswer = "";
-				originCallback.onRecognizerError(errorBundle);
-			}
-		});
 	}
 
 	public static String getLastAnswer() {
@@ -204,7 +173,6 @@ public class RecognitionManager implements RecognizerCallback {
 			throw new IllegalStateException("No listener registered. For whom are we playing?");
 		}
 		if (recognizerList.size() == 0) {
-			//Use default
 			try {
 				addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
 			} catch (IllegalArgumentException e) {
@@ -212,9 +180,7 @@ public class RecognitionManager implements RecognizerCallback {
 			}
 		}
 		if (detectorList.size() == 0) {
-			//Use default
 			addVoiceDetector(new AdaptiveEnergyVoiceDetection());
-			//addVoiceDetector(new ZeroCrossingVoiceDetection());
 		}
 		for (VoiceDetection detecor : detectorList) {
 			detecor.resetState();
@@ -257,11 +223,6 @@ public class RecognitionManager implements RecognizerCallback {
 		int silentPostFrames = silenceAfterVoiceInMs / targetFrameTime;
 		int minActiveFrames = minActiveVoiceTimeMs / targetFrameTime;
 		int maxActiveFrames = MAX_SPEECH_CHUNK_TIME / targetFrameTime;
-		if (DEBUG_OUTPUT) {
-			Log.v(TAG, "frameSize for " + targetFrameTime + "ms: " + frameSize + "\nsilentPreFrames: "
-					+ silentPreFrames + "\nsilentPostFrames: " + silentPostFrames + "\nminActiveFrames:"
-					+ minActiveFrames + "\nmaxactiveframe:" + maxActiveFrames);
-		}
 		byte[] frameBuffer = new byte[frameSize];
 		double[] frame = new double[frameSize / (inputStream.getSampleSizeInBits() / 8)];
 		byte[] preBuffer = new byte[silentPreFrames * frameSize];
@@ -459,7 +420,6 @@ public class RecognitionManager implements RecognizerCallback {
 	}
 
 	private void startNextRecognizerInSerie(int identifier) {
-		Log.v(TAG, "Will start next Recognizer in list");
 		ByteArrayOutputStream byteOutputStream = recognitionPlayback.get(identifier);
 		if (byteOutputStream == null) {
 			return;
@@ -488,9 +448,6 @@ public class RecognitionManager implements RecognizerCallback {
 		int identifier = resultBundle.getInt(BUNDLE_IDENTIFIER);
 		synchronized (recognitionTasks) {
 			if (recognitionTasks.get(identifier) == null) {
-				if (DEBUG_OUTPUT) {
-					Log.v(TAG, "dead Recognizer called results. identifier:" + identifier);
-				}
 				return;
 			}
 			boolean remainingRecognizer = false;
@@ -499,7 +456,6 @@ public class RecognitionManager implements RecognizerCallback {
 			} catch (IllegalArgumentException e) {
 				return;
 			}
-			Log.v(TAG, "remaining recognizer is " + remainingRecognizer);
 
 			if (resultCode == RESULT_OK) {
 				ArrayList<String> matches = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES);
@@ -517,9 +473,6 @@ public class RecognitionManager implements RecognizerCallback {
 
 			if (!remainingRecognizer) {
 				sendResultsToListener(identifier);
-				if (DEBUG_OUTPUT) {
-					Log.v(TAG, "Recieved Result broadcasted and no remaining recognizer");
-				}
 				return;
 			}
 			if (!parallelRecognition) {
@@ -530,7 +483,6 @@ public class RecognitionManager implements RecognizerCallback {
 
 	private void sendResultsToListener(int identifier) {
 		if (recognitionMatches.get(identifier) == null) {
-			Log.v(TAG, "No Matches found");
 			return;
 		}
 		ArrayList<String> matches = recognitionMatches.get(identifier);
@@ -542,7 +494,6 @@ public class RecognitionManager implements RecognizerCallback {
 		Bundle resultBundle = new Bundle();
 		resultBundle.putStringArrayList(BUNDLE_RESULT_MATCHES, matches);
 		resultBundle.putLong(BUNDLE_IDENTIFIER, identifier);
-		Log.v(TAG, "Sending results out");
 		for (RecognizerCallback listener : listenerListCopy) {
 			listener.onRecognizerResult(matches.size() > 0 ? RESULT_OK : RESULT_NOMATCH, resultBundle);
 		}

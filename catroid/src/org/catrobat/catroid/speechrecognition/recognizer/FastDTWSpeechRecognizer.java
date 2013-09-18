@@ -22,16 +22,6 @@
  */
 package org.catrobat.catroid.speechrecognition.recognizer;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
-import org.catrobat.catroid.speechrecognition.AudioInputStream;
-import org.catrobat.catroid.speechrecognition.RecognizerCallback;
-import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
-import org.catrobat.catroid.speechrecognition.signalprocessing.MelFrequencyFilterBank;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
@@ -43,6 +33,16 @@ import com.util.EuclideanDistance;
 
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
+import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
+import org.catrobat.catroid.speechrecognition.signalprocessing.MelFrequencyFilterBank;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 public class FastDTWSpeechRecognizer extends SpeechRecognizer implements RecognizerCallback {
 
 	private static final String TAG = FastDTWSpeechRecognizer.class.getSimpleName();
@@ -53,8 +53,6 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 	private int targetTimePerFrame = 64;
 	private int overlappingFrameTime = targetTimePerFrame / 2;
 	private int filters = 12;
-	//	private double globalThreshold = 8000.0;
-	//	private double minClusterDistance = globalThreshold / 2;
 
 	private int samplesPerFrame;
 	private int samplesPerOverlap;
@@ -129,7 +127,6 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 			e.printStackTrace();
 		}
 
-		long DTWTime = System.currentTimeMillis();
 		final DistanceFunction distanceFunktion = new EuclideanDistance();
 		final TimeSeries timeSerieInput = new TimeSeries(currentLMD);
 
@@ -138,7 +135,9 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		ArrayList<LocalTemplateCluster> clusterCopyList = new ArrayList<LocalTemplateCluster>(clusterList);
 		for (LocalTemplateCluster cluster : clusterCopyList) {
 			int hitCounter = 0;
-			Log.v(TAG, "cluster --------------------" + cluster.getClusterLabels().toString());
+			if (DEBUG_OUTPUT) {
+				Log.v(TAG, "cluster --------------------" + cluster.getClusterLabels().toString());
+			}
 			Iterator<Entry<TimeSeries, Double>> it = cluster.getClusterFiles().entrySet().iterator();
 			int clusterNumber = 0;
 			int clusterSize = cluster.getClusterFiles().size();
@@ -147,11 +146,15 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 				Entry<TimeSeries, Double> template = it.next();
 				Double compareableDistance = DTW
 						.getWarpDistBetween(timeSerieInput, template.getKey(), distanceFunktion);
-				Log.v(TAG, "Compareable:" + compareableDistance);
-				Log.v(TAG, "Threshold:" + template.getValue());
+				if (DEBUG_OUTPUT) {
+					Log.v(TAG, "Compareable:" + compareableDistance);
+					Log.v(TAG, "Threshold:" + template.getValue());
+				}
 
 				if (compareableDistance < template.getValue()) {
-					Log.v(TAG, "We have a hit!");
+					if (DEBUG_OUTPUT) {
+						Log.v(TAG, "We have a hit!");
+					}
 					hitCounter++;
 				}
 				if (clusterNumber > clusterSize / 2 && hitCounter == 0) {
@@ -160,9 +163,10 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 
 			}
 			if (hitCounter > clusterSize / 2 && clusterSize >= 2) {
-				Log.v(TAG, "HITHITHITHIT");
+				if (DEBUG_OUTPUT) {
+					Log.v(TAG, "HITHITHITHIT");
+				}
 				if (successCluster != null) {
-					//multi-hit
 					successCluster = null;
 					break;
 				}
@@ -172,14 +176,11 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		}
 
 		if (successCluster != null) {
-			Log.w(TAG, "Sending results");
 			sendResults(matches);
 		} else {
 			unassociatedFingerprints.put(identifier, timeSerieInput);
 			sendResults(new ArrayList<String>(), Thread.currentThread(), false);
 		}
-
-		Log.v(TAG, "Ended process in " + (System.currentTimeMillis() - DTWTime) + "ms");
 	}
 
 	@Override
@@ -207,14 +208,12 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 				if (emptySearch && cachedMatches.size() == 0) {
 					cluster.addFingerprint(unassociatedFingerprints.get(identifier));
 					unassociatedFingerprints.remove(identifier);
-					Log.v(TAG, "Results added.");
 					added = true;
 					break;
 				}
 				if (cluster.belongsToCluster(resultMatches)) {
 					cluster.addFingerprint(unassociatedFingerprints.get(identifier));
 					unassociatedFingerprints.remove(identifier);
-					Log.v(TAG, "Results added.");
 					if (!fixedClusters) {
 						cluster.mergeResults(resultMatches);
 					}
@@ -232,10 +231,7 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 				unassociatedFingerprints.remove(identifier);
 
 				clusterList.add(additionalCluster);
-				Log.v(TAG, "New Cluster added.");
 			}
-		} else {
-			Log.v(TAG, "Result seems not to be valid.");
 		}
 	}
 
@@ -261,12 +257,12 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		return;
 	}
 
-	private double[] hammingWindow(double[] signal_in, int pos, int size) {
+	private double[] hammingWindow(double[] signalIn, int pos, int size) {
 		for (int i = pos; i < pos + size; i++) {
 			int j = i - pos;
-			signal_in[i] = signal_in[i] * 0.46 * (1.0 - Math.cos(2.0 * Math.PI * j / size));
+			signalIn[i] = signalIn[i] * 0.46 * (1.0 - Math.cos(2.0 * Math.PI * j / size));
 		}
-		return signal_in;
+		return signalIn;
 	}
 
 	private double calculateEnergyOfFrame(double[] frame) {

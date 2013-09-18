@@ -44,6 +44,7 @@ import org.catrobat.catroid.content.actions.ExtendedActions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 
 public class Look extends Image {
 	private static final float DEGREE_UI_OFFSET = 90.0f;
@@ -167,7 +168,7 @@ public class Look extends Image {
 
 	public void doHandleRecognitionEvent(String recognizedWords) {
 		for (String key : recognitionSequenceMap.keySet()) {
-			if (recognizedWords.toLowerCase().contains(key.toLowerCase())) {
+			if (recognizedWords.toLowerCase(Locale.getDefault()).contains(key.toLowerCase(Locale.getDefault()))) {
 				for (SequenceAction action : recognitionSequenceMap.get(key)) {
 					if (action.getActor() == null) {
 						addAction(action);

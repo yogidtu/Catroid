@@ -22,10 +22,10 @@
  */
 package org.catrobat.catroid.speechrecognition.voicedetection;
 
+import org.catrobat.catroid.speechrecognition.VoiceDetection;
+
 import java.util.LinkedList;
 import java.util.Queue;
-
-import org.catrobat.catroid.speechrecognition.VoiceDetection;
 
 public class AdaptiveEnergyVoiceDetection extends VoiceDetection {
 	/*
@@ -74,11 +74,11 @@ public class AdaptiveEnergyVoiceDetection extends VoiceDetection {
 		}
 
 		//adaption of p
-		double var_old = getVarianceOfRecentInactiveFrames();
+		double oldWeight = getVarianceOfRecentInactiveFrames();
 		recentEnergyRingQueqe.add(frameEnergy);
-		double var_new = getVarianceOfRecentInactiveFrames();
+		double newWeight = getVarianceOfRecentInactiveFrames();
 
-		double reltion = var_new / var_old;
+		double reltion = newWeight / oldWeight;
 		if (reltion >= 1.25) {
 			weightFactor = 0.25f;
 		} else if (reltion >= 1.10) {
@@ -126,8 +126,8 @@ public class AdaptiveEnergyVoiceDetection extends VoiceDetection {
 	}
 
 	@Override
-	public void setSensibility(VoiceDetectionSensibility Sensibility) {
-		switch (Sensibility) {
+	public void setSensibility(VoiceDetectionSensibility sensibility) {
+		switch (sensibility) {
 			case HIGH:
 				thresholdFactor = 1.3f;
 				break;

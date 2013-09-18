@@ -22,28 +22,7 @@
  */
 package org.catrobat.catroid.stage;
 
-import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.LegoNXT.LegoNXT;
-import org.catrobat.catroid.LegoNXT.LegoNXTBtCommunicator;
-import org.catrobat.catroid.bluetooth.BluetoothManager;
-import org.catrobat.catroid.bluetooth.DeviceListActivity;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.WhenSpeechReceiverBrick;
-import org.catrobat.catroid.speechrecognition.AudioInputStream;
-import org.catrobat.catroid.speechrecognition.RecognitionManager;
-import org.catrobat.catroid.speechrecognition.RecognizerCallback;
-import org.catrobat.catroid.speechrecognition.recognizer.FastDTWSpeechRecognizer;
-import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
-import org.catrobat.catroid.utils.MicrophoneGrabber;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -51,7 +30,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -63,9 +41,6 @@ import android.speech.tts.TextToSpeech.OnInitListener;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.util.Log;
 import android.view.View;
-import android.view.View.MeasureSpec;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -79,8 +54,14 @@ import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.legonxt.LegoNXT;
 import org.catrobat.catroid.legonxt.LegoNXTBtCommunicator;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
+import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.RecognitionManager;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
+import org.catrobat.catroid.utils.MicrophoneGrabber;
 
 import java.io.File;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -132,7 +113,7 @@ public class PreStageActivity extends Activity {
 
 			}
 		}
-		if ((required_resources & Brick.NETWORK_CONNECTION) > 0 || (required_resources & Brick.SPEECH_TO_TEXT) > 0) {
+		if ((requiredResources & Brick.NETWORK_CONNECTION) > 0) {
 			if (!isOnline()) {
 				AlertDialog networkAlert = createNoNetworkAlert(this);
 				networkAlert.setOnDismissListener(new Dialog.OnDismissListener() {
@@ -146,25 +127,25 @@ public class PreStageActivity extends Activity {
 				resourceInitialized();
 			}
 		}
-		if ((required_resources & Brick.SPEECH_TO_TEXT) > 0) {
+		if ((requiredResources & Brick.SPEECH_TO_TEXT) > 0) {
 			AudioInputStream microphoneStream = new AudioInputStream(MicrophoneGrabber.getInstance()
-					.getMicrophoneStream(), MicrophoneGrabber.audioEncoding, 1, MicrophoneGrabber.sampleRate,
-					MicrophoneGrabber.frameByteSize, ByteOrder.LITTLE_ENDIAN, true);
+					.getMicrophoneStream(), MicrophoneGrabber.AUDIOENCODING, 1, MicrophoneGrabber.SAMPLERATE,
+					MicrophoneGrabber.FRAMEBYTESIZE, ByteOrder.LITTLE_ENDIAN, true);
 
 			speechToText = new RecognitionManager(microphoneStream);
-			FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
-			HashSet<String> targetStrings = new HashSet<String>();
-			for (Brick recognitionBrick : getBricksRequieringResource(Brick.SPEECH_TO_TEXT, false)) {
-				if (recognitionBrick instanceof WhenSpeechReceiverBrick) {
-					targetStrings.add(((WhenSpeechReceiverBrick) recognitionBrick).getBroadcastMessage());
-				}
-			}
-			localRecognizer.setFixedClusterLabels(new ArrayList<String>(targetStrings));
-			speechToText.addSpeechRecognizer(localRecognizer);
-			speechToText.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
-			speechToText.setParalellChunkProcessing(false);
-			speechToText.setProcessChunkOnlyTillFirstSuccessRecognizer(true);
 
+			//TODO: improve local recognizer implementation
+			//			FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
+			//			HashSet<String> targetStrings = new HashSet<String>();
+			//			for (Brick recognitionBrick : getBricksRequieringResource(Brick.SPEECH_TO_TEXT, false)) {
+			//				if (recognitionBrick instanceof WhenSpeechReceiverBrick) {
+			//					targetStrings.add(((WhenSpeechReceiverBrick) recognitionBrick).getBroadcastMessage());
+			//				}
+			//			}
+			//			localRecognizer.setFixedClusterLabels(new ArrayList<String>(targetStrings));
+			//			speechToText.addSpeechRecognizer(localRecognizer);
+
+			speechToText.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
 			resourceInitialized();
 		}
 		if (requiredResourceCounter == Brick.NO_RESOURCES) {
@@ -294,7 +275,6 @@ public class PreStageActivity extends Activity {
 		return brickList;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i("bt", "requestcode " + requestCode + " result code" + resultCode);
@@ -442,21 +422,7 @@ public class PreStageActivity extends Activity {
 				.findViewById(R.id.dialog_error_network_brickimages_layout);
 
 		for (Brick networkBrick : networkBrickList) {
-			ImageView brickImageView = new ImageView(builderContext);
-			View brickView = networkBrick.getPrototypeView(builderContext);
-			brickView.setDrawingCacheEnabled(true);
-			brickView.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-					MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-			brickView.layout(0, 0, brickView.getMeasuredWidth(), brickView.getMeasuredHeight());
-			brickView.buildDrawingCache(true);
-			Bitmap brickBitmap = brickView.getDrawingCache();
-			brickBitmap.prepareToDraw();
-			brickImageView.setImageBitmap(brickBitmap);
-			brickImageView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-			brickImageView.setPadding(0, 10, 0, 10);
-			brickImageView.setScaleType(ImageView.ScaleType.FIT_START);
-
-			imageLayout.addView(brickImageView);
+			imageLayout.addView(networkBrick.getPrototypeView(builderContext));
 		}
 
 		builder.setTitle(builderContext.getString(R.string.error_no_network_title))

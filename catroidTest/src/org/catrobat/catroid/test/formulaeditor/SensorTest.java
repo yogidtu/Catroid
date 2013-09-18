@@ -60,6 +60,7 @@ public class SensorTest extends InstrumentationTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		//For initialization
+		Reflection.setPrivateField(MicrophoneGrabber.class, "TESTRUNS", true);
 		SimulatedAudioRecord simRecorder = new SimulatedAudioRecord();
 		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "audioRecord", simRecorder);
 	}
@@ -68,7 +69,8 @@ public class SensorTest extends InstrumentationTestCase {
 	public void tearDown() throws Exception {
 		SensorHandler.stopSensorListeners();
 		Reflection.setPrivateField(SensorHandler.class, "instance", null);
-		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "instance", null);
+		Reflection.setPrivateField(MicrophoneGrabber.class, "TESTRUNS", false);
+		Reflection.setPrivateField(MicrophoneGrabber.class, "instance", null);
 		super.tearDown();
 	}
 

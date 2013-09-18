@@ -22,27 +22,7 @@
  */
 package org.catrobat.catroid.stage;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.content.BroadcastEvent;
-import org.catrobat.catroid.content.BroadcastEvent.BroadcastType;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.speechrecognition.RecognizerCallback;
-import org.catrobat.catroid.ui.dialogs.StageDialog;
-import org.catrobat.catroid.utils.Utils;
-
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -71,12 +51,31 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.content.BroadcastEvent;
+import org.catrobat.catroid.content.BroadcastEvent.BroadcastType;
+import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.io.SoundManager;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.ui.dialogs.StageDialog;
+import org.catrobat.catroid.utils.Utils;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+
 public class StageListener implements ApplicationListener, RecognizerCallback {
 
 	private static final float DELTA_ACTIONS_DIVIDER_MAXIMUM = 50f;
 	private static final int ACTIONS_COMPUTATION_TIME_MAXIMUM = 8;
 	private static final String TAG = StageListener.class.getSimpleName();
-	
+
 	private static final boolean DEBUG = false;
 	public static final String SCREENSHOT_AUTOMATIC_FILE_NAME = "automatic_screenshot.png";
 	public static final String SCREENSHOT_MANUAL_FILE_NAME = "manual_screenshot.png";
@@ -575,13 +574,6 @@ public class StageListener implements ApplicationListener, RecognizerCallback {
 					public void run() {
 						activeStageActivity.onBackPressed();
 						AlertDialog networkAlert = PreStageActivity.createNoNetworkAlert(activeStageActivity);
-						networkAlert.setOnDismissListener(new Dialog.OnDismissListener() {
-
-							@Override
-							public void onDismiss(DialogInterface dialog) {
-								//activeStageActivity.exit();
-							}
-						});
 						networkAlert.show();
 					}
 				});
@@ -612,7 +604,7 @@ public class StageListener implements ApplicationListener, RecognizerCallback {
 												}
 											})
 									.setView(
-											View.inflate(builder.getContext(), R.layout.dialog_error_networkconnection,
+											View.inflate(activeStageActivity, R.layout.dialog_error_networkconnection,
 													null));
 
 							builder.create();

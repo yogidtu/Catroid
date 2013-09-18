@@ -22,16 +22,7 @@
  */
 package org.catrobat.catroid.speechrecognition.recognizer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.ArrayList;
-import javaFlacEncoder.FLACEncoder;
-import javaFlacEncoder.FLACStreamOutputStream;
-import javaFlacEncoder.StreamConfiguration;
+import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -50,7 +41,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import android.util.Log;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.util.ArrayList;
+
+import javaFlacEncoder.FLACEncoder;
+import javaFlacEncoder.FLACStreamOutputStream;
+import javaFlacEncoder.StreamConfiguration;
 
 public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
@@ -65,7 +66,6 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 	@Override
 	protected void runRecognitionTask(AudioInputStream inputStream) {
-		Log.w(TAG, "Started Google Recognizer!");
 		InputStream flacInputStream = startEncoding(inputStream);
 		if (flacInputStream == null) {
 			return;
