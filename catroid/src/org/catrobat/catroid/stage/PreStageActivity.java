@@ -256,9 +256,7 @@ public class PreStageActivity extends Activity {
 							case Brick.BLUETOOTH_MULTIPLAYER:
 								// TODO: multiplayer, Bluetoothsockets
 								address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-								//								if (!address.equals("connected")) {
 								multiplayer.createBtManager(address);
-								//								}
 								break;
 						}
 						break;

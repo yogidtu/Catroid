@@ -61,6 +61,12 @@ public class Multiplayer {
 		return instance;
 	}
 
+	public void resetMultiplayer() {
+		randomNumber = 0;
+		initialized = false;
+		multiplayerBtManager = null;
+	}
+
 	public void setReceiverHandler(Handler recieverHandler) {
 		this.receiverHandler = recieverHandler;
 	}
@@ -72,7 +78,6 @@ public class Multiplayer {
 					if (multiplayerBtManager == null) {
 						multiplayerBtManager = new MultiplayerBtManager();
 						btHandler = multiplayerBtManager.getHandler();
-						Log.d("Multiplayer", "----------createBtManager(String mac_address)---------!!!!");
 						initialized = true;
 					}
 				}
@@ -97,7 +102,6 @@ public class Multiplayer {
 					multiplayerBtManager = new MultiplayerBtManager();
 					btHandler = multiplayerBtManager.getHandler();
 					initialized = true;
-					Log.d("Multiplayer", "----------createBtManager(BluetoothSocket btSocket)---------!!!!");
 				}
 			}
 
@@ -120,6 +124,7 @@ public class Multiplayer {
 			ByteBuffer.wrap(buffer).put(MAGIC_PACKET.getBytes());
 			ByteBuffer.wrap(buffer).putInt(MAGIC_PACKET.length(), randomNumber);
 			btOutStream.write(buffer, 0, MAGIC_PACKET.length() + Integer.SIZE);
+			btOutStream.flush();
 
 			int receivedbytes = 0;
 			InputStream btInStream = btSocket.getInputStream();
@@ -149,8 +154,7 @@ public class Multiplayer {
 				// error wrong magic packet / RETURN FROM FUNCTION
 			}
 			Integer recivedRandomNumber = ByteBuffer.wrap(buffer).getInt(MAGIC_PACKET.length());
-			Log.d("Multiplayer", "" + new String(buffer, 0, MAGIC_PACKET.length(), "ASCII") + "  rand: "
-					+ recivedRandomNumber);
+
 			synchronized (randomNumber) {
 				if (randomNumber == 0) {
 					randomNumber = -1;
@@ -163,6 +167,7 @@ public class Multiplayer {
 
 			OutputStream btOutStream = btSocket.getOutputStream();
 			btOutStream.write(buffer, 0, MAGIC_PACKET.length());
+			btOutStream.flush();
 
 			return true;
 

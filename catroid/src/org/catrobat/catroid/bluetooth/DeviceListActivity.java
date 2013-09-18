@@ -91,6 +91,8 @@ public class DeviceListActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Multiplayer.getInstance().resetMultiplayer();
+
 		if (autoConnectIDs.size() == 0) {
 
 			autoConnectIDs.add(BtCommunicator.OUI_LEGO);
@@ -277,7 +279,6 @@ public class DeviceListActivity extends Activity {
 				btServerSocket = BluetoothAdapter.getDefaultAdapter().listenUsingRfcommWithServiceRecord(
 						MultiplayerBtManager.MULTIPLAYER_BT_CONNECT, MultiplayerBtManager.CONNECTION_UUID);
 				BluetoothSocket btSocket = btServerSocket.accept();
-				Log.d("Multiplayer", "-------------accept-------------!!!!");
 				Multiplayer.getInstance().createBtManager(btSocket);
 
 				synchronized (lock) {
@@ -291,7 +292,6 @@ public class DeviceListActivity extends Activity {
 						finish();
 					}
 				}
-				Log.d("Multiplayer", "RRRUUUUUUNNNNNNIIIIIIINNNNNGGGG!!!!");
 			} catch (IOException e) {
 				Log.d("Multiplayer", "ServerSocket closed!");
 			}
