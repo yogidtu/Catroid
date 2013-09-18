@@ -872,12 +872,14 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 	}
 
 	public void testEmptyView() {
-		createProjects();
+		//createProjects();
+		Project project2 = new Project(getActivity(), UiTestUtils.PROJECTNAME1);
+		StorageHandler.getInstance().saveProject(project2);
 		solo.sleep(200);
 		assertTrue("MainMenuActivity not present", solo.waitForActivity(MainMenuActivity.class.getSimpleName()));
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
-		assertTrue("MyProjectsActivity not present", solo.waitForActivity(MyProjectsActivity.class.getSimpleName()));
-		assertTrue("ProjectsListFragment not present", solo.waitForFragmentById(R.id.fragment_projects_list));
+		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
+		solo.waitForFragmentById(R.id.fragment_projects_list);
 		TextView emptyViewHeading = (TextView) solo.getCurrentActivity().findViewById(
 				R.id.fragment_projects_text_heading);
 		TextView emptyViewDescription = (TextView) solo.getCurrentActivity().findViewById(
@@ -892,7 +894,14 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		assertEquals("Empty View shown although there are items in the list!", View.GONE,
 				solo.getView(android.R.id.empty).getVisibility());
 
-		//TODO delete projects
+		//delete project
+
+		solo.clickLongOnText(UiTestUtils.PROJECTNAME1);
+
+		solo.waitForText(solo.getString(R.string.delete));
+		solo.clickOnText(solo.getString(R.string.delete));
+		solo.waitForText(solo.getString(R.string.yes));
+		solo.clickOnText(solo.getString(R.string.yes));
 
 		emptyViewHeading = (TextView) solo.getCurrentActivity().findViewById(R.id.fragment_projects_text_heading);
 		emptyViewDescription = (TextView) solo.getCurrentActivity().findViewById(
@@ -904,8 +913,8 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 				solo.getString(R.string.fragment_projects_text_description), emptyViewDescription.getText().toString());
 
 		solo.sleep(200);
-		//		assertEquals("Empty View not shown although there are items in the list!", View.VISIBLE,
-		//				solo.getView(android.R.id.empty).getVisibility());
+		assertEquals("Empty View not shown although there are items in the list!", View.VISIBLE,
+				solo.getView(android.R.id.empty).getVisibility());
 	}
 
 	public void testLongClickCancelDeleteAndCopy() {
