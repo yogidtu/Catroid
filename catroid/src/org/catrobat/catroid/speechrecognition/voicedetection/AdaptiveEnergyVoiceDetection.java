@@ -20,10 +20,12 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.speechrecognition;
+package org.catrobat.catroid.speechrecognition.voicedetection;
 
 import java.util.LinkedList;
 import java.util.Queue;
+
+import org.catrobat.catroid.speechrecognition.VoiceDetection;
 
 public class AdaptiveEnergyVoiceDetection extends VoiceDetection {
 	/*
@@ -32,10 +34,6 @@ public class AdaptiveEnergyVoiceDetection extends VoiceDetection {
 	 * "VAD techniques for real-time speech transmission on the Internet"
 	 * High Speed Networks and Multimedia Communications 5th IEEE International Conference, pp.46,50, 2002
 	 */
-
-	public static final float SENSIBILITY_LOW = 1.8f;
-	public static final float SENSIBILITY_NORMAL = 1.6f;
-	public static final float SENSIBILITY_HIGH = 1.3f;
 
 	public double lastConfidence;
 

@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.speechrecognition;
+package org.catrobat.catroid.speechrecognition.recognizer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,6 +39,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +57,7 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 	private static final String TAG = GoogleOnlineSpeechRecognizer.class.getSimpleName();
 	private static final String API_URL = "http://www.google.com/speech-api/v1/recognize?client=chromium&lang=de-DE&maxresults=5";
 	private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.77 Safari/535.7";
+	private static final int TIMEOUT = 4000;
 
 	public GoogleOnlineSpeechRecognizer() {
 		super();
@@ -128,7 +135,9 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 
 	private JSONArray pipeToOnlineAPI(InputStream speechInput) {
 
-		HttpClient httpclient = new DefaultHttpClient();
+		final HttpParams httpParammeters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParammeters, TIMEOUT);
+		HttpClient httpclient = new DefaultHttpClient(httpParammeters);
 		HttpPost httppost = new HttpPost(API_URL);
 		JSONArray resturnJson = new JSONArray();
 
@@ -207,7 +216,6 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 		int sampleSize = sin.getSampleSizeInBits();
 		int bytesPerSample = sampleSize / 8;
 		if (sampleSize % 8 != 0) {
-			//end processing now
 			throw new IllegalArgumentException("Unsupported Sample Size: size = " + sampleSize);
 		}
 		int channels = sin.getChannels();

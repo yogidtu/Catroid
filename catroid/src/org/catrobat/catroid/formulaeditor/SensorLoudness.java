@@ -40,6 +40,9 @@ public class SensorLoudness {
 	private float currentValue = 0;
 	private BufferedInputStream microphoneInput = null;
 
+	private int processByteBufferLength = MicrophoneGrabber.frameByteSize * 5;
+	private double[] microphoneData = new double[processByteBufferLength / MicrophoneGrabber.bytesPerSample];
+
 	private SensorLoudness() {
 	}
 
@@ -61,7 +64,7 @@ public class SensorLoudness {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						byte[] recievedBuffer = new byte[MicrophoneGrabber.frameByteSize * 5];
+						byte[] recievedBuffer = new byte[processByteBufferLength];
 						while (microphoneInput != null) {
 							try {
 								microphoneInput.read(recievedBuffer, 0, recievedBuffer.length);
@@ -106,9 +109,9 @@ public class SensorLoudness {
 	}
 
 	private void updateLoudnessValue(byte[] audioBuffer) {
-		double[] signal = MicrophoneGrabber.audioByteToDouble(audioBuffer);
+		MicrophoneGrabber.audioByteToDouble(audioBuffer, microphoneData);
 		currentValue = 0;
-		for (double sample : signal) {
+		for (double sample : microphoneData) {
 			if (currentValue < Math.abs(sample)) {
 				currentValue = Math.abs((float) sample);
 			}

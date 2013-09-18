@@ -20,10 +20,14 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.speechrecognition;
+package org.catrobat.catroid.speechrecognition.recognizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
 
 import android.os.Bundle;
 import android.util.Log;

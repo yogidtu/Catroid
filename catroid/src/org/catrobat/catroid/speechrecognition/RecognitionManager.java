@@ -30,8 +30,6 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -40,10 +38,14 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
+import org.catrobat.catroid.speechrecognition.voicedetection.AdaptiveEnergyVoiceDetection;
 import org.catrobat.catroid.stage.StageActivity;
+import org.catrobat.catroid.utils.MicrophoneGrabber;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 
 public class RecognitionManager implements RecognizerCallback {
 	private static final String TAG = RecognitionManager.class.getSimpleName();
@@ -51,6 +53,7 @@ public class RecognitionManager implements RecognizerCallback {
 	private static final int DEFAULT_SERIAL_BUFFER_SIZE = 16384;
 	private static final int MAX_SPEECH_CHUNK_TIME = 30000;
 	private static final boolean DEBUG_OUTPUT = true;
+
 	private static StageActivity currentRunningStage = null;
 	private static String lastAnswer;
 	private AudioInputStream inputStream = null;
@@ -61,9 +64,9 @@ public class RecognitionManager implements RecognizerCallback {
 	private boolean parallelRecognition = false;
 	private boolean broadcastOnlySuccessResults = true;
 	private boolean paused = false;
-	private int targetFrameTime = 10;
+	private int targetFrameTime = 20;
 	private int silenceBeforeVoiceMs = 200;
-	private int minActiveVoiceTimeMs = 50;
+	private int minActiveVoiceTimeMs = 40;
 	private int silenceAfterVoiceInMs = 270;
 	private ArrayList<OutputStream> currentOpenStreamList = new ArrayList<OutputStream>();
 	private int currentIdentifier = 0;
@@ -72,9 +75,13 @@ public class RecognitionManager implements RecognizerCallback {
 	protected ArrayList<RecognizerCallback> recognizerSelfListenerList = new ArrayList<RecognizerCallback>();
 	protected ArrayList<VoiceDetection> detectorList = new ArrayList<VoiceDetection>();
 	protected ArrayList<SpeechRecognizer> recognizerList = new ArrayList<SpeechRecognizer>();
-	protected HashMap<Integer, ArrayList<SpeechRecognizer>> recognitionTasks = new HashMap<Integer, ArrayList<SpeechRecognizer>>();
-	protected HashMap<Integer, ByteArrayOutputStream> recognitionPlayback = new HashMap<Integer, ByteArrayOutputStream>();
-	protected HashMap<Integer, ArrayList<String>> recognitionMatches = new HashMap<Integer, ArrayList<String>>();
+	protected SparseArray<ArrayList<SpeechRecognizer>> recognitionTasks = new SparseArray<ArrayList<SpeechRecognizer>>();
+	//	protected HashMap<Integer, ArrayList<SpeechRecognizer>> recognitionTasks = new HashMap<Integer, ArrayList<SpeechRecognizer>>();
+	protected SparseArray<ByteArrayOutputStream> recognitionPlayback = new SparseArray<ByteArrayOutputStream>();
+	//	protected HashMap<Integer, ByteArrayOutputStream> recognitionPlayback = new HashMap<Integer, ByteArrayOutputStream>();
+	protected SparseArray<ArrayList<String>> recognitionMatches = new SparseArray<ArrayList<String>>();
+
+	//	protected HashMap<Integer, ArrayList<String>> recognitionMatches = new HashMap<Integer, ArrayList<String>>();
 
 	public RecognitionManager(AudioInputStream speechInputStream) {
 		this.inputStream = speechInputStream;
@@ -112,7 +119,7 @@ public class RecognitionManager implements RecognizerCallback {
 	public static int isWordRecognizeable(String wordToValidate) {
 		int isValidWord = 0;
 		final HttpParams httpParammeters = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParammeters, 5000);
+		HttpConnectionParams.setConnectionTimeout(httpParammeters, 4000);
 		HttpClient httpclient = new DefaultHttpClient(httpParammeters);
 		HttpGet httppost = new HttpGet("http://en.wiktionary.org/w/api.php?action=opensearch&search=" + wordToValidate
 				+ "");
@@ -253,6 +260,7 @@ public class RecognitionManager implements RecognizerCallback {
 					+ minActiveFrames + "\nmaxactiveframe:" + maxActiveFrames);
 		}
 		byte[] frameBuffer = new byte[frameSize];
+		double[] frame = new double[frameSize / (inputStream.getSampleSizeInBits() / 8)];
 		byte[] preBuffer = new byte[silentPreFrames * frameSize];
 		byte[] activeBuffer = new byte[minActiveFrames * frameSize];
 
@@ -292,7 +300,7 @@ public class RecognitionManager implements RecognizerCallback {
 				continue;
 			}
 
-			double[] frame = audioByteToDouble(frameBuffer, inputStream.getSampleSizeInBits() / 8);
+			MicrophoneGrabber.audioByteToDouble(frameBuffer, frame);
 			for (VoiceDetection detector : detectorList) {
 				frameContainsVoice = detector.isFrameWithVoice(frame);
 				if (frameContainsVoice) {
@@ -312,7 +320,6 @@ public class RecognitionManager implements RecognizerCallback {
 					System.arraycopy(frameBuffer, 0, preBuffer, preBuffer.length - frameSize, frameSize);
 
 					if (DEBUG_OUTPUT && processedActiveFrames != 0) {
-						//						Log.v(TAG, "resetting proccessed active frames");
 					}
 					processedSilentFrames++;
 					processedActiveFrames = 0;
@@ -322,6 +329,8 @@ public class RecognitionManager implements RecognizerCallback {
 					continue;
 				} else {
 					currentIdentifier = (int) System.currentTimeMillis();
+					recognitionTasks.put(currentIdentifier, new ArrayList<SpeechRecognizer>(recognizerList));
+					recognitionMatches.put(currentIdentifier, new ArrayList<String>());
 					if (DEBUG_OUTPUT) {
 						Log.v(TAG, "Starting partial recognition" + currentIdentifier);
 					}
@@ -349,8 +358,6 @@ public class RecognitionManager implements RecognizerCallback {
 							currentOpenStreamList.remove(feedStream);
 						}
 					}
-					recognitionTasks.put(currentIdentifier, new ArrayList<SpeechRecognizer>(recognizerList));
-					recognitionMatches.put(currentIdentifier, new ArrayList<String>());
 					recognizerAreListening = true;
 				}
 			}
@@ -427,7 +434,7 @@ public class RecognitionManager implements RecognizerCallback {
 		}
 		if (caller == null) {
 			if (DEBUG_OUTPUT) {
-				Log.w(TAG, "Caller was not found in markUsed");
+				Log.w(TAG, "Couldn't figure out which recognizer called.");
 			}
 			throw new IllegalArgumentException();
 		}
@@ -449,6 +456,7 @@ public class RecognitionManager implements RecognizerCallback {
 	}
 
 	private void startNextRecognizerInSerie(int identifier) {
+		Log.v(TAG, "Will start next Recognizer in list");
 		ByteArrayOutputStream byteOutputStream = recognitionPlayback.get(identifier);
 		if (byteOutputStream == null) {
 			return;
@@ -476,18 +484,19 @@ public class RecognitionManager implements RecognizerCallback {
 	public void onRecognizerResult(int resultCode, Bundle resultBundle) {
 		int identifier = resultBundle.getInt(BUNDLE_IDENTIFIER);
 		synchronized (recognitionTasks) {
-			if (!recognitionTasks.containsKey(identifier)) {
+			if (recognitionTasks.get(identifier) == null) {
 				if (DEBUG_OUTPUT) {
 					Log.v(TAG, "dead Recognizer called results. identifier:" + identifier);
 				}
 				return;
 			}
-			boolean remainingRecognizer;
+			boolean remainingRecognizer = false;
 			try {
 				remainingRecognizer = markUsedAndCheckRemaining(identifier, resultBundle.getString(BUNDLE_SENDERCLASS));
 			} catch (IllegalArgumentException e) {
 				return;
 			}
+			Log.v(TAG, "remaining recognizer is " + remainingRecognizer);
 
 			if (resultCode == RESULT_OK) {
 				ArrayList<String> matches = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES);
@@ -517,7 +526,7 @@ public class RecognitionManager implements RecognizerCallback {
 	}
 
 	private void sendResultsToListener(int identifier) {
-		if (!recognitionMatches.containsKey(identifier)) {
+		if (recognitionMatches.get(identifier) == null) {
 			Log.v(TAG, "No Matches found");
 			return;
 		}
@@ -553,7 +562,7 @@ public class RecognitionManager implements RecognizerCallback {
 		}
 		int identifier = errorBundle.getInt(BUNDLE_IDENTIFIER);
 		synchronized (recognitionTasks) {
-			if (!recognitionTasks.containsKey(identifier)) {
+			if (recognitionTasks.get(identifier) == null) {
 				return;
 			}
 			markUsedAndCheckRemaining(identifier, errorBundle.getString(BUNDLE_SENDERCLASS));
@@ -593,9 +602,9 @@ public class RecognitionManager implements RecognizerCallback {
 	private void removeRecognizerInRuntime(SpeechRecognizer badRecognizer) {
 		badRecognizer.stopAllTasks();
 		synchronized (recognitionTasks) {
-			Iterator<ArrayList<SpeechRecognizer>> workingThreads = recognitionTasks.values().iterator();
-			while (workingThreads.hasNext()) {
-				workingThreads.next().remove(badRecognizer);
+			for (int i = 0; i < recognitionTasks.size(); i++) {
+				int identifier = recognitionTasks.keyAt(i);
+				recognitionTasks.get(identifier).remove(badRecognizer);
 			}
 		}
 		recognizerList.remove(badRecognizer);
@@ -652,25 +661,5 @@ public class RecognitionManager implements RecognizerCallback {
 
 	public void setRecorderMinVoiceChunkTime(int timeInMs) {
 		minActiveVoiceTimeMs = timeInMs;
-	}
-
-	private static double[] audioByteToDouble(byte[] samples, int bytesPerSample) {
-
-		double[] micBufferData = new double[samples.length / bytesPerSample];
-
-		final double amplification = 1000.0;
-		for (int index = 0, floatIndex = 0; index < samples.length - bytesPerSample + 1; index += bytesPerSample, floatIndex++) {
-			double sample = 0;
-			for (int b = 0; b < bytesPerSample; b++) {
-				int v = samples[index + b];
-				if (b < bytesPerSample - 1 || bytesPerSample == 1) {
-					v &= 0xFF;
-				}
-				sample += v << (b * 8);
-			}
-			double sample32 = amplification * (sample / 32768.0);
-			micBufferData[floatIndex] = sample32;
-		}
-		return micBufferData;
 	}
 }

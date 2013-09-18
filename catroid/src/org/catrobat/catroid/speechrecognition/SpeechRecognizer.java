@@ -111,11 +111,11 @@ public abstract class SpeechRecognizer {
 	}
 
 	protected void sendResults(ArrayList<String> matches) {
-		sendResults(matches, Thread.currentThread());
+		sendResults(matches, Thread.currentThread(), true);
 	}
 
-	protected synchronized void sendResults(ArrayList<String> matches, Thread caller) {
-		sendResults(matches, Thread.currentThread(), true);
+	protected synchronized void sendResults(ArrayList<String> matches, boolean recognizedResult) {
+		sendResults(matches, Thread.currentThread(), recognizedResult);
 	}
 
 	protected synchronized void sendResults(ArrayList<String> matches, Thread caller, boolean recognizedResult) {
@@ -125,6 +125,9 @@ public abstract class SpeechRecognizer {
 				Log.v(TAG, "Not registered Task tries to send Results.");
 			}
 			return;
+		}
+		if (matches == null) {
+			matches = new ArrayList<String>();
 		}
 		int identifier = taskQuqe.get(caller);
 		taskQuqe.remove(caller);

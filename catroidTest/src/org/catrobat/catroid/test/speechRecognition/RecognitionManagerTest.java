@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.test.utiltests;
+package org.catrobat.catroid.test.speechRecognition;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,19 +30,18 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
-import org.catrobat.catroid.speechrecognition.FastDTWSpeechRecognizer;
-import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.RecognitionManager;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.VoiceDetection;
-import org.catrobat.catroid.speechrecognition.ZeroCrossingVoiceDetection;
+import org.catrobat.catroid.speechrecognition.recognizer.FastDTWSpeechRecognizer;
+import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
+import org.catrobat.catroid.speechrecognition.voicedetection.ZeroCrossingVoiceDetection;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.TestUtils;
 
 import android.media.AudioFormat;
 import android.os.Bundle;
-import android.os.Environment;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
@@ -52,7 +51,6 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 	private ArrayList<String> lastMatches = new ArrayList<String>();
 	private String lastErrorMessage = "";
 	private Bundle lastErrorBundle = null;
-	private Bundle lastResultBundle = null;
 
 	@Override
 	public void tearDown() throws Exception {
@@ -65,7 +63,6 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		TestUtils.clearProject(testProjectName);
 		lastMatches.clear();
 		lastErrorMessage = "";
-		lastResultBundle = null;
 		lastErrorBundle = null;
 	}
 
@@ -102,164 +99,9 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		manager.stop();
 	}
 
-	public void testOnlineLocalRecognition() throws IOException {
-		PipedOutputStream controlableStream = new PipedOutputStream();
-		InputStream controlledInputStream = new PipedInputStream(controlableStream);
-		AudioInputStream controlledAudioStream = new AudioInputStream(controlledInputStream,
-				AudioFormat.ENCODING_PCM_16BIT, 1, 16000, 256, ByteOrder.LITTLE_ENDIAN, true);
-
-		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			fail();
-		}
-
-		InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
-				.openRawResource(R.raw.mixed_commands);
-		//		AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
-		//				1, 16000, 512, ByteOrder.LITTLE_ENDIAN, true);
-
-		RecognitionManager manager = new RecognitionManager(controlledAudioStream);
-		FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
-		manager.addSpeechRecognizer(localRecognizer);
-		manager.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
-		manager.registerContinuousSpeechListener(this);
-		manager.setParalellChunkProcessing(false);
-		manager.setProcessChunkOnlyTillFirstSuccessRecognizer(true);
-		manager.start();
-
-		int readedByte = 0;
-		while ((readedByte = realAudioExampleStream.read()) != -1) {
-			controlableStream.write(readedByte);
-		}
-		//		controlableStream.write(-1);
-
-		int i = 15;
-		do {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
-
-		i = 0;
-		String all = "";
-		for (String match : lastMatches) {
-			all += match;
-
-			i++;
-			if (i % 5 == 0) {
-				all += "\n";
-				i = 0;
-			}
-		}
-
-		Log.v("SebiTest", "All the results:\n" + all);
-
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		realAudioExampleStream = getInstrumentation().getContext().getResources()
-				.openRawResource(R.raw.speechsample_directions);
-		readedByte = 0;
-		while ((readedByte = realAudioExampleStream.read()) != -1) {
-			controlableStream.write(readedByte);
-		}
-		controlableStream.write(-1);
-
-		i = 15;
-		do {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
-
-		i = 0;
-		all = "[";
-		for (String match : lastMatches) {
-			all += match + " ";
-
-			i++;
-			if (i % 5 == 0) {
-				all += "]\n[";
-				i = 0;
-			}
-		}
-		Log.v("SebiTest", "All the results:\n" + all);
-
-		//		Log.v("SebiTest", "Starting next frame left 03");
-		//
-		//		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.links03);
-		//
-		//		readedByte = 0;
-		//		while ((readedByte = realAudioExampleStream.read()) != -1) {
-		//			controlableStream.write(readedByte);
-		//		}
-		//
-		//		i = 15;
-		//		do {
-		//			try {
-		//				Thread.sleep(1000);
-		//			} catch (InterruptedException e) {
-		//				e.printStackTrace();
-		//			}
-		//		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
-		//
-		//		Log.v("SebiTest", "Starting next frame right 2");
-		//
-		//		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.right02);
-		//
-		//		readedByte = 0;
-		//		while ((readedByte = realAudioExampleStream.read()) != -1) {
-		//			controlableStream.write(readedByte);
-		//		}
-		//
-		//		i = 15;
-		//		do {
-		//			try {
-		//				Thread.sleep(1000);
-		//			} catch (InterruptedException e) {
-		//				e.printStackTrace();
-		//			}
-		//		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
-		//
-		//		Log.v("SebiTest", "Starting next frame left 01");
-		//
-		//		realAudioExampleStream = getInstrumentation().getContext().getResources().openRawResource(R.raw.links01);
-		//
-		//		readedByte = 0;
-		//		while ((readedByte = realAudioExampleStream.read()) != -1) {
-		//			controlableStream.write(readedByte);
-		//		}
-		//
-		//		i = 15;
-		//		do {
-		//			try {
-		//				Thread.sleep(1000);
-		//			} catch (InterruptedException e) {
-		//				e.printStackTrace();
-		//			}
-		//		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
-
-		assertTrue("Error occured:\n" + lastErrorMessage, lastErrorMessage == "");
-		assertTrue("Timed out.", i > 0);
-		assertTrue("There was no recognition", lastMatches.size() > 0);
-
-		assertTrue("\"links\" was not recognized.", matchesContainString("links"));
-		assertTrue("\"rechts\" was not recognized.", matchesContainString("rechts"));
-		assertTrue("\"rauf\" was not recognized.", matchesContainString("rauf"));
-		assertTrue("\"runter\" was not recognized.", matchesContainString("runter"));
-		assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
-		manager.unregisterContinuousSpeechListener(this);
-		manager.stop();
-	}
-
 	public void testOnlineAndLocalRecognition() throws IOException {
 		InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
-				.openRawResource(R.raw.mixed_commands);
+				.openRawResource(R.raw.speechsample_directions);
 		AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
 				1, 16000, 512, ByteOrder.LITTLE_ENDIAN, true);
 
@@ -534,7 +376,7 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 					try {
 						int lastByte = inputStream.read();
 						if (lastByte == -1) {
-							sendResults(null);
+							sendResults(null, false);
 							break;
 						}
 					} catch (IOException e) {
@@ -554,6 +396,7 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		SpeechRecognizer secondRecognizer = new SpeechRecognizer() {
 			@Override
 			protected void runRecognitionTask(AudioInputStream inputStream) {
+				Log.v("SebiTest", "Second recognizer started...");
 				while (true) {
 					try {
 						int lastByte = inputStream.read();
@@ -760,7 +603,7 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 
 		manager.start();
 
-		controlableStream.write(new byte[512]);
+		controlableStream.write(new byte[1024]);
 		try {
 			Thread.sleep(100L);
 		} catch (InterruptedException e) {
@@ -830,8 +673,6 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 		if (resultCode == RESULT_OK) {
 			lastMatches.addAll(resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES));
 		}
-		lastResultBundle = resultBundle;
-
 	}
 
 	public void onRecognizerError(Bundle errorBundle) {

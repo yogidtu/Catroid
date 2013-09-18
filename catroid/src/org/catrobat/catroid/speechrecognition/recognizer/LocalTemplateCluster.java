@@ -20,11 +20,12 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.speechrecognition;
+package org.catrobat.catroid.speechrecognition.recognizer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 import android.util.Log;
@@ -34,9 +35,9 @@ import com.timeseries.TimeSeries;
 import com.util.DistanceFunction;
 import com.util.EuclideanDistance;
 
-public class Cluster {
+public class LocalTemplateCluster {
 
-	private static final String TAG = Cluster.class.getSimpleName();
+	private static final String TAG = LocalTemplateCluster.class.getSimpleName();
 	private static int maxClusterSize = 6;
 	private static int maxClusterMatches = 5;
 	private HashMap<TimeSeries, Double> templates = new HashMap<TimeSeries, Double>();
@@ -82,7 +83,7 @@ public class Cluster {
 
 	public boolean belongsToCluster(ArrayList<String> remoteMatches) {
 		for (String match : remoteMatches) {
-			if (clusterLabels.contains(match.toLowerCase())) {
+			if (clusterLabels.contains(match.toLowerCase(Locale.getDefault()))) {
 				return true;
 			}
 		}
@@ -99,9 +100,9 @@ public class Cluster {
 					clusterLabels.remove(duplicateIndex);
 					remoteMatches.remove(remoteMatch);
 					for (int i = 0; i < maxClusterMatches / 2; i++) {
-						copyClusterMatches.add(clusterLabels.get(i).toLowerCase());
+						copyClusterMatches.add(clusterLabels.get(i).toLowerCase(Locale.getDefault()));
 						if (remoteMatches.size() > i) {
-							copyClusterMatches.add(remoteMatches.get(i).toLowerCase());
+							copyClusterMatches.add(remoteMatches.get(i).toLowerCase(Locale.getDefault()));
 						}
 					}
 					clusterLabels = copyClusterMatches;
@@ -136,7 +137,7 @@ public class Cluster {
 	public void setLabel(ArrayList<String> labels) {
 		clusterLabels.clear();
 		for (String label : labels) {
-			label.toLowerCase();
+			label.toLowerCase(Locale.getDefault());
 			clusterLabels.add(label);
 		}
 		Log.v(TAG, "Set labels to " + clusterLabels);

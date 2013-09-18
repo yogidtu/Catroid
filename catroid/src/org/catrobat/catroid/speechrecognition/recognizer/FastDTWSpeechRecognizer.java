@@ -20,13 +20,16 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.speechrecognition;
+package org.catrobat.catroid.speechrecognition.recognizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.signalprocessing.MelFrequencyFilterBank;
 
 import android.os.Bundle;
@@ -44,7 +47,7 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 
 	private static final String TAG = FastDTWSpeechRecognizer.class.getSimpleName();
 	private SparseArray<TimeSeries> unassociatedFingerprints = new SparseArray<TimeSeries>();
-	private ArrayList<Cluster> clusterList = new ArrayList<Cluster>();
+	private ArrayList<LocalTemplateCluster> clusterList = new ArrayList<LocalTemplateCluster>();
 	private boolean fixedClusters = false;
 
 	private int targetTimePerFrame = 64;
@@ -60,13 +63,13 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 	public void setFixedClusterLabels(ArrayList<String> labels) {
 		clusterList.clear();
 		for (String label : labels) {
-			Cluster fixedCluster = new Cluster();
+			LocalTemplateCluster fixedCluster = new LocalTemplateCluster();
 			ArrayList<String> clusterLabel = new ArrayList<String>();
 			clusterLabel.add(label);
 			fixedCluster.setLabel(clusterLabel);
 			clusterList.add(fixedCluster);
 		}
-		Cluster emptyCluster = new Cluster();
+		LocalTemplateCluster emptyCluster = new LocalTemplateCluster();
 		emptyCluster.setLabel(new ArrayList<String>());
 		clusterList.add(emptyCluster);
 		fixedClusters = true;
@@ -89,6 +92,8 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		double[][] currentLMD = new double[50][];
 		byte[] frameRawBuffer = new byte[samplesPerFrame * (inputStream.getSampleSizeInBits() / 8)];
 		byte[] overlapBuffer = new byte[samplesPerOverlap * (inputStream.getSampleSizeInBits() / 8)];
+		double[] frameBuffer = new double[samplesPerFrame];
+		double[] powerSpectrum = new double[frameBuffer.length / 2];
 
 		int frameNumber = 0;
 		try {
@@ -97,22 +102,22 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 				if (frameNumber > 0) {
 					System.arraycopy(overlapBuffer, 0, frameRawBuffer, 0, overlapBuffer.length);
 				}
-				double[] frameBuffer = audioByteToDouble(frameRawBuffer, inputStream.getSampleSizeInBits() / 8);
+				audioByteToDouble(frameRawBuffer, inputStream.getSampleSizeInBits() / 8, frameBuffer);
+				strenghtHighFrequencys(frameBuffer);
 				double frameEnergy = calculateEnergyOfFrame(frameBuffer);
 				frameBuffer = hammingWindow(frameBuffer, 0, frameBuffer.length);
 
-				double[] powerSpectrum = new double[frameBuffer.length / 2];
 				fftMagnitude(frameBuffer, powerSpectrum);
 				MelFrequencyFilterBank filterBank = new MelFrequencyFilterBank(130, 6800, filters);
-				frameBuffer = filterBank.process(powerSpectrum, inputStream.getSampleRate(), 1);
+				double[] melFrequences = filterBank.process(powerSpectrum, inputStream.getSampleRate(), 1);
 
 				if (frameNumber >= currentLMD.length) {
 					double[][] growingBuffer = new double[currentLMD.length * 2][];
 					System.arraycopy(currentLMD, 0, growingBuffer, 0, currentLMD.length);
 					currentLMD = growingBuffer;
 				}
-				frameBuffer[frameBuffer.length - 1] = frameEnergy;
-				currentLMD[frameNumber] = frameBuffer;
+				melFrequences[melFrequences.length - 1] = frameEnergy;
+				currentLMD[frameNumber] = melFrequences;
 				frameNumber++;
 				System.arraycopy(frameRawBuffer, frameRawBuffer.length - overlapBuffer.length, overlapBuffer, 0,
 						overlapBuffer.length);
@@ -128,10 +133,10 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		final DistanceFunction distanceFunktion = new EuclideanDistance();
 		final TimeSeries timeSerieInput = new TimeSeries(currentLMD);
 
-		Cluster successCluster = null;
+		LocalTemplateCluster successCluster = null;
 		ArrayList<String> matches = null;
-		ArrayList<Cluster> clusterCopyList = new ArrayList<Cluster>(clusterList);
-		for (Cluster cluster : clusterCopyList) {
+		ArrayList<LocalTemplateCluster> clusterCopyList = new ArrayList<LocalTemplateCluster>(clusterList);
+		for (LocalTemplateCluster cluster : clusterCopyList) {
 			int hitCounter = 0;
 			Log.v(TAG, "cluster --------------------" + cluster.getClusterLabels().toString());
 			Iterator<Entry<TimeSeries, Double>> it = cluster.getClusterFiles().entrySet().iterator();
@@ -154,7 +159,7 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 				}
 
 			}
-			if (hitCounter >= clusterSize / 2 && clusterSize >= 2) {
+			if (hitCounter > clusterSize / 2 && clusterSize >= 2) {
 				Log.v(TAG, "HITHITHITHIT");
 				if (successCluster != null) {
 					//multi-hit
@@ -197,7 +202,7 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 			}
 
 			boolean added = false;
-			for (Cluster cluster : clusterList) {
+			for (LocalTemplateCluster cluster : clusterList) {
 				ArrayList<String> cachedMatches = cluster.getClusterLabels();
 				if (emptySearch && cachedMatches.size() == 0) {
 					cluster.addFingerprint(unassociatedFingerprints.get(identifier));
@@ -221,7 +226,7 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 				}
 			}
 			if (!added && !fixedClusters) {
-				Cluster additionalCluster = new Cluster();
+				LocalTemplateCluster additionalCluster = new LocalTemplateCluster();
 				additionalCluster.addFingerprint(unassociatedFingerprints.get(identifier));
 				additionalCluster.setLabel(resultMatches);
 				unassociatedFingerprints.remove(identifier);
@@ -238,11 +243,9 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 	public void onRecognizerError(Bundle errorBundle) {
 	}
 
-	private static double[] audioByteToDouble(byte[] samples, int bytesPerSample) {
+	private static void audioByteToDouble(byte[] samples, int bytesPerSample, double[] micBufferData) {
 
-		double[] micBufferData = new double[samples.length / bytesPerSample];
-
-		final double amplification = 1000.0;
+		final double amplification = 100.0;
 		for (int index = 0, floatIndex = 0; index < samples.length - bytesPerSample + 1; index += bytesPerSample, floatIndex++) {
 			double sample = 0;
 			for (int b = 0; b < bytesPerSample; b++) {
@@ -255,7 +258,7 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 			double sample32 = amplification * (sample / 32768.0);
 			micBufferData[floatIndex] = sample32;
 		}
-		return micBufferData;
+		return;
 	}
 
 	private double[] hammingWindow(double[] signal_in, int pos, int size) {
@@ -275,7 +278,7 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		return sum / frame.length;
 	}
 
-	public void fftMagnitude(double[] x, double[] ac) {
+	private void fftMagnitude(double[] x, double[] ac) {
 		int n = x.length;
 		// Assumes n is even.
 
@@ -284,6 +287,13 @@ public class FastDTWSpeechRecognizer extends SpeechRecognizer implements Recogni
 		ac[0] = x[0];
 		for (int i = 1; i < n / 2 - 1; i++) {
 			ac[i] = x[2 * i] * x[2 * i] + x[2 * i + 1] * x[2 * i + 1];
+		}
+	}
+
+	private void strenghtHighFrequencys(double[] signal) {
+		float alpha = 0.95f;
+		for (int i = 1; i < signal.length; i++) {
+			signal[i] = signal[i] - alpha * signal[i - 1];
 		}
 	}
 }

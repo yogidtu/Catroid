@@ -132,9 +132,10 @@ public class MicrophoneGrabber extends Thread {
 		return this.isAlive() && isRecording;
 	}
 
-	public static double[] audioByteToDouble(byte[] samples) {
-
-		double[] micBufferData = new double[samples.length / bytesPerSample];
+	public static void audioByteToDouble(byte[] samples, double[] result) {
+		if (result.length != samples.length / bytesPerSample) {
+			return;
+		}
 
 		final double amplification = 1000.0;
 		for (int index = 0, floatIndex = 0; index < samples.length - bytesPerSample + 1; index += bytesPerSample, floatIndex++) {
@@ -147,8 +148,8 @@ public class MicrophoneGrabber extends Thread {
 				sample += v << (b * 8);
 			}
 			double sample32 = amplification * (sample / 32768.0);
-			micBufferData[floatIndex] = sample32;
+			result[floatIndex] = sample32;
 		}
-		return micBufferData;
+		return;
 	}
 }

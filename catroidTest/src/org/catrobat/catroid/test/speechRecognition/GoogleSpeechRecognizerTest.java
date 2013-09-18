@@ -28,15 +28,15 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
-import org.catrobat.catroid.speechrecognition.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.test.R;
 
 import android.media.AudioFormat;
 import android.os.Bundle;
 import android.test.InstrumentationTestCase;
 
-public class SpeechRecognizerTest extends InstrumentationTestCase implements RecognizerCallback {
+public class GoogleSpeechRecognizerTest extends InstrumentationTestCase implements RecognizerCallback {
 
 	private ArrayList<String> lastMatches = new ArrayList<String>();
 	private String lastErrorMessage = "";
