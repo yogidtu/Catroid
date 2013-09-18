@@ -127,11 +127,12 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 		// 		move to oncreate for test
 		//		UtilFile.createStandardProjectIfRootDirectoryIsEmpty(this);
 		PreStageActivity.shutdownPersistentResources();
-		setMainMenuButtonContinueText();
+
 		String projectName = getIntent().getStringExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
 		if (projectName != null) {
 			loadProjectInBackground(projectName);
 		}
+		setMainMenuButtonContinueText();
 		if (ProjectManager.getInstance().getCurrentProject() != null) {
 			Log.d("MainMenuActivity", "projectname not null");
 			findViewById(R.id.main_menu_button_continue).setEnabled(true);
