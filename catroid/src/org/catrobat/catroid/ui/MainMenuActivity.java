@@ -130,15 +130,25 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 
 		String projectName = getIntent().getStringExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
 		if (projectName != null) {
+			Log.d("MainMenu", "projectName not null");
 			loadProjectInBackground(projectName);
-		}
-		setMainMenuButtonContinueText();
-		if (ProjectManager.getInstance().getCurrentProject() != null) {
-			Log.d("MainMenuActivity", "projectname not null");
-			findViewById(R.id.main_menu_button_continue).setEnabled(true);
 		} else {
-			Log.d("MainMenuActivity", "projectname null");
-			findViewById(R.id.main_menu_button_continue).setEnabled(false);
+			Log.d("MainMenu", "projectName null");
+			Utils.loadProjectIfNeeded(this);
+		}
+
+		//		setMainMenuButtonContinueText();
+		//		if (ProjectManager.getInstance().getCurrentProject() != null) {
+		//			Log.d("MainMenuActivity", "projectname not null");
+		//			findViewById(R.id.main_menu_button_continue).setEnabled(true);
+		//		} else {
+		//			Log.d("MainMenuActivity", "projectname null");
+		//			findViewById(R.id.main_menu_button_continue).setEnabled(false);
+		//		}
+		if (ProjectManager.getInstance().getCurrentProject() != null) {
+			setMainMenuButtonEnabled(true);
+		} else {
+			setMainMenuButtonEnabled(false);
 		}
 		getIntent().removeExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
 	}
@@ -381,6 +391,37 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 				spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 		mainMenuButtonContinue.setText(spannableStringBuilder);
+	}
 
+	private void setMainMenuButtonEnabled(boolean enabled) {
+		Button mainMenuButtonContinue = (Button) this.findViewById(R.id.main_menu_button_continue);
+		SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+		String mainMenuContinue = this.getString(R.string.main_menu_continue);
+		spannableStringBuilder.append(mainMenuContinue);
+		spannableStringBuilder.append("\n");
+
+		if (enabled) {
+			spannableStringBuilder.append(Utils.getCurrentProjectName(this));
+			TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(this, R.style.MainMenuButtonTextSecondLine);
+			spannableStringBuilder.setSpan(textAppearanceSpan, mainMenuContinue.length() + 1,
+					spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+			mainMenuButtonContinue.setTextColor(getResources().getColor(R.color.main_menu_button_text_color));
+
+			mainMenuButtonContinue.setText(spannableStringBuilder);
+			mainMenuButtonContinue.getCompoundDrawables()[0].setAlpha(255);
+			mainMenuButtonContinue.getBackground().setAlpha(255);
+		} else {
+			spannableStringBuilder.append("---");
+			TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(this,
+					R.style.MainMenuButtonTextSecondLineDisabled);
+			spannableStringBuilder.setSpan(textAppearanceSpan, mainMenuContinue.length() + 1,
+					spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+			mainMenuButtonContinue.setTextColor(getResources().getColor(R.color.main_menu_button_text_color_disabled));
+
+			mainMenuButtonContinue.setText(spannableStringBuilder);
+			mainMenuButtonContinue.getCompoundDrawables()[0].setAlpha(127);
+			mainMenuButtonContinue.getBackground().setAlpha(178);
+		}
+		findViewById(R.id.main_menu_button_continue).setEnabled(enabled);
 	}
 }

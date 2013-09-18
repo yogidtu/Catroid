@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Spannable;
@@ -412,6 +413,10 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 				//projectManager.initializeDefaultProject(getActivity());
 				Log.d("ProjectsListFragment", "set current project to null");
 				projectManager.setProject(null);
+				SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+				Editor edit = sharedPreferences.edit();
+				edit.remove(Constants.PREF_PROJECTNAME_KEY);
+				edit.commit();
 			} else {
 
 				projectManager.loadProject((projectList.get(0)).projectName, getActivity(), false);
