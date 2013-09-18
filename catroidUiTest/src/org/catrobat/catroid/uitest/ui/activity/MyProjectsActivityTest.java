@@ -874,10 +874,10 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 	public void testEmptyView() {
 		createProjects();
 		solo.sleep(200);
-		assertTrue(solo.waitForActivity(MainMenuActivity.class.getSimpleName()));
+		assertTrue("MainMenuActivity not present", solo.waitForActivity(MainMenuActivity.class.getSimpleName()));
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
-		assertTrue(solo.waitForActivity(MyProjectsActivity.class.getSimpleName()));
-		assertTrue(solo.waitForFragmentById(R.id.fragment_projects_list));
+		assertTrue("MyProjectsActivity not present", solo.waitForActivity(MyProjectsActivity.class.getSimpleName()));
+		assertTrue("ProjectsListFragment not present", solo.waitForFragmentById(R.id.fragment_projects_list));
 		TextView emptyViewHeading = (TextView) solo.getCurrentActivity().findViewById(
 				R.id.fragment_projects_text_heading);
 		TextView emptyViewDescription = (TextView) solo.getCurrentActivity().findViewById(
