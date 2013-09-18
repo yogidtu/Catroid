@@ -25,6 +25,7 @@ package org.catrobat.catroid.stage;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 
 import org.catrobat.catroid.ProjectManager;
@@ -35,6 +36,7 @@ import org.catrobat.catroid.bluetooth.BluetoothManager;
 import org.catrobat.catroid.bluetooth.DeviceListActivity;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.WhenSpeechReceiverBrick;
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
 import org.catrobat.catroid.speechrecognition.RecognitionManager;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
@@ -151,6 +153,13 @@ public class PreStageActivity extends Activity {
 
 			speechToText = new RecognitionManager(microphoneStream);
 			FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
+			HashSet<String> targetStrings = new HashSet<String>();
+			for (Brick recognitionBrick : getBricksRequieringResource(Brick.SPEECH_TO_TEXT, false)) {
+				if (recognitionBrick instanceof WhenSpeechReceiverBrick) {
+					targetStrings.add(((WhenSpeechReceiverBrick) recognitionBrick).getBroadcastMessage());
+				}
+			}
+			localRecognizer.setFixedClusterLabels(new ArrayList<String>(targetStrings));
 			speechToText.addSpeechRecognizer(localRecognizer);
 			speechToText.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
 			speechToText.setParalellChunkProcessing(false);

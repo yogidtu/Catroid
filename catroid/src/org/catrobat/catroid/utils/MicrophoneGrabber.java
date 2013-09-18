@@ -44,8 +44,6 @@ public class MicrophoneGrabber extends Thread {
 	public static final int bytesPerSample = 2;
 	private static final int DEFAULT_PIPE_BUFFERSIZE = frameByteSize * 10;
 
-	private static final String TAG = MicrophoneGrabber.class.getSimpleName();
-
 	private HashMap<PipedOutputStream, PipedInputStream> microphoneStreamList = new HashMap<PipedOutputStream, PipedInputStream>();
 	private boolean isRecording;
 	public boolean isPaused = false;
