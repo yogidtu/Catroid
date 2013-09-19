@@ -40,12 +40,13 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.livewallpaper.R;
+import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.UserVariable;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.ui.adapter.UserVariableAdapter;
 import org.catrobat.catroid.ui.adapter.UserVariableAdapterWrapper;
 import org.catrobat.catroid.ui.dialogs.NewVariableDialog;
@@ -242,8 +243,14 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 
 	@Override
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
+		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+		if (!currentProject.getSpriteList().contains(this.sprite)) {
+			throw new RuntimeException("this is not the current project");
+		}
+
 		SetVariableBrick copyBrick = (SetVariableBrick) clone();
 		copyBrick.sprite = sprite;
+		copyBrick.userVariable = currentProject.getUserVariables().getUserVariable(userVariable.getName(), sprite);
 		return copyBrick;
 	}
 

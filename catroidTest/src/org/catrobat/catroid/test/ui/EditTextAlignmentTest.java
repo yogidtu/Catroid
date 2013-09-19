@@ -29,7 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import org.catrobat.catroid.R;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.ui.BrickLayout.LayoutParams;
 import org.catrobat.catroid.ui.BrickLayout.LayoutParams.InputType;
 
