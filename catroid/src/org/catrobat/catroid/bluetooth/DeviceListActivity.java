@@ -83,16 +83,13 @@ public class DeviceListActivity extends Activity {
 	private ArrayAdapter<String> pairedDevicesArrayAdapter;
 	private ArrayAdapter<String> newDevicesArrayAdapter;
 	private boolean autoConnect = true;
-	private boolean avoidDoubleConnection = false;
-	private Object lock = new Object();
 	private static ArrayList<String> autoConnectIDs = new ArrayList<String>();
 	private String deviceTitle;
+	private boolean isMultiplayer = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Multiplayer.getInstance().resetMultiplayer();
-
 		if (autoConnectIDs.size() == 0) {
 
 			autoConnectIDs.add(BtCommunicator.OUI_LEGO);
@@ -105,8 +102,13 @@ public class DeviceListActivity extends Activity {
 
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.device_list);
+
 		deviceTitle = this.getIntent().getExtras().getString(OTHER_DEVICE_TITLE);
 		setTitle(deviceTitle);
+		if (deviceTitle == getResources().getString(R.string.select_device_multiplayer)) {
+			isMultiplayer = true;
+			Multiplayer.getInstance().resetMultiplayer();
+		}
 
 		setResult(Activity.RESULT_CANCELED);
 
@@ -190,7 +192,10 @@ public class DeviceListActivity extends Activity {
 			this.setVisible(true);
 		}
 		autoConnect = true;
-		incomingBtConnection.start();
+
+		if (isMultiplayer) {
+			incomingBtConnection.start();
+		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -223,26 +228,23 @@ public class DeviceListActivity extends Activity {
 	private OnItemClickListener deviceClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> av, View view, int arg2, long arg3) {
-			synchronized (lock) {
-				if (!avoidDoubleConnection) {
-					avoidDoubleConnection = true;
-					String info = ((TextView) view).getText().toString();
-					if (info.lastIndexOf('-') != info.length() - 18) {
-						return;
-					}
+			String info = ((TextView) view).getText().toString();
+			if (info.lastIndexOf('-') != info.length() - 18) {
+				return;
+			}
 
-					btAdapter.cancelDiscovery();
-					String address = info.substring(info.lastIndexOf('-') + 1);
-					Intent intent = new Intent();
-					Bundle data = new Bundle();
-					data.putString(DEVICE_NAME_AND_ADDRESS, info);
-					data.putString(EXTRA_DEVICE_ADDRESS, address);
-					data.putBoolean(PAIRING, av.getId() == R.id.new_devices);
-					data.putBoolean(AUTO_CONNECT, false);
-					intent.putExtras(data);
-					setResult(RESULT_OK, intent);
-					finish();
-				}
+			btAdapter.cancelDiscovery();
+			String address = info.substring(info.lastIndexOf('-') + 1);
+			if (!isMultiplayer || Multiplayer.getInstance().createBtManager(address)) {
+				Intent intent = new Intent();
+				Bundle data = new Bundle();
+				data.putString(DEVICE_NAME_AND_ADDRESS, info);
+				data.putString(EXTRA_DEVICE_ADDRESS, address);
+				data.putBoolean(PAIRING, av.getId() == R.id.new_devices);
+				data.putBoolean(AUTO_CONNECT, false);
+				intent.putExtras(data);
+				setResult(RESULT_OK, intent);
+				finish();
 			}
 		}
 	};
@@ -279,18 +281,15 @@ public class DeviceListActivity extends Activity {
 				btServerSocket = BluetoothAdapter.getDefaultAdapter().listenUsingRfcommWithServiceRecord(
 						MultiplayerBtManager.MULTIPLAYER_BT_CONNECT, MultiplayerBtManager.CONNECTION_UUID);
 				BluetoothSocket btSocket = btServerSocket.accept();
-				Multiplayer.getInstance().createBtManager(btSocket);
+				Log.d("Multiplayer", "BlueTooth Socket Accept!!");
 
-				synchronized (lock) {
-					if (!avoidDoubleConnection) {
-						avoidDoubleConnection = true;
-						Intent intent = new Intent();
-						Bundle data = new Bundle();
-						data.putString(EXTRA_DEVICE_ADDRESS, "connected");
-						intent.putExtras(data);
-						setResult(RESULT_OK, intent);
-						finish();
-					}
+				if (Multiplayer.getInstance().createBtManager(btSocket)) {
+					Intent intent = new Intent();
+					Bundle data = new Bundle();
+					data.putString(EXTRA_DEVICE_ADDRESS, "connected");
+					intent.putExtras(data);
+					setResult(RESULT_OK, intent);
+					finish();
 				}
 			} catch (IOException e) {
 				Log.d("Multiplayer", "ServerSocket closed!");
@@ -302,6 +301,7 @@ public class DeviceListActivity extends Activity {
 		@Override
 		public void destroy() {
 			try {
+				Log.d("Multiplayer", "Incoming BTConnection destroy!");
 				if (btServerSocket != null) {
 					btServerSocket.close();
 				}

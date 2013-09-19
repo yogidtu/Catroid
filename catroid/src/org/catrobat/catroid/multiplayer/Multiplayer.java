@@ -40,7 +40,7 @@ import java.util.Random;
 public class Multiplayer {
 	public static final String SHARED_VARIABLE_NAME = "shared_variable_name";
 	public static final String SHARED_VARIABLE_VALUE = "shared_variable_value";
-	public static final String MAGIC_PACKET = "><(((°>";
+	public static final String MAGIC_PACKET = "AEIOU";
 	public static final int STATE_CONNECTED = 1001;
 
 	private static Multiplayer instance = null;
@@ -71,7 +71,7 @@ public class Multiplayer {
 		this.receiverHandler = recieverHandler;
 	}
 
-	public void createBtManager(String mac_address) {
+	public boolean createBtManager(String mac_address) {
 		if (!mac_address.equals("connected")) {
 			synchronized (lock) {
 				if (!initialized) {
@@ -83,19 +83,22 @@ public class Multiplayer {
 				}
 			}
 
-			if (handleDoubleConnectionClient(multiplayerBtManager.connectToMACAddress(mac_address))) {
-				multiplayerBtManager.startReceiverThread();
+			if (!handleDoubleConnectionClient(multiplayerBtManager.connectToMACAddress(mac_address))) {
+				return false;
 			}
-
+			multiplayerBtManager.startReceiverThread();
+			return true;
 		}
+
+		return false;
 		//move to multiplayerBtManger
 		// everything was OK
-		if (receiverHandler != null) {
-			sendState(STATE_CONNECTED);
-		}
+		//		if (receiverHandler != null) {
+		//			sendState(STATE_CONNECTED);
+		//		}
 	}
 
-	public void createBtManager(BluetoothSocket btSocket) {
+	public boolean createBtManager(BluetoothSocket btSocket) {
 		if (handleDoubleConnectionServer(btSocket)) {
 			synchronized (lock) {
 				if (multiplayerBtManager == null) {
@@ -106,7 +109,10 @@ public class Multiplayer {
 			}
 
 			multiplayerBtManager.createInputOutputStreams(btSocket);
+			return true;
 		}
+
+		return false;
 	}
 
 	public boolean handleDoubleConnectionClient(BluetoothSocket btSocket) {
@@ -114,11 +120,14 @@ public class Multiplayer {
 			OutputStream btOutStream;
 			synchronized (randomNumber) {
 				if (randomNumber < 0) {
+					Log.d("Multiplayer", "------- CLIENT: Random Number: -1 ------");
 					return false;
 				}
 				btOutStream = btSocket.getOutputStream();
 				Random generator = new Random();
 				randomNumber = generator.nextInt(Integer.MAX_VALUE - 1) + 1;
+				randomNumber = 4899284;
+				Log.d("Multiplayer", "------- CLIENT: Random Number: " + randomNumber + " ------");
 			}
 			byte[] buffer = new byte[64];
 			ByteBuffer.wrap(buffer).put(MAGIC_PACKET.getBytes());
@@ -130,16 +139,19 @@ public class Multiplayer {
 			InputStream btInStream = btSocket.getInputStream();
 			receivedbytes = btInStream.read(buffer);
 			if (receivedbytes < 0) {
+				Log.d("Multiplayer", "------- CLIENT: Received Bytes: -1 ------");
 				return false;
 			}
 
 			if (MAGIC_PACKET.equals(new String(buffer, 0, MAGIC_PACKET.length(), "ASCII"))) {
+				Log.d("Multiplayer", "------- CLIENT: NOW CLIENT!! ------");
 				return true;
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		Log.d("Multiplayer", "------- CLIENT: end of function reached!! ------");
 		return false;
 	}
 
@@ -153,14 +165,17 @@ public class Multiplayer {
 			if (!MAGIC_PACKET.equals(new String(buffer, 0, MAGIC_PACKET.length(), "ASCII"))) {
 				// error wrong magic packet / RETURN FROM FUNCTION
 			}
-			Integer recivedRandomNumber = ByteBuffer.wrap(buffer).getInt(MAGIC_PACKET.length());
+			Integer receivedRandomNumber = ByteBuffer.wrap(buffer).getInt(MAGIC_PACKET.length());
+			Log.d("Multiplayer", "------- SERVER: Received Random Number: " + receivedRandomNumber + " ------");
 
 			synchronized (randomNumber) {
 				if (randomNumber == 0) {
 					randomNumber = -1;
+					Log.d("Multiplayer", "------- SERVER: Random Number: -1 ------");
 					// now btSocket is the correct Server Socket!!
-				} else if (randomNumber < recivedRandomNumber) { // what's if randomNumber == recivedRandomNumber !!
+				} else if (randomNumber < receivedRandomNumber) { // what's if randomNumber == recivedRandomNumber !!
 					btSocket.close();
+					Log.d("Multiplayer", "------- SERVER: randomNumber < recivedRandomNumber --> NOW CLIENT!! ------");
 					return false;
 				}
 			}
@@ -169,11 +184,13 @@ public class Multiplayer {
 			btOutStream.write(buffer, 0, MAGIC_PACKET.length());
 			btOutStream.flush();
 
+			Log.d("Multiplayer", "------- SERVER: NOW SERVER!! ------");
 			return true;
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		Log.d("Multiplayer", "------- SERVER: end of function reached!! ------");
 		return false;
 	}
 
@@ -207,12 +224,14 @@ public class Multiplayer {
 		}
 	}
 
-	protected void sendState(int message) {
-		Bundle myBundle = new Bundle();
-		myBundle.putInt("message", message);
-		Message myMessage = receiverHandler.obtainMessage();
-		myMessage.setData(myBundle);
-		receiverHandler.sendMessage(myMessage);
+	public void sendState(int message) {
+		if (receiverHandler != null) {
+			Bundle myBundle = new Bundle();
+			myBundle.putInt("message", message);
+			Message myMessage = receiverHandler.obtainMessage();
+			myMessage.setData(myBundle);
+			receiverHandler.sendMessage(myMessage);
+		}
 	}
 
 }

@@ -255,8 +255,14 @@ public class PreStageActivity extends Activity {
 								break;
 							case Brick.BLUETOOTH_MULTIPLAYER:
 								// TODO: multiplayer, Bluetoothsockets
-								address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-								multiplayer.createBtManager(address);
+								//								address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+								//								multiplayer.createBtManager(address);
+								//								multiplayer.sendState(message);
+								Bundle bundle = new Bundle();
+								bundle.putInt("message", LegoNXTBtCommunicator.STATE_CONNECTED);
+								Message message = recieveHandler.obtainMessage();
+								message.setData(bundle);
+								recieveHandler.sendMessage(message);
 								break;
 						}
 						break;
