@@ -283,7 +283,11 @@ public class PreStageActivity extends Activity {
 	}
 
 	public static void shutDownTextToSpeechForLiveWallpaper() {
-		textToSpeech.shutdown();
+		if (textToSpeech != null) {
+			textToSpeech.stop();
+			textToSpeech.shutdown();
+			textToSpeech = null;
+		}
 	}
 
 	public static void textToSpeech(String text, File speechFile, OnUtteranceCompletedListener listener,
