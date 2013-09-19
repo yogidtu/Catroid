@@ -120,7 +120,6 @@ public class Multiplayer {
 				btOutStream = btSocket.getOutputStream();
 				Random generator = new Random();
 				randomNumber = generator.nextInt(Integer.MAX_VALUE - 1) + 1;
-				randomNumber = 4899284;
 				Log.d("Multiplayer", "------- CLIENT: Random Number: " + randomNumber + " ------");
 			}
 			byte[] buffer = new byte[64];
