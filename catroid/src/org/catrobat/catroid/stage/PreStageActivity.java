@@ -104,11 +104,7 @@ public class PreStageActivity extends Activity {
 					Toast.makeText(PreStageActivity.this, R.string.notification_blueth_err, Toast.LENGTH_LONG).show();
 					resourceFailed();
 				} else if (bluetoothState == BluetoothManager.BLUETOOTH_ALREADY_ON) {
-					//start to create bluetoothconnection
 					multiplayer = Multiplayer.getInstance();
-					multiplayer.setReceiverHandler(recieveHandler);
-					// BtServerSocketListener socketListener = new BtServerSocketListener(multiplayer);
-					// socketListener.start();
 					startBluetoothCommunication(false, bluetoothDeviceName, bluetoothDeviceWaitingText);
 				}
 
@@ -255,9 +251,6 @@ public class PreStageActivity extends Activity {
 								break;
 							case Brick.BLUETOOTH_MULTIPLAYER:
 								// TODO: multiplayer, Bluetoothsockets
-								//								address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-								//								multiplayer.createBtManager(address);
-								//								multiplayer.sendState(message);
 								Bundle bundle = new Bundle();
 								bundle.putInt("message", LegoNXTBtCommunicator.STATE_CONNECTED);
 								Message message = recieveHandler.obtainMessage();

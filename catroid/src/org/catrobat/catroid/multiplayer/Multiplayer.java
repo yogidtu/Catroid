@@ -48,7 +48,6 @@ public class Multiplayer {
 	private Object lock = new Object();
 	private static Handler btHandler;
 	private static boolean initialized = false;
-	private Handler receiverHandler;
 	private Integer randomNumber = 0;
 
 	private Multiplayer() {
@@ -65,10 +64,6 @@ public class Multiplayer {
 		randomNumber = 0;
 		initialized = false;
 		multiplayerBtManager = null;
-	}
-
-	public void setReceiverHandler(Handler recieverHandler) {
-		this.receiverHandler = recieverHandler;
 	}
 
 	public boolean createBtManager(String mac_address) {
@@ -91,11 +86,6 @@ public class Multiplayer {
 		}
 
 		return false;
-		//move to multiplayerBtManger
-		// everything was OK
-		//		if (receiverHandler != null) {
-		//			sendState(STATE_CONNECTED);
-		//		}
 	}
 
 	public boolean createBtManager(BluetoothSocket btSocket) {
@@ -117,6 +107,10 @@ public class Multiplayer {
 
 	public boolean handleDoubleConnectionClient(BluetoothSocket btSocket) {
 		try {
+			if (btSocket == null) {
+				return false;
+			}
+
 			OutputStream btOutStream;
 			synchronized (randomNumber) {
 				if (randomNumber < 0) {
@@ -157,11 +151,10 @@ public class Multiplayer {
 
 	public boolean handleDoubleConnectionServer(BluetoothSocket btSocket) {
 		byte[] buffer = new byte[64];
-		int receivedbytes = 0;
 
 		try {
 			InputStream btInStream = btSocket.getInputStream();
-			receivedbytes = btInStream.read(buffer);
+			btInStream.read(buffer);
 			if (!MAGIC_PACKET.equals(new String(buffer, 0, MAGIC_PACKET.length(), "ASCII"))) {
 				// error wrong magic packet / RETURN FROM FUNCTION
 			}
@@ -223,15 +216,4 @@ public class Multiplayer {
 			sharedVariable.setValueWithoutSend(value);
 		}
 	}
-
-	public void sendState(int message) {
-		if (receiverHandler != null) {
-			Bundle myBundle = new Bundle();
-			myBundle.putInt("message", message);
-			Message myMessage = receiverHandler.obtainMessage();
-			myMessage.setData(myBundle);
-			receiverHandler.sendMessage(myMessage);
-		}
-	}
-
 }

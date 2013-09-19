@@ -105,7 +105,7 @@ public class DeviceListActivity extends Activity {
 
 		deviceTitle = this.getIntent().getExtras().getString(OTHER_DEVICE_TITLE);
 		setTitle(deviceTitle);
-		if (deviceTitle == getResources().getString(R.string.select_device_multiplayer)) {
+		if (deviceTitle.equals(getResources().getString(R.string.select_device_multiplayer))) {
 			isMultiplayer = true;
 			Multiplayer.getInstance().resetMultiplayer();
 		}
@@ -187,7 +187,7 @@ public class DeviceListActivity extends Activity {
 			intent.putExtras(data);
 			setResult(RESULT_OK, intent);
 			finish();
-			//			this.setVisible(false);
+			//			 this.setVisible(false);
 		} else {
 			this.setVisible(true);
 		}
