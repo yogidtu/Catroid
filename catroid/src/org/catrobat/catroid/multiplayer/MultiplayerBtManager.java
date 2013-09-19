@@ -60,8 +60,8 @@ public class MultiplayerBtManager {
 				btSocket.connect();
 			} catch (IOException e) {
 				Log.d("Bluetooth", "socket exeption");
-				e.printStackTrace();
 				btSocket = null;
+				return null;
 			}
 
 			connected = true;
@@ -155,9 +155,7 @@ public class MultiplayerBtManager {
 					Multiplayer.updateSharedVariable(variableName, variableValue);
 
 				} catch (IOException e) {
-
 					Log.d("Multiplayer", "Receiver Thread END");
-					e.printStackTrace();
 					break;
 				}
 			}
