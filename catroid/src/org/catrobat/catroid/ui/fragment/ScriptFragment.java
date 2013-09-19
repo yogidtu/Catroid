@@ -126,7 +126,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 		menu.findItem(R.id.show_details).setVisible(false);
 		menu.findItem(R.id.rename).setVisible(false);
-		menu.findItem(R.id.edit_in_pocket_paint).setVisible(false);
 
 		super.onPrepareOptionsMenu(menu);
 	}
@@ -365,10 +364,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	}
 
 	@Override
-	public void startEditInPocketPaintActionMode() {
-	}
-
-	@Override
 	protected void showDeleteDialog() {
 
 		DeleteLookDialog deleteLookDialog = DeleteLookDialog.newInstance(selectedBrickPosition);
@@ -517,6 +512,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		scriptList = ProjectManager.getInstance().getCurrentScript();
 		scriptList.addBrick(copy);
 		adapter.addNewMultipleBricks(newPosition, copy);
+		adapter.initBrickList();
 
 		ProjectManager.getInstance().saveProject();
 		adapter.notifyDataSetChanged();
@@ -633,5 +629,10 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 			actionMode.setTitle(completeSpannedTitle);
 		}
+	}
+
+	@Override
+	public void startBackPackActionMode() {
+
 	}
 }
