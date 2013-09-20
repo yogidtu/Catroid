@@ -31,17 +31,17 @@ import java.util.ArrayList;
 public class SensorLoudness {
 
 	private static SensorLoudness instance = null;
-	private final double SCALERANGE = 100d;
-	private final long UPDATEINTERVALMS = 50;
-	private final double MAXAMP = 1000.0d;
+	private static final double SCALERANGE = 100d;
+	private static final long UPDATEINTERVALMS = 50;
+	private static final double MAXAMP = 1000.0d;
 
 	private ArrayList<SensorCustomEventListener> listenerList = new ArrayList<SensorCustomEventListener>();
 	private float lastValue = 0f;
 	private float currentValue = 0;
-	private int analyseFrameSize = MicrophoneGrabber.FrameByteSize * 5;
+	private int analyseFrameSize = MicrophoneGrabber.FRAMEBYTESIZE * 5;
 	private BufferedInputStream microphoneInput = null;
 
-	double[] signal = new double[MicrophoneGrabber.FrameByteSize * 5 / MicrophoneGrabber.BytesPerSample];
+	double[] signal = new double[MicrophoneGrabber.FRAMEBYTESIZE * 5 / MicrophoneGrabber.BYTESPERSAMPLE];
 
 	private SensorLoudness() {
 	}
