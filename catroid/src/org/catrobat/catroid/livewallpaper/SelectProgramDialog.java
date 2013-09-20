@@ -43,7 +43,9 @@ import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class SelectProgramDialog extends Dialog {
 
@@ -78,7 +80,7 @@ public class SelectProgramDialog extends Dialog {
 		RadioButton[] radioButton = new RadioButton[numOfProjects];
 		int i = 0;
 		List<String> projectNames = UtilFile.getProjectNames(rootDirectory);
-		java.util.Collections.sort(projectNames);
+		java.util.Collections.sort(projectNames, new SortIgnoreCase());
 		for (String projectName : projectNames) {
 			radioButton[i] = new RadioButton(context);
 			radioButton[i].setText(projectName);
@@ -146,5 +148,14 @@ public class SelectProgramDialog extends Dialog {
 				dismiss();
 			}
 		});
+	}
+
+	class SortIgnoreCase implements Comparator<Object> {
+		@Override
+		public int compare(Object o1, Object o2) {
+			String s1 = (String) o1;
+			String s2 = (String) o2;
+			return s1.toLowerCase(Locale.getDefault()).compareTo(s2.toLowerCase(Locale.getDefault()));
+		}
 	}
 }
