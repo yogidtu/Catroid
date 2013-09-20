@@ -42,20 +42,19 @@ public class SimulatedAudioRecord extends AudioRecord {
 	private int alreadyReadBytes = 0;
 	private boolean isRecording = false;
 	private boolean noiseGenerator = false;
+	private static final int EMULATORSAMPLERATE = 8000;
 
 	public SimulatedAudioRecord() {
-		super(MediaRecorder.AudioSource.VOICE_RECOGNITION, MicrophoneGrabber.SAMPLERATE,
-				MicrophoneGrabber.CHANNELCONFIGURATION, MicrophoneGrabber.AUDIOENCODING, AudioRecord.getMinBufferSize(
-						MicrophoneGrabber.SAMPLERATE, MicrophoneGrabber.CHANNELCONFIGURATION,
-						MicrophoneGrabber.AUDIOENCODING));
+		super(MediaRecorder.AudioSource.MIC, EMULATORSAMPLERATE, MicrophoneGrabber.CHANNELCONFIGURATION,
+				MicrophoneGrabber.AUDIOENCODING, AudioRecord.getMinBufferSize(EMULATORSAMPLERATE,
+						MicrophoneGrabber.CHANNELCONFIGURATION, MicrophoneGrabber.AUDIOENCODING));
 		noiseGenerator = true;
 	}
 
 	public SimulatedAudioRecord(String mockAudioFilePath) throws IOException {
-		super(MediaRecorder.AudioSource.VOICE_RECOGNITION, MicrophoneGrabber.SAMPLERATE,
-				MicrophoneGrabber.CHANNELCONFIGURATION, MicrophoneGrabber.AUDIOENCODING, AudioRecord.getMinBufferSize(
-						MicrophoneGrabber.SAMPLERATE, MicrophoneGrabber.CHANNELCONFIGURATION,
-						MicrophoneGrabber.AUDIOENCODING));
+		super(MediaRecorder.AudioSource.MIC, EMULATORSAMPLERATE, MicrophoneGrabber.CHANNELCONFIGURATION,
+				MicrophoneGrabber.AUDIOENCODING, AudioRecord.getMinBufferSize(EMULATORSAMPLERATE,
+						MicrophoneGrabber.CHANNELCONFIGURATION, MicrophoneGrabber.AUDIOENCODING));
 
 		if (!mockAudioFilePath.endsWith(".wav")) {
 			throw new InvalidObjectException("Wrong fileformat.");
@@ -69,10 +68,9 @@ public class SimulatedAudioRecord extends AudioRecord {
 	}
 
 	public SimulatedAudioRecord(int resourceFileId, Context context) throws IOException {
-		super(MediaRecorder.AudioSource.VOICE_RECOGNITION, MicrophoneGrabber.SAMPLERATE,
-				MicrophoneGrabber.CHANNELCONFIGURATION, MicrophoneGrabber.AUDIOENCODING, AudioRecord.getMinBufferSize(
-						MicrophoneGrabber.SAMPLERATE, MicrophoneGrabber.CHANNELCONFIGURATION,
-						MicrophoneGrabber.AUDIOENCODING));
+		super(MediaRecorder.AudioSource.MIC, EMULATORSAMPLERATE, MicrophoneGrabber.CHANNELCONFIGURATION,
+				MicrophoneGrabber.AUDIOENCODING, AudioRecord.getMinBufferSize(EMULATORSAMPLERATE,
+						MicrophoneGrabber.CHANNELCONFIGURATION, MicrophoneGrabber.AUDIOENCODING));
 
 		alreadyReadBytes = 44;
 		InputStream dataInputStream = context.getResources().openRawResource(resourceFileId);

@@ -38,7 +38,6 @@ public class SensorLoudnessTest extends InstrumentationTestCase {
 		super.setUp();
 		SimulatedAudioRecord simRecorder = new SimulatedAudioRecord();
 		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "audioRecord", simRecorder);
-
 	}
 
 	@Override
@@ -74,7 +73,11 @@ public class SensorLoudnessTest extends InstrumentationTestCase {
 				.getInstance().isRecording());
 
 		SensorHandler.stopSensorListeners();
-		getInstrumentation().waitForIdleSync();
+
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+		}
 		assertEquals("LoudnessSensor did not release shared microphone, isRecording()", false, MicrophoneGrabber
 				.getInstance().isRecording());
 	}

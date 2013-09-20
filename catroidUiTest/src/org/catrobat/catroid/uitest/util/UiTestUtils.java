@@ -130,6 +130,7 @@ import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.fragment.AddBrickFragment;
+import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.utils.NotificationData;
 import org.catrobat.catroid.utils.StatusBarNotificationManager;
 import org.catrobat.catroid.utils.UtilFile;
@@ -1487,6 +1488,7 @@ public class UiTestUtils {
 		return solo.getCurrentViews(TextView.class, parent);
 	}
 
+	@Device
 	public static void prepareStageForTest() {
 		Reflection.setPrivateField(StageListener.class, "DYNAMIC_SAMPLING_RATE_FOR_ACTIONS", false);
 	}

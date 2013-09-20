@@ -45,7 +45,6 @@ public class MicrophoneGrabber extends Thread {
 
 	private ArrayList<PipedOutputStream> microphoneStreamList = new ArrayList<PipedOutputStream>();
 	private boolean isRecording;
-	public boolean isPaused = false;
 	private AudioRecord audioRecord;
 	private byte[] buffer;
 
@@ -54,7 +53,6 @@ public class MicrophoneGrabber extends Thread {
 		MicrophoneGrabber newGrabber = new MicrophoneGrabber();
 		newGrabber.microphoneStreamList.addAll(this.microphoneStreamList);
 		newGrabber.isRecording = false;
-		newGrabber.isPaused = this.isPaused;
 		newGrabber.audioRecord = this.audioRecord;
 		MicrophoneGrabber.instance = newGrabber;
 		return newGrabber;
@@ -85,7 +83,7 @@ public class MicrophoneGrabber extends Thread {
 		}
 		synchronized (microphoneStreamList) {
 			microphoneStreamList.add(outputPipe);
-			if (!isRecording && !isPaused) {
+			if (!isRecording) {
 				if (this.isAlive()) {
 					isRecording = true;
 				} else {
@@ -130,10 +128,11 @@ public class MicrophoneGrabber extends Thread {
 		}
 
 		audioRecord.stop();
+		audioRecord.release();
 	}
 
 	public boolean isRecording() {
-		return this.isAlive() && isRecording;
+		return this.isAlive() && isRecording && microphoneStreamList.size() > 0;
 	}
 
 	public static void audioByteToDouble(byte[] samples, double[] resultBuffer) {
