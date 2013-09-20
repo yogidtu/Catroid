@@ -43,6 +43,7 @@ public class MicrophoneGrabber extends Thread {
 	public static final int BYTESPERSAMPLE = 2;
 	private static final String TAG = MicrophoneGrabber.class.getSimpleName();
 
+	private static final boolean TESTRUNS = Boolean.valueOf(false);
 	private ArrayList<PipedOutputStream> microphoneStreamList = new ArrayList<PipedOutputStream>();
 	private boolean isRecording;
 	private AudioRecord audioRecord;
@@ -59,9 +60,13 @@ public class MicrophoneGrabber extends Thread {
 	}
 
 	private MicrophoneGrabber() {
-		int recBufSize = AudioRecord.getMinBufferSize(SAMPLERATE, CHANNELCONFIGURATION, AUDIOENCODING); // need to be larger than size of a frame
-		audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, SAMPLERATE, CHANNELCONFIGURATION,
-				AUDIOENCODING, recBufSize);
+		if (!TESTRUNS) {
+			int recBufSize = AudioRecord.getMinBufferSize(SAMPLERATE, CHANNELCONFIGURATION, AUDIOENCODING); // need to be larger than size of a frame
+			audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, SAMPLERATE,
+					CHANNELCONFIGURATION, AUDIOENCODING, recBufSize);
+		} else {
+			audioRecord = null;
+		}
 		buffer = new byte[FRAMEBYTESIZE];
 	}
 

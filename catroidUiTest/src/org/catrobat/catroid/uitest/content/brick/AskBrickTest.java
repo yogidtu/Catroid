@@ -40,6 +40,7 @@ import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.AskBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.stage.StageActivity;
+import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.UtilSpeechRecognition;
@@ -73,6 +74,7 @@ public class AskBrickTest extends ActivityInstrumentationTestCase2<StageActivity
 		super.tearDown();
 	}
 
+	@Device
 	public void testAskBrickWithResult() {
 		Intent mockResultIntent = new Intent();
 		ArrayList<String> mockRecognizedWords = new ArrayList<String>();
@@ -105,6 +107,7 @@ public class AskBrickTest extends ActivityInstrumentationTestCase2<StageActivity
 				ProjectManager.getInstance().getCurrentSprite().look.getAllActionsAreFinished());
 	}
 
+	@Device
 	public void testNoAskAnswer() {
 		ActivityResult mockResultCanceled = new Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null);
 
@@ -123,6 +126,7 @@ public class AskBrickTest extends ActivityInstrumentationTestCase2<StageActivity
 				ProjectManager.getInstance().getCurrentSprite().look.getAllActionsAreFinished());
 	}
 
+	@Device
 	public void testResettingAskAnswers() {
 		sprite.getScript(0).addBrick(new WaitBrick(sprite, 2000));
 		sprite.getScript(0).addBrick(new AskBrick(sprite, "The second question"));
