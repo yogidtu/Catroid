@@ -31,17 +31,17 @@ import java.util.ArrayList;
 public class SensorLoudness {
 
 	private static SensorLoudness instance = null;
-	private final double SCALE_RANGE = 100d;
-	private final long UPDATE_INTERVAL_MS = 50;
+	private final double SCALERANGE = 100d;
+	private final long UPDATEINTERVALMS = 50;
+	private final double MAXAMP = 1000.0d;
 
-	private final double MAX_AMP_VALUE = 1000.0d;
 	private ArrayList<SensorCustomEventListener> listenerList = new ArrayList<SensorCustomEventListener>();
 	private float lastValue = 0f;
 	private float currentValue = 0;
-	private int analyseFrameSize = MicrophoneGrabber.frameByteSize * 5;
+	private int analyseFrameSize = MicrophoneGrabber.FrameByteSize * 5;
 	private BufferedInputStream microphoneInput = null;
 
-	double[] signal = new double[MicrophoneGrabber.frameByteSize * 5 / MicrophoneGrabber.bytesPerSample];
+	double[] signal = new double[MicrophoneGrabber.FrameByteSize * 5 / MicrophoneGrabber.BytesPerSample];
 
 	private SensorLoudness() {
 	}
@@ -81,7 +81,7 @@ public class SensorLoudness {
 							updateLoudnessValue(recievedBuffer);
 
 							try {
-								Thread.sleep(UPDATE_INTERVAL_MS);
+								Thread.sleep(UPDATEINTERVALMS);
 							} catch (InterruptedException e) {
 							}
 						}
@@ -118,7 +118,7 @@ public class SensorLoudness {
 		}
 
 		float[] loudness = new float[1];
-		loudness[0] = (float) (SCALE_RANGE / MAX_AMP_VALUE) * currentValue;
+		loudness[0] = (float) (SCALERANGE / MAXAMP) * currentValue;
 		if (lastValue != loudness[0] && loudness[0] != 0f) {
 			lastValue = loudness[0];
 			SensorCustomEvent event = new SensorCustomEvent(Sensors.LOUDNESS, loudness);

@@ -1,6 +1,13 @@
 package org.catrobat.catroid.uitest.content.brick;
 
-import java.util.ArrayList;
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.app.Instrumentation.ActivityMonitor;
+import android.app.Instrumentation.ActivityResult;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.speech.RecognizerIntent;
+import android.test.ActivityInstrumentationTestCase2;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.ScreenValues;
@@ -15,14 +22,7 @@ import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.UtilSpeechRecognition;
 
-import android.app.Activity;
-import android.app.Instrumentation;
-import android.app.Instrumentation.ActivityMonitor;
-import android.app.Instrumentation.ActivityResult;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.speech.RecognizerIntent;
-import android.test.ActivityInstrumentationTestCase2;
+import java.util.ArrayList;
 
 public class AskBrickTest extends ActivityInstrumentationTestCase2<StageActivity> {
 

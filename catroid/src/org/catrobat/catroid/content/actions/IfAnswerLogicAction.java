@@ -39,7 +39,8 @@ public class IfAnswerLogicAction extends Action {
 
 	public void begin() {
 		String answer = UtilSpeechRecognition.getLastAnswer();
-		ifConditionValue = answer.toLowerCase(Locale.getDefault()).contains(prediction.toLowerCase());
+		ifConditionValue = answer.toLowerCase(Locale.getDefault())
+				.contains(prediction.toLowerCase(Locale.getDefault()));
 		isInitialized = true;
 	}
 

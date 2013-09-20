@@ -22,12 +22,12 @@
  */
 package org.catrobat.catroid.content.actions;
 
-import org.catrobat.catroid.speechrecognition.RecognizerCallback;
-import org.catrobat.catroid.utils.UtilSpeechRecognition;
-
 import android.os.Bundle;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
+
+import org.catrobat.catroid.speechrecognition.RecognizerCallback;
+import org.catrobat.catroid.utils.UtilSpeechRecognition;
 
 public class AskAction extends Action implements RecognizerCallback {
 

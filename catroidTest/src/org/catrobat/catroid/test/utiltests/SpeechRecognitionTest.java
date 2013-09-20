@@ -23,6 +23,10 @@
 
 package org.catrobat.catroid.test.utiltests;
 
+import android.content.Intent;
+import android.speech.RecognizerIntent;
+import android.test.ActivityUnitTestCase;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
@@ -31,13 +35,9 @@ import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.AskBrick;
 import org.catrobat.catroid.stage.StageActivity;
 
-import android.content.Intent;
-import android.speech.RecognizerIntent;
-import android.test.ActivityUnitTestCase;
-
 public class SpeechRecognitionTest extends ActivityUnitTestCase<StageActivity> {
 
-	private static final String testQuestion = "Somebody out there?";
+	private static final String QUESTION = "Somebody out there?";
 
 	public SpeechRecognitionTest() {
 		super(StageActivity.class);
@@ -47,7 +47,7 @@ public class SpeechRecognitionTest extends ActivityUnitTestCase<StageActivity> {
 
 		Sprite sprite = new Sprite("askingSprite");
 		Script script = new StartScript(sprite);
-		AskBrick brick = new AskBrick(sprite, testQuestion);
+		AskBrick brick = new AskBrick(sprite, QUESTION);
 		script.addBrick(brick);
 		sprite.addScript(script);
 
@@ -68,6 +68,6 @@ public class SpeechRecognitionTest extends ActivityUnitTestCase<StageActivity> {
 
 		String intentQuestion = firedIntent.getStringExtra(RecognizerIntent.EXTRA_PROMPT);
 		assertNotNull("Intent has no prompt set.", intentQuestion);
-		assertEquals("Question wasn't propper set in the intent.", testQuestion, intentQuestion);
+		assertEquals("Question wasn't propper set in the intent.", QUESTION, intentQuestion);
 	}
 }

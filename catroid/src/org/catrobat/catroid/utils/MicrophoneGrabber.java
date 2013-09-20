@@ -36,11 +36,11 @@ import java.util.ArrayList;
 public class MicrophoneGrabber extends Thread {
 	private static MicrophoneGrabber instance = null;
 
-	public static final int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
-	public static final int channelConfiguration = AudioFormat.CHANNEL_IN_MONO;
-	public static final int sampleRate = 16000;
-	public static final int frameByteSize = 512;
-	public static final int bytesPerSample = 2;
+	public static final int AudioEncoding = AudioFormat.ENCODING_PCM_16BIT;
+	public static final int ChannelConfiguration = AudioFormat.CHANNEL_IN_MONO;
+	public static final int SampleRate = 16000;
+	public static final int FrameByteSize = 512;
+	public static final int BytesPerSample = 2;
 	private static final String TAG = MicrophoneGrabber.class.getSimpleName();
 
 	private ArrayList<PipedOutputStream> microphoneStreamList = new ArrayList<PipedOutputStream>();
@@ -61,10 +61,10 @@ public class MicrophoneGrabber extends Thread {
 	}
 
 	private MicrophoneGrabber() {
-		int recBufSize = AudioRecord.getMinBufferSize(sampleRate, channelConfiguration, audioEncoding); // need to be larger than size of a frame
-		audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, sampleRate, channelConfiguration,
-				audioEncoding, recBufSize);
-		buffer = new byte[frameByteSize];
+		int recBufSize = AudioRecord.getMinBufferSize(SampleRate, ChannelConfiguration, AudioEncoding); // need to be larger than size of a frame
+		audioRecord = new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION, SampleRate, ChannelConfiguration,
+				AudioEncoding, recBufSize);
+		buffer = new byte[FrameByteSize];
 	}
 
 	public static MicrophoneGrabber getInstance() {
@@ -78,7 +78,7 @@ public class MicrophoneGrabber extends Thread {
 		PipedOutputStream outputPipe = new PipedOutputStream();
 		PipedInputStream inputPipe;
 		try {
-			inputPipe = new PipedInputStream(outputPipe, frameByteSize * 10);
+			inputPipe = new PipedInputStream(outputPipe, FrameByteSize * 10);
 		} catch (IOException e) {
 			Log.w(TAG, "Unable to create new Pipe");
 			return null;
@@ -107,8 +107,8 @@ public class MicrophoneGrabber extends Thread {
 			int offset = 0;
 			int shortRead = 0;
 
-			while (offset < frameByteSize) {
-				shortRead = audioRecord.read(buffer, offset, frameByteSize - offset);
+			while (offset < FrameByteSize) {
+				shortRead = audioRecord.read(buffer, offset, FrameByteSize - offset);
 				offset += shortRead;
 			}
 
@@ -138,17 +138,16 @@ public class MicrophoneGrabber extends Thread {
 
 	public static void audioByteToDouble(byte[] samples, double[] resultBuffer) {
 
-		if (resultBuffer.length != samples.length / bytesPerSample) {
+		if (resultBuffer.length != samples.length / BytesPerSample) {
 			return;
-			//		double[] micBufferData = new double[samples.length / bytesPerSample];
 		}
 
 		final double amplification = 1000.0;
-		for (int index = 0, floatIndex = 0; index < samples.length - bytesPerSample + 1; index += bytesPerSample, floatIndex++) {
+		for (int index = 0, floatIndex = 0; index < samples.length - BytesPerSample + 1; index += BytesPerSample, floatIndex++) {
 			double sample = 0;
-			for (int b = 0; b < bytesPerSample; b++) {
+			for (int b = 0; b < BytesPerSample; b++) {
 				int v = samples[index + b];
-				if (b < bytesPerSample - 1 || bytesPerSample == 1) {
+				if (b < BytesPerSample - 1 || BytesPerSample == 1) {
 					v &= 0xFF;
 				}
 				sample += v << (b * 8);

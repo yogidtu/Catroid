@@ -1,5 +1,11 @@
 package org.catrobat.catroid.test.utils;
 
+import android.content.Context;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
+
+import org.catrobat.catroid.utils.MicrophoneGrabber;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,12 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidObjectException;
 import java.util.Random;
-
-import org.catrobat.catroid.utils.MicrophoneGrabber;
-
-import android.content.Context;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 
 public class SimulatedAudioRecord extends AudioRecord {
 
@@ -22,18 +22,18 @@ public class SimulatedAudioRecord extends AudioRecord {
 	private boolean noiseGenerator = false;
 
 	public SimulatedAudioRecord() throws IOException {
-		super(MediaRecorder.AudioSource.VOICE_RECOGNITION, MicrophoneGrabber.sampleRate,
-				MicrophoneGrabber.channelConfiguration, MicrophoneGrabber.audioEncoding, AudioRecord.getMinBufferSize(
-						MicrophoneGrabber.sampleRate, MicrophoneGrabber.channelConfiguration,
-						MicrophoneGrabber.audioEncoding));
+		super(MediaRecorder.AudioSource.VOICE_RECOGNITION, MicrophoneGrabber.SampleRate,
+				MicrophoneGrabber.ChannelConfiguration, MicrophoneGrabber.AudioEncoding, AudioRecord.getMinBufferSize(
+						MicrophoneGrabber.SampleRate, MicrophoneGrabber.ChannelConfiguration,
+						MicrophoneGrabber.AudioEncoding));
 		noiseGenerator = true;
 	}
 
 	public SimulatedAudioRecord(String mockAudioFilePath) throws IOException {
-		super(MediaRecorder.AudioSource.VOICE_RECOGNITION, MicrophoneGrabber.sampleRate,
-				MicrophoneGrabber.channelConfiguration, MicrophoneGrabber.audioEncoding, AudioRecord.getMinBufferSize(
-						MicrophoneGrabber.sampleRate, MicrophoneGrabber.channelConfiguration,
-						MicrophoneGrabber.audioEncoding));
+		super(MediaRecorder.AudioSource.VOICE_RECOGNITION, MicrophoneGrabber.SampleRate,
+				MicrophoneGrabber.ChannelConfiguration, MicrophoneGrabber.AudioEncoding, AudioRecord.getMinBufferSize(
+						MicrophoneGrabber.SampleRate, MicrophoneGrabber.ChannelConfiguration,
+						MicrophoneGrabber.AudioEncoding));
 
 		if (!mockAudioFilePath.endsWith(".wav")) {
 			throw new InvalidObjectException("Wrong fileformat.");
@@ -47,10 +47,10 @@ public class SimulatedAudioRecord extends AudioRecord {
 	}
 
 	public SimulatedAudioRecord(int resourceFileId, Context context) throws IOException {
-		super(MediaRecorder.AudioSource.VOICE_RECOGNITION, MicrophoneGrabber.sampleRate,
-				MicrophoneGrabber.channelConfiguration, MicrophoneGrabber.audioEncoding, AudioRecord.getMinBufferSize(
-						MicrophoneGrabber.sampleRate, MicrophoneGrabber.channelConfiguration,
-						MicrophoneGrabber.audioEncoding));
+		super(MediaRecorder.AudioSource.VOICE_RECOGNITION, MicrophoneGrabber.SampleRate,
+				MicrophoneGrabber.ChannelConfiguration, MicrophoneGrabber.AudioEncoding, AudioRecord.getMinBufferSize(
+						MicrophoneGrabber.SampleRate, MicrophoneGrabber.ChannelConfiguration,
+						MicrophoneGrabber.AudioEncoding));
 
 		alreadyReadBytes = 44;
 		InputStream dataInputStream = context.getResources().openRawResource(resourceFileId);
