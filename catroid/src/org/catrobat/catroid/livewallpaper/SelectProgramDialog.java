@@ -37,13 +37,13 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
+import java.util.List;
 
 public class SelectProgramDialog extends Dialog {
 
@@ -77,7 +77,9 @@ public class SelectProgramDialog extends Dialog {
 
 		RadioButton[] radioButton = new RadioButton[numOfProjects];
 		int i = 0;
-		for (String projectName : UtilFile.getProjectNames(rootDirectory)) {
+		List<String> projectNames = UtilFile.getProjectNames(rootDirectory);
+		java.util.Collections.sort(projectNames);
+		for (String projectName : projectNames) {
 			radioButton[i] = new RadioButton(context);
 			radioButton[i].setText(projectName);
 			radioButton[i].setTextColor(Color.WHITE);
