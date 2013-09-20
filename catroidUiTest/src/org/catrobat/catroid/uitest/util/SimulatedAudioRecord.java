@@ -48,6 +48,7 @@ public class SimulatedAudioRecord extends AudioRecord {
 		super(MediaRecorder.AudioSource.MIC, EMULATORSAMPLERATE, MicrophoneGrabber.CHANNELCONFIGURATION,
 				MicrophoneGrabber.AUDIOENCODING, AudioRecord.getMinBufferSize(EMULATORSAMPLERATE,
 						MicrophoneGrabber.CHANNELCONFIGURATION, MicrophoneGrabber.AUDIOENCODING));
+		super.release();
 		noiseGenerator = true;
 	}
 
@@ -55,6 +56,7 @@ public class SimulatedAudioRecord extends AudioRecord {
 		super(MediaRecorder.AudioSource.MIC, EMULATORSAMPLERATE, MicrophoneGrabber.CHANNELCONFIGURATION,
 				MicrophoneGrabber.AUDIOENCODING, AudioRecord.getMinBufferSize(EMULATORSAMPLERATE,
 						MicrophoneGrabber.CHANNELCONFIGURATION, MicrophoneGrabber.AUDIOENCODING));
+		super.release();
 
 		if (!mockAudioFilePath.endsWith(".wav")) {
 			throw new InvalidObjectException("Wrong fileformat.");
@@ -71,6 +73,7 @@ public class SimulatedAudioRecord extends AudioRecord {
 		super(MediaRecorder.AudioSource.MIC, EMULATORSAMPLERATE, MicrophoneGrabber.CHANNELCONFIGURATION,
 				MicrophoneGrabber.AUDIOENCODING, AudioRecord.getMinBufferSize(EMULATORSAMPLERATE,
 						MicrophoneGrabber.CHANNELCONFIGURATION, MicrophoneGrabber.AUDIOENCODING));
+		super.release();
 
 		alreadyReadBytes = 44;
 		InputStream dataInputStream = context.getResources().openRawResource(resourceFileId);
@@ -95,7 +98,7 @@ public class SimulatedAudioRecord extends AudioRecord {
 			if (!noiseGenerator) {
 				dataStream.close();
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		isRecording = false;

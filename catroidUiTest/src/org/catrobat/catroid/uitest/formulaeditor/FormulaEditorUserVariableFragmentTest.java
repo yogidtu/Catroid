@@ -76,6 +76,7 @@ public class FormulaEditorUserVariableFragmentTest extends BaseActivityInstrumen
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+		UiTestUtils.prepareStageForTest();
 		createProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 	}
