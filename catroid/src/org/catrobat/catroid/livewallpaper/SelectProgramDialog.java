@@ -23,10 +23,12 @@
 package org.catrobat.catroid.livewallpaper;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -113,29 +115,7 @@ public class SelectProgramDialog extends Dialog {
 					dismiss();
 					return;
 				}
-
-				ProjectManager projectManager = ProjectManager.getInstance();
-				if (projectManager.getCurrentProject() != null
-						&& projectManager.getCurrentProject().getName().equals(selectedProject)) {
-					dismiss();
-					return;
-				}
-
-				Project project = StorageHandler.getInstance().loadProject(selectedProject);
-				if (project != null) {
-					projectManager.setProject(project);
-					SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-					Editor editor = sharedPreferences.edit();
-					editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
-					editor.commit();
-					LiveWallpaper.liveWallpaperEngine.changeWallpaperProgram();
-					dismiss();
-					//display toast
-
-				} else {
-					//display toast, not successful  - error???????
-				}
-
+				new LoadProject().execute();
 			}
 		});
 	}
@@ -150,12 +130,57 @@ public class SelectProgramDialog extends Dialog {
 		});
 	}
 
-	class SortIgnoreCase implements Comparator<Object> {
+	private class SortIgnoreCase implements Comparator<Object> {
 		@Override
 		public int compare(Object o1, Object o2) {
 			String s1 = (String) o1;
 			String s2 = (String) o2;
 			return s1.toLowerCase(Locale.getDefault()).compareTo(s2.toLowerCase(Locale.getDefault()));
+		}
+	}
+
+	private class LoadProject extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog progress;
+
+		public LoadProject() {
+			progress = new ProgressDialog(getContext());
+			progress.setMessage("Loading");
+			progress.setCancelable(false);
+		}
+
+		@Override
+		protected void onPreExecute() {
+			progress.show();
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			Project project = StorageHandler.getInstance().loadProject(selectedProject);
+			if (project != null) {
+				ProjectManager projectManager = ProjectManager.getInstance();
+				if (projectManager.getCurrentProject() != null
+						&& projectManager.getCurrentProject().getName().equals(selectedProject)) {
+					dismiss();
+					return null;
+				}
+				projectManager.setProject(project);
+				SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+				Editor editor = sharedPreferences.edit();
+				editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
+				editor.commit();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			LiveWallpaper.liveWallpaperEngine.changeWallpaperProgram();
+			dismiss();
+			if (progress.isShowing()) {
+				progress.dismiss();
+			}
+			super.onPostExecute(result);
 		}
 	}
 }
