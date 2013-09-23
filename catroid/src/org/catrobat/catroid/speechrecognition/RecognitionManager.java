@@ -303,15 +303,17 @@ public class RecognitionManager implements RecognizerCallback {
 						PipedInputStream recieverStream = new PipedInputStream(feedStream, inputStream.getSampleRate()
 								/ frameSize * 500);
 						currentOpenStreamList.add(feedStream);
-						recognizer.startRecognizeInput(new AudioInputStream(recieverStream, inputStream),
-								currentIdentifier);
 						if (!parallelRecognition) {
 							ByteArrayOutputStream serialPlaybackStream = new ByteArrayOutputStream(
 									DEFAULT_SERIAL_BUFFER_SIZE);
 							currentOpenStreamList.add(serialPlaybackStream);
 							recognitionPlayback.put(currentIdentifier, serialPlaybackStream);
+							recognizer.startRecognizeInput(new AudioInputStream(recieverStream, inputStream),
+									currentIdentifier);
 							break;
 						}
+						recognizer.startRecognizeInput(new AudioInputStream(recieverStream, inputStream),
+								currentIdentifier);
 					}
 					copyStreamList = new ArrayList<OutputStream>(currentOpenStreamList);
 					for (OutputStream feedStream : copyStreamList) {
@@ -431,6 +433,7 @@ public class RecognitionManager implements RecognizerCallback {
 		} catch (IOException e) {
 		}
 		AudioInputStream voiceProviderStream = new AudioInputStream(playbackInputStream, inputStream);
+		Log.v(TAG, "Starting");
 		recognitionTasks.get(identifier).get(0).startRecognizeInput(voiceProviderStream, identifier);
 		try {
 			playbackOutputStream.write(byteOutputStream.toByteArray());
@@ -487,7 +490,6 @@ public class RecognitionManager implements RecognizerCallback {
 		}
 		ArrayList<String> matches = recognitionMatches.get(identifier);
 		if (matches.size() == 0 && broadcastOnlySuccessResults) {
-			Log.v(TAG, "Matchsize null");
 			return;
 		}
 		ArrayList<RecognizerCallback> listenerListCopy = new ArrayList<RecognizerCallback>(askerList);

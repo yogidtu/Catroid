@@ -34,7 +34,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
@@ -90,13 +89,13 @@ public class WhenSpeechReceiverBrick extends ScriptBrick implements BroadcastMes
 		if (view == null) {
 			alphaValue = 255;
 		}
-		view = View.inflate(context, R.layout.brick_when_speech_receive, null);
+		view = View.inflate(context, R.layout.brick_when_speech, null);
 		view = getViewWithAlpha(alphaValue);
 
 		setCheckboxView(R.id.brick_when_speech_checkbox);
 
 		TextView textHolder = (TextView) view.findViewById(R.id.brick_when_speech_prototype_text_view);
-		EditText editText = (EditText) view.findViewById(R.id.brick_when_speech_edit_text);
+		TextView editText = (TextView) view.findViewById(R.id.brick_when_speech_edit_text);
 		editText.setText(recognitionKeyword);
 
 		textHolder.setVisibility(View.GONE);
@@ -231,7 +230,7 @@ public class WhenSpeechReceiverBrick extends ScriptBrick implements BroadcastMes
 
 	@Override
 	public View getPrototypeView(Context context) {
-		View prototypeView = View.inflate(context, R.layout.brick_when_speech_receive, null);
+		View prototypeView = View.inflate(context, R.layout.brick_when_speech, null);
 		TextView textSpeak = (TextView) prototypeView.findViewById(R.id.brick_when_speech_prototype_text_view);
 		textSpeak.setText(recognitionKeyword);
 		return prototypeView;

@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.speechrecognition.signalprocessing;
 
+
 /*
  * Copyright 1999-2002 Carnegie Mellon University.
  * Portions Copyright 2002 Sun Microsystems, Inc.

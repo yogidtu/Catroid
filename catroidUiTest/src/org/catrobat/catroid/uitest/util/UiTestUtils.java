@@ -1496,6 +1496,7 @@ public class UiTestUtils {
 	public static void prepareStageForTest() {
 		Reflection.setPrivateField(StageListener.class, "DYNAMIC_SAMPLING_RATE_FOR_ACTIONS", false);
 		Reflection.setPrivateField(MicrophoneGrabber.class, "TESTRUNS", true);
+		Reflection.setPrivateField(MicrophoneGrabber.getInstance(), "audioRecord", new SimulatedAudioRecord());
 	}
 
 	/*

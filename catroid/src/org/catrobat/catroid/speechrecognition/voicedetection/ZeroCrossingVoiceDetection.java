@@ -45,8 +45,8 @@ public class ZeroCrossingVoiceDetection extends VoiceDetection {
 	}
 
 	@Override
-	public void setSensibility(VoiceDetectionSensibility Sensibility) {
-		switch (Sensibility) {
+	public void setSensibility(VoiceDetectionSensibility sensibility) {
+		switch (sensibility) {
 			case HIGH:
 				crossZeroFaktor = 40;
 				break;

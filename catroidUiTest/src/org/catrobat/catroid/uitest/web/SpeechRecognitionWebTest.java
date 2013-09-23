@@ -20,23 +20,23 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.test.speechrecognition;
+package org.catrobat.catroid.uitest.web;
 
 import android.media.AudioFormat;
 import android.os.Bundle;
 import android.test.InstrumentationTestCase;
 
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
+import org.catrobat.catroid.speechrecognition.RecognitionManager;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
-import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
-import org.catrobat.catroid.test.R;
+import org.catrobat.catroid.uitest.R;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
-public class GoogleSpeechRecognizerTest extends InstrumentationTestCase implements RecognizerCallback {
+public class SpeechRecognitionWebTest extends InstrumentationTestCase implements RecognizerCallback {
 
 	private ArrayList<String> lastMatches = new ArrayList<String>();
 	private String lastErrorMessage = "";
@@ -49,41 +49,80 @@ public class GoogleSpeechRecognizerTest extends InstrumentationTestCase implemen
 
 	@Override
 	public void setUp() {
-		lastErrorMessage = "";
 		lastMatches.clear();
+		lastErrorMessage = "";
 	}
 
-	public void testOnlineRecognition() throws IOException {
+	/*
+	 * Default, the manager uses the GoogleOnlineSpeechRecognizer, so it needs an internet connection.
+	 */
+	public void testSimpleOnlineSpeechRecognition() throws IOException {
 
 		InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
 				.openRawResource(R.raw.speechsample_directions);
 		AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
-				1, 16000, 128, ByteOrder.LITTLE_ENDIAN, true);
+				1, 16000, 512, ByteOrder.LITTLE_ENDIAN, true);
 
-		GoogleOnlineSpeechRecognizer converter = new GoogleOnlineSpeechRecognizer();
-		converter.addCallbackListener(this);
-		converter.prepare();
-		converter.startRecognizeInput(audioFileStream);
+		RecognitionManager manager = new RecognitionManager(audioFileStream);
+		manager.registerContinuousSpeechListener(this);
+		manager.start();
 
-		int i = 50;
+		int i = 15;
 		do {
 			try {
-				Thread.sleep(200);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		} while ((i--) != 0 && lastMatches.size() == 0 && lastErrorMessage == "");
+		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
 
-		if (lastErrorMessage != "") {
-			fail("Conversion brought an error: " + lastErrorMessage);
-		}
+		assertTrue("Error occured:\n" + lastErrorMessage, lastErrorMessage == "");
+		assertTrue("Timed out.", i > 0);
+		assertTrue("There was no recognition", lastMatches.size() > 0);
 
-		assertTrue("There where no results.", lastMatches.size() > 0);
 		assertTrue("\"links\" was not recognized.", matchesContainString("links"));
 		assertTrue("\"rechts\" was not recognized.", matchesContainString("rechts"));
 		assertTrue("\"rauf\" was not recognized.", matchesContainString("rauf"));
 		assertTrue("\"runter\" was not recognized.", matchesContainString("runter"));
 		assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
+		manager.unregisterContinuousSpeechListener(this);
+		manager.stop();
+	}
+
+	/*
+	 * Wordchecking is performed through wikitionary, so an internetconnection is needed
+	 */
+	public void testWordChecking() {
+		ArrayList<String> existingWords = new ArrayList<String>();
+		existingWords.add("Katze"); //de
+		existingWords.add("Cat"); //en
+		existingWords.add("chatte"); //fr
+		existingWords.add("gato"); //sp
+		existingWords.add("кошка"); //ru
+		existingWords.add("猫"); //ja
+		ArrayList<String> fantasyWords = new ArrayList<String>();
+		fantasyWords.add("asgfddf");
+		fantasyWords.add("iliketoeatkittens");
+		fantasyWords.add("naitsabes");
+
+		for (String toCheck : existingWords) {
+			int validWord = RecognitionManager.isWordRecognizeable(toCheck);
+			if (validWord == 0) {
+				fail(toCheck + " was marked as no valid word");
+			}
+			if (validWord < 0) {
+				fail("Error occured in wordcheck, maybe no network-connection?");
+			}
+		}
+		for (String toCheck : fantasyWords) {
+			int validWord = RecognitionManager.isWordRecognizeable(toCheck);
+			if (validWord > 0) {
+				fail(toCheck + " was marked as valid word");
+			}
+			if (validWord < 0) {
+				fail("Error occured in wordcheck, maybe no network-connection?");
+			}
+		}
 
 	}
 
@@ -97,16 +136,13 @@ public class GoogleSpeechRecognizerTest extends InstrumentationTestCase implemen
 	}
 
 	public void onRecognizerResult(int resultCode, Bundle resultBundle) {
-
-		if (resultCode == RESULT_NOMATCH) {
-			return;
+		if (resultCode == RESULT_OK) {
+			lastMatches.addAll(resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES));
 		}
-
-		ArrayList<String> matches = resultBundle.getStringArrayList(BUNDLE_RESULT_MATCHES);
-		lastMatches.add(matches.toString());
 	}
 
 	public void onRecognizerError(Bundle errorBundle) {
 		lastErrorMessage = errorBundle.getString(BUNDLE_ERROR_MESSAGE);
 	}
+
 }

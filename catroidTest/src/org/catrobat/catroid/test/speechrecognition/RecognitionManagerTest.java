@@ -34,8 +34,6 @@ import org.catrobat.catroid.speechrecognition.SpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.VoiceDetection;
 import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
 import org.catrobat.catroid.speechrecognition.voicedetection.ZeroCrossingVoiceDetection;
-import org.catrobat.catroid.test.R;
-import org.catrobat.catroid.test.utils.TestUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,7 +44,6 @@ import java.util.ArrayList;
 
 public class RecognitionManagerTest extends InstrumentationTestCase implements RecognizerCallback {
 
-	private String testProjectName = "testStandardProjectRecognition";
 	private ArrayList<String> lastMatches = new ArrayList<String>();
 	private String lastErrorMessage = "";
 	private Bundle lastErrorBundle = null;
@@ -59,81 +56,10 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 
 	@Override
 	public void setUp() {
-		TestUtils.clearProject(testProjectName);
 		lastMatches.clear();
 		lastErrorMessage = "";
 		lastErrorBundle = null;
 	}
-
-	public void testSimpleOnlineSpeechRecognition() throws IOException {
-
-		InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
-				.openRawResource(R.raw.speechsample_directions);
-		AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
-				1, 16000, 512, ByteOrder.LITTLE_ENDIAN, true);
-
-		RecognitionManager manager = new RecognitionManager(audioFileStream);
-		manager.registerContinuousSpeechListener(this);
-		manager.start();
-
-		int i = 15;
-		do {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
-
-		assertTrue("Error occured:\n" + lastErrorMessage, lastErrorMessage == "");
-		assertTrue("Timed out.", i > 0);
-		assertTrue("There was no recognition", lastMatches.size() > 0);
-
-		assertTrue("\"links\" was not recognized.", matchesContainString("links"));
-		assertTrue("\"rechts\" was not recognized.", matchesContainString("rechts"));
-		assertTrue("\"rauf\" was not recognized.", matchesContainString("rauf"));
-		assertTrue("\"runter\" was not recognized.", matchesContainString("runter"));
-		assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
-		manager.unregisterContinuousSpeechListener(this);
-		manager.stop();
-	}
-
-	//		public void testOnlineAndLocalRecognition() throws IOException {
-	//			InputStream realAudioExampleStream = getInstrumentation().getContext().getResources()
-	//					.openRawResource(R.raw.speechsample_directions);
-	//			AudioInputStream audioFileStream = new AudioInputStream(realAudioExampleStream, AudioFormat.ENCODING_PCM_16BIT,
-	//					1, 16000, 512, ByteOrder.LITTLE_ENDIAN, true);
-	//	
-	//			RecognitionManager manager = new RecognitionManager(audioFileStream);
-	//			FastDTWSpeechRecognizer localRecognizer = new FastDTWSpeechRecognizer();
-	//			manager.addSpeechRecognizer(localRecognizer);
-	//			manager.addSpeechRecognizer(new GoogleOnlineSpeechRecognizer());
-	//			manager.registerContinuousSpeechListener(this);
-	//			manager.setParalellChunkProcessing(false);
-	//			manager.setProcessChunkOnlyTillFirstSuccessRecognizer(true);
-	//			manager.start();
-	//	
-	//			int i = 15;
-	//			do {
-	//				try {
-	//					Thread.sleep(1000);
-	//				} catch (InterruptedException e) {
-	//					e.printStackTrace();
-	//				}
-	//			} while ((i--) > 0 && manager.isRecognitionRunning() && lastErrorMessage == "");
-	//	
-	//			assertTrue("Error occured:\n" + lastErrorMessage, lastErrorMessage == "");
-	//			assertTrue("Timed out.", i > 0);
-	//			assertTrue("There was no recognition", lastMatches.size() > 0);
-	//	
-	//			assertTrue("\"links\" was not recognized.", matchesContainString("links"));
-	//			assertTrue("\"rechts\" was not recognized.", matchesContainString("rechts"));
-	//			assertTrue("\"rauf\" was not recognized.", matchesContainString("rauf"));
-	//			assertTrue("\"runter\" was not recognized.", matchesContainString("runter"));
-	//			assertTrue("\"stop\" was not recognized.", matchesContainString("stop"));
-	//			manager.unregisterContinuousSpeechListener(this);
-	//			manager.stop();
-	//		}
 
 	public void testParalellRecognition() throws IOException {
 		VoiceDetection alwaysTrueDetection = new VoiceDetection() {
@@ -619,47 +545,14 @@ public class RecognitionManagerTest extends InstrumentationTestCase implements R
 
 		controlableStream.flush();
 		controlableStream.close();
+		controlableStream.flush();
 
 		try {
-			Thread.sleep(300L);
+			Thread.sleep(200L);
 		} catch (InterruptedException e) {
 		}
 
 		assertFalse("Recognizer running after closed Stream", manager.isRecognitionRunning());
-	}
-
-	public void testWordChecking() {
-		ArrayList<String> existingWords = new ArrayList<String>();
-		existingWords.add("Katze"); //de
-		existingWords.add("Cat"); //en
-		existingWords.add("chatte"); //fr
-		existingWords.add("gato"); //sp
-		existingWords.add("кошка"); //ru
-		existingWords.add("猫"); //ja
-		ArrayList<String> fantasyWords = new ArrayList<String>();
-		fantasyWords.add("asgfddf");
-		fantasyWords.add("iliketoeatkittens");
-		fantasyWords.add("naitsabes");
-
-		for (String toCheck : existingWords) {
-			int validWord = RecognitionManager.isWordRecognizeable(toCheck);
-			if (validWord == 0) {
-				fail(toCheck + " was marked as no valid word");
-			}
-			if (validWord < 0) {
-				fail("Error occured in wordcheck, maybe no network-connection?");
-			}
-		}
-		for (String toCheck : fantasyWords) {
-			int validWord = RecognitionManager.isWordRecognizeable(toCheck);
-			if (validWord > 0) {
-				fail(toCheck + " was marked as valid word");
-			}
-			if (validWord < 0) {
-				fail("Error occured in wordcheck, maybe no network-connection?");
-			}
-		}
-
 	}
 
 	private boolean matchesContainString(String search) {

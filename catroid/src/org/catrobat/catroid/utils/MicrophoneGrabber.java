@@ -54,7 +54,7 @@ public class MicrophoneGrabber extends Thread {
 		MicrophoneGrabber newGrabber = new MicrophoneGrabber();
 		newGrabber.microphoneStreamList.addAll(this.microphoneStreamList);
 		newGrabber.isRecording = false;
-		newGrabber.audioRecord = this.audioRecord;
+		//		newGrabber.audioRecord = this.audioRecord;
 		MicrophoneGrabber.instance = newGrabber;
 		return newGrabber;
 	}
@@ -94,6 +94,7 @@ public class MicrophoneGrabber extends Thread {
 				} else {
 					MicrophoneGrabber newGrabber = this.clone();
 					newGrabber.start();
+					instance = newGrabber;
 				}
 			}
 		}

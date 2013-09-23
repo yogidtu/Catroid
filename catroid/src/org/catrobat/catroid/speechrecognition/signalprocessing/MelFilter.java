@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.speechrecognition.signalprocessing;
 
+
 /*
  * Copyright 1999-2002 Carnegie Mellon University.
  * Portions Copyright 2002 Sun Microsystems, Inc.
@@ -35,7 +36,7 @@ package org.catrobat.catroid.speechrecognition.signalprocessing;
  */
 
 /**
- * Defines a triangular mel-filter. The {@link edu.cmu.sphinx.frontend.frequencywarp.MelFrequencyFilterBank} creates
+ * Defines a triangular mel-filter. The {@link org.catrobat.catroid.speechrecognition.signalprocessing.cmu.sphinx.frontend.frequencywarp.MelFrequencyFilterBank} creates
  * mel-filters and filters spectrum data using the method {@link #filterOutput(double[]) filterOutput}.
  * <p/>
  * A mel-filter is a triangular shaped bandpass filter. When a mel-filter is constructed, the parameters

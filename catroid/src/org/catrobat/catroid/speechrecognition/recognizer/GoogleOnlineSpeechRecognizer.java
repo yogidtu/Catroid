@@ -59,6 +59,9 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 	private static final String API_URL = "http://www.google.com/speech-api/v1/recognize?client=chromium&lang=de-DE&maxresults=5";
 	private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.77 Safari/535.7";
 	private static final int TIMEOUT = 4000;
+	private static final int MIN_REQUEST_WAIT_TIME = 1000;
+
+	private long lastRequestTimestamp = 0;
 
 	public GoogleOnlineSpeechRecognizer() {
 		super();
@@ -155,12 +158,19 @@ public class GoogleOnlineSpeechRecognizer extends SpeechRecognizer {
 			if (DEBUG_OUTPUT) {
 				Log.v(TAG, "Starting request" + Thread.currentThread() + " id " + getMyIdentifier() + " ...");
 			}
+			if (System.currentTimeMillis() - lastRequestTimestamp < MIN_REQUEST_WAIT_TIME) {
+				try {
+					Thread.sleep(MIN_REQUEST_WAIT_TIME - (System.currentTimeMillis() - lastRequestTimestamp));
+				} catch (InterruptedException e) {
+				}
+			}
+			lastRequestTimestamp = System.currentTimeMillis();
 			response = httpclient.execute(httppost);
 			if (DEBUG_OUTPUT) {
 				Log.v(TAG, "Finished request" + Thread.currentThread() + " id " + getMyIdentifier() + "...");
 			}
 		} catch (ClientProtocolException cpe) {
-			sendError(RecognizerCallback.ERROR_NONETWORK, "Executing the postrequest failed.");
+			sendError(RecognizerCallback.ERROR_NONETWORK, "Executing the postrequest failed. (No Network?)");
 			return null;
 		} catch (IOException e) {
 			sendError(RecognizerCallback.ERROR_NONETWORK, e.getMessage());

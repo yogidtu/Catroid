@@ -21,12 +21,13 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="vertical" >
+    android:orientation="horizontal" >
 
     <CheckBox
         android:id="@+id/brick_when_speech_checkbox"
@@ -40,28 +41,29 @@
         style="@style/BrickContainer.Script.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:horizontalSpacing="@dimen/brick_flow_layout_horizontal_spacing"
         app:verticalSpacing="@dimen/brick_flow_layout_vertical_spacing" >
 
         <TextView
             android:id="@+id/brick_when_speech_text"
             style="@style/BrickText.SingleLine"
-            android:layout_width="fill_parent"
-            android:text="@string/brick_when_speech" />
-        
+            android:text="@string/brick_when_speech" >
+        </TextView>
+
         <TextView
             android:id="@+id/brick_when_speech_prototype_text_view"
             style="@style/BrickPrototypeTextView"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            app:layout_newLine="true" >
         </TextView>
-        
-        <EditText
+
+        <TextView
             android:id="@+id/brick_when_speech_edit_text"
             style="@style/BrickEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            app:layout_inputType="text"
+            app:layout_newLine="true"
+            app:layout_textField="true" />
     </org.catrobat.catroid.ui.BrickLayout>
 
 </LinearLayout>
