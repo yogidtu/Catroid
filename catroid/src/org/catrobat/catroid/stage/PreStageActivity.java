@@ -85,7 +85,8 @@ public class PreStageActivity extends Activity {
 			checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 			startActivityForResult(checkIntent, REQUEST_TEXT_TO_SPEECH);
 		}
-		if ((requiredResources & Brick.BLUETOOTH_LEGO_NXT) > 0) {
+		if (((requiredResources & Brick.BLUETOOTH_LEGO_NXT) > 0)
+				&& ((requiredResources & Brick.BLUETOOTH_MULTIPLAYER) > 0)) {
 			Toast.makeText(PreStageActivity.this, R.string.notification_bluetooth_error_nxt_and_shared_variables_both,
 					Toast.LENGTH_LONG).show();
 			finish();
