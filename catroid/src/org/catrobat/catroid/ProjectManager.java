@@ -65,22 +65,23 @@ public class ProjectManager {
 		if (project == null) {
 			Log.d("ProjectManager", "project == null");
 			if (oldProject != null) {
+				Log.d("ProjectManager", "oldproject != null");
 				project = oldProject;
 				MessageContainer.restoreBackup();
 			} else {
 				project = Utils.findValidProject();
-				if (project == null) {
-					try {
-						project = StandardProjectHandler.createAndSaveStandardProject(context);
-						MessageContainer.clearBackup();
-					} catch (IOException e) {
-						if (errorMessage) {
-							Utils.showErrorDialog(context, context.getString(R.string.error_load_project));
-						}
-						Log.e("CATROID", "Cannot load project.", e);
-						return false;
-					}
-				}
+				//				if (project == null) {
+				//					try {
+				//						project = StandardProjectHandler.createAndSaveStandardProject(context);
+				//						MessageContainer.clearBackup();
+				//					} catch (IOException e) {
+				//						if (errorMessage) {
+				//							Utils.showErrorDialog(context, context.getString(R.string.error_load_project));
+				//						}
+				//						Log.e("CATROID", "Cannot load project.", e);
+				//						return false;
+				//					}
+				//				}
 			}
 			if (errorMessage) {
 				Utils.showErrorDialog(context, context.getString(R.string.error_load_project));
