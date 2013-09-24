@@ -46,6 +46,7 @@ public class ProjectManager {
 	private Project project;
 	private Script currentScript;
 	private Sprite currentSprite;
+	private boolean asynchronTask = true;
 
 	private FileChecksumContainer fileChecksumContainer = new FileChecksumContainer();
 
@@ -124,8 +125,12 @@ public class ProjectManager {
 			return;
 		}
 
-		SaveProjectAsynchronousTask saveTask = new SaveProjectAsynchronousTask();
-		saveTask.execute();
+		if (asynchronTask) {
+			SaveProjectAsynchronousTask saveTask = new SaveProjectAsynchronousTask();
+			saveTask.execute();
+		} else {
+			StorageHandler.getInstance().saveProject(project);
+		}
 	}
 
 	public boolean initializeDefaultProject(Context context) {
