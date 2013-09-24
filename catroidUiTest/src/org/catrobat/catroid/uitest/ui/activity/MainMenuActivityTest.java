@@ -267,6 +267,32 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		assertEquals("Sprite at index 4 is not \"pig\"!", "pig", fourth.getName());
 	}
 
+	public void testResumeButtonDisabling() {
+		solo.waitForText(solo.getString(R.string.main_menu_continue));
+		solo.clickOnButton(solo.getString(R.string.main_menu_continue));
+		assertFalse("Continue Button was not disabled", solo.waitForActivity(ProjectActivity.class));
+
+		solo.clickOnButton(solo.getString(R.string.main_menu_new));
+		String hintNewProjectText = solo.getString(R.string.new_project_dialog_hint);
+		solo.waitForText(hintNewProjectText);
+		EditText addNewProjectEditText = solo.getEditText(0);
+		assertEquals("Not the proper hint set", hintNewProjectText, addNewProjectEditText.getHint());
+		assertEquals("There should no text be set", "", addNewProjectEditText.getText().toString());
+		solo.clearEditText(0);
+		solo.enterText(0, testProject);
+		String buttonOKText = solo.getString(R.string.ok);
+		solo.goBack();
+		solo.waitForText(buttonOKText);
+		solo.clickOnText(buttonOKText);
+		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+
+		solo.goBack();
+		solo.sleep(500);
+		solo.waitForText(solo.getString(R.string.main_menu_continue));
+		solo.clickOnButton(solo.getString(R.string.main_menu_continue));
+		assertTrue("Continue Button was not enabled", solo.waitForActivity(ProjectActivity.class));
+	}
+
 	public void testRateAppMenuExists() {
 		solo.sendKey(Solo.MENU);
 		assertTrue("App rating menu not found in overflow menu!",
