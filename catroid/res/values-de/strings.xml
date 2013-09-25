@@ -70,6 +70,9 @@
     <string name="preference_title">Einstellungen</string>
     <string name="preference_title_enable_mindstorm_bricks">Lego Mindstorm Bausteine</string>
     <string name="preference_description_mindstorm_bricks">Erlaube Steuerung von Lego Mindstorm Robotern</string>
+    
+    <string name="preference_title_enable_multiplayer_option">Bluetooth Verbindung</string>
+    <string name="preference_description_multiplayer_option">Erlaube die Bluetoothverbindung mit anderen Geräten</string>
     <!--  -->
 
 

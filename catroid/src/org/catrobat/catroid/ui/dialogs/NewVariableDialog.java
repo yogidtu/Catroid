@@ -28,7 +28,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnShowListener;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -80,6 +82,13 @@ public class NewVariableDialog extends SherlockDialogFragment {
 	public Dialog onCreateDialog(Bundle bundle) {
 		final View dialogView = LayoutInflater.from(getActivity()).inflate(
 				R.layout.dialog_formula_editor_variable_name, null);
+
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+		if (sharedPreferences.getBoolean("setting_multiplayer_option", false)) {
+			dialogView.findViewById(R.id.dialog_formula_editor_variable_name_global_broadcast_variable_radio_button)
+					.setVisibility(View.VISIBLE);
+		}
 
 		final Dialog dialogNewVariable = new AlertDialog.Builder(getActivity()).setView(dialogView)
 				.setTitle(R.string.formula_editor_variable_dialog_title)
@@ -133,7 +142,6 @@ public class NewVariableDialog extends SherlockDialogFragment {
 		if (globalVariable.isChecked()) {
 			if (ProjectManager.getInstance().getCurrentProject().getUserVariables()
 					.getUserVariable(variableName, ProjectManager.getInstance().getCurrentSprite()) != null) {
-
 				Toast.makeText(getActivity(), R.string.formula_editor_existing_variable, Toast.LENGTH_LONG).show();
 
 			} else {
