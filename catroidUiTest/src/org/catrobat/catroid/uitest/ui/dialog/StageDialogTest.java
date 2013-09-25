@@ -72,7 +72,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	public void testBackButtonPressedTwice() {
-		Project project = createTestProject(testProject);
+		Project project = createAndSaveTestProject(testProject);
 		ProjectManager.getInstance().setProject(project);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
@@ -380,17 +380,33 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	private Project createTestProject(String projectName) {
-		Project project = new Project(getActivity(), projectName);
-		Sprite firstSprite = new Sprite("cat");
-		Sprite secondSprite = new Sprite("dog");
-		Sprite thirdSprite = new Sprite("horse");
-		Sprite fourthSprite = new Sprite("pig");
 
-		project.addSprite(firstSprite);
-		project.addSprite(secondSprite);
-		project.addSprite(thirdSprite);
-		project.addSprite(fourthSprite);
+		UiTestUtils.createTestProject();
+		UiTestUtils.prepareStageForTest();
 
+		ProjectManager projectManager = ProjectManager.getInstance();
+		List<Sprite> spriteList = projectManager.getCurrentProject().getSpriteList();
+
+		spriteList.add(new Sprite("cat"));
+		spriteList.add(new Sprite("dog"));
+		spriteList.add(new Sprite("horse"));
+		spriteList.add(new Sprite("pig"));
+
+		Project project = projectManager.getCurrentProject();
+		//		Sprite firstSprite = new Sprite("cat");
+		//		Sprite secondSprite = new Sprite("dog");
+		//		Sprite thirdSprite = new Sprite("horse");
+		//		Sprite fourthSprite = new Sprite("pig");
+		//
+		//		ArrayList<Sprite> spriteList = new ArrayList<Sprite>();
+		//
+		//		spriteList.add(firstSprite);
+		//		spriteList.add(secondSprite);
+		//		spriteList.add(thirdSprite);
+		//		spriteList.add(fourthSprite);
+		//
+		//		Project project = UiTestUtils.createProject(projectName, spriteList, getActivity());
+		//
 		return project;
 	}
 
