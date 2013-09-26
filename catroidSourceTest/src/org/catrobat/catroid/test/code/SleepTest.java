@@ -30,11 +30,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class SleepTest extends TestCase {
 	private static final String[] DIRECTORIES = { "../catroidUiTest" };
 	private static final String REGEX_PATTERN = "^.*Thread\\.sleep\\(\\w+\\).*$";
+	private static final String[] IGNORED_FILES = { "SpeechRecognitionWebTest.java" };
 
 	private StringBuffer errorMessages;
 	private boolean errorFound;
@@ -78,7 +80,9 @@ public class SleepTest extends TestCase {
 
 			List<File> filesToCheck = Utils.getFilesFromDirectoryByExtension(directory, ".java");
 			for (File file : filesToCheck) {
-				checkFileForThreadSleep(file);
+				if (!Arrays.asList(IGNORED_FILES).contains(file.getName())) {
+					checkFileForThreadSleep(file);
+				}
 			}
 		}
 
