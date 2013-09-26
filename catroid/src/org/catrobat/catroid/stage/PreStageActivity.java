@@ -53,11 +53,11 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.legonxt.LegoNXT;
 import org.catrobat.catroid.legonxt.LegoNXTBtCommunicator;
-import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.speechrecognition.AudioInputStream;
 import org.catrobat.catroid.speechrecognition.RecognitionManager;
 import org.catrobat.catroid.speechrecognition.RecognizerCallback;
 import org.catrobat.catroid.speechrecognition.recognizer.GoogleOnlineSpeechRecognizer;
+import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.utils.MicrophoneGrabber;
 
 import java.io.File;
@@ -433,14 +433,13 @@ public class PreStageActivity extends Activity {
 							public void onClick(DialogInterface dialog, int id) {
 							}
 						})
-				.setPositiveButton(builderContext.getString(R.string.main_menu_settings),
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int id) {
-								Intent i = new Intent(Settings.ACTION_SETTINGS);
-								builderContext.startActivity(i);
-							}
-						}).setView(dialogLayout);
+				.setPositiveButton(builderContext.getString(R.string.settings), new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int id) {
+						Intent i = new Intent(Settings.ACTION_SETTINGS);
+						builderContext.startActivity(i);
+					}
+				}).setView(dialogLayout);
 
 		return builder.create();
 	}

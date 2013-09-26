@@ -41,7 +41,6 @@
         style="@style/BrickContainer.Script.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:orientation="horizontal"
         app:horizontalSpacing="@dimen/brick_flow_layout_horizontal_spacing"
         app:verticalSpacing="@dimen/brick_flow_layout_vertical_spacing" >
@@ -61,6 +60,7 @@
         <TextView
             android:id="@+id/brick_when_speech_edit_text"
             style="@style/BrickEditText"
+            android:gravity="left"
             app:layout_inputType="text"
             app:layout_newLine="true"
             app:layout_textField="true" />

@@ -86,23 +86,23 @@ public class EditTextAlignmentTest extends AndroidTestCase {
 		}
 	}
 
-	private ArrayList<View> getAllChildren(View v) {
+	private ArrayList<View> getAllChildren(View parentView) {
 
-		if (!(v instanceof ViewGroup)) {
+		if (!(parentView instanceof ViewGroup)) {
 			ArrayList<View> viewArrayList = new ArrayList<View>();
-			viewArrayList.add(v);
+			viewArrayList.add(parentView);
 			return viewArrayList;
 		}
 
 		ArrayList<View> result = new ArrayList<View>();
 
-		ViewGroup vg = (ViewGroup) v;
-		for (int i = 0; i < vg.getChildCount(); i++) {
+		ViewGroup viewGroup = (ViewGroup) parentView;
+		for (int i = 0; i < viewGroup.getChildCount(); i++) {
 
-			View child = vg.getChildAt(i);
+			View child = viewGroup.getChildAt(i);
 
 			ArrayList<View> viewArrayList = new ArrayList<View>();
-			viewArrayList.add(v);
+			viewArrayList.add(parentView);
 			viewArrayList.addAll(getAllChildren(child));
 
 			result.addAll(viewArrayList);

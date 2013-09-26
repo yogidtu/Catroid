@@ -99,7 +99,6 @@ public class SimulatedAudioRecord extends AudioRecord {
 				dataStream.close();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		isRecording = false;
 		return;

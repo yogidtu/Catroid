@@ -595,7 +595,7 @@ public class StageListener implements ApplicationListener, RecognizerCallback {
 												public void onClick(DialogInterface dialog, int id) {
 												}
 											})
-									.setPositiveButton(activeStageActivity.getString(R.string.main_menu_settings),
+									.setPositiveButton(activeStageActivity.getString(R.string.settings),
 											new DialogInterface.OnClickListener() {
 												@Override
 												public void onClick(DialogInterface dialog, int id) {
