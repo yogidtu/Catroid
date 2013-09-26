@@ -56,6 +56,7 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 	private int textViewId2;
 	private int linearLayoutLocalId;
 	private int linearLayoutGlobalId;
+	private int linearLayoutSharedId;
 
 	private static class ViewHolder {
 		private CheckBox checkbox;
@@ -63,6 +64,7 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 		private TextView text2;
 		private LinearLayout localHeadline;
 		private LinearLayout globalHeadline;
+		private LinearLayout sharedHeadline;
 	}
 
 	public UserVariableAdapter(Context context, List<UserVariable> spriteVariables,
@@ -78,6 +80,7 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 		this.textViewId2 = R.id.fragment_formula_editor_variablelist_item_value_text_view;
 		this.linearLayoutGlobalId = R.id.variablelist_global_headline;
 		this.linearLayoutLocalId = R.id.variablelist_local_headline;
+		this.linearLayoutSharedId = R.id.variablelist_shared_headline;
 	}
 
 	public void setItemLayout(int itemLayout, int textViewId) {
@@ -140,6 +143,7 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 			holder.text2 = (TextView) view.findViewById(textViewId2);
 			holder.localHeadline = (LinearLayout) view.findViewById(linearLayoutLocalId);
 			holder.globalHeadline = (LinearLayout) view.findViewById(linearLayoutGlobalId);
+			holder.sharedHeadline = (LinearLayout) view.findViewById(linearLayoutSharedId);
 			view.setTag(holder);
 		} else {
 			holder = (ViewHolder) view.getTag();
@@ -150,17 +154,25 @@ public class UserVariableAdapter extends BaseAdapter implements ScriptActivityAd
 			holder.text2.setText(String.valueOf(variable.getValue()));
 		}
 
-		if (holder.localHeadline != null && holder.globalHeadline != null) {
+		if (holder.localHeadline != null && holder.globalHeadline != null && holder.sharedHeadline != null) {
 			if (spriteVariables.size() != 0 && position == 0) {
 				holder.localHeadline.setVisibility(View.VISIBLE);
 				holder.globalHeadline.setVisibility(View.GONE);
+				holder.sharedHeadline.setVisibility(View.GONE);
 			} else if (projectVariables.size() != 0 && position == spriteVariables.size()) {
 				holder.localHeadline.setVisibility(View.GONE);
 				holder.globalHeadline.setVisibility(View.VISIBLE);
+				holder.sharedHeadline.setVisibility(View.GONE);
+			} else if (sharedVariables.size() != 0 && position == (spriteVariables.size() + projectVariables.size())) {
+				holder.localHeadline.setVisibility(View.GONE);
+				holder.globalHeadline.setVisibility(View.GONE);
+				holder.sharedHeadline.setVisibility(View.VISIBLE);
 			} else {
 				holder.localHeadline.setVisibility(View.GONE);
 				holder.globalHeadline.setVisibility(View.GONE);
+				holder.sharedHeadline.setVisibility(View.GONE);
 			}
+
 		}
 
 		if (onListItemClickListener != null) {
