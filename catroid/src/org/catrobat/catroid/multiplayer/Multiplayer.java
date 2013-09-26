@@ -196,7 +196,6 @@ public class Multiplayer {
 
 	public static synchronized void sendBtMessage(String name, double value) {
 		if (initialized == false) {
-			Log.e("Multiplayer", "not initialized yet");
 			return;
 		}
 

@@ -28,9 +28,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
@@ -212,10 +214,13 @@ public class PreStageActivity extends Activity {
 				.getSpriteList();
 
 		int ressources = Brick.NO_RESOURCES;
-		if (ProjectManager.getInstance().getCurrentProject().getUserVariables().getSharedVariablesListSize() > 0) {
-			ressources |= Brick.BLUETOOTH_MULTIPLAYER;
-		}
 
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(PreStageActivity.this);
+		if (sharedPreferences.getBoolean("setting_multiplayer_option", false)) {
+			if (ProjectManager.getInstance().getCurrentProject().getUserVariables().getSharedVariablesListSize() > 0) {
+				ressources |= Brick.BLUETOOTH_MULTIPLAYER;
+			}
+		}
 		for (Sprite sprite : spriteList) {
 			ressources |= sprite.getRequiredResources();
 		}
