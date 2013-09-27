@@ -276,13 +276,21 @@ public class FormulaElement implements Serializable {
 			case MIN:
 				right = rightChild.interpretRecursive(sprite);
 				return java.lang.Math.min(left, right);
-
 			case TRUE:
 				return 1.0;
-
 			case FALSE:
 				return 0.0;
-
+			case LETTER:
+				rightChild.interpretRecursive(sprite);
+				int index = left.intValue() - 1;
+				if (index < 0) {
+					return 0.0; // TODO handle this with correct exception or errorcode (NaN, Null etc..) what about empty string ?
+				} else if (index >= rightChild.value.length()) {
+					index = rightChild.value.length() - 1;
+				}
+				return (double) rightChild.value.charAt(index); // TODO return char not ASCII value!
+			case LENGTH:
+				return (double) leftChild.value.length();
 		}
 
 		return 0d;
