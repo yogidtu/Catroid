@@ -215,7 +215,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
-		solo.clickOnMenuItem(solo.getString(R.string.main_menu_settings));
+		solo.clickOnMenuItem(solo.getString(R.string.settings));
 		solo.assertCurrentActivity("Not in SettingsActivity", SettingsActivity.class);
 	}
 
@@ -1413,7 +1413,6 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 	public void testSetDescription() {
 		createProjects();
-
 		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", false);
 
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
@@ -1443,10 +1442,8 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		//		assertTrue("description is not shown in activity", solo.searchText("Lorem ipsum"));
 		//		assertTrue("description is not shown in activity", solo.searchText("ultricies"));
 
-		//TODO: 
-		// throws random exceptions, because Listview cant be found
-		//		assertEquals("The project is not first in list", UiTestUtils.PROJECTNAME1, ((ProjectData) (solo
-		//				.getCurrentViews(ListView.class).get(0).getAdapter().getItem(0))).projectName);
+		assertEquals("The project is not first in list", UiTestUtils.PROJECTNAME1, ((ProjectData) (solo
+				.getCurrentViews(ListView.class).get(0).getAdapter().getItem(0))).projectName);
 
 		solo.waitForText(UiTestUtils.PROJECTNAME1);
 		UiTestUtils.longClickOnTextInList(solo, UiTestUtils.PROJECTNAME1);
