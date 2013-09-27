@@ -22,10 +22,31 @@
  */
 package org.catrobat.catroid.bluetoothdummyserver;
 
-public class BTServer {
+import java.io.IOException;
 
-	public static void main(String[] args) {
-	
+import javax.bluetooth.UUID;
+import javax.microedition.io.Connector;
+import javax.microedition.io.StreamConnection;
+import javax.microedition.io.StreamConnectionNotifier;
+
+public class BTServer {
+	private static final UUID BLUETOOTHSERVERUUID = new UUID("eb8ec53a-f070-46e0-b6ff-1645c931f858", false);
+	private static final String BTNAME = "BT Dummy Server";
+	private static final String CONNECTIONSTRING = "btspp://localhost:" + BLUETOOTHSERVERUUID + ";name=" + BTNAME
+			+ ";authenticate=false;encrypt=false;";
+
+	public static void main(String[] args) throws IOException {
+		StreamConnectionNotifier stream_conn_notifier = (StreamConnectionNotifier) Connector.open(CONNECTIONSTRING);
+		System.out.println("Waiting for incoming connection...");
+		StreamConnection connection = null;
+
+		while (true) {
+			connection = stream_conn_notifier.acceptAndOpen();
+			System.out.println("Client Connected...");
+			new Thread(new BTConnectionHandler(connection));
+		}
+
+		// stream_conn_notifier.close();
 	}
 
 }

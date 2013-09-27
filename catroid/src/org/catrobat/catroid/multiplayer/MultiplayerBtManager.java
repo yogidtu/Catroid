@@ -114,6 +114,7 @@ public class MultiplayerBtManager {
 			ByteBuffer.wrap(bytes).putDouble(variableName.length(),
 					message.getDouble(Multiplayer.SHARED_VARIABLE_VALUE));
 			btSocket.getOutputStream().write(bytes, 0, variableName.length() + 8);
+			btSocket.getOutputStream().flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
