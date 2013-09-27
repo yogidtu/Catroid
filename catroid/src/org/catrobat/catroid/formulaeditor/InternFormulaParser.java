@@ -57,10 +57,9 @@ public class InternFormulaParser {
 		this.internTokensToParse = internTokensToParse;
 	}
 
-	private void getNextToken() throws InternFormulaParserException {
+	private void getNextToken() {
 		currentTokenParseIndex++;
 		currentToken = internTokensToParse.get(currentTokenParseIndex);
-
 	}
 
 	public int getErrorTokenIndex() {
@@ -229,6 +228,8 @@ public class InternFormulaParser {
 			currentElement.replaceElement(sensor());
 		} else if (currentToken.isUserVariable()) {
 			currentElement.replaceElement(userVariable());
+		} else if (currentToken.isString()) {
+			currentElement.replaceElement(FormulaElement.ElementType.STRING, string());
 		} else {
 			throw new InternFormulaParserException("Parse Error");
 		}
@@ -296,5 +297,11 @@ public class InternFormulaParser {
 
 		getNextToken();
 		return numberToCheck;
+	}
+
+	private String string() {
+		String currentStringValue = currentToken.getTokenStringValue();
+		getNextToken();
+		return currentStringValue;
 	}
 }
