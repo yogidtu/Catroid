@@ -26,37 +26,43 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.bluetooth.DiscoveryAgent;
+import javax.bluetooth.LocalDevice;
+import javax.bluetooth.ServiceRecord;
 import javax.bluetooth.UUID;
+import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
+import javax.microedition.io.StreamConnectionNotifier;
 
 public class BTConnectionHandler implements Runnable {
-	private StreamConnection connection = null;
-	private InputStream inputStream = null;
-	private OutputStream outputStream = null;
+	private StreamConnection btTestConnection = null;
+	private StreamConnection btProgramConnection = null;
 	private UUID uuid = null;
-	private int readedBytes;
-	private byte[] readBuffer = new byte[1024];
 
-	public static final String SERVERDUMMYMULTIPLAYER = "multiplayer";
-	public static final String SETASCLIENT = "setasclient";
-	public static final String SETASSERVER = "setasserver";
+	private static final String SERVERDUMMYMULTIPLAYER = "multiplayer";
+	private static final String SETASCLIENT = "setasclient";
+	private static final String SETASSERVER = "setasserver";
+	private static final String COMMANDSETVARIABLE = "setvariable;";
+	private static final String CONNECTIONSTRINGBEGIN = "btspp://localhost:";
+	private static final String BTNAMEANDAUTHENTICATION = ";name=BT Dummy Server;authenticate=false;encrypt=false;";
 
 	public BTConnectionHandler(StreamConnection connection) {
-		this.connection = connection;
+		this.btTestConnection = connection;
 	}
 
 	@Override
 	public void run() {
 		try {
-			inputStream = connection.openInputStream();
-			readedBytes = inputStream.read(readBuffer);
+			InputStream inputStream = btTestConnection.openInputStream();
+			byte[] readBuffer = new byte[1024];
+			int readedBytes = inputStream.read(readBuffer);
 			String[] receivedMessage = (new String(readBuffer, 0, readedBytes, "ASCII")).split(";");
 
 			if (receivedMessage[0].equals(SERVERDUMMYMULTIPLAYER)) {
 				uuid = new UUID(receivedMessage[2], false);
 
 				if (receivedMessage[1].equals(SETASCLIENT)) {
-
+					multiplayerDummyClient();
 				} else if (receivedMessage[1].equals(SETASSERVER)) {
 					multiplayerDummyServer();
 				} else {
@@ -70,8 +76,75 @@ public class BTConnectionHandler implements Runnable {
 		}
 	}
 
-	private void multiplayerDummyServer() {
+	private void multiplayerDummyServer() throws IOException {
+		String connectionstring = CONNECTIONSTRINGBEGIN + uuid + BTNAMEANDAUTHENTICATION;
+		System.out.println("[SERVER] Waiting for incoming connection...");
+		StreamConnectionNotifier stream_conn_notifier = (StreamConnectionNotifier) Connector.open(connectionstring);
 
+		btProgramConnection = stream_conn_notifier.acceptAndOpen();
+		System.out.println("[SERVER] Client Connected...");
+
+		btTestConnectionRead();
 	}
+
+	private void multiplayerDummyClient() throws IOException {
+		DiscoveryAgent discoveryAgent = LocalDevice.getLocalDevice().getDiscoveryAgent();
+		String connectionstring = discoveryAgent.selectService(uuid, ServiceRecord.AUTHENTICATE_ENCRYPT, false);
+		System.out.println("[CLIENT] Try to Connect...");
+
+		btProgramConnection = (StreamConnection) Connector.open(connectionstring);
+		System.out.println("[CLIENT] Connected to Server...");
+
+		btTestConnectionRead();
+	}
+
+	private void btTestConnectionRead() {
+		btProgramConnectionRead.start();
+
+		try {
+			InputStream inputStream = btTestConnection.openInputStream();
+			OutputStream outputStream = btProgramConnection.openOutputStream();
+			byte[] readBuffer = new byte[1024];
+			int readedBytes;
+			while (true) {
+				readedBytes = inputStream.read(readBuffer);
+				if (readedBytes < 0) {
+					btProgramConnectionRead.interrupt();
+					return;
+				}
+
+				String receivedMessage = new String(readBuffer, 0, readedBytes, "ASCII");
+				if (receivedMessage.startsWith(COMMANDSETVARIABLE)) {
+					outputStream.write(readBuffer, COMMANDSETVARIABLE.length(),
+							readedBytes - COMMANDSETVARIABLE.length());
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private final Thread btProgramConnectionRead = new Thread() {
+
+		@Override
+		public void run() {
+			try {
+				InputStream inputStream = btProgramConnection.openInputStream();
+				OutputStream outputStream = btTestConnection.openOutputStream();
+				byte[] buffer = new byte[1024];
+				int readedbytes;
+
+				while (this.isInterrupted()) {
+					readedbytes = inputStream.read(buffer);
+					if (readedbytes < 0) {
+						return;
+					}
+					outputStream.write(buffer, 0, readedbytes);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	};
 
 }
