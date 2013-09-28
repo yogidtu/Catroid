@@ -399,10 +399,10 @@ public class StageListener implements ApplicationListener {
 		if (!finished) {
 			try {
 				stage.draw();
-			} catch (IllegalArgumentException e) {
-				return;
-			} catch (NullPointerException e) {
-				return;
+				//			} catch (IllegalArgumentException e) {
+				//				return;
+				//			} catch (NullPointerException e) {
+				//				return;
 			} catch (IllegalStateException e) {
 				return;
 			}

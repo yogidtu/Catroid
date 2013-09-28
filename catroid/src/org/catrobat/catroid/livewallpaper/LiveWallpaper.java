@@ -115,13 +115,14 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 		private StageListener localStageListener;
 
+		private static final int REFRESH_RATE = 300;
 		private boolean mVisible = false;
 		private final Handler mHandler = new Handler();
 		private final Runnable mUpdateDisplay = new Runnable() {
 			@Override
 			public void run() {
 				if (mVisible) {
-					mHandler.postDelayed(mUpdateDisplay, 300);
+					mHandler.postDelayed(mUpdateDisplay, REFRESH_RATE);
 				}
 			}
 		};
@@ -135,6 +136,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		@Override
 		public void onVisibilityChanged(boolean visible) {
 			mVisible = visible;
+			Log.d("LWP", "Is visible? " + String.valueOf(visible));
 			super.onVisibilityChanged(visible);
 		}
 
@@ -151,7 +153,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			Log.d("LWP", "VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
 			SensorHandler.startSensorListener(getApplicationContext());
 			localStageListener.menuResume();
-			mHandler.postDelayed(mUpdateDisplay, 300);
+			mHandler.postDelayed(mUpdateDisplay, REFRESH_RATE);
 		}
 
 		@Override
@@ -176,16 +178,11 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			}
 
 			if (mVisible) {
-				mHandler.postDelayed(mUpdateDisplay, 300);
+				mHandler.postDelayed(mUpdateDisplay, REFRESH_RATE);
 			} else {
 				mHandler.removeCallbacks(mUpdateDisplay);
 			}
 			super.onSurfaceChanged(holder, format, width, height);
-		}
-
-		@Override
-		public void onSurfaceCreated(SurfaceHolder holder) {
-			super.onSurfaceCreated(holder);
 		}
 
 		@Override
