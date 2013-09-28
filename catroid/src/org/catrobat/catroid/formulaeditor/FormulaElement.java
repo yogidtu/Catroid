@@ -379,7 +379,7 @@ public class FormulaElement implements Serializable {
 	}
 
 	private Double interpretString(String value) {
-		Double returnValue = new Double(0);
+		Double returnValue = Double.valueOf(0.0);
 		try {
 			returnValue = Double.valueOf(value);
 		} catch (NumberFormatException numberFormatException) {
