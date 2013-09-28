@@ -136,11 +136,11 @@ public class MultiplayerBtManager {
 	private final Thread messageReceiver = new Thread() {
 		@Override
 		public void run() {
-			byte[] buffer = new byte[1024];
-			int receivedbytes = 0;
+			try {
+				byte[] buffer = new byte[1024];
+				int receivedbytes = 0;
 
-			while (true) {
-				try {
+				while (true) {
 					receivedbytes = btInStream.read(buffer);
 					if (receivedbytes < 0) {
 						break;
@@ -154,11 +154,10 @@ public class MultiplayerBtManager {
 					Log.d("BT Receiver", "-" + variableName + "-");
 					Log.d("BT Receiver", "-" + variableValue + "-");
 					Multiplayer.updateSharedVariable(variableName, variableValue);
-
-				} catch (IOException e) {
-					Log.d("Multiplayer", "Receiver Thread END");
-					break;
 				}
+
+			} catch (IOException e) {
+				Log.d("Multiplayer", "Receiver Thread END");
 			}
 		}
 	};

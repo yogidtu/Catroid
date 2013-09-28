@@ -62,9 +62,9 @@ public class BTConnectionHandler implements Runnable {
 				uuid = new UUID(receivedMessage[2], false);
 
 				if (receivedMessage[1].equals(SETASCLIENT)) {
-					multiplayerDummyClient();
+					multiplayerDummyClient(inputStream);
 				} else if (receivedMessage[1].equals(SETASSERVER)) {
-					multiplayerDummyServer();
+					multiplayerDummyServer(inputStream);
 				} else {
 					System.err.println("Incorrect message for Multiplayer-Server");
 					return;
@@ -76,18 +76,18 @@ public class BTConnectionHandler implements Runnable {
 		}
 	}
 
-	private void multiplayerDummyServer() throws IOException {
+	private void multiplayerDummyServer(InputStream inputStream) throws IOException {
 		String connectionstring = CONNECTIONSTRINGBEGIN + uuid + BTNAMEANDAUTHENTICATION;
-		System.out.println("[SERVER] Waiting for incoming connection...");
+		System.out.println("[SERVER] Waiting for incoming connection...  UUID: " + uuid);
 		StreamConnectionNotifier stream_conn_notifier = (StreamConnectionNotifier) Connector.open(connectionstring);
 
 		btProgramConnection = stream_conn_notifier.acceptAndOpen();
 		System.out.println("[SERVER] Client Connected...");
 
-		btTestConnectionRead();
+		btTestConnectionRead(inputStream);
 	}
 
-	private void multiplayerDummyClient() throws IOException {
+	private void multiplayerDummyClient(InputStream inputStream) throws IOException {
 		DiscoveryAgent discoveryAgent = LocalDevice.getLocalDevice().getDiscoveryAgent();
 		String connectionstring = discoveryAgent.selectService(uuid, ServiceRecord.AUTHENTICATE_ENCRYPT, false);
 		System.out.println("[CLIENT] Try to Connect...");
@@ -95,14 +95,13 @@ public class BTConnectionHandler implements Runnable {
 		btProgramConnection = (StreamConnection) Connector.open(connectionstring);
 		System.out.println("[CLIENT] Connected to Server...");
 
-		btTestConnectionRead();
+		btTestConnectionRead(inputStream);
 	}
 
-	private void btTestConnectionRead() {
+	private void btTestConnectionRead(InputStream inputStream) {
 		btProgramConnectionRead.start();
 
 		try {
-			InputStream inputStream = btTestConnection.openInputStream();
 			OutputStream outputStream = btProgramConnection.openOutputStream();
 			byte[] readBuffer = new byte[1024];
 			int readedBytes;

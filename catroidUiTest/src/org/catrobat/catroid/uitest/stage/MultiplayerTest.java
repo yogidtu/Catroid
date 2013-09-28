@@ -36,8 +36,10 @@ import org.catrobat.catroid.content.bricks.ChangeVariableBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.multiplayer.MultiplayerBtManager;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.annotation.Device;
+import org.catrobat.catroid.uitest.util.BTDummyClient;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -62,6 +64,11 @@ public class MultiplayerTest extends BaseActivityInstrumentationTestCase<MainMen
 
 	@Device
 	public void testBluetoothConnection() {
+		String btConnectionOption = BTDummyClient.SERVERDUMMYMULTIPLAYER + BTDummyClient.SETASSERVER
+				+ ("" + MultiplayerBtManager.CONNECTION_UUID).replaceAll("-", "");
+		BTDummyClient.getInstance().initializeAndConnectToServer(btConnectionOption);
+		solo.sleep(1000);
+
 		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 		assertTrue("Bluetooth not supported on device", btAdapter != null);
 		if (!btAdapter.isEnabled()) {
@@ -71,7 +78,7 @@ public class MultiplayerTest extends BaseActivityInstrumentationTestCase<MainMen
 
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
-		solo.sleep(5000);
+		solo.sleep(3000);
 
 		ListView deviceList = solo.getCurrentViews(ListView.class).get(0);
 		String connectedDeviceName = null;

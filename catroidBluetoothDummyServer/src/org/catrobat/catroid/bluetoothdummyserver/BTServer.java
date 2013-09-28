@@ -43,7 +43,7 @@ public class BTServer {
 		while (true) {
 			connection = stream_conn_notifier.acceptAndOpen();
 			System.out.println("[CONNECTOR] Client Connected...");
-			new Thread(new BTConnectionHandler(connection));
+			new Thread(new BTConnectionHandler(connection)).start();
 		}
 
 		// stream_conn_notifier.close();

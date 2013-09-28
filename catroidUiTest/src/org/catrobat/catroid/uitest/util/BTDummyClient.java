@@ -41,16 +41,15 @@ public class BTDummyClient {
 	private BluetoothSocket btSocket = null;
 	private OutputStream outputStream = null;
 	private InputStream inputStream = null;
-	private String MACAddress = "00:1F:3A:E9:70:58";
+	//private String MACAddress = "00:1F:3A:E9:70:58";  // Martin Laptop
+	private String MACAddress = "EC:55:F9:DE:41:6A"; // Manuel Laptop
 	private ByteArrayBuffer receivedFeedback = new ByteArrayBuffer(1024);
 	private boolean connected = false;
 
-	//private String MACAddress = "EC:55:F9:DE:41:6A";
-
 	public static final UUID DUMMYCONNECTIONUUID = UUID.fromString("eb8ec53a-f070-46e0-b6ff-1645c931f858");
-	public static final String SERVERDUMMYMULTIPLAYER = "multiplayer";
-	public static final String SETASCLIENT = "setasclient";
-	public static final String SETASSERVER = "setasserver";
+	public static final String SERVERDUMMYMULTIPLAYER = "multiplayer;";
+	public static final String SETASCLIENT = "setasclient;";
+	public static final String SETASSERVER = "setasserver;";
 	private static final String COMMANDSETVARIABLE = "setvariable;";
 
 	private BTDummyClient() {
@@ -88,21 +87,21 @@ public class BTDummyClient {
 	private final Thread readFeedbackThread = new Thread() {
 		@Override
 		public void run() {
-			byte[] buffer = new byte[1024];
-			int receivedbytes = 0;
+			try {
+				inputStream = btSocket.getInputStream();
+				byte[] buffer = new byte[1024];
+				int receivedbytes = 0;
 
-			while (true) {
-				try {
+				while (true) {
 					receivedbytes = inputStream.read(buffer);
 					if (receivedbytes < 0) {
 						break;
 					}
 					receivedFeedback.append(buffer, 0, receivedbytes);
-
-				} catch (IOException e) {
-					Log.d("Multiplayer", "Receiver Thread END");
-					break;
 				}
+
+			} catch (IOException e) {
+				Log.d("Multiplayer", "Receiver Thread END");
 			}
 		}
 	};
