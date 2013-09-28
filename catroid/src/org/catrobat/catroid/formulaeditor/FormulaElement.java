@@ -36,7 +36,7 @@ public class FormulaElement implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static enum ElementType {
-		OPERATOR, FUNCTION, NUMBER, SENSOR, USER_VARIABLE, BRACKET, STRING
+		OPERATOR, FUNCTION, NUMBER, SENSOR, USER_VARIABLE, BRACKET, STRING, LIST, LIST_ITEM
 	}
 
 	public static final Double NOT_EXISTING_USER_VARIABLE_INTERPRETATION_VALUE = 0d;
@@ -122,6 +122,27 @@ public class FormulaElement implements Serializable {
 			case STRING:
 				internTokenList.add(new InternToken(InternTokenType.STRING, value));
 				break;
+			case LIST:
+				internTokenList.add(new InternToken(InternTokenType.LIST, value));
+				internTokenList.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_OPEN, value));
+				if (leftChild != null) {
+					internTokenList.addAll(leftChild.getInternTokenList());
+				}
+				if (rightChild != null) {
+					internTokenList.addAll(rightChild.getInternTokenList());
+				}
+				internTokenList.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_CLOSE, value));
+				break;
+			case LIST_ITEM:
+				if (!this.isFirstListItem()) {
+					internTokenList.add(new InternToken(InternTokenType.LIST_ITEM_DELIMITER));
+				}
+				if (leftChild != null) {
+					internTokenList.addAll(leftChild.getInternTokenList());
+				}
+				if (rightChild != null) {
+					internTokenList.addAll(rightChild.getInternTokenList());
+				}
 		}
 		return internTokenList;
 	}
@@ -174,6 +195,12 @@ public class FormulaElement implements Serializable {
 
 			case STRING:
 				returnValue = interpretString(value);
+				break;
+			case LIST:
+				returnValue = interpretList(sprite, value);
+				break;
+			case LIST_ITEM:
+				returnValue = interpretListItem(sprite, value);
 				break;
 
 		}
@@ -388,6 +415,27 @@ public class FormulaElement implements Serializable {
 		return returnValue;
 	}
 
+	private Double interpretList(Sprite sprite, String value) {
+		// TODO 
+		double returnValue = 0;
+		if (leftChild != null && leftChild.type == ElementType.LIST_ITEM) {
+			returnValue = leftChild.interpretRecursive(sprite);
+		}
+		if (rightChild != null && rightChild.type == ElementType.LIST_ITEM) {
+			rightChild.interpretRecursive(sprite);
+		}
+		return returnValue;
+	}
+
+	private Double interpretListItem(Sprite sprite, String value) {
+		// TODO
+		double returnValue = 0;
+		if (leftChild != null) {
+			returnValue = leftChild.interpretRecursive(sprite);
+		}
+		return returnValue;
+	}
+
 	private Double checkDegeneratedDoubleValues(Double valueToCheck) {
 		if (valueToCheck == null) {
 			return 1.0;
@@ -498,4 +546,11 @@ public class FormulaElement implements Serializable {
 		return new FormulaElement(type, new String(value == null ? "" : value), null, leftChildClone, rightChildClone);
 	}
 
+	private boolean isFirstListItem() {
+		if (parent.type == ElementType.LIST && this == parent.leftChild) {
+			return true;
+		}
+
+		return false;
+	}
 }

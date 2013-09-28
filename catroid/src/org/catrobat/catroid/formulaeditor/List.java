@@ -22,7 +22,25 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
-public enum InternTokenType {
-	NUMBER, OPERATOR, FUNCTION_NAME, BRACKET_OPEN, BRACKET_CLOSE, SENSOR, FUNCTION_PARAMETERS_BRACKET_OPEN, FUNCTION_PARAMETERS_BRACKET_CLOSE, FUNCTION_PARAMETER_DELIMITER, PERIOD, USER_VARIABLE, STRING, LIST, LIST_ITEMS_BRACKET_OPEN, LIST_ITEM_DELIMITER, LIST_ITEMS_BRACKET_CLOSE, PARSER_END_OF_FILE;
+public enum List {
+
+	List;
+
+	public static boolean isFunction(String value) {
+		if (getFunctionByValue(value) == null) {
+			return false;
+		}
+		return true;
+
+	}
+
+	public static List getFunctionByValue(String value) {
+		try {
+			return valueOf(value);
+		} catch (IllegalArgumentException exception) {
+
+		}
+		return null;
+	}
 
 }
