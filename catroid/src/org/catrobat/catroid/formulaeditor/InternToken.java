@@ -131,6 +131,34 @@ public class InternToken {
 		return false;
 	}
 
+	public boolean isList() {
+		if (internTokenType == InternTokenType.LIST) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isListParameterBracketOpen() {
+		if (internTokenType == InternTokenType.LIST_ITEMS_BRACKET_OPEN) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isListParameterBracketClose() {
+		if (internTokenType == InternTokenType.LIST_ITEMS_BRACKET_CLOSE) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isListParameterDelimiter() {
+		if (internTokenType == InternTokenType.LIST_ITEM_DELIMITER) {
+			return true;
+		}
+		return false;
+	}
+
 	public void appendToTokenStringValue(String stringToAppend) {
 		this.tokenStringValue += stringToAppend;
 	}

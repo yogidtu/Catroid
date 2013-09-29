@@ -26,6 +26,7 @@ import android.util.Log;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 
 import java.util.ArrayList;
 import java.util.EmptyStackException;
@@ -230,6 +231,9 @@ public class InternFormulaParser {
 			currentElement.replaceElement(userVariable());
 		} else if (currentToken.isString()) {
 			currentElement.replaceElement(FormulaElement.ElementType.STRING, string());
+		} else if (currentToken.isList()) {
+			// TODO
+			currentElement.replaceElement(list());
 		} else {
 			throw new InternFormulaParserException("Parse Error");
 		}
@@ -264,13 +268,12 @@ public class InternFormulaParser {
 	}
 
 	private FormulaElement function() throws InternFormulaParserException {
-		FormulaElement functionTree = new FormulaElement(FormulaElement.ElementType.FUNCTION, null, null);
-
 		if (!Functions.isFunction(currentToken.getTokenStringValue())) {
 			throw new InternFormulaParserException("Parse Error");
 		}
 
-		functionTree = new FormulaElement(FormulaElement.ElementType.FUNCTION, currentToken.getTokenStringValue(), null);
+		FormulaElement functionTree = new FormulaElement(FormulaElement.ElementType.FUNCTION,
+				currentToken.getTokenStringValue(), null);
 		getNextToken();
 
 		if (currentToken.isFunctionParameterBracketOpen()) {
@@ -303,5 +306,49 @@ public class InternFormulaParser {
 		String currentStringValue = currentToken.getTokenStringValue();
 		getNextToken();
 		return currentStringValue;
+	}
+
+	private FormulaElement list() throws InternFormulaParserException {
+
+		FormulaElement list = new FormulaElement(ElementType.LIST, currentToken.getTokenStringValue(), null);
+		getNextToken();
+
+		if (currentToken.isListParameterBracketOpen()) {
+			getNextToken();
+			if (currentToken.isListParameterBracketClose()) {
+				return list;
+			}
+
+			FormulaElement currentListItem = new FormulaElement(ElementType.LIST_ITEM, null, list);
+			currentListItem.getParent().setLeftChild(currentListItem);
+			currentListItem.setLeftChild(termList());
+			int index = 1;
+			int sum = 0;
+			int layer = 1;
+
+			while (currentToken.isListParameterDelimiter()) {
+				getNextToken();
+				index++;
+				if (index % 2 == 0) {
+					currentListItem.setRightChild(termList());
+					currentListItem.getParent().setRightChild(currentListItem);
+					index = 0;
+					FormulaElement nextListItem = new FormulaElement(ElementType.LIST_ITEM, null,
+							currentListItem.getParent());
+					currentListItem = nextListItem;
+					continue;
+				} else if (index % 2 == 1) {
+					currentListItem.setLeftChild(termList());
+					currentListItem.getParent().setLeftChild(currentListItem);
+				}
+
+			}
+			if (currentToken.isFunctionParameterBracketClose()) {
+				throw new InternFormulaParserException("List parser Error!");
+			}
+			getNextToken();
+		}
+
+		return list;
 	}
 }

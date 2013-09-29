@@ -422,7 +422,7 @@ public class FormulaElement implements Serializable {
 			returnValue = leftChild.interpretRecursive(sprite);
 		}
 		if (rightChild != null && rightChild.type == ElementType.LIST_ITEM) {
-			rightChild.interpretRecursive(sprite);
+			returnValue = rightChild.interpretRecursive(sprite);
 		}
 		return returnValue;
 	}
@@ -432,6 +432,9 @@ public class FormulaElement implements Serializable {
 		double returnValue = 0;
 		if (leftChild != null) {
 			returnValue = leftChild.interpretRecursive(sprite);
+		}
+		if (rightChild != null) {
+			returnValue = rightChild.interpretRecursive(sprite);
 		}
 		return returnValue;
 	}

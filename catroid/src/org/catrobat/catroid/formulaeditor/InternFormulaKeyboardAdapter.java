@@ -198,6 +198,8 @@ public class InternFormulaKeyboardAdapter {
 				// LIST
 			case R.id.formula_editor_keyboard_list:
 				return buildList(InternTokenType.NUMBER, "1");
+			case R.id.formula_editor_keyboard_listitemdelimiter:
+				return buildListItemDelimiter();
 		}
 
 		return null;
@@ -298,6 +300,12 @@ public class InternFormulaKeyboardAdapter {
 		returnList.add(new InternToken(itemType, itemValue));
 		returnList.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_CLOSE));
 		return returnList;
+	}
+
+	private List<InternToken> buildListItemDelimiter() {
+		List<InternToken> listItemDelimiter = new LinkedList<InternToken>();
+		listItemDelimiter.add(new InternToken(InternTokenType.LIST_ITEM_DELIMITER));
+		return listItemDelimiter;
 	}
 
 }

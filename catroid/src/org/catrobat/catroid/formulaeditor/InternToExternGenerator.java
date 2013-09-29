@@ -66,7 +66,7 @@ public class InternToExternGenerator {
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.FALSE.name(), R.string.formula_editor_function_false);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.LENGTH.name(), R.string.formula_editor_function_length);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Functions.LETTER.name(), R.string.formula_editor_function_letter);
-		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(org.catrobat.catroid.formulaeditor.List.List.name(),
+		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(org.catrobat.catroid.formulaeditor.List.LIST.name(),
 				R.string.formula_editor_list);
 		INTERN_EXTERN_LANGUAGE_CONVERTER_MAP.put(Sensors.X_ACCELERATION.name(),
 				R.string.formula_editor_sensor_x_acceleration);
@@ -196,7 +196,14 @@ public class InternToExternGenerator {
 				return "\"" + internToken.getTokenStringValue() + "\"";
 			case STRING:
 				return "\'" + internToken.getTokenStringValue() + "\'";
-
+			case LIST:
+				return "datlist";
+			case LIST_ITEM_DELIMITER:
+				return "|";
+			case LIST_ITEMS_BRACKET_OPEN:
+				return "<";
+			case LIST_ITEMS_BRACKET_CLOSE:
+				return ">";
 			default:
 				return getExternStringForInternTokenValue(internToken.getTokenStringValue(), context);
 

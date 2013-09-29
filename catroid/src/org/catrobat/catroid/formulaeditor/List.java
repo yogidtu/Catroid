@@ -24,7 +24,7 @@ package org.catrobat.catroid.formulaeditor;
 
 public enum List {
 
-	List;
+	LIST;
 
 	public static boolean isFunction(String value) {
 		if (getFunctionByValue(value) == null) {
