@@ -33,11 +33,11 @@ import org.catrobat.catroid.multiplayer.MultiplayerBtManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
 public class BTDummyClient {
-	private static BTDummyClient instance = null;
 	private BluetoothAdapter btAdapter = null;
 	private BluetoothSocket btSocket = null;
 	private OutputStream outputStream = null;
@@ -47,23 +47,24 @@ public class BTDummyClient {
 	private ByteArrayBuffer receivedFeedback = new ByteArrayBuffer(1024);
 	private boolean connected = false;
 
-	public static final UUID DUMMYCONNECTIONUUID = UUID.fromString("eb8ec53a-f070-46e0-b6ff-1645c931f858");
+	private static final String CLOSECONNECTION = "closethisconnection";
 	private static final String COMMANDSETVARIABLE = "setvariable;";
+	public static final UUID DUMMYCONNECTIONUUID = UUID.fromString("eb8ec53a-f070-46e0-b6ff-1645c931f858");
 	public static final String MULTIPLAYERSETASCLIENT = "multiplayer;setasclient;"
 			+ ("" + MultiplayerBtManager.CONNECTION_UUID).replaceAll("-", "");
 	public static final String MULTIPLAYERSETASSERVER = "multiplayer;setasserver;"
 			+ ("" + MultiplayerBtManager.CONNECTION_UUID).replaceAll("-", "");
 
-	private BTDummyClient() {
+	public BTDummyClient() {
 		this.btAdapter = BluetoothAdapter.getDefaultAdapter();
 	}
 
-	public static BTDummyClient getInstance() {
-		if (instance == null) {
-			instance = new BTDummyClient();
-		}
-		return instance;
-	}
+	//	public static BTDummyClient getInstance() {
+	//		if (instance == null) {
+	//			instance = new BTDummyClient();
+	//		}
+	//		return instance;
+	//	}
 
 	public void initializeAndConnectToServer(String option) {
 		BluetoothDevice dummyServer = btAdapter.getRemoteDevice(MACAddress);
@@ -99,22 +100,33 @@ public class BTDummyClient {
 					if (receivedbytes < 0) {
 						break;
 					}
+					if (new String(buffer, 0, receivedbytes, "ASCII").equals(CLOSECONNECTION)) {
+						inputStream.close();
+						break;
+					}
 					receivedFeedback.append(buffer, 0, receivedbytes);
 				}
 
 			} catch (IOException e) {
-				Log.d("Multiplayer", "Receiver Thread END");
+				Log.d("Multiplayer", "TestReceiver Thread END in Exeption");
 			}
+			Log.d("Multiplayer", "TestReceiver Thread END");
 		}
 	};
 
 	public Double getVariableValue(String variableName) {
-		String receivedFeedbackString = new String(receivedFeedback.toString());
-		int startIndexValue = receivedFeedbackString.indexOf(variableName);
-		if (startIndexValue != -1) {
-			Double variableValue = ByteBuffer.wrap(receivedFeedback.toByteArray()).getDouble(startIndexValue);
-			return variableValue;
+		String receivedFeedbackString;
+		try {
+			receivedFeedbackString = new String(receivedFeedback.toByteArray(), 0, receivedFeedback.length(), "ASCII");
+			int startIndexValue = receivedFeedbackString.indexOf(variableName);
+			if (startIndexValue != -1) {
+				Double variableValue = ByteBuffer.wrap(receivedFeedback.toByteArray()).getDouble(startIndexValue);
+				return variableValue;
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
+
 		return null;
 	}
 

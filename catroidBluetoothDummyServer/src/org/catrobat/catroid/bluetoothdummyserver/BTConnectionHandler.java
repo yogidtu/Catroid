@@ -47,6 +47,7 @@ public class BTConnectionHandler implements Runnable {
 	private static final String CONNECTIONSTRINGBEGIN = "btspp://localhost:";
 	private static final String BTNAMEANDAUTHENTICATION = ";name=BT Dummy Server;authenticate=false;encrypt=false;";
 	private static final String MAGIC_PACKET = "AEIOU";
+	private static final String CLOSECONNECTION = "closethisconnection";
 
 	public BTConnectionHandler(StreamConnection connection) {
 		this.btTestConnection = connection;
@@ -82,8 +83,10 @@ public class BTConnectionHandler implements Runnable {
 		String connectionstring = CONNECTIONSTRINGBEGIN + uuid + BTNAMEANDAUTHENTICATION;
 		System.out.println("[SERVER] Waiting for incoming connection...  UUID: " + uuid);
 		StreamConnectionNotifier stream_conn_notifier = (StreamConnectionNotifier) Connector.open(connectionstring);
-
+		System.out.println("[Server] Notifier done");
 		btProgramConnection = stream_conn_notifier.acceptAndOpen();
+		stream_conn_notifier.close();
+		stream_conn_notifier = null;
 		System.out.println("[SERVER] Client Connected...");
 
 		btTestConnectionRead(inputStream);
@@ -117,38 +120,56 @@ public class BTConnectionHandler implements Runnable {
 			while (true) {
 				readedBytes = inputStream.read(readBuffer);
 				if (readedBytes < 0) {
+					inputStream.close();
 					btProgramConnectionRead.interrupt();
-					return;
+					break;
 				}
 
 				String receivedMessage = new String(readBuffer, 0, readedBytes, "ASCII");
 				if (receivedMessage.startsWith(COMMANDSETVARIABLE)) {
 					outputStream.write(readBuffer, COMMANDSETVARIABLE.length(),
 							readedBytes - COMMANDSETVARIABLE.length());
+					outputStream.flush();
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("[btTestConnectionRead] close");
 	}
 
 	private final Thread btProgramConnectionRead = new Thread() {
 
 		@Override
 		public void run() {
+			OutputStream outputStream = null;
 			try {
 				InputStream inputStream = btProgramConnection.openInputStream();
-				OutputStream outputStream = btTestConnection.openOutputStream();
+				outputStream = btTestConnection.openOutputStream();
 				byte[] buffer = new byte[1024];
 				int readedbytes;
 
-				while (this.isInterrupted()) {
+				while (true) {
 					readedbytes = inputStream.read(buffer);
 					if (readedbytes < 0) {
-						return;
+						break;
 					}
 					outputStream.write(buffer, 0, readedbytes);
+					outputStream.flush();
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			closeTestConnection(outputStream);
+			System.out.println("[btProgrammConnectionRead] close");
+		}
+
+		private void closeTestConnection(OutputStream outputStream) {
+			try {
+				outputStream.write(CLOSECONNECTION.getBytes());
+				outputStream.flush();
+				btTestConnection.close();
+				btProgramConnection.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

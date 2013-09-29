@@ -58,8 +58,9 @@ public class MultiplayerBtManager {
 			try {
 				btSocket = multiplayerDevice.createRfcommSocketToServiceRecord(CONNECTION_UUID);
 				btSocket.connect();
+				Log.d("Multiplayer", "new connect" + btSocket.toString());
 			} catch (IOException e) {
-				Log.d("Bluetooth", "socket exeption");
+				Log.d("Multiplayer", "socket exeption");
 				btSocket = null;
 				return null;
 			}
@@ -116,7 +117,6 @@ public class MultiplayerBtManager {
 			btSocket.getOutputStream().write(bytes, 0, variableName.length() + 8);
 			btSocket.getOutputStream().flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -159,6 +159,7 @@ public class MultiplayerBtManager {
 			} catch (IOException e) {
 				Log.d("Multiplayer", "Receiver Thread END");
 			}
+
 		}
 	};
 

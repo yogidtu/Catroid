@@ -38,12 +38,11 @@ public class BTServer {
 	private static final String CONNECTIONSTRING = "btspp://localhost:" + BLUETOOTHSERVERUUID + ";name=" + BTNAME
 			+ ";authenticate=false;encrypt=false;";
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		StreamConnectionNotifier stream_conn_notifier = (StreamConnectionNotifier) Connector.open(CONNECTIONSTRING);
-		System.out.println("[CONNECTOR] Waiting for incoming connection...");
 		StreamConnection connection = null;
-
 		while (true) {
+			System.out.println("[CONNECTOR] Waiting for incoming connection...");
 			connection = stream_conn_notifier.acceptAndOpen();
 			System.out.println("[CONNECTOR] Client Connected...");
 			new Thread(new BTConnectionHandler(connection)).start();
@@ -51,5 +50,4 @@ public class BTServer {
 
 		// stream_conn_notifier.close();
 	}
-
 }
