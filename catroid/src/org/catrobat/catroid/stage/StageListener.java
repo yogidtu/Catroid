@@ -389,6 +389,7 @@ public class StageListener implements ApplicationListener {
 					deltaActionTimeDivisor = Math.max(1f, deltaActionTimeDivisor);
 				}
 			}
+
 		}
 
 		//TODO: the catch blocks are here for the lwp and only temporary solution to make the lwps usable.
@@ -396,13 +397,13 @@ public class StageListener implements ApplicationListener {
 		//not created before render method is called. We need to find a way to check if open gl context 2.0 has been created
 		//and if not delay the drawing until the context is created. 
 
-		if (!finished) {
+		if (!paused && !finished) {
 			try {
 				stage.draw();
-				//			} catch (IllegalArgumentException e) {
-				//				return;
-				//			} catch (NullPointerException e) {
-				//				return;
+			} catch (IllegalArgumentException e) {
+				return;
+			} catch (NullPointerException e) {
+				return;
 			} catch (IllegalStateException e) {
 				return;
 			}

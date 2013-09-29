@@ -30,7 +30,7 @@ import android.widget.AdapterView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 
-import org.catrobat.catroid.R;
+import org.catrobat.catroid.livewallpaper.R;
 
 public class BaseActivity extends SherlockFragmentActivity {
 
