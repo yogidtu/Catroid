@@ -25,6 +25,7 @@ package org.catrobat.catroid.bluetoothdummyserver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 import javax.bluetooth.DiscoveryAgent;
 import javax.bluetooth.LocalDevice;
@@ -45,6 +46,7 @@ public class BTConnectionHandler implements Runnable {
 	private static final String COMMANDSETVARIABLE = "setvariable;";
 	private static final String CONNECTIONSTRINGBEGIN = "btspp://localhost:";
 	private static final String BTNAMEANDAUTHENTICATION = ";name=BT Dummy Server;authenticate=false;encrypt=false;";
+	private static final String MAGIC_PACKET = "AEIOU";
 
 	public BTConnectionHandler(StreamConnection connection) {
 		this.btTestConnection = connection;
@@ -88,10 +90,10 @@ public class BTConnectionHandler implements Runnable {
 	}
 
 	private void multiplayerDummyClient(InputStream inputStream) throws IOException {
+		System.out.println("[Client] Try to Connect...  UUID: " + uuid);
+
 		DiscoveryAgent discoveryAgent = LocalDevice.getLocalDevice().getDiscoveryAgent();
 		String connectionstring = discoveryAgent.selectService(uuid, ServiceRecord.AUTHENTICATE_ENCRYPT, false);
-		System.out.println("[CLIENT] Try to Connect...");
-
 		btProgramConnection = (StreamConnection) Connector.open(connectionstring);
 		System.out.println("[CLIENT] Connected to Server...");
 
@@ -103,6 +105,13 @@ public class BTConnectionHandler implements Runnable {
 
 		try {
 			OutputStream outputStream = btProgramConnection.openOutputStream();
+
+			byte[] buffer = new byte[64];
+			ByteBuffer.wrap(buffer).put(MAGIC_PACKET.getBytes());
+			ByteBuffer.wrap(buffer).putInt(MAGIC_PACKET.length(), Integer.MAX_VALUE);
+			outputStream.write(buffer, 0, MAGIC_PACKET.length() + Integer.SIZE);
+			outputStream.flush();
+
 			byte[] readBuffer = new byte[1024];
 			int readedBytes;
 			while (true) {

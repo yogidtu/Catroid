@@ -29,6 +29,9 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
 
+//in case the following error occurs "Native Library bluecove_x64 not available"
+// you need to install  libbluetooth-dev
+
 public class BTServer {
 	private static final UUID BLUETOOTHSERVERUUID = new UUID("eb8ec53af07046e0b6ff1645c931f858", false);
 	private static final String BTNAME = "BT Connection Server";

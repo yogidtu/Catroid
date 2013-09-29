@@ -28,6 +28,7 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import org.apache.http.util.ByteArrayBuffer;
+import org.catrobat.catroid.multiplayer.MultiplayerBtManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,16 +42,17 @@ public class BTDummyClient {
 	private BluetoothSocket btSocket = null;
 	private OutputStream outputStream = null;
 	private InputStream inputStream = null;
-	//private String MACAddress = "00:1F:3A:E9:70:58";  // Martin Laptop
-	private String MACAddress = "EC:55:F9:DE:41:6A"; // Manuel Laptop
+	private String MACAddress = "00:1F:3A:E9:70:58"; // Martin Laptop
+	//	private String MACAddress = "EC:55:F9:DE:41:6A"; // Manuel Laptop
 	private ByteArrayBuffer receivedFeedback = new ByteArrayBuffer(1024);
 	private boolean connected = false;
 
 	public static final UUID DUMMYCONNECTIONUUID = UUID.fromString("eb8ec53a-f070-46e0-b6ff-1645c931f858");
-	public static final String SERVERDUMMYMULTIPLAYER = "multiplayer;";
-	public static final String SETASCLIENT = "setasclient;";
-	public static final String SETASSERVER = "setasserver;";
 	private static final String COMMANDSETVARIABLE = "setvariable;";
+	public static final String MULTIPLAYERSETASCLIENT = "multiplayer;setasclient;"
+			+ ("" + MultiplayerBtManager.CONNECTION_UUID).replaceAll("-", "");
+	public static final String MULTIPLAYERSETASSERVER = "multiplayer;setasserver;"
+			+ ("" + MultiplayerBtManager.CONNECTION_UUID).replaceAll("-", "");
 
 	private BTDummyClient() {
 		this.btAdapter = BluetoothAdapter.getDefaultAdapter();

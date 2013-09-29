@@ -23,6 +23,7 @@
 package org.catrobat.catroid.uitest.stage;
 
 import android.bluetooth.BluetoothAdapter;
+import android.util.Log;
 import android.widget.ListView;
 
 import org.catrobat.catroid.R;
@@ -36,7 +37,6 @@ import org.catrobat.catroid.content.bricks.ChangeVariableBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.multiplayer.MultiplayerBtManager;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BTDummyClient;
@@ -64,10 +64,8 @@ public class MultiplayerTest extends BaseActivityInstrumentationTestCase<MainMen
 
 	@Device
 	public void testBluetoothConnection() {
-		String btConnectionOption = BTDummyClient.SERVERDUMMYMULTIPLAYER + BTDummyClient.SETASSERVER
-				+ ("" + MultiplayerBtManager.CONNECTION_UUID).replaceAll("-", "");
-		BTDummyClient.getInstance().initializeAndConnectToServer(btConnectionOption);
-		solo.sleep(1000);
+		Log.d("Multiplayer", "STring = " + BTDummyClient.MULTIPLAYERSETASSERVER);
+		BTDummyClient.getInstance().initializeAndConnectToServer(BTDummyClient.MULTIPLAYERSETASSERVER);
 
 		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 		assertTrue("Bluetooth not supported on device", btAdapter != null);
@@ -84,11 +82,13 @@ public class MultiplayerTest extends BaseActivityInstrumentationTestCase<MainMen
 		String connectedDeviceName = null;
 		for (int i = 0; i < deviceList.getCount(); i++) {
 			String deviceName = (String) deviceList.getItemAtPosition(i);
-			if (deviceName.startsWith(PAIRED_BLUETOOTH_SERVER_DEVICE_NAME)) {
+			if (deviceName.startsWith(PAIRED_BLUETOOTH_SERVER_DEVICE_NAME + "2")) {
 				connectedDeviceName = deviceName;
 				break;
 			}
 		}
+		solo.sleep(500);
+
 		solo.clickOnText(connectedDeviceName);
 		solo.sleep(5000);
 
