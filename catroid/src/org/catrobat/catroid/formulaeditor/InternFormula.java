@@ -625,6 +625,10 @@ public class InternFormula {
 				break;
 
 			case LIST:
+				int offset = countInternTokensTillStopToken(cursorPositionInternTokenIndex,
+						InternTokenType.LIST_BRACKET_CLOSE);
+				internFormulaTokenSelection = new InternFormulaTokenSelection(internTokenSelectionType,
+						cursorPositionInternTokenIndex, cursorPositionInternTokenIndex + offset);
 				break;
 
 			default:
@@ -633,6 +637,29 @@ public class InternFormula {
 				break;
 		}
 
+	}
+
+	private int countInternTokensTillStopToken(int startIndex, InternTokenType stopToken) {
+		int tokenCounter = 0;
+		InternToken startToken = internTokenFormulaList.get(startIndex);
+		int iteratorIndex = startIndex;
+		InternToken iteratedToken = startToken;
+
+		while (iteratedToken.getInternTokenType() != stopToken) {
+			tokenCounter++;
+			iteratorIndex++;
+			iteratedToken = internTokenFormulaList.get(iteratorIndex);
+
+			boolean isNested = iteratedToken.getInternTokenType() == startToken.getInternTokenType();
+			if (isNested) {
+				int tempTokenCounter = countInternTokensTillStopToken(iteratorIndex, stopToken);
+				iteratorIndex = iteratorIndex + tempTokenCounter;
+				tokenCounter += tempTokenCounter + 1;
+				iteratedToken = internTokenFormulaList.get(iteratorIndex);
+			}
+
+		}
+		return tokenCounter;
 	}
 
 	private CursorTokenPropertiesAfterModification insertLeftToCurrentToken(List<InternToken> internTokensToInsert) {
