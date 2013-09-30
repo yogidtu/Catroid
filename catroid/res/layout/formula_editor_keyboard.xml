@@ -59,7 +59,7 @@
             style="@style/FormulaEditorButton"
             android:layout_marginTop="@dimen/key_margin"
             android:layout_weight="0.175"
-            android:text="," />
+            android:text="@string/formula_editor_list_item_delimiter" />
 
         <Button
             android:id="@+id/formula_editor_keyboard_ok"
