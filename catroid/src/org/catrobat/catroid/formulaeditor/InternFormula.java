@@ -297,6 +297,7 @@ public class InternFormula {
 	private CursorTokenPropertiesAfterModification deleteInternTokenByIndex(int internTokenIndex) {
 
 		InternToken tokenToDelete = internTokenFormulaList.get(internTokenIndex);
+		InternToken iteratedToken;
 
 		switch (tokenToDelete.getInternTokenType()) {
 			case NUMBER:
@@ -400,13 +401,58 @@ public class InternFormula {
 				cursorPositionInternToken = null;
 				return CursorTokenPropertiesAfterModification.LEFT;
 
+			case LIST:
+				deleteInternTokensTillStopToken(internTokenIndex, false, InternTokenType.LIST_ITEMS_BRACKET_CLOSE);
+				cursorPositionInternTokenIndex = internTokenIndex;
+				cursorPositionInternToken = null;
+				return CursorTokenPropertiesAfterModification.LEFT;
+
+			case LIST_ITEMS_BRACKET_OPEN:
+				int newInternTokenIndex = deleteInternTokensTillStopToken(internTokenIndex, false,
+						InternTokenType.LIST_ITEMS_BRACKET_CLOSE);
+				deleteInternTokensTillStopToken(newInternTokenIndex - 1, true, InternTokenType.LIST);
+				cursorPositionInternTokenIndex = internTokenIndex;
+				cursorPositionInternToken = null;
+				return CursorTokenPropertiesAfterModification.LEFT;
+
+			case LIST_ITEMS_BRACKET_CLOSE:
+				deleteInternTokensTillStopToken(internTokenIndex, true, InternTokenType.LIST);
+				cursorPositionInternTokenIndex = internTokenIndex;
+				cursorPositionInternToken = null;
+				return CursorTokenPropertiesAfterModification.LEFT;
+
 			default:
 				deleteInternTokens(internTokenIndex, internTokenIndex);
-
 				cursorPositionInternTokenIndex = internTokenIndex;
 				cursorPositionInternToken = null;
 				return CursorTokenPropertiesAfterModification.LEFT;
 		}
+	}
+
+	private int deleteInternTokensTillStopToken(int startIndex, boolean backward, InternTokenType stopToken) {
+		InternToken startToken = internTokenFormulaList.get(startIndex);
+		int iteratorIndex = startIndex;
+		InternToken iteratedToken = startToken;
+
+		while (iteratedToken.getInternTokenType() != stopToken) {
+			deleteInternTokens(iteratorIndex, iteratorIndex);
+
+			if (backward) {
+				iteratorIndex--;
+			}
+			iteratedToken = internTokenFormulaList.get(iteratorIndex);
+
+			if (iteratedToken.getInternTokenType() == startToken.getInternTokenType()) {
+				iteratorIndex = deleteInternTokensTillStopToken(iteratorIndex, backward, stopToken);
+				iteratedToken = internTokenFormulaList.get(iteratorIndex);
+			}
+		}
+
+		deleteInternTokens(iteratorIndex, iteratorIndex);
+		if (backward) {
+			iteratorIndex--;
+		}
+		return iteratorIndex;
 	}
 
 	private void setExternCursorPositionLeftTo(int internTokenIndex) {

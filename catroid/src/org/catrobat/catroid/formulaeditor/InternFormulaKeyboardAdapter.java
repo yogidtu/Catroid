@@ -294,12 +294,12 @@ public class InternFormulaKeyboardAdapter {
 	}
 
 	private List<InternToken> buildList(InternTokenType itemType, String itemValue) {
-		List<InternToken> returnList = new LinkedList<InternToken>();
-		returnList.add(new InternToken(InternTokenType.LIST));
-		returnList.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_OPEN));
-		returnList.add(new InternToken(itemType, itemValue));
-		returnList.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_CLOSE));
-		return returnList;
+		List<InternToken> list = new LinkedList<InternToken>();
+		list.add(new InternToken(InternTokenType.LIST));
+		list.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_OPEN));
+		list.add(new InternToken(itemType, itemValue));
+		list.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_CLOSE));
+		return list;
 	}
 
 	private List<InternToken> buildListItemDelimiter() {

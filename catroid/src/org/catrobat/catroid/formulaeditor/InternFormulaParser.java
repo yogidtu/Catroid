@@ -232,7 +232,6 @@ public class InternFormulaParser {
 		} else if (currentToken.isString()) {
 			currentElement.replaceElement(FormulaElement.ElementType.STRING, string());
 		} else if (currentToken.isList()) {
-			// TODO
 			currentElement.replaceElement(list());
 		} else {
 			throw new InternFormulaParserException("Parse Error");
@@ -316,32 +315,20 @@ public class InternFormulaParser {
 		if (currentToken.isListParameterBracketOpen()) {
 			getNextToken();
 			if (currentToken.isListParameterBracketClose()) {
+				getNextToken();
 				return list;
 			}
 
 			FormulaElement currentListItem = new FormulaElement(ElementType.LIST_ITEM, null, list);
-			currentListItem.getParent().setLeftChild(currentListItem);
+			list.setRightChild(currentListItem);
 			currentListItem.setLeftChild(termList());
-			int index = 1;
-			int sum = 0;
-			int layer = 1;
-			int listItemChildCounter = 1;
 
 			while (currentToken.isListParameterDelimiter()) {
 				getNextToken();
-				index++;
-				if (index % 2 == 0) {
-					currentListItem.setRightChild(termList());
-					index = 0;
-					FormulaElement nextListItem = new FormulaElement(ElementType.LIST_ITEM, null,
-							currentListItem.getParent());
-					currentListItem = nextListItem;
-					continue;
-				} else if (index % 2 == 1) {
-					currentListItem.setLeftChild(termList());
-					currentListItem.getParent().setRightChild(currentListItem);
-				}
-
+				FormulaElement nextListItem = new FormulaElement(ElementType.LIST_ITEM, null, currentListItem);
+				currentListItem.setRightChild(nextListItem);
+				nextListItem.setLeftChild(termList());
+				currentListItem = nextListItem;
 			}
 			if (currentToken.isFunctionParameterBracketClose()) {
 				throw new InternFormulaParserException("List parser Error!");

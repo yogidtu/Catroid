@@ -197,9 +197,9 @@ public class InternToExternGenerator {
 			case STRING:
 				return "\'" + internToken.getTokenStringValue() + "\'";
 			case LIST:
-				return "datlist";
+				return context.getResources().getString(R.string.formula_editor_list);
 			case LIST_ITEM_DELIMITER:
-				return "|";
+				return ",";
 			case LIST_ITEMS_BRACKET_OPEN:
 				return "<";
 			case LIST_ITEMS_BRACKET_CLOSE:

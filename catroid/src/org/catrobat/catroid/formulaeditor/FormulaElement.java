@@ -125,9 +125,6 @@ public class FormulaElement implements Serializable {
 			case LIST:
 				internTokenList.add(new InternToken(InternTokenType.LIST, value));
 				internTokenList.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_OPEN, value));
-				if (leftChild != null) {
-					internTokenList.addAll(leftChild.getInternTokenList());
-				}
 				if (rightChild != null) {
 					internTokenList.addAll(rightChild.getInternTokenList());
 				}
@@ -323,8 +320,6 @@ public class FormulaElement implements Serializable {
 					return (double) leftChild.value.length();
 				}
 				if (leftChild.type == ElementType.LIST) {
-					//TODO: check for empty list.
-					//TODO: buggy
 					return (double) leftChild.countListItems();
 				}
 		}
@@ -423,9 +418,6 @@ public class FormulaElement implements Serializable {
 	private Double interpretList(Sprite sprite, String value) {
 		// TODO 
 		double returnValue = 0;
-		if (leftChild != null && leftChild.type == ElementType.LIST_ITEM) {
-			returnValue = leftChild.interpretRecursive(sprite);
-		}
 		if (rightChild != null && rightChild.type == ElementType.LIST_ITEM) {
 			returnValue = rightChild.interpretRecursive(sprite);
 		}
@@ -555,7 +547,7 @@ public class FormulaElement implements Serializable {
 	}
 
 	private boolean isFirstListItem() {
-		if (parent.type == ElementType.LIST && this == parent.leftChild) {
+		if (parent.type == ElementType.LIST && this == parent.rightChild) {
 			Log.i("info", "isFirstListItem()");
 			return true;
 		}
@@ -565,33 +557,14 @@ public class FormulaElement implements Serializable {
 
 	public int countListItems() {
 
-		int left = 0;
 		int right = 0;
-
-		if (leftChild != null) {
-			if (leftChild.type == ElementType.LIST_ITEM) {
-				if (leftChild.leftChild != null) {
-					left++;
-				}
-				if (leftChild.rightChild != null) {
-					left++;
-				}
-			}
-			left += leftChild.countListItems();
-		}
 
 		if (rightChild != null) {
 			if (rightChild.type == ElementType.LIST_ITEM) {
-				if (rightChild.leftChild != null) {
-					right++;
-				}
-				if (rightChild.rightChild != null) {
-					right++;
-				}
+				right++;
+				right += rightChild.countListItems();
 			}
-			right += rightChild.countListItems();
 		}
-
-		return left + right;
+		return right;
 	}
 }
