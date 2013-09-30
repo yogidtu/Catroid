@@ -26,21 +26,4 @@ public enum List {
 
 	LIST;
 
-	public static boolean isFunction(String value) {
-		if (getFunctionByValue(value) == null) {
-			return false;
-		}
-		return true;
-
-	}
-
-	public static List getFunctionByValue(String value) {
-		try {
-			return valueOf(value);
-		} catch (IllegalArgumentException exception) {
-
-		}
-		return null;
-	}
-
 }

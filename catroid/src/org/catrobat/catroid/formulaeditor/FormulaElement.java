@@ -322,6 +322,11 @@ public class FormulaElement implements Serializable {
 				if (leftChild.type == ElementType.STRING) {
 					return (double) leftChild.value.length();
 				}
+				if (leftChild.type == ElementType.LIST) {
+					//TODO: check for empty list.
+					//TODO: buggy
+					return (double) leftChild.countListItems();
+				}
 		}
 
 		return 0d;
@@ -551,9 +556,42 @@ public class FormulaElement implements Serializable {
 
 	private boolean isFirstListItem() {
 		if (parent.type == ElementType.LIST && this == parent.leftChild) {
+			Log.i("info", "isFirstListItem()");
 			return true;
 		}
 
 		return false;
+	}
+
+	public int countListItems() {
+
+		int left = 0;
+		int right = 0;
+
+		if (leftChild != null) {
+			if (leftChild.type == ElementType.LIST_ITEM) {
+				if (leftChild.leftChild != null) {
+					left++;
+				}
+				if (leftChild.rightChild != null) {
+					left++;
+				}
+			}
+			left += leftChild.countListItems();
+		}
+
+		if (rightChild != null) {
+			if (rightChild.type == ElementType.LIST_ITEM) {
+				if (rightChild.leftChild != null) {
+					right++;
+				}
+				if (rightChild.rightChild != null) {
+					right++;
+				}
+			}
+			right += rightChild.countListItems();
+		}
+
+		return left + right;
 	}
 }

@@ -325,13 +325,13 @@ public class InternFormulaParser {
 			int index = 1;
 			int sum = 0;
 			int layer = 1;
+			int listItemChildCounter = 1;
 
 			while (currentToken.isListParameterDelimiter()) {
 				getNextToken();
 				index++;
 				if (index % 2 == 0) {
 					currentListItem.setRightChild(termList());
-					currentListItem.getParent().setRightChild(currentListItem);
 					index = 0;
 					FormulaElement nextListItem = new FormulaElement(ElementType.LIST_ITEM, null,
 							currentListItem.getParent());
@@ -339,7 +339,7 @@ public class InternFormulaParser {
 					continue;
 				} else if (index % 2 == 1) {
 					currentListItem.setLeftChild(termList());
-					currentListItem.getParent().setLeftChild(currentListItem);
+					currentListItem.getParent().setRightChild(currentListItem);
 				}
 
 			}
