@@ -200,9 +200,9 @@ public class InternToExternGenerator {
 				return context.getResources().getString(R.string.formula_editor_list);
 			case LIST_ITEM_DELIMITER:
 				return ",";
-			case LIST_ITEMS_BRACKET_OPEN:
+			case LIST_BRACKET_OPEN:
 				return "<";
-			case LIST_ITEMS_BRACKET_CLOSE:
+			case LIST_BRACKET_CLOSE:
 				return ">";
 			default:
 				return getExternStringForInternTokenValue(internToken.getTokenStringValue(), context);

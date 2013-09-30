@@ -312,9 +312,9 @@ public class InternFormulaParser {
 		FormulaElement list = new FormulaElement(ElementType.LIST, currentToken.getTokenStringValue(), null);
 		getNextToken();
 
-		if (currentToken.isListParameterBracketOpen()) {
+		if (currentToken.isListBracketOpen()) {
 			getNextToken();
-			if (currentToken.isListParameterBracketClose()) {
+			if (currentToken.isListBracketClose()) {
 				getNextToken();
 				return list;
 			}
@@ -323,7 +323,7 @@ public class InternFormulaParser {
 			list.setRightChild(currentListItem);
 			currentListItem.setLeftChild(termList());
 
-			while (currentToken.isListParameterDelimiter()) {
+			while (currentToken.isListItemDelimiter()) {
 				getNextToken();
 				FormulaElement nextListItem = new FormulaElement(ElementType.LIST_ITEM, null, currentListItem);
 				currentListItem.setRightChild(nextListItem);

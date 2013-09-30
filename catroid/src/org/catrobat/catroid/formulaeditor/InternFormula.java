@@ -93,8 +93,9 @@ public class InternFormula {
 						.isFunctionParameterBracketOpen())
 				&& ((cursorPositionInternToken.isFunctionName())
 						|| (cursorPositionInternToken.isFunctionParameterBracketOpen() && cursorTokenPosition == CursorTokenPosition.LEFT)
-						|| (cursorPositionInternToken.isSensor()) || (cursorPositionInternToken.isUserVariable()) || (cursorPositionInternToken
-							.isString()))) {
+						|| (cursorPositionInternToken.isSensor()) || (cursorPositionInternToken.isUserVariable())
+						|| (cursorPositionInternToken.isString()) || cursorPositionInternToken.isList() || (cursorPositionInternToken
+						.isListBracketOpen() && cursorTokenPosition == CursorTokenPosition.LEFT))) {
 			selectCursorPositionInternToken(TokenSelectionType.USER_SELECTION);
 		}
 
@@ -298,7 +299,6 @@ public class InternFormula {
 	private CursorTokenPropertiesAfterModification deleteInternTokenByIndex(int internTokenIndex) {
 
 		InternToken tokenToDelete = internTokenFormulaList.get(internTokenIndex);
-		InternToken iteratedToken;
 
 		switch (tokenToDelete.getInternTokenType()) {
 			case NUMBER:
@@ -403,20 +403,20 @@ public class InternFormula {
 				return CursorTokenPropertiesAfterModification.LEFT;
 
 			case LIST:
-				deleteInternTokensTillStopToken(internTokenIndex, false, InternTokenType.LIST_ITEMS_BRACKET_CLOSE);
+				deleteInternTokensTillStopToken(internTokenIndex, false, InternTokenType.LIST_BRACKET_CLOSE);
 				cursorPositionInternTokenIndex = internTokenIndex;
 				cursorPositionInternToken = null;
 				return CursorTokenPropertiesAfterModification.LEFT;
 
-			case LIST_ITEMS_BRACKET_OPEN:
+			case LIST_BRACKET_OPEN:
 				int newInternTokenIndex = deleteInternTokensTillStopToken(internTokenIndex, false,
-						InternTokenType.LIST_ITEMS_BRACKET_CLOSE);
+						InternTokenType.LIST_BRACKET_CLOSE);
 				deleteInternTokensTillStopToken(newInternTokenIndex - 1, true, InternTokenType.LIST);
 				cursorPositionInternTokenIndex = internTokenIndex;
 				cursorPositionInternToken = null;
 				return CursorTokenPropertiesAfterModification.LEFT;
 
-			case LIST_ITEMS_BRACKET_CLOSE:
+			case LIST_BRACKET_CLOSE:
 				deleteInternTokensTillStopToken(internTokenIndex, true, InternTokenType.LIST);
 				cursorPositionInternTokenIndex = internTokenIndex;
 				cursorPositionInternToken = null;
@@ -622,6 +622,9 @@ public class InternFormula {
 				internFormulaTokenSelection = new InternFormulaTokenSelection(internTokenSelectionType,
 						startSelectionIndex, endSelectionIndex);
 
+				break;
+
+			case LIST:
 				break;
 
 			default:

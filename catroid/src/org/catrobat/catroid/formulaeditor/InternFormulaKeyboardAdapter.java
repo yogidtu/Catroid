@@ -65,10 +65,10 @@ public class InternFormulaKeyboardAdapter {
 				return buildNumber("9");
 
 				//FUNCTIONS:
-				// TODO commented only for easy list testing purposes
-				//			case R.id.formula_editor_keyboard_random:
-				//				return buildDoubleParameterFunction(Functions.RAND, InternTokenType.NUMBER, "0",
-				//						InternTokenType.NUMBER, "1");
+
+			case R.id.formula_editor_keyboard_random:
+				return buildDoubleParameterFunction(Functions.RAND, InternTokenType.NUMBER, "0",
+						InternTokenType.NUMBER, "1");
 			case R.string.formula_editor_function_sin:
 				return buildSingleParameterFunction(Functions.SIN, InternTokenType.NUMBER, "0");
 			case R.string.formula_editor_function_cos:
@@ -296,9 +296,9 @@ public class InternFormulaKeyboardAdapter {
 	private List<InternToken> buildList(InternTokenType itemType, String itemValue) {
 		List<InternToken> list = new LinkedList<InternToken>();
 		list.add(new InternToken(InternTokenType.LIST));
-		list.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_OPEN));
+		list.add(new InternToken(InternTokenType.LIST_BRACKET_OPEN));
 		list.add(new InternToken(itemType, itemValue));
-		list.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_CLOSE));
+		list.add(new InternToken(InternTokenType.LIST_BRACKET_CLOSE));
 		return list;
 	}
 

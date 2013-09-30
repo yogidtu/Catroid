@@ -138,21 +138,21 @@ public class InternToken {
 		return false;
 	}
 
-	public boolean isListParameterBracketOpen() {
-		if (internTokenType == InternTokenType.LIST_ITEMS_BRACKET_OPEN) {
+	public boolean isListBracketOpen() {
+		if (internTokenType == InternTokenType.LIST_BRACKET_OPEN) {
 			return true;
 		}
 		return false;
 	}
 
-	public boolean isListParameterBracketClose() {
-		if (internTokenType == InternTokenType.LIST_ITEMS_BRACKET_CLOSE) {
+	public boolean isListBracketClose() {
+		if (internTokenType == InternTokenType.LIST_BRACKET_CLOSE) {
 			return true;
 		}
 		return false;
 	}
 
-	public boolean isListParameterDelimiter() {
+	public boolean isListItemDelimiter() {
 		if (internTokenType == InternTokenType.LIST_ITEM_DELIMITER) {
 			return true;
 		}

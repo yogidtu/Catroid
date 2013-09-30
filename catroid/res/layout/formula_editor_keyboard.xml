@@ -229,23 +229,23 @@
             style="@style/FormulaEditorButton"
             android:layout_weight="0.175"
             android:text="@string/formula_editor_bracket_close" />
-        <!--  
+         
         <Button
             android:id="@+id/formula_editor_keyboard_random"
             style="@style/FormulaEditorButton"
-            android:layout_weight="0.175"
+            android:layout_weight="0.116"
             android:text="@string/formula_editor_random" />
-                -->
+                
         <Button
             android:id="@+id/formula_editor_keyboard_list"
             style="@style/FormulaEditorButton"
-            android:layout_weight="0.175"
+            android:layout_weight="0.116"
             android:text="@string/formula_editor_list" />
         
         <Button
             android:id="@+id/formula_editor_keyboard_string"
             style="@style/FormulaEditorButton"
-            android:layout_weight="0.175"
+            android:layout_weight="0.116"
             android:text="@string/formula_editor_string" />
 
         <Button

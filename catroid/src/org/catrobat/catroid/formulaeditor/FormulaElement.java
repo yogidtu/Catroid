@@ -124,11 +124,11 @@ public class FormulaElement implements Serializable {
 				break;
 			case LIST:
 				internTokenList.add(new InternToken(InternTokenType.LIST, value));
-				internTokenList.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_OPEN, value));
+				internTokenList.add(new InternToken(InternTokenType.LIST_BRACKET_OPEN, value));
 				if (rightChild != null) {
 					internTokenList.addAll(rightChild.getInternTokenList());
 				}
-				internTokenList.add(new InternToken(InternTokenType.LIST_ITEMS_BRACKET_CLOSE, value));
+				internTokenList.add(new InternToken(InternTokenType.LIST_BRACKET_CLOSE, value));
 				break;
 			case LIST_ITEM:
 				if (!this.isFirstListItem()) {
