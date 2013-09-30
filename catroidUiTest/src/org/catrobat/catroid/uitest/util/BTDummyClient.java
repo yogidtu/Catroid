@@ -59,13 +59,6 @@ public class BTDummyClient {
 		this.btAdapter = BluetoothAdapter.getDefaultAdapter();
 	}
 
-	//	public static BTDummyClient getInstance() {
-	//		if (instance == null) {
-	//			instance = new BTDummyClient();
-	//		}
-	//		return instance;
-	//	}
-
 	public void initializeAndConnectToServer(String option) {
 		BluetoothDevice dummyServer = btAdapter.getRemoteDevice(MACAddress);
 
@@ -105,6 +98,20 @@ public class BTDummyClient {
 						break;
 					}
 					receivedFeedback.append(buffer, 0, receivedbytes);
+
+					//					String receivedMessage = new String(buffer, 0, receivedbytes, "ASCII");
+					//					System.out.println("Received Message" + receivedMessage);
+					//					int startIndexValue = receivedMessage.indexOf(":") + 1;
+					//					if (startIndexValue != -1 && !receivedMessage.contains("AEIOU")) {
+					//						String variableName = new String(receivedMessage.substring(0, startIndexValue - 1));
+					//						if (variableName.equals("shared")) {
+					//							Double variableValue = ByteBuffer.wrap(buffer).getDouble(startIndexValue);
+					//							Log.d("Multiplayer", variableName + ":" + variableValue);
+					//							Log.d("Multiplayer", "-" + variableName + "-");
+					//							Log.d("Multiplayer", "-" + variableValue + "-");
+					//						}
+					//					}
+
 				}
 
 			} catch (IOException e) {
@@ -118,9 +125,10 @@ public class BTDummyClient {
 		String receivedFeedbackString;
 		try {
 			receivedFeedbackString = new String(receivedFeedback.toByteArray(), 0, receivedFeedback.length(), "ASCII");
-			int startIndexValue = receivedFeedbackString.indexOf(variableName);
+			int startIndexValue = receivedFeedbackString.lastIndexOf(variableName);
 			if (startIndexValue != -1) {
-				Double variableValue = ByteBuffer.wrap(receivedFeedback.toByteArray()).getDouble(startIndexValue);
+				Double variableValue = ByteBuffer.wrap(receivedFeedback.toByteArray()).getDouble(
+						startIndexValue + variableName.length() + 1);
 				return variableValue;
 			}
 		} catch (UnsupportedEncodingException e) {
@@ -130,13 +138,18 @@ public class BTDummyClient {
 		return null;
 	}
 
-	public void sendSetVariableCommandToDummyServer(String name, Double value) throws IOException {
+	public void sendSetVariableCommandToDummyServer(String varibaleName, Double value) {
 		byte[] bytes = new byte[1024];
+		String message = COMMANDSETVARIABLE + varibaleName + ":";
+		ByteBuffer.wrap(bytes).put((message).getBytes());
+		ByteBuffer.wrap(bytes).putDouble(message.length(), value);
 
-		ByteBuffer.wrap(COMMANDSETVARIABLE.getBytes());
-		ByteBuffer.wrap(bytes).put((name + ":").getBytes());
-		ByteBuffer.wrap(bytes).putDouble(name.length(), value);
-		outputStream.write(bytes, 0, name.length() + 1 + COMMANDSETVARIABLE.length() + 8);
-		outputStream.flush();
+		try {
+			outputStream.write(bytes, 0, message.length() + 8);
+			outputStream.flush();
+		} catch (IOException e) {
+			Log.d("Multiplayer", "Cant write on TestConnection");
+		}
+
 	}
 }

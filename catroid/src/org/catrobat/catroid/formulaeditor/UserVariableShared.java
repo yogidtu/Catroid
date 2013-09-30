@@ -22,9 +22,9 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
-import org.catrobat.catroid.multiplayer.Multiplayer;
-
 import android.util.Log;
+
+import org.catrobat.catroid.multiplayer.Multiplayer;
 
 public class UserVariableShared extends UserVariable {
 	private static final long serialVersionUID = 1L;
@@ -41,8 +41,6 @@ public class UserVariableShared extends UserVariable {
 	@Override
 	public void setValue(double value) {
 		super.setValue(value);
-		// TODO
-		// send Value over Bluetooth to other device
 		Log.d("SHARED", "Value changed!");
 		Multiplayer.sendBtMessage(super.getName(), value);
 	}

@@ -23,7 +23,10 @@
 package org.catrobat.catroid.uitest.stage;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import org.catrobat.catroid.ProjectManager;
@@ -31,17 +34,23 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.WhenScript;
+import org.catrobat.catroid.content.bricks.ForeverBrick;
+import org.catrobat.catroid.content.bricks.LoopBeginBrick;
+import org.catrobat.catroid.content.bricks.LoopEndlessBrick;
+import org.catrobat.catroid.content.bricks.PlaceAtBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.content.bricks.SetVariableBrick;
 import org.catrobat.catroid.content.bricks.SetXBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
+import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.dialogs.NewVariableDialog;
 import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BTDummyClient;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
@@ -50,10 +59,16 @@ import org.catrobat.catroid.uitest.util.UiTestUtils;
 import java.io.File;
 
 public class MultiplayerTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
-	private static final int IMAGE_FILE_ID = org.catrobat.catroid.uitest.R.raw.icon;
 	private static final String PAIRED_BLUETOOTH_SERVER_DEVICE_NAME = "kitty";
 	private static final String SPRITE_CAT = "cat";
-	private SetXBrick setXBrick;
+	private final int screenWidth = ScreenValues.SCREEN_WIDTH;
+	private final int screenHeight = ScreenValues.SCREEN_HEIGHT;
+	UserVariablesContainer userVariablesContainer = null;
+	Sprite firstSprite = null;
+	Sprite backGround = null;
+	Project project = null;
+
+	private final String filename = "catroid_sunglasses.png";
 
 	public MultiplayerTest() {
 		super(MainMenuActivity.class);
@@ -67,53 +82,43 @@ public class MultiplayerTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	@Device
-	public void BluetoothConnection() {
-		Log.d("Multiplayer", "STring = " + BTDummyClient.MULTIPLAYERSETASSERVER);
-		//		BTDummyClient.getInstance().initializeAndConnectToServer(BTDummyClient.MULTIPLAYERSETASSERVER);
+	public void testSharedVariableTickerWithOption() {
 
-		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-		assertTrue("Bluetooth not supported on device", btAdapter != null);
-		if (!btAdapter.isEnabled()) {
-			btAdapter.enable();
-			solo.sleep(5000);
+		//		ListView dragDropListView = UiTestUtils.getScriptListView(solo);
+		//		BrickAdapter adapter = (BrickAdapter) dragDropListView.getAdapter();
+
+		//		int childrenCount = adapter.getChildCountFromLastGroup();
+		//		int groupCount = adapter.getScriptCount();
+
+		//		assertEquals("Incorrect number of bricks.", 2, dragDropListView.getChildCount());
+		//		assertEquals("Incorrect number of bricks.", 1, childrenCount);
+		//
+		//		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
+		//		assertEquals("Incorrect number of bricks.", 1, projectBrickList.size());
+		//
+		//		assertEquals("Wrong Brick instance.", projectBrickList.get(0), adapter.getChild(groupCount - 1, 0));
+		//		assertNotNull("TextView does not exist.", solo.getText(solo.getString(R.string.brick_set_variable)));
+
+		solo.clickOnText(getInstrumentation().getTargetContext().getString(
+				R.string.brick_variable_spinner_create_new_variable));
+		assertTrue("NewVariableDialog not visible", solo.waitForFragmentByTag(NewVariableDialog.DIALOG_FRAGMENT_TAG));
+
+		EditText editText = (EditText) solo.getView(R.id.dialog_formula_editor_variable_name_edit_text);
+		solo.enterText(editText, "shared2");
+		solo.clickOnButton(solo.getString(R.string.ok));
+		assertTrue("ScriptFragment not visible", solo.waitForText(solo.getString(R.string.brick_set_variable)));
+		assertTrue("Created ProjectVariable not set on first position in spinner", solo.searchText("shared2"));
+		solo.sleep(2000);
+
+		//Set Multiplayer option false
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		if (!sharedPreferences.getBoolean("setting_multiplayer_option", true)) {
+			sharedPreferences.edit().putBoolean("setting_multiplayer_option", false).commit();
 		}
-
-		solo.clickOnText(solo.getString(R.string.main_menu_continue));
-		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
-		solo.sleep(3000);
-
-		ListView deviceList = solo.getCurrentViews(ListView.class).get(0);
-		String connectedDeviceName = null;
-		for (int i = 0; i < deviceList.getCount(); i++) {
-			String deviceName = (String) deviceList.getItemAtPosition(i);
-			if (deviceName.startsWith(PAIRED_BLUETOOTH_SERVER_DEVICE_NAME + "2")) {
-				connectedDeviceName = deviceName;
-				break;
-			}
-		}
-		solo.sleep(500);
-
-		solo.clickOnText(connectedDeviceName);
-		solo.sleep(5000);
-
-		solo.goBack();
-		solo.goBack();
-
-		//		solo.clickOnText(SPRITE_CAT);
-		//		solo.clickOnText(solo.getString(R.string.scripts));
-		//		solo.sleep(2000);
-		//		solo.goBack();
-		//		solo.goBack();
-		//		solo.goBack();
-		//		solo.sleep(2000);
-
 	}
 
 	@Device
-	public void testBluetoothSetVariable() {
-		Log.d("Multiplayer", "STring = " + BTDummyClient.MULTIPLAYERSETASSERVER);
-		BTDummyClient instance = new BTDummyClient();
-		instance.initializeAndConnectToServer(BTDummyClient.MULTIPLAYERSETASSERVER);
+	public void BluetoothConnectionAsServer() {
 
 		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
 		assertTrue("Bluetooth not supported on device", btAdapter != null);
@@ -126,6 +131,48 @@ public class MultiplayerTest extends BaseActivityInstrumentationTestCase<MainMen
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.sleep(1000);
 
+		Log.d("Multiplayer", "String = " + BTDummyClient.MULTIPLAYERSETASCLIENT);
+		BTDummyClient instance = new BTDummyClient();
+		instance.initializeAndConnectToServer(BTDummyClient.MULTIPLAYERSETASCLIENT);
+
+		solo.sleep(3000);
+		solo.assertCurrentActivity("Not in Stage - connection failed", StageActivity.class);
+
+		instance.sendSetVariableCommandToDummyServer("shared", -100.0);
+		solo.sleep(1000);
+		assertEquals("Set Variable faild wrong Value", -100.0, userVariablesContainer.getSharedVariabel("shared")
+				.getValue(), 0.2);
+		solo.sleep(500);
+		solo.clickOnScreen(ScreenValues.SCREEN_WIDTH / 2 - 100, ScreenValues.SCREEN_HEIGHT / 2);
+		assertEquals("Set Variable faild wrong Value", 100, userVariablesContainer.getSharedVariabel("shared")
+				.getValue(), 0.2);
+		solo.sleep(1000);
+
+		Double checkValue = instance.getVariableValue("shared");
+		assertEquals("Set Variable faild wrong Value", checkValue, userVariablesContainer.getSharedVariabel("shared")
+				.getValue(), 0.2);
+
+		solo.goBack();
+		solo.goBack();
+
+	}
+
+	@Device
+	public void BluetoothSetVariable() {
+		Log.d("Multiplayer", "String = " + BTDummyClient.MULTIPLAYERSETASSERVER);
+		BTDummyClient instance = new BTDummyClient();
+		instance.initializeAndConnectToServer(BTDummyClient.MULTIPLAYERSETASSERVER);
+
+		BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
+		assertTrue("Bluetooth not supported on device", btAdapter != null);
+		if (!btAdapter.isEnabled()) {
+			btAdapter.enable();
+			solo.sleep(5000);
+		}
+
+		solo.clickOnText(solo.getString(R.string.main_menu_continue));
+		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
+		solo.sleep(2000);
 		ListView deviceList = solo.getCurrentViews(ListView.class).get(0);
 		String connectedDeviceName = null;
 		for (int i = 0; i < deviceList.getCount(); i++) {
@@ -138,58 +185,84 @@ public class MultiplayerTest extends BaseActivityInstrumentationTestCase<MainMen
 		solo.sleep(500);
 		solo.clickOnText(connectedDeviceName);
 		solo.sleep(3000);
+		solo.assertCurrentActivity("Not in Stage - connection failed", StageActivity.class);
 
-		solo.clickOnScreen((ScreenValues.SCREEN_WIDTH / 2), (ScreenValues.SCREEN_HEIGHT / 2));
-
-		solo.sleep(2000);
-		solo.goBack();
-		solo.goBack();
+		instance.sendSetVariableCommandToDummyServer("shared", -100.0);
+		solo.sleep(1000);
+		assertEquals("Set Variable faild wrong Value", -100.0, userVariablesContainer.getSharedVariabel("shared")
+				.getValue(), 0.2);
+		solo.sleep(1000);
+		solo.clickOnScreen(ScreenValues.SCREEN_WIDTH / 2 - 100, ScreenValues.SCREEN_HEIGHT / 2);
+		assertEquals("Set Variable faild wrong Value", 100, userVariablesContainer.getSharedVariabel("shared")
+				.getValue(), 0.2);
+		solo.sleep(1000);
 
 		Double checkValue = instance.getVariableValue("shared");
-		Log.d("Multiplayer", "variableValue = " + checkValue);
+		assertEquals("Set Variable faild wrong Value", checkValue, userVariablesContainer.getSharedVariabel("shared")
+				.getValue(), 0.2);
+
+		solo.goBack();
+		solo.goBack();
 
 	}
 
 	private void createProject() {
-		Project project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
-
-		Sprite firstSprite = new Sprite("background");
-		Sprite secondSprite = new Sprite(SPRITE_CAT);
-		project.addSprite(firstSprite);
-		project.addSprite(secondSprite);
-
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setCurrentSprite(firstSprite);
-
-		Script startScript = new StartScript(secondSprite);
-		SetLookBrick setLookBrick = new SetLookBrick(secondSprite);
-		String imageName = "image";
-		File image = UiTestUtils.saveFileToProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME, imageName, IMAGE_FILE_ID,
-				getInstrumentation().getContext(), UiTestUtils.FileTypes.IMAGE);
-
-		LookData lookData = new LookData();
-		lookData.setLookFilename(image.getName());
-		lookData.setLookName(imageName);
-		setLookBrick.setLook(lookData);
-
-		startScript.addBrick(setLookBrick);
-		secondSprite.addScript(startScript);
-
-		ProjectManager.getInstance().setCurrentSprite(secondSprite);
-
-		UserVariablesContainer userVariablesContainer = project.getUserVariables();
+		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		userVariablesContainer = project.getUserVariables();
 		userVariablesContainer.addSharedUserVariable("shared");
+		backGround = new Sprite("Background");
+		SetVariableBrick setVariableBackGround = new SetVariableBrick(backGround, new Formula(0.0),
+				userVariablesContainer.getUserVariable("shared", backGround));
+		StartScript backGroundStartScript = new StartScript(backGround);
+		backGroundStartScript.addBrick(setVariableBackGround);
+		backGround.addScript(backGroundStartScript);
 
-		Script whenScript = new WhenScript(secondSprite);
-		SetVariableBrick setVariable = new SetVariableBrick(secondSprite, new Formula(100), ProjectManager
-				.getInstance().getCurrentProject().getUserVariables().getUserVariable("shared", secondSprite));
-		setXBrick = new SetXBrick(secondSprite, new Formula(new FormulaElement(
+		firstSprite = new Sprite(SPRITE_CAT);
+		StartScript startScriptCat = new StartScript(firstSprite);
+		SetLookBrick setLookCat = new SetLookBrick(firstSprite);
+
+		LookData lookDataCat = new LookData();
+		lookDataCat.setLookName(filename);
+		firstSprite.getLookDataList().add(lookDataCat);
+		setLookCat.setLook(lookDataCat);
+		startScriptCat.addBrick(setLookCat);
+
+		PlaceAtBrick placeAtCat = new PlaceAtBrick(firstSprite, screenWidth / 2, screenHeight / 2);
+		startScriptCat.addBrick(placeAtCat);
+		firstSprite.addScript(startScriptCat);
+
+		LoopBeginBrick repeatEndlessBrickStart = new ForeverBrick(firstSprite);
+		LoopEndlessBrick repeatEndlessBrickEnd = new LoopEndlessBrick();
+		repeatEndlessBrickStart.setLoopEndBrick(repeatEndlessBrickEnd);
+		startScriptCat.addBrick(repeatEndlessBrickStart);
+
+		SetXBrick setXBrick = new SetXBrick(firstSprite, new Formula(new FormulaElement(
 				FormulaElement.ElementType.USER_VARIABLE, "shared", null)));
+		startScriptCat.addBrick(setXBrick);
+		startScriptCat.addBrick(repeatEndlessBrickEnd);
 
-		whenScript.addBrick(setVariable);
-		whenScript.addBrick(setXBrick);
-		secondSprite.addScript(whenScript);
+		WhenScript whenScriptCat = new WhenScript(firstSprite);
+		//		SetVariableBrick setVariable = new SetVariableBrick(firstSprite, 100);
+		SetVariableBrick setVariable = new SetVariableBrick(firstSprite, new Formula(100.0),
+				userVariablesContainer.getUserVariable("shared", firstSprite));
 
-		//		StorageHandler.getInstance().saveProject(project);
+		whenScriptCat.addBrick(setVariable);
+		firstSprite.addScript(whenScriptCat);
+
+		File catImageFile = UiTestUtils.saveFileToProject(project.getName(), filename,
+				org.catrobat.catroid.uitest.R.drawable.catroid_sunglasses, getInstrumentation().getContext(),
+				UiTestUtils.FileTypes.IMAGE);
+		lookDataCat.setLookFilename(catImageFile.getName());
+
+		project.addSprite(backGround);
+		project.addSprite(firstSprite);
+		ProjectManager.getInstance().setProject(project);
+		StorageHandler.getInstance().saveProject(project);
+
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		if (!sharedPreferences.getBoolean("setting_multiplayer_option", false)) {
+			sharedPreferences.edit().putBoolean("setting_multiplayer_option", true).commit();
+		}
+
 	}
 }

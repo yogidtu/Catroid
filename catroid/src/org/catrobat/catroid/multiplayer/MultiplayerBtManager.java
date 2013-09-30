@@ -58,7 +58,6 @@ public class MultiplayerBtManager {
 			try {
 				btSocket = multiplayerDevice.createRfcommSocketToServiceRecord(CONNECTION_UUID);
 				btSocket.connect();
-				Log.d("Multiplayer", "new connect" + btSocket.toString());
 			} catch (IOException e) {
 				Log.d("Multiplayer", "socket exeption");
 				btSocket = null;

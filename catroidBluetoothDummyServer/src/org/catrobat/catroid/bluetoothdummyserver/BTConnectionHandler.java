@@ -124,9 +124,8 @@ public class BTConnectionHandler implements Runnable {
 					btProgramConnectionRead.interrupt();
 					break;
 				}
-
 				String receivedMessage = new String(readBuffer, 0, readedBytes, "ASCII");
-				if (receivedMessage.startsWith(COMMANDSETVARIABLE)) {
+				if (receivedMessage.contains(COMMANDSETVARIABLE)) {
 					outputStream.write(readBuffer, COMMANDSETVARIABLE.length(),
 							readedBytes - COMMANDSETVARIABLE.length());
 					outputStream.flush();
@@ -156,6 +155,19 @@ public class BTConnectionHandler implements Runnable {
 					}
 					outputStream.write(buffer, 0, readedbytes);
 					outputStream.flush();
+					//
+					//					String receivedMessage = new String(buffer, 0, readedbytes, "ASCII");
+					//					System.out.println("Received Message" + receivedMessage);
+					//					int startIndexValue = receivedMessage.indexOf(":") + 1;
+					//					if (startIndexValue != -1 && !receivedMessage.contains("AEIOU")) {
+					//						String variableName = new String(receivedMessage.substring(0, startIndexValue - 1));
+					//						if (variableName.equals("shared")) {
+					//							Double variableValue = ByteBuffer.wrap(buffer).getDouble(startIndexValue);
+					//							System.out.println("BT Receiver" + variableName + ":" + variableValue);
+					//							System.out.println("BT Receiver" + "-" + variableName + "-");
+					//							System.out.println("BT Receiver" + "-" + variableValue + "-");
+					//						}
+					//					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
