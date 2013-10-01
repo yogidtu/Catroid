@@ -27,6 +27,8 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
+import junit.framework.Assert;
+
 import org.apache.http.util.ByteArrayBuffer;
 import org.catrobat.catroid.multiplayer.MultiplayerBtManager;
 
@@ -42,7 +44,7 @@ public class BTDummyClient {
 	private BluetoothSocket btSocket = null;
 	private OutputStream outputStream = null;
 	private InputStream inputStream = null;
-	private String MACAddress = "00:1F:3A:E9:70:58"; // Martin Laptop
+	public final String MACAddress = "00:1F:3A:E9:70:58"; // Martin Laptop
 	//	private String MACAddress = "EC:55:F9:DE:41:6A"; // Manuel Laptop
 	private ByteArrayBuffer receivedFeedback = new ByteArrayBuffer(1024);
 	private boolean connected = false;
@@ -57,6 +59,7 @@ public class BTDummyClient {
 
 	public BTDummyClient() {
 		this.btAdapter = BluetoothAdapter.getDefaultAdapter();
+		Assert.assertEquals(true, true);
 	}
 
 	public void initializeAndConnectToServer(String option) {
