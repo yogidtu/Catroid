@@ -106,13 +106,14 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 		private StageListener localStageListener;
 
+		private static final int REFRESH_RATE = 300;
 		private boolean mVisible = false;
 		private final Handler mHandler = new Handler();
 		private final Runnable mUpdateDisplay = new Runnable() {
 			@Override
 			public void run() {
 				if (mVisible) {
-					mHandler.postDelayed(mUpdateDisplay, 300);
+					mHandler.postDelayed(mUpdateDisplay, REFRESH_RATE);
 				}
 			}
 		};
@@ -127,33 +128,37 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		@Override
 		public void onVisibilityChanged(boolean visible) {
 			mVisible = visible;
+			Log.d("LWP", "Is visible? " + String.valueOf(visible));
 			super.onVisibilityChanged(visible);
 		}
 
 		@Override
 		public void onResume() {
+
+			if (!mVisible) {
+				return;
+			}
+
 			if (localStageListener.isFinished()) {
 				return;
 			}
 			Log.d("LWP", "VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
-			localStageListener.menuResume();
 			SensorHandler.startSensorListener(getApplicationContext());
-			mHandler.postDelayed(mUpdateDisplay, 300);
-			if (!SoundManager.getInstance().soundDisabledByLwp) {
-				SoundManager.getInstance().resume();
-			}
+			localStageListener.menuResume();
+			mHandler.postDelayed(mUpdateDisplay, REFRESH_RATE);
 		}
 
 		@Override
 		public void onPause() {
+			mHandler.removeCallbacks(mUpdateDisplay);
+
 			if (localStageListener.isFinished()) {
 				return;
 			}
+
 			SensorHandler.stopSensorListeners();
 			localStageListener.menuPause();
 			Log.d("LWP", "NOT VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
-			mHandler.removeCallbacks(mUpdateDisplay);
-			SoundManager.getInstance().pause();
 		}
 
 		@Override
@@ -165,7 +170,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			}
 
 			if (mVisible) {
-				mHandler.postDelayed(mUpdateDisplay, 300);
+				mHandler.postDelayed(mUpdateDisplay, REFRESH_RATE);
 			} else {
 				mHandler.removeCallbacks(mUpdateDisplay);
 			}

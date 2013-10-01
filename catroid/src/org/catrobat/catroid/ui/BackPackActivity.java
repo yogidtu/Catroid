@@ -20,9 +20,8 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.ui.fragment;
+package org.catrobat.catroid.ui;
 
-import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -36,11 +35,13 @@ import com.actionbarsherlock.view.MenuItem;
 
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.livewallpaper.R;
-import org.catrobat.catroid.ui.BaseActivity;
-import org.catrobat.catroid.ui.SettingsActivity;
 import org.catrobat.catroid.ui.adapter.ScriptActivityAdapterInterface;
 import org.catrobat.catroid.ui.controller.BackPackListManager;
 import org.catrobat.catroid.ui.controller.SoundController;
+import org.catrobat.catroid.ui.fragment.BackPackActivityFragment;
+import org.catrobat.catroid.ui.fragment.BackPackLookFragment;
+import org.catrobat.catroid.ui.fragment.BackPackScriptFragment;
+import org.catrobat.catroid.ui.fragment.BackPackSoundFragment;
 
 import java.util.Iterator;
 
@@ -153,12 +154,6 @@ public class BackPackActivity extends BaseActivity {
 			case R.id.delete:
 				currentFragment.startDeleteActionMode();
 				break;
-
-			case R.id.settings:
-				Intent settingsIntent = new Intent(BackPackActivity.this, SettingsActivity.class);
-				startActivity(settingsIntent);
-				break;
-
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -184,13 +179,7 @@ public class BackPackActivity extends BaseActivity {
 	public void handleShowDetails(boolean showDetails, MenuItem item) {
 		currentFragment.setShowDetails(showDetails);
 
-		String menuItemText = "";
-		if (showDetails) {
-			menuItemText = getString(R.string.hide_details);
-		} else {
-			menuItemText = getString(R.string.show_details);
-		}
-		item.setTitle(menuItemText);
+		item.setTitle(showDetails ? R.string.hide_details : R.string.show_details);
 	}
 
 	public BackPackActivityFragment getFragment(int fragmentPosition) {

@@ -54,6 +54,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -89,7 +90,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.concurrent.locks.Lock;
 
 public class LookFragment extends ScriptActivityFragment implements OnLookEditListener,
@@ -381,7 +381,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		}
 
 		if (catchedExpetion || (data == null && originalImagePath.equals(""))) {
-			Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image));
+			Utils.showErrorDialog(getActivity(), R.string.error_load_image);
 			return;
 		}
 		copyImageToCatroid(originalImagePath);
@@ -572,7 +572,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		int[] imageDimensions = ImageEditing.getImageDimensions(originalImagePath);
 
 		if (imageDimensions[0] < 0 || imageDimensions[1] < 0) {
-			Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image));
+			Utils.showErrorDialog(getActivity(), R.string.error_load_image);
 			return;
 		}
 
@@ -605,7 +605,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 				pixmap = Utils.getPixmapFromFile(imageFile);
 
 				if (pixmap == null) {
-					Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image));
+					Utils.showErrorDialog(getActivity(), R.string.error_load_image);
 					StorageHandler.getInstance().deleteFile(imageFile.getAbsolutePath());
 					return;
 				}
@@ -613,7 +613,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 			pixmap = null;
 			updateLookAdapter(imageName, imageFileName);
 		} catch (IOException e) {
-			Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image));
+			Utils.showErrorDialog(getActivity(), R.string.error_load_image);
 		}
 		getLoaderManager().destroyLoader(ID_LOADER_MEDIA_IMAGE);
 		getActivity().sendBroadcast(new Intent(ScriptActivity.ACTION_BRICK_LIST_CHANGED));
@@ -650,7 +650,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		int[] imageDimensions = ImageEditing.getImageDimensions(pathOfPocketPaintImage);
 		if (imageDimensions[0] < 0 || imageDimensions[1] < 0) {
-			Utils.showErrorDialog(getActivity(), this.getString(R.string.error_load_image));
+			Utils.showErrorDialog(getActivity(), R.string.error_load_image);
 			return;
 		}
 
@@ -690,7 +690,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 			int[] imageDimensions = ImageEditing.getImageDimensions(originalImagePath);
 			if (imageDimensions[0] < 0 || imageDimensions[1] < 0) {
-				Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image));
+				Utils.showErrorDialog(getActivity(), R.string.error_load_image);
 				return;
 			}
 			copyImageToCatroid(originalImagePath);
@@ -722,8 +722,8 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		if (packageList.size() <= 0) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setMessage(getString(R.string.pocket_paint_not_installed)).setCancelable(false)
-					.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+			builder.setMessage(R.string.pocket_paint_not_installed).setCancelable(false)
+					.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
 
@@ -737,7 +737,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 								startActivity(downloadPocketPaintIntent);
 							}
 						}
-					}).setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+					}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
 							dialog.cancel();
@@ -797,6 +797,23 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		}
 	}
 
+	private void addSelectAllActionModeButton(ActionMode mode, Menu menu) {
+		Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu).setOnClickListener(
+				new OnClickListener() {
+
+					@Override
+					public void onClick(View view) {
+						for (int position = 0; position < lookDataList.size(); position++) {
+							adapter.addCheckedItem(position);
+						}
+						adapter.notifyDataSetChanged();
+						view.setVisibility(View.GONE);
+						onLookChecked();
+					}
+
+				});
+	}
+
 	private ActionMode.Callback copyModeCallBack = new ActionMode.Callback() {
 
 		@Override
@@ -814,6 +831,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 			multipleItemAppendixActionMode = getString(R.string.looks);
 
 			mode.setTitle(actionModeTitle);
+			addSelectAllActionModeButton(mode, menu);
 
 			return true;
 		}
@@ -825,11 +843,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
-			Set<Integer> checkedLooks = adapter.getCheckedItems();
-			Iterator<Integer> iterator = checkedLooks.iterator();
-
-			while (iterator.hasNext()) {
-				int position = iterator.next();
+			for (int position : adapter.getCheckedItems()) {
 				copyLook(position);
 			}
 			clearCheckedLooksAndEnableButtons();
@@ -846,7 +860,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			setSelectMode(ListView.CHOICE_MODE_SINGLE);
-			mode.setTitle(getString(R.string.rename));
+			mode.setTitle(R.string.rename);
 
 			setActionModeActive(true);
 
@@ -889,6 +903,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 			multipleItemAppendixActionMode = getString(R.string.looks);
 
 			mode.setTitle(actionModeTitle);
+			addSelectAllActionModeButton(mode, menu);
 
 			return true;
 		}
@@ -918,39 +933,32 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	}
 
 	private void deleteCheckedLooks() {
-		SortedSet<Integer> checkedLooks = adapter.getCheckedItems();
-		Iterator<Integer> iterator = checkedLooks.iterator();
 		int numberDeleted = 0;
-		while (iterator.hasNext()) {
-			int position = iterator.next();
+		for (int position : adapter.getCheckedItems()) {
 			deleteLook(position - numberDeleted);
 			++numberDeleted;
 		}
 	}
 
 	private void showConfirmDeleteDialog() {
-		String yes = getActivity().getString(R.string.yes);
-		String no = getActivity().getString(R.string.no);
-		String title = "";
+		int titleId;
 		if (adapter.getAmountOfCheckedItems() == 1) {
-			title = getActivity().getString(R.string.dialog_confirm_delete_look_title);
+			titleId = R.string.dialog_confirm_delete_look_title;
 		} else {
-			title = getActivity().getString(R.string.dialog_confirm_delete_multiple_looks_title);
+			titleId = R.string.dialog_confirm_delete_multiple_looks_title;
 		}
 
-		String message = getActivity().getString(R.string.dialog_confirm_delete_look_message);
-
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle(title);
-		builder.setMessage(message);
-		builder.setPositiveButton(yes, new DialogInterface.OnClickListener() {
+		builder.setTitle(titleId);
+		builder.setMessage(R.string.dialog_confirm_delete_look_message);
+		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				deleteCheckedLooks();
 				clearCheckedLooksAndEnableButtons();
 			}
 		});
-		builder.setNegativeButton(no, new DialogInterface.OnClickListener() {
+		builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
@@ -986,7 +994,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 			updateLookAdapter(imageName, imageFileName);
 		} catch (IOException e) {
-			Utils.showErrorDialog(getActivity(), getString(R.string.error_load_image));
+			Utils.showErrorDialog(getActivity(), R.string.error_load_image);
 			e.printStackTrace();
 		}
 		getActivity().sendBroadcast(new Intent(ScriptActivity.ACTION_BRICK_LIST_CHANGED));

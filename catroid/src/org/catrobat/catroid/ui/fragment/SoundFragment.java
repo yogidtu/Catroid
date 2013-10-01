@@ -71,6 +71,7 @@ import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.livewallpaper.BuildConfig;
 import org.catrobat.catroid.livewallpaper.R;
+import org.catrobat.catroid.ui.BackPackActivity;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.SoundViewHolder;
@@ -145,7 +146,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.sound_list, null);
+		View rootView = inflater.inflate(R.layout.fragment_sounds, null);
 		return rootView;
 	}
 
@@ -616,6 +617,23 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 		}
 	}
 
+	private void addSelectAllActionModeButton(ActionMode mode, Menu menu) {
+		Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu).setOnClickListener(
+				new OnClickListener() {
+
+					@Override
+					public void onClick(View view) {
+						for (int position = 0; position < soundInfoList.size(); position++) {
+							adapter.addCheckedItem(position);
+						}
+						adapter.notifyDataSetChanged();
+						view.setVisibility(View.GONE);
+						onSoundChecked();
+					}
+
+				});
+	}
+
 	private ActionMode.Callback renameModeCallBack = new ActionMode.Callback() {
 
 		@Override
@@ -626,7 +644,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 		@Override
 		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 			setSelectMode(ListView.CHOICE_MODE_SINGLE);
-			mode.setTitle(getString(R.string.rename));
+			mode.setTitle(R.string.rename);
 
 			setActionModeActive(true);
 
@@ -662,6 +680,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			multipleItemAppendixDeleteActionMode = getString(R.string.sounds);
 
 			mode.setTitle(actionModeTitle);
+			addSelectAllActionModeButton(mode, menu);
 
 			return true;
 		}
@@ -734,6 +753,8 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			singleItemAppendixDeleteActionMode = getString(R.string.category_sound);
 			multipleItemAppendixDeleteActionMode = getString(R.string.sounds);
 
+			addSelectAllActionModeButton(mode, menu);
+
 			return true;
 		}
 
@@ -763,28 +784,24 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 	}
 
 	private void showConfirmDeleteDialog() {
-		String yes = getActivity().getString(R.string.yes);
-		String no = getActivity().getString(R.string.no);
-		String title = "";
+		int titleId;
 		if (adapter.getAmountOfCheckedItems() == 1) {
-			title = getActivity().getString(R.string.dialog_confirm_delete_sound_title);
+			titleId = R.string.dialog_confirm_delete_sound_title;
 		} else {
-			title = getActivity().getString(R.string.dialog_confirm_delete_multiple_sounds_title);
+			titleId = R.string.dialog_confirm_delete_multiple_sounds_title;
 		}
 
-		String message = getActivity().getString(R.string.dialog_confirm_delete_sound_message);
-
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setTitle(title);
-		builder.setMessage(message);
-		builder.setPositiveButton(yes, new DialogInterface.OnClickListener() {
+		builder.setTitle(titleId);
+		builder.setMessage(R.string.dialog_confirm_delete_sound_message);
+		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				SoundController.getInstance().deleteCheckedSounds(getActivity(), adapter, soundInfoList, mediaPlayer);
 				clearCheckedSoundsAndEnableButtons();
 			}
 		});
-		builder.setNegativeButton(no, new DialogInterface.OnClickListener() {
+		builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
@@ -897,7 +914,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 		@Override
 		protected void onPreExecute() {
 			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			progressDialog.setTitle(getString(R.string.loading));
+			progressDialog.setTitle(R.string.loading);
 			progressDialog.show();
 		}
 
@@ -946,7 +963,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 					}
 				}
 			} else {
-				Utils.showErrorDialog(getActivity(), getString(R.string.error_load_sound));
+				Utils.showErrorDialog(getActivity(), R.string.error_load_sound);
 			}
 		}
 
