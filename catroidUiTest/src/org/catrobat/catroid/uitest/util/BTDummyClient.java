@@ -98,26 +98,11 @@ public class BTDummyClient {
 						break;
 					}
 					receivedFeedback.append(buffer, 0, receivedbytes);
-
-					//					String receivedMessage = new String(buffer, 0, receivedbytes, "ASCII");
-					//					System.out.println("Received Message" + receivedMessage);
-					//					int startIndexValue = receivedMessage.indexOf(":") + 1;
-					//					if (startIndexValue != -1 && !receivedMessage.contains("AEIOU")) {
-					//						String variableName = new String(receivedMessage.substring(0, startIndexValue - 1));
-					//						if (variableName.equals("shared")) {
-					//							Double variableValue = ByteBuffer.wrap(buffer).getDouble(startIndexValue);
-					//							Log.d("Multiplayer", variableName + ":" + variableValue);
-					//							Log.d("Multiplayer", "-" + variableName + "-");
-					//							Log.d("Multiplayer", "-" + variableValue + "-");
-					//						}
-					//					}
-
 				}
 
 			} catch (IOException e) {
 				Log.d("Multiplayer", "TestReceiver Thread END in Exeption");
 			}
-			Log.d("Multiplayer", "TestReceiver Thread END");
 		}
 	};
 

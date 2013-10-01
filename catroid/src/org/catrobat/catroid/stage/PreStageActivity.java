@@ -256,7 +256,6 @@ public class PreStageActivity extends Activity {
 								legoNXT.startBTCommunicator(address);
 								break;
 							case Brick.BLUETOOTH_MULTIPLAYER:
-								// TODO: multiplayer, Bluetoothsockets
 								Bundle bundle = new Bundle();
 								bundle.putInt("message", LegoNXTBtCommunicator.STATE_CONNECTED);
 								Message message = recieveHandler.obtainMessage();

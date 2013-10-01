@@ -37,6 +37,7 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.WhenScript;
+import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ForeverBrick;
 import org.catrobat.catroid.content.bricks.LoopBeginBrick;
 import org.catrobat.catroid.content.bricks.LoopEndlessBrick;
@@ -50,6 +51,7 @@ import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.ui.dialogs.NewVariableDialog;
 import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BTDummyClient;
@@ -57,6 +59,7 @@ import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class MultiplayerTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private static final String PAIRED_BLUETOOTH_SERVER_DEVICE_NAME = "kitty";
@@ -84,37 +87,49 @@ public class MultiplayerTest extends BaseActivityInstrumentationTestCase<MainMen
 	@Device
 	public void testSharedVariableTickerWithOption() {
 
-		//		ListView dragDropListView = UiTestUtils.getScriptListView(solo);
-		//		BrickAdapter adapter = (BrickAdapter) dragDropListView.getAdapter();
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		ListView dragDropListView = UiTestUtils.getScriptListView(solo);
+		BrickAdapter adapter = (BrickAdapter) dragDropListView.getAdapter();
 
-		//		int childrenCount = adapter.getChildCountFromLastGroup();
-		//		int groupCount = adapter.getScriptCount();
+		int childrenCount = adapter.getChildCountFromLastGroup();
+		int groupCount = adapter.getScriptCount();
 
-		//		assertEquals("Incorrect number of bricks.", 2, dragDropListView.getChildCount());
-		//		assertEquals("Incorrect number of bricks.", 1, childrenCount);
-		//
-		//		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
-		//		assertEquals("Incorrect number of bricks.", 1, projectBrickList.size());
-		//
-		//		assertEquals("Wrong Brick instance.", projectBrickList.get(0), adapter.getChild(groupCount - 1, 0));
-		//		assertNotNull("TextView does not exist.", solo.getText(solo.getString(R.string.brick_set_variable)));
+		assertEquals("Incorrect number of bricks.", 2, dragDropListView.getChildCount());
+		assertEquals("Incorrect number of bricks.", 1, childrenCount);
 
-		solo.clickOnText(getInstrumentation().getTargetContext().getString(
-				R.string.brick_variable_spinner_create_new_variable));
+		ArrayList<Brick> projectBrickList = project.getSpriteList().get(0).getScript(0).getBrickList();
+		assertEquals("Incorrect number of bricks.", 1, projectBrickList.size());
+
+		assertEquals("Wrong Brick instance.", projectBrickList.get(0), adapter.getChild(groupCount - 1, 0));
+		assertNotNull("TextView does not exist.", solo.getText(solo.getString(R.string.brick_set_variable)));
+		solo.clickOnText(userVariablesContainer.getSharedVariabel("shared").getName());
+		solo.clickOnText(solo.getString(R.string.brick_variable_spinner_create_new_variable));
 		assertTrue("NewVariableDialog not visible", solo.waitForFragmentByTag(NewVariableDialog.DIALOG_FRAGMENT_TAG));
 
+		assertNotNull("The radiobutton is not shown even the option is active",
+				solo.getView(R.id.dialog_formula_editor_variable_name_global_broadcast_variable_radio_button));
+
+		solo.clickOnView(solo.getView(R.id.dialog_formula_editor_variable_name_global_broadcast_variable_radio_button));
 		EditText editText = (EditText) solo.getView(R.id.dialog_formula_editor_variable_name_edit_text);
 		solo.enterText(editText, "shared2");
+		solo.sleep(500);
 		solo.clickOnButton(solo.getString(R.string.ok));
-		assertTrue("ScriptFragment not visible", solo.waitForText(solo.getString(R.string.brick_set_variable)));
-		assertTrue("Created ProjectVariable not set on first position in spinner", solo.searchText("shared2"));
-		solo.sleep(2000);
+		solo.sleep(500);
 
-		//Set Multiplayer option false
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		if (!sharedPreferences.getBoolean("setting_multiplayer_option", true)) {
+		if (sharedPreferences.getBoolean("setting_multiplayer_option", true)) {
 			sharedPreferences.edit().putBoolean("setting_multiplayer_option", false).commit();
 		}
+
+		solo.clickOnText(userVariablesContainer.getSharedVariabel("shared2").getName());
+		solo.clickOnText(solo.getString(R.string.brick_variable_spinner_create_new_variable));
+		assertTrue("NewVariableDialog not visible", solo.waitForFragmentByTag(NewVariableDialog.DIALOG_FRAGMENT_TAG));
+
+		Log.d("Multiplayer",
+				"" + solo.getView(R.id.dialog_formula_editor_variable_name_global_broadcast_variable_radio_button));
+
+		assertTrue("Variable Dialog not shown",
+				solo.waitForText(solo.getString(R.string.formula_editor_variable_dialog_for_all_sprites_broadcast)));
 	}
 
 	@Device

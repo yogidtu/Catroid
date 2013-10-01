@@ -116,7 +116,6 @@ public class DeviceListActivity extends Activity {
 		scanButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				// Set device visible (only for testing her, but should be moved)
 				if (deviceTitle.equals(getResources().getString(R.string.select_device_multiplayer))) {
 					Intent discoverablIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 					startActivity(discoverablIntent);
@@ -281,7 +280,6 @@ public class DeviceListActivity extends Activity {
 				btServerSocket = BluetoothAdapter.getDefaultAdapter().listenUsingRfcommWithServiceRecord(
 						MultiplayerBtManager.MULTIPLAYER_BT_CONNECT, MultiplayerBtManager.CONNECTION_UUID);
 				BluetoothSocket btSocket = btServerSocket.accept();
-				Log.d("Multiplayer", "BlueTooth Socket Accept!!");
 
 				if (Multiplayer.getInstance().createBtManager(btSocket)) {
 					Intent intent = new Intent();
@@ -301,12 +299,10 @@ public class DeviceListActivity extends Activity {
 		@Override
 		public void destroy() {
 			try {
-				Log.d("Multiplayer", "Incoming BTConnection destroy!");
 				if (btServerSocket != null) {
 					btServerSocket.close();
 				}
 			} catch (IOException e) {
-				Log.d("Multiplayer", "Thread for ServerSocket termination failed!");
 			}
 		}
 

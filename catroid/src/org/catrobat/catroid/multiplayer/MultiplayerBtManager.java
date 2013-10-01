@@ -85,7 +85,6 @@ public class MultiplayerBtManager {
 
 		try {
 			btInStream = btSocket.getInputStream();
-			//			receiver = new MultiplayerBtReceiver(instream);
 			messageReceiver.start();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -144,19 +143,15 @@ public class MultiplayerBtManager {
 					if (receivedbytes < 0) {
 						break;
 					}
-
 					String receivedMessage = new String(buffer, 0, receivedbytes, "ASCII");
 					int startIndexValue = receivedMessage.indexOf(":") + 1;
 					String variableName = new String(receivedMessage.substring(0, startIndexValue - 1));
 					Double variableValue = ByteBuffer.wrap(buffer).getDouble(startIndexValue);
 					Log.d("BT Receiver", variableName + ":" + variableValue);
-					Log.d("BT Receiver", "-" + variableName + "-");
-					Log.d("BT Receiver", "-" + variableValue + "-");
 					Multiplayer.updateSharedVariable(variableName, variableValue);
 				}
 
 			} catch (IOException e) {
-				Log.d("Multiplayer", "Receiver Thread END");
 			}
 
 		}
