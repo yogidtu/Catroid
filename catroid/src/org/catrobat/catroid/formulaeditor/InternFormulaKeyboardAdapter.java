@@ -37,7 +37,7 @@ public class InternFormulaKeyboardAdapter {
 		}
 
 		//STRING
-		if ((resource == R.id.formula_editor_keyboard_string) && !name.isEmpty()) {
+		if ((resource == R.id.formula_editor_keyboard_string)) {
 			return buildString(name);
 		}
 
