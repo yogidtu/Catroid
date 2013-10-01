@@ -144,7 +144,8 @@ public class SelectProgramDialog extends Dialog {
 
 		public LoadProject() {
 			progress = new ProgressDialog(getContext());
-			progress.setMessage("Loading");
+			progress.setTitle(context.getString(R.string.please_wait));
+			progress.setMessage(context.getString(R.string.loading));
 			progress.setCancelable(false);
 		}
 
