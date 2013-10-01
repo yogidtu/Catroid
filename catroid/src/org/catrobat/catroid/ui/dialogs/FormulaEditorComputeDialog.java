@@ -40,13 +40,9 @@ import org.catrobat.catroid.formulaeditor.SensorHandler;
 public class FormulaEditorComputeDialog extends AlertDialog implements SensorEventListener {
 
 	private Formula formulaToCompute = null;
-
 	private Context context;
-
 	private TextView computeTextView;
-
 	private int logicalFormulaResultIdentifier;
-
 	private float floatInterpretationResult;
 
 	public FormulaEditorComputeDialog(Context context) {
@@ -58,12 +54,9 @@ public class FormulaEditorComputeDialog extends AlertDialog implements SensorEve
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_formulaeditor_compute);
-
 		setCanceledOnTouchOutside(true);
 		computeTextView = (TextView) findViewById(R.id.formula_editor_compute_dialog_textview);
-		computeTextView.setText("Hello 5");
 		showFormulaResult();
-
 	}
 
 	public void setFormula(Formula formula) {
@@ -73,7 +66,6 @@ public class FormulaEditorComputeDialog extends AlertDialog implements SensorEve
 			SensorHandler.startSensorListener(context);
 			SensorHandler.registerListener(this);
 		}
-
 	}
 
 	@Override
@@ -92,24 +84,13 @@ public class FormulaEditorComputeDialog extends AlertDialog implements SensorEve
 		if (formulaToCompute.isLogicalFormula()) {
 			boolean result = formulaToCompute.interpretBoolean(sprite);
 			logicalFormulaResultIdentifier = result ? R.string.formula_editor_true : R.string.formula_editor_false;
-			computeTextView.post(new Runnable() {
-				@Override
-				public void run() {
-					computeTextView.setText(context.getString(logicalFormulaResultIdentifier));
-				}
-			});
+			setDialogTextView(context.getString(logicalFormulaResultIdentifier));
 		} else {
 			floatInterpretationResult = formulaToCompute.interpretFloat(sprite);
 			floatInterpretationResult *= 100;
 			floatInterpretationResult = Math.round(floatInterpretationResult) / 100f;
-			computeTextView.post(new Runnable() {
-				@Override
-				public void run() {
-					computeTextView.setText(floatInterpretationResult + "");
-				}
-			});
+			setDialogTextView(String.valueOf(floatInterpretationResult));
 		}
-
 	}
 
 	@Override
@@ -127,7 +108,14 @@ public class FormulaEditorComputeDialog extends AlertDialog implements SensorEve
 				showFormulaResult();
 				break;
 		}
-
 	}
 
+	private void setDialogTextView(final String newString) {
+		computeTextView.post(new Runnable() {
+			@Override
+			public void run() {
+				computeTextView.setText(newString);
+			}
+		});
+	}
 }
