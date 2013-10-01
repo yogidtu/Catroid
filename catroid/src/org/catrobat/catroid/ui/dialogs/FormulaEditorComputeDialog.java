@@ -30,9 +30,7 @@ import android.hardware.SensorEventListener;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
@@ -42,8 +40,6 @@ public class FormulaEditorComputeDialog extends AlertDialog implements SensorEve
 	private Formula formulaToCompute = null;
 	private Context context;
 	private TextView computeTextView;
-	private int logicalFormulaResultIdentifier;
-	private float floatInterpretationResult;
 
 	public FormulaEditorComputeDialog(Context context) {
 		super(context);
@@ -79,18 +75,8 @@ public class FormulaEditorComputeDialog extends AlertDialog implements SensorEve
 			return;
 		}
 
-		Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
-
-		if (formulaToCompute.isLogicalFormula()) {
-			boolean result = formulaToCompute.interpretBoolean(sprite);
-			logicalFormulaResultIdentifier = result ? R.string.formula_editor_true : R.string.formula_editor_false;
-			setDialogTextView(context.getString(logicalFormulaResultIdentifier));
-		} else {
-			floatInterpretationResult = formulaToCompute.interpretFloat(sprite);
-			floatInterpretationResult *= 100;
-			floatInterpretationResult = Math.round(floatInterpretationResult) / 100f;
-			setDialogTextView(String.valueOf(floatInterpretationResult));
-		}
+		String result = formulaToCompute.getResultForComputeDialog(context);
+		setDialogTextView(result);
 	}
 
 	@Override

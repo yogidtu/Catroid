@@ -36,7 +36,7 @@ public class FormulaElement implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static enum ElementType {
-		OPERATOR, FUNCTION, NUMBER, SENSOR, USER_VARIABLE, BRACKET, STRING
+		OPERATOR, FUNCTION, NUMBER, SENSOR, USER_VARIABLE, BRACKET, STRING, CHAR
 	}
 
 	public static final Double NOT_EXISTING_USER_VARIABLE_INTERPRETATION_VALUE = 0d;
@@ -68,6 +68,10 @@ public class FormulaElement implements Serializable {
 			this.rightChild.parent = this;
 		}
 
+	}
+
+	public ElementType getElementType() {
+		return type;
 	}
 
 	public String getValue() {
@@ -461,6 +465,11 @@ public class FormulaElement implements Serializable {
 			return Operators.getOperatorByValue(value).isLogicalOperator;
 		}
 		return false;
+	}
+
+	public boolean hasFunctionCharacterReturnType() {
+		Functions function = Functions.getFunctionByValue(value);
+		return function.returnType == ElementType.CHAR;
 	}
 
 	public boolean containsElement(ElementType elementType) {
