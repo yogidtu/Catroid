@@ -163,10 +163,14 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 		@Override
 		public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+			super.onSurfaceChanged(holder, format, width, height);
 
 			if (width > height) {
-				Toast.makeText(context, "This wallpaper doesn't support landscape", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, context.getResources().getString(R.string.lwp_no_landscape_support),
+						Toast.LENGTH_SHORT).show();
 				localStageListener.finish();
+				mHandler.removeCallbacks(mUpdateDisplay);
+				return;
 			}
 
 			if (mVisible) {
@@ -174,7 +178,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			} else {
 				mHandler.removeCallbacks(mUpdateDisplay);
 			}
-			super.onSurfaceChanged(holder, format, width, height);
 		}
 
 		@Override
