@@ -92,7 +92,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		Utils.loadProjectIfNeeded(getApplicationContext());
 		stageListener = new StageListener(true);
 		LiveWallpaper.liveWallpaperEngine = new LiveWallpaperEngine(this.stageListener);
-		activateTextToSpeechIfNeeded();
 		return LiveWallpaper.liveWallpaperEngine;
 	}
 
@@ -101,14 +100,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			float yOffsetStep, int xPixelOffset, int yPixelOffset) {
 		// TODO Auto-generated method stub
 
-	}
-
-	private void activateTextToSpeechIfNeeded() {
-		if (PreStageActivity.initTextToSpeechForLiveWallpaper(context) != 0) {
-			Intent installIntent = new Intent();
-			installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-			startActivity(installIntent);
-		}
 	}
 
 	class LiveWallpaperEngine extends AndroidWallpaperEngine {
@@ -129,6 +120,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		public LiveWallpaperEngine(StageListener stageListener) {
 			super();
 			this.localStageListener = stageListener;
+			activateTextToSpeechIfNeeded();
 			SensorHandler.startSensorListener(getApplicationContext());
 		}
 
@@ -181,11 +173,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		}
 
 		@Override
-		public void onSurfaceCreated(SurfaceHolder holder) {
-			super.onSurfaceCreated(holder);
-		}
-
-		@Override
 		public void onSurfaceDestroyed(SurfaceHolder holder) {
 			mVisible = false;
 			mHandler.removeCallbacks(mUpdateDisplay);
@@ -202,6 +189,14 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		public void changeWallpaperProgram() {
 			this.localStageListener.reloadProject(getApplicationContext(), null);
 			activateTextToSpeechIfNeeded();
+		}
+
+		private void activateTextToSpeechIfNeeded() {
+			if (PreStageActivity.initTextToSpeechForLiveWallpaper(context) != 0) {
+				Intent installIntent = new Intent();
+				installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+				startActivity(installIntent);
+			}
 		}
 	}
 }
