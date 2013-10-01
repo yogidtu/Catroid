@@ -117,8 +117,8 @@ public class BrickClickOnEditTextTest extends BaseActivityInstrumentationTestCas
 			sharedPreferences.edit().putBoolean(KEY_SETTINGS_MINDSTORM_BRICKS, true).commit();
 		}
 
-		UiTestUtils.createEmptyProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createProjectWithOneSpriteAndStartScript();
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	private void editTextFieldVisibility(String category) {

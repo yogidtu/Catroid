@@ -61,7 +61,7 @@ public class SetVariableTest extends BaseActivityInstrumentationTestCase<MainMen
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	public void testCreateNewUserVariableAndDeletion() {
@@ -179,7 +179,7 @@ public class SetVariableTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	private void createProject() {
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		setVariableBrick = new SetVariableBrick(sprite, 10);

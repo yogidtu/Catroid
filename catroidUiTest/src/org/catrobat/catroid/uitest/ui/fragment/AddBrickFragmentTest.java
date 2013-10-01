@@ -127,8 +127,8 @@ public class AddBrickFragmentTest extends BaseActivityInstrumentationTestCase<Ma
 	}
 
 	private void goToAddBrickFromMainMenu() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
 		if (!sharedPreferences.getBoolean(KEY_SETTINGS_MINDSTORM_BRICKS, false)) {

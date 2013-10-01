@@ -56,7 +56,7 @@ public class MoveBrickAcrossScriptTest extends BaseActivityInstrumentationTestCa
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	public void testMoveBrickAcrossScript() {
@@ -78,7 +78,7 @@ public class MoveBrickAcrossScriptTest extends BaseActivityInstrumentationTestCa
 	private void createProject(String projectName) {
 		double size = 0.8;
 
-		Project project = new Project(null, projectName);
+		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
 		firstSprite = new Sprite("cat");
 
 		Script startScript1 = new StartScript(firstSprite);

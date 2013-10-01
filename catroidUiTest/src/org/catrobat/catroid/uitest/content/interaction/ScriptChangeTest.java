@@ -102,7 +102,7 @@ public class ScriptChangeTest extends BaseActivityInstrumentationTestCase<Script
 	private void createTestProject(String projectName) {
 		double size = 0.8;
 
-		Project project = new Project(null, projectName);
+		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
 		Sprite firstSprite = new Sprite("cat");
 
 		testScript = new StartScript(firstSprite);

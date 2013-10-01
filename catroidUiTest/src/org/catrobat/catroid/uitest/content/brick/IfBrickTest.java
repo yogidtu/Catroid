@@ -57,7 +57,7 @@ public class IfBrickTest extends BaseActivityInstrumentationTestCase<MainMenuAct
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	public void testIfBrick() {
@@ -192,7 +192,7 @@ public class IfBrickTest extends BaseActivityInstrumentationTestCase<MainMenuAct
 	}
 
 	private void createProject() {
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		ifBrick = new IfLogicBeginBrick(sprite, 0);

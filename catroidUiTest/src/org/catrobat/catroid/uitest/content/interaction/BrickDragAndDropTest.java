@@ -50,8 +50,8 @@ public class BrickDragAndDropTest extends BaseActivityInstrumentationTestCase<Ma
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.createEmptyProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createProjectWithOneSpriteAndStartScript();
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	public void testClickOnEmptySpace() {

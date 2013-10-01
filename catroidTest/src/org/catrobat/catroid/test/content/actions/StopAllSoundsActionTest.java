@@ -25,15 +25,12 @@ package org.catrobat.catroid.test.content.actions;
 import android.media.MediaPlayer;
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.SoundInfo;
-import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.content.actions.PlaySoundAction;
 import org.catrobat.catroid.content.actions.StopAllSoundsAction;
 import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
@@ -44,14 +41,13 @@ import java.util.List;
 
 public class StopAllSoundsActionTest extends InstrumentationTestCase {
 	private final SoundManager soundManager = SoundManager.getInstance();
-	private final int soundFileId = R.raw.testsound;
 	private File soundFile;
 
 	@Override
 	protected void setUp() throws Exception {
-		TestUtils.deleteTestProjects();
 		soundManager.clear();
-		this.createTestProject();
+		TestUtils.createTestProjectWithDefaultName(getInstrumentation().getTargetContext());
+		setUpSoundFile();
 	}
 
 	@Override
@@ -103,15 +99,9 @@ public class StopAllSoundsActionTest extends InstrumentationTestCase {
 		assertFalse("Second MediaPlayer is still playing", mediaPlayers.get(1).isPlaying());
 	}
 
-	private void createTestProject() throws IOException {
-		final String projectName = TestUtils.DEFAULT_TEST_PROJECT_NAME;
-
-		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
-		StorageHandler.getInstance().saveProject(project);
-		ProjectManager.getInstance().setProject(project);
-
-		soundFile = TestUtils.saveFileToProject(projectName, "soundTest.mp3", soundFileId, getInstrumentation()
-				.getContext(), TestUtils.TYPE_SOUND_FILE);
+	private void setUpSoundFile() throws IOException {
+		soundFile = TestUtils.saveFileToProject(TestUtils.DEFAULT_TEST_PROJECT_NAME, "longtestsound.mp3",
+				R.raw.testsound, getInstrumentation().getContext(), TestUtils.TYPE_SOUND_FILE);
 	}
 
 	private SoundInfo createSoundInfo(File soundFile) {

@@ -53,7 +53,6 @@ public class Project implements Serializable {
 
 	public Project(Context context, String name) {
 		xmlHeader.setProgramName(name);
-		xmlHeader.setDescription("");
 
 		ifLandscapeSwitchWidthAndHeight();
 		xmlHeader.virtualScreenWidth = ScreenValues.SCREEN_WIDTH;
@@ -63,10 +62,6 @@ public class Project implements Serializable {
 		MessageContainer.clear();
 
 		userVariables = new UserVariablesContainer();
-
-		if (context == null) {
-			return;
-		}
 
 		Sprite background = new Sprite(context.getString(R.string.background));
 		background.look.setZIndex(0);
@@ -139,13 +134,8 @@ public class Project implements Serializable {
 		xmlHeader.setApplicationBuildName(Constants.APPLICATION_BUILD_NAME);
 		xmlHeader.setApplicationBuildNumber(Constants.APPLICATION_BUILD_NUMBER);
 
-		if (context == null) {
-			xmlHeader.setApplicationVersion("unknown");
-			xmlHeader.setApplicationName("unknown");
-		} else {
-			xmlHeader.setApplicationVersion(Utils.getVersionName(context));
-			xmlHeader.setApplicationName(context.getString(R.string.app_name));
-		}
+		xmlHeader.setApplicationVersion(Utils.getVersionName(context));
+		xmlHeader.setApplicationName(context.getString(R.string.app_name));
 	}
 
 	// default constructor for XMLParser

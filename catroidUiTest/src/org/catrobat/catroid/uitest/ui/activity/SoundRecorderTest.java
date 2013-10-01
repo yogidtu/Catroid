@@ -52,9 +52,9 @@ public class SoundRecorderTest extends BaseActivityInstrumentationTestCase<MainM
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 		UiTestUtils.switchToFragmentInScriptActivity(solo, UiTestUtils.SOUNDS_INDEX);
 	}
 

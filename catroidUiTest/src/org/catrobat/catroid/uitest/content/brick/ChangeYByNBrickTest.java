@@ -79,7 +79,7 @@ public class ChangeYByNBrickTest extends BaseActivityInstrumentationTestCase<Scr
 	}
 
 	private void createProject() {
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		changeYByNBrick = new ChangeYByNBrick(sprite, 0);

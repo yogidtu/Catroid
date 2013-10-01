@@ -24,19 +24,14 @@ package org.catrobat.catroid.test.content.actions;
 
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.content.actions.NextLookAction;
 import org.catrobat.catroid.content.actions.SetLookAction;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 
@@ -44,23 +39,14 @@ public class NextLookActionTest extends InstrumentationTestCase {
 
 	private static final int IMAGE_FILE_ID = R.raw.icon;
 	private File testImage;
-	private String projectName;
 
 	@Override
 	protected void setUp() throws Exception {
 
-		File projectFile = new File(Constants.DEFAULT_ROOT + "/" + projectName);
+		TestUtils.createTestProjectWithDefaultName(getInstrumentation().getTargetContext());
 
-		if (projectFile.exists()) {
-			UtilFile.deleteDirectory(projectFile);
-		}
-
-		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
-		StorageHandler.getInstance().saveProject(project);
-		ProjectManager.getInstance().setProject(project);
-
-		testImage = TestUtils.saveFileToProject(projectName, "testImage.png", IMAGE_FILE_ID, getInstrumentation()
-				.getContext(), TestUtils.TYPE_IMAGE_FILE);
+		testImage = TestUtils.saveFileToProject(TestUtils.DEFAULT_TEST_PROJECT_NAME, "testImage.png", IMAGE_FILE_ID,
+				getInstrumentation().getContext(), TestUtils.TYPE_IMAGE_FILE);
 
 		ScreenValues.SCREEN_HEIGHT = 200;
 		ScreenValues.SCREEN_WIDTH = 200;
@@ -68,14 +54,11 @@ public class NextLookActionTest extends InstrumentationTestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		File projectFile = new File(Constants.DEFAULT_ROOT + "/" + projectName);
-
-		if (projectFile.exists()) {
-			UtilFile.deleteDirectory(projectFile);
-		}
 		if (testImage != null && testImage.exists()) {
 			testImage.delete();
+			testImage = null;
 		}
+		TestUtils.deleteTestProjects();
 		super.tearDown();
 	}
 

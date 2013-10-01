@@ -122,7 +122,7 @@ public class NewSpriteDialogTest extends BaseActivityInstrumentationTestCase<Mai
 
 	public void createTestProject(String projectName) {
 		StorageHandler storageHandler = StorageHandler.getInstance();
-		Project project = new Project(getActivity(), projectName);
+		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
 		Sprite firstSprite = new Sprite("cat");
 		project.addSprite(firstSprite);
 		storageHandler.saveProject(project);

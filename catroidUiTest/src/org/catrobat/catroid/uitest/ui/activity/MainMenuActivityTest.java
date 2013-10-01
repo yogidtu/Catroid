@@ -272,7 +272,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		Reflection.setPrivateField(Utils.class, "isUnderTest", true);
 
 		boolean result = UiTestUtils
-				.createTestProjectOnLocalStorageWithCatrobatLanguageVersion(CATROBAT_LANGUAGE_VERSION_NOT_SUPPORTED);
+				.createTestProjectOnLocalStorageWithCatrobatLanguageVersion(getInstrumentation().getTargetContext(), CATROBAT_LANGUAGE_VERSION_NOT_SUPPORTED);
 		assertTrue("Could not create test project.", result);
 
 		runTestOnUiThread(new Runnable() {
@@ -293,7 +293,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		int yPosition = 598;
 		double size = 0.8;
 
-		Project project = new Project(getActivity(), projectName);
+		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
 		Sprite firstSprite = new Sprite("cat");
 		Sprite secondSprite = new Sprite("dog");
 		Sprite thirdSprite = new Sprite("horse");

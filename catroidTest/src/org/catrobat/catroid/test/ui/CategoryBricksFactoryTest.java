@@ -46,7 +46,7 @@ public class CategoryBricksFactoryTest extends AndroidTestCase {
 		super.setUp();
 		context = getContext();
 
-		Project project = new Project(context, "Project");
+		Project project = new Project(getContext(), "Project");
 		background = project.getSpriteList().get(0);
 		project.addSprite(sprite);
 		ProjectManager.getInstance().setProject(project);

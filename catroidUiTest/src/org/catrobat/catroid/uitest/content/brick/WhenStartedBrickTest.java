@@ -49,7 +49,7 @@ public class WhenStartedBrickTest extends BaseActivityInstrumentationTestCase<Ma
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	@Override
@@ -146,7 +146,7 @@ public class WhenStartedBrickTest extends BaseActivityInstrumentationTestCase<Ma
 
 	private void createProject() {
 
-		project = new Project(null, "testProject");
+		project = new Project(getInstrumentation().getTargetContext(), "testProject");
 		Sprite sprite = new Sprite("cat");
 		Script script = new WhenScript(sprite);
 		script.addBrick(new PlaceAtBrick(sprite, 100, 100));

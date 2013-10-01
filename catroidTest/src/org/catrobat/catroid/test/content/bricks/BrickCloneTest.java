@@ -168,7 +168,7 @@ public class BrickCloneTest extends AndroidTestCase {
 
 	private <T extends Brick> void testVariableReferences(Class<T> typeOfBrick) throws Exception {
 		// set up project
-		Project project = new Project(null, TestUtils.DEFAULT_TEST_PROJECT_NAME);
+		Project project = new Project(getContext(), TestUtils.DEFAULT_TEST_PROJECT_NAME);
 		ProjectManager.getInstance().setProject(project);
 		project.addSprite(sprite);
 		StartScript script = new StartScript(sprite);

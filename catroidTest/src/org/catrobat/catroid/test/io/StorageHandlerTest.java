@@ -60,7 +60,7 @@ public class StorageHandlerTest extends AndroidTestCase {
 
 	@Override
 	public void tearDown() throws Exception {
-		TestUtils.deleteTestProjects();
+		TestUtils.deleteTestProjects(projectName);
 		super.tearDown();
 	}
 
@@ -150,7 +150,8 @@ public class StorageHandlerTest extends AndroidTestCase {
 
 	public void testDefaultProject() throws IOException {
 		ProjectManager projectManager = ProjectManager.getInstance();
-		projectManager.setProject(StandardProjectHandler.createAndSaveStandardProject(getContext()));
+		projectManager.setProject(StandardProjectHandler.createAndSaveStandardProject(
+				TestUtils.DEFAULT_TEST_PROJECT_NAME, getContext()));
 
 		// Test background
 		assertEquals("not the right number of sprites in the default project", 5, projectManager.getCurrentProject()
@@ -204,7 +205,7 @@ public class StorageHandlerTest extends AndroidTestCase {
 	//			UtilFile.deleteDirectory(projectFile);
 	//		}
 	//
-	//		Project project = new Project(getContext(), projectName);
+	//		Project project = new Project(getContext(), getContext(), projectName);
 	//		Sprite sprite = new Sprite("testSprite");
 	//		Script startScript = new StartScript(sprite);
 	//		Script whenScript = new WhenScript(sprite);

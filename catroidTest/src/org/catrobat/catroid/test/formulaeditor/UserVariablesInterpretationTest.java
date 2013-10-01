@@ -55,7 +55,7 @@ public class UserVariablesInterpretationTest extends AndroidTestCase {
 	@Override
 	protected void setUp() {
 		testSprite = new Sprite("testSprite");
-		this.project = new Project(null, "testProject");
+		this.project = new Project(getContext(), "testProject");
 		firstSprite = new Sprite("firstSprite");
 		startScript = new StartScript(firstSprite);
 		changeBrick = new ChangeSizeByNBrick(firstSprite, 10);

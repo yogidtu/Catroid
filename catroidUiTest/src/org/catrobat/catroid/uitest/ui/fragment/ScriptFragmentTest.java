@@ -77,8 +77,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testCopyScript() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
 
@@ -96,8 +96,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testCopyMultipleBricks() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
 
@@ -118,8 +118,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testCopyActionMode() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
 
@@ -139,8 +139,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testCopyAddedBrickWithoutAddedScript() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
 		solo.clickOnCheckBox(0);
@@ -164,12 +164,12 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testCopyFromContextDialog() {
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 		for (int index = 0; index < 5; ++index) {
 			ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).getScript(0)
 					.addBrick(new ShowBrick());
 		}
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		int numberOfBricks = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0)
 				.getNumberOfBricks();
@@ -189,8 +189,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testCopyCopiedBrick() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
 		solo.clickOnCheckBox(0);
@@ -222,8 +222,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testCreateNewBrickButton() {
-		List<Brick> brickListToCheck = UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		List<Brick> brickListToCheck = UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 		int brickCountInView = UiTestUtils.getScriptListView(solo).getCount();
 		int brickCountInList = brickListToCheck.size();
 
@@ -240,8 +240,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testBrickCategoryDialog() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
 		// enable mindstorm bricks, if disabled
@@ -315,8 +315,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	 */
 
 	public void testOnlyAddControlBricks() {
-		UiTestUtils.createEmptyProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createProjectWithOneSpriteAndStartScript();
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 		Sprite sprite = ProjectManager.getInstance().getCurrentSprite();
 		assertEquals("Project should contain only one script.", 1, sprite.getNumberOfScripts());
 
@@ -334,8 +334,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testCopyButtonNotVisibleScriptCategory() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 
 		assertFalse("Copy Button visible!", UiTestUtils.menuButtonVisible(solo, R.id.copy));
@@ -347,8 +347,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testSimpleDragNDrop() {
-		List<Brick> brickListToCheck = UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		List<Brick> brickListToCheck = UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 		ArrayList<Integer> yPositionList = UiTestUtils.getListItemYPositions(solo, 0);
 		assertTrue("Test project brick list smaller than expected", yPositionList.size() >= 6);
 
@@ -365,8 +365,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testDeleteActionMode() {
-		List<Brick> brickListToCheck = UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		List<Brick> brickListToCheck = UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
 
@@ -391,8 +391,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testDeleteActionModeSelectAll() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
 
@@ -418,8 +418,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testDeleteActionModeBack() {
-		List<Brick> brickListToCheck = UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		List<Brick> brickListToCheck = UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
 
@@ -435,8 +435,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testDeleteActionModeAllBricks() {
-		UiTestUtils.createTestProjectWithEveryBrick();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProjectWithEveryBrick(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		List<Brick> brickList = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).getScript(0)
 				.getBrickList();
@@ -463,8 +463,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testDeleteActionModeTwoScripts() {
-		UiTestUtils.createTestProjectForActionModeDelete();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProjectForActionModeDelete(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
 
@@ -490,8 +490,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testDeleteActionModeNestedLoops() {
-		UiTestUtils.createTestProjectNestedLoops();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProjectNestedLoops(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
 
@@ -546,8 +546,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testDeleteActionModeIfBricks() {
-		UiTestUtils.createTestProjectIfBricks();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProjectIfBricks(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
 
@@ -588,8 +588,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testDeleteItem() {
-		List<Brick> brickListToCheck = UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		List<Brick> brickListToCheck = UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 		ArrayList<Integer> yPositionList = UiTestUtils.getListItemYPositions(solo, 0);
 		assertTrue("Test project brick list smaller than expected", yPositionList.size() >= 6);
 
@@ -623,8 +623,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testEmptyView() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		int numberOfBricks = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0)
 				.getNumberOfBricks();
@@ -673,7 +673,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		ProjectManager.getInstance().setProject(standardProject);
 		StorageHandler.getInstance().saveProject(standardProject);
 
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 		String categoryLooks = solo.getString(R.string.category_looks);
 		String categoryMotion = solo.getString(R.string.category_motion);
 		String setBackground = solo.getString(R.string.brick_set_background);
@@ -701,8 +701,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testOptionsMenuItems() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		int timeToWait = 200;
 
@@ -721,7 +721,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testBottombarElementsVisibilty() {
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		assertTrue("Bottombar is not visible", solo.getView(R.id.bottom_bar).getVisibility() == View.VISIBLE);
 		assertTrue("Add button is not visible", solo.getView(R.id.button_add).getVisibility() == View.VISIBLE);
@@ -731,8 +731,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	public void testOptionsEnableLegoMindstormBricks() {
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		String settings = solo.getString(R.string.preference_title);
 		String mindstormsPreferenceString = solo.getString(R.string.preference_title_enable_mindstorm_bricks);
@@ -783,8 +783,8 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 			return;
 		}
 
-		UiTestUtils.createTestProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		solo.clickOnView(solo.getView(R.id.brick_set_size_to_edit_text));
 		solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);

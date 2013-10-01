@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.test.utiltests;
 
+import android.content.Context;
 import android.os.Environment;
 import android.test.InstrumentationTestCase;
 
@@ -54,7 +55,7 @@ public class UtilFileTest extends InstrumentationTestCase {
 	protected void setUp() throws Exception {
 
 		UtilFile.deleteDirectory(new File(CATROID_DIRECTORY + "/testDirectory"));
-		TestUtils.clearProject(projectName);
+		TestUtils.deleteTestProjects(projectName);
 
 		testDirectory = new File(CATROID_DIRECTORY + "/testDirectory");
 		testDirectory.mkdir();
@@ -70,7 +71,7 @@ public class UtilFileTest extends InstrumentationTestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		UtilFile.deleteDirectory(testDirectory);
-		TestUtils.clearProject(projectName);
+		TestUtils.deleteTestProjects(projectName);
 		super.tearDown();
 	}
 
@@ -132,8 +133,8 @@ public class UtilFileTest extends InstrumentationTestCase {
 		UtilFile.deleteDirectory(testDirectory);
 	}
 
-	public void testGetProjectNames() {
-		Project project = new Project(null, projectName);
+	public void testGetProjectFiles(Context context) {
+		Project project = new Project(context, projectName);
 		ProjectManager.getInstance().setProject(project);
 		Sprite sprite = new Sprite("new sprite");
 		project.addSprite(sprite);

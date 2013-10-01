@@ -74,8 +74,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	public void testBackButtonPressedTwice() {
-		Project project = createTestProject(testProject);
-		ProjectManager.getInstance().setProject(project);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
@@ -90,7 +89,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	public void testBackToPreviousActivity() {
-		createAndSaveTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
@@ -112,7 +111,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 		float defaultScale = 100.0f;
 		float newScale = 50.0f;
 
-		Project project = new Project(getActivity(), testProject);
+		Project project = new Project(getInstrumentation().getTargetContext(), testProject);
 		Sprite sprite = new Sprite("testSprite");
 		Script script = new StartScript(sprite);
 		WaitBrick waitBrick = new WaitBrick(sprite, 5000);
@@ -143,7 +142,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	public void testRestartButtonActivityChain() {
-		createAndSaveTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
@@ -169,7 +168,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	public void testRestartButtonScriptPosition() {
-		createAndSaveTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 		ArrayList<Script> scriptStart = new ArrayList<Script>();
 		ArrayList<Script> scriptRestart = new ArrayList<Script>();
 		scriptStart.clear();
@@ -279,7 +278,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	public void testAxesOnOff() {
-		createAndSaveTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
@@ -326,10 +325,11 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	public void testMaximizeStretch() {
-		Project project = createTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
+		Project project = ProjectManager.getInstance().getCurrentProject();
 		project.getXmlHeader().virtualScreenWidth = 480;
 		project.getXmlHeader().virtualScreenHeight = 700;
-		project.setDeviceData(getActivity());
+		project.setDeviceData(getInstrumentation().getTargetContext());
 		StorageHandler.getInstance().saveProject(project);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
@@ -383,27 +383,6 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 		UiTestUtils.compareByteArrays(whitePixel, screenPixel);
 		screenPixel = StageActivity.stageListener.getPixels(0, ScreenValues.SCREEN_HEIGHT - 1, 1, 1);
 		UiTestUtils.compareByteArrays(whitePixel, screenPixel);
-	}
-
-	private Project createTestProject(String projectName) {
-		Project project = new Project(getActivity(), projectName);
-		Sprite firstSprite = new Sprite("cat");
-		Sprite secondSprite = new Sprite("dog");
-		Sprite thirdSprite = new Sprite("horse");
-		Sprite fourthSprite = new Sprite("pig");
-
-		project.addSprite(firstSprite);
-		project.addSprite(secondSprite);
-		project.addSprite(thirdSprite);
-		project.addSprite(fourthSprite);
-
-		return project;
-	}
-
-	private Project createAndSaveTestProject(String projectName) {
-		Project project = createTestProject(projectName);
-		StorageHandler.getInstance().saveProject(project);
-		return project;
 	}
 
 	@SuppressWarnings("unchecked")

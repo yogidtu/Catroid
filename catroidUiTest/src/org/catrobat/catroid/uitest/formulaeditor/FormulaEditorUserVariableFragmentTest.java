@@ -77,11 +77,11 @@ public class FormulaEditorUserVariableFragmentTest extends BaseActivityInstrumen
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	private void createProject(String projectName) throws InterruptedException {
-		project = new Project(null, projectName);
+		project = new Project(getInstrumentation().getTargetContext(), projectName);
 		firstSprite = new Sprite("firstSprite");
 		secondSprite = new Sprite("secondSprite");
 
@@ -104,7 +104,7 @@ public class FormulaEditorUserVariableFragmentTest extends BaseActivityInstrumen
 
 	public void createProjectSetVariableToBrick(String projectName) throws InterruptedException {
 
-		project = new Project(null, projectName);
+		project = new Project(getInstrumentation().getTargetContext(), projectName);
 
 		firstSprite = new Sprite("firstSprite");
 		project.addSprite(firstSprite);
@@ -258,7 +258,7 @@ public class FormulaEditorUserVariableFragmentTest extends BaseActivityInstrumen
 		solo.goBack();
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		solo.clickOnView(solo.getView(SET_VARIABLE_EDIT_TEXT_RID));
 		solo.waitForFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);

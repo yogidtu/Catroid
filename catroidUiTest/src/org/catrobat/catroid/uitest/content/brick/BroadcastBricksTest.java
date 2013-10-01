@@ -124,7 +124,7 @@ public class BroadcastBricksTest extends BaseActivityInstrumentationTestCase<Scr
 		solo.sleep(500);
 
 		UiTestUtils.clickOnHomeActionBarButton(solo);
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		checkCorrectSpinnerSelections();
 		checkIfUnusedBroadcastMessagesHaveBeenRemoved(broadcastReceiverSpinnerId, broadcastMessage);
@@ -211,7 +211,7 @@ public class BroadcastBricksTest extends BaseActivityInstrumentationTestCase<Scr
 	}
 
 	private void createProject() {
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		sprite = new Sprite("cat");
 		Script script = new BroadcastScript(sprite, defaultBroadcastMessage);
 		BroadcastBrick broadcastBrick = new BroadcastBrick(sprite, defaultBroadcastMessage);

@@ -142,7 +142,7 @@ public class TransparentWhenBrickTest extends BaseActivityInstrumentationTestCas
 		ScreenValues.SCREEN_WIDTH = screenWidth;
 		ScreenValues.SCREEN_HEIGHT = screenHeight;
 
-		Project project = new Project(null, UiTestUtils.PROJECTNAME1);
+		Project project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.PROJECTNAME1);
 		cat = new Sprite("cat");
 		StartScript startScriptCat = new StartScript(cat);
 		SetLookBrick setLookCat = new SetLookBrick(cat);

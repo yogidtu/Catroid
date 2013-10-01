@@ -240,7 +240,7 @@ public class UploadProjectDialog extends DialogFragment {
 			}
 		}
 
-		projectManager.getCurrentProject().setDeviceData(getActivity());
+		projectManager.getCurrentProject().setDeviceData(context);
 
 		dismiss();
 		String projectPath = Constants.DEFAULT_ROOT + "/" + projectManager.getCurrentProject().getName();

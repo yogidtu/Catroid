@@ -75,7 +75,7 @@ public class SetLookBrickTest extends BaseActivityInstrumentationTestCase<MainMe
 		createProject();
 
 		UiTestUtils.prepareStageForTest();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	@Override
@@ -233,7 +233,7 @@ public class SetLookBrickTest extends BaseActivityInstrumentationTestCase<MainMe
 
 	private void createProject() {
 		ProjectManager projectManager = ProjectManager.getInstance();
-		Project project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		Project project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite firstSprite = new Sprite("cat");
 		Script testScript = new StartScript(firstSprite);
 

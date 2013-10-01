@@ -104,7 +104,7 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 
 		backPackListManager = BackPackListManager.getInstance();
 		projectManager = ProjectManager.getInstance();
@@ -130,7 +130,7 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 		externalSoundFile = UiTestUtils.createTestMediaFile(Constants.DEFAULT_ROOT + "/externalSoundFile.mp3",
 				RESOURCE_SOUND, getActivity());
 
-		UiTestUtils.getIntoSoundsFromMainMenu(solo);
+		UiTestUtils.getIntoSoundsFromMainMenu(solo, 2);
 
 		rename = solo.getString(R.string.rename);
 		renameDialogTitle = solo.getString(R.string.rename_sound_dialog);
@@ -566,7 +566,7 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 	}
 
 	public void testBackPackAndUnPackFromDifferentProgrammes() {
-		UiTestUtils.createTestProject(UiTestUtils.PROJECTNAME1);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), UiTestUtils.PROJECTNAME1);
 		SoundAdapter adapter = getSoundAdapter();
 
 		assertNotNull("Could not get Adapter", adapter);
@@ -648,7 +648,8 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 	}
 
 	public void testBackPackAndUnPackFromDifferentSprites() {
-		UiTestUtils.createTestProjectWithTwoSprites(UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		UiTestUtils.createTestProjectWithTwoSprites(getInstrumentation().getTargetContext(),
+				UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		SoundAdapter adapter = getSoundAdapter();
 
 		assertNotNull("Could not get Adapter", adapter);

@@ -312,7 +312,7 @@ public class DoubleClickOpensViewOnceTest extends TestSuite {
 
 		@Override
 		public void setUp() throws Exception {
-			UiTestUtils.createTestProject();
+			UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 			super.setUp();
 			activity = (ProgramMenuActivity) solo.getCurrentActivity();
 		}
@@ -371,7 +371,7 @@ public class DoubleClickOpensViewOnceTest extends TestSuite {
 
 		@Override
 		public void setUp() throws Exception {
-			UiTestUtils.createTestProject();
+			UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 			super.setUp();
 			activity = (ProjectActivity) solo.getCurrentActivity();
 		}
@@ -412,7 +412,7 @@ public class DoubleClickOpensViewOnceTest extends TestSuite {
 
 		@Override
 		public void setUp() throws Exception {
-			UiTestUtils.createTestProject();
+			UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 			super.setUp();
 			activity = (ScriptActivity) solo.getCurrentActivity();
 		}
@@ -453,9 +453,9 @@ public class DoubleClickOpensViewOnceTest extends TestSuite {
 
 		@Override
 		public void setUp() throws Exception {
-			UiTestUtils.createTestProject();
+			UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 			super.setUp();
-			UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+			UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 			fragment = (ScriptFragment) Reflection.getPrivateField(solo.getCurrentActivity(), "currentFragment");
 		}
 
@@ -525,7 +525,7 @@ public class DoubleClickOpensViewOnceTest extends TestSuite {
 
 		@Override
 		public void setUp() throws Exception {
-			UiTestUtils.createTestProject();
+			UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 
 			File imageFile = UiTestUtils.saveFileToProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME,
 					"catroid_sunglasses.png", RESOURCE_IMAGE, getActivity(), UiTestUtils.FileTypes.IMAGE);
@@ -537,7 +537,7 @@ public class DoubleClickOpensViewOnceTest extends TestSuite {
 			lookDataList.add(lookData);
 
 			super.setUp();
-			UiTestUtils.getIntoLooksFromMainMenu(solo, true);
+			UiTestUtils.getIntoLooksFromMainMenu(solo, 0);
 			fragment = (LookFragment) Reflection.getPrivateField(solo.getCurrentActivity(), "currentFragment");
 		}
 

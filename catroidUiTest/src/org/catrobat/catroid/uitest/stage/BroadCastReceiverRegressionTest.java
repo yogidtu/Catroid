@@ -52,7 +52,7 @@ public class BroadCastReceiverRegressionTest extends BaseActivityInstrumentation
 	 */
 
 	public void testReceiversWorkMoreThanOnce() {
-		UiTestUtils.createEmptyProject();
+		UiTestUtils.createProjectWithOneSpriteAndStartScript();
 		Sprite sprite = ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0);
 		Script script = sprite.getScript(0);
 
@@ -66,7 +66,7 @@ public class BroadCastReceiverRegressionTest extends BaseActivityInstrumentation
 		broadcastScript.addBrick(changeXByNBrick);
 		sprite.addScript(broadcastScript);
 
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());

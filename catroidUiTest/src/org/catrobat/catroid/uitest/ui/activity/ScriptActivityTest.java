@@ -50,9 +50,9 @@ public class ScriptActivityTest extends BaseActivityInstrumentationTestCase<Main
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 		UiTestUtils.prepareStageForTest();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	public void testOrientation() throws NameNotFoundException {
@@ -82,12 +82,12 @@ public class ScriptActivityTest extends BaseActivityInstrumentationTestCase<Main
 
 		checkMainMenuButton();
 
-		UiTestUtils.getIntoLooksFromMainMenu(solo, true);
+		UiTestUtils.getIntoLooksFromMainMenu(solo, 0);
 		UiTestUtils.waitForFragment(solo, R.id.fragment_look);
 
 		checkMainMenuButton();
 
-		UiTestUtils.getIntoSoundsFromMainMenu(solo);
+		UiTestUtils.getIntoSoundsFromMainMenu(solo, 0);
 		UiTestUtils.waitForFragment(solo, R.id.fragment_sound);
 
 		checkMainMenuButton();

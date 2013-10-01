@@ -74,11 +74,11 @@ public class FormulaEditorEditTextTest extends BaseActivityInstrumentationTestCa
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	private void createProject(String projectName) throws InterruptedException {
-		Project project = new Project(null, projectName);
+		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
 		Sprite firstSprite = new Sprite("nom nom nom");
 		Script startScript = new StartScript(firstSprite);
 		Brick changeBrick = new ChangeSizeByNBrick(firstSprite, 0);

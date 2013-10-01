@@ -54,7 +54,7 @@ public class GlideToBrickTest extends BaseActivityInstrumentationTestCase<MainMe
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	public void testNumberInput() {
@@ -116,7 +116,7 @@ public class GlideToBrickTest extends BaseActivityInstrumentationTestCase<MainMe
 	}
 
 	private void createProject() {
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		script.addBrick(new GlideToBrick(sprite, 0, 0, 0));

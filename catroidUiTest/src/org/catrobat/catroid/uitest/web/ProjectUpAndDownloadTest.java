@@ -99,7 +99,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 	public void testUploadProjectSuccessAndTokenReplacementAfterUpload() throws Throwable {
 		setServerURLToTestUrl();
-		UiTestUtils.createTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 
 		UiTestUtils.createValidUser(getActivity());
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -119,7 +119,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	public void testUploadProjectOldCatrobatLanguageVersion() throws Throwable {
 		setServerURLToTestUrl();
 
-		UiTestUtils.createTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 		solo.waitForFragmentById(R.id.fragment_sprites_list);
 		solo.sleep(1000);
 		UiTestUtils.clickOnHomeActionBarButton(solo);
@@ -164,7 +164,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		String originalProjectName = testProject;
 		String originalProjectDescription = testDescription;
-		UiTestUtils.createTestProject(originalProjectName);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), originalProjectName);
 		ProjectManager.getInstance().getCurrentProject().setDescription(originalProjectDescription);
 
 		UiTestUtils.createValidUser(getActivity());
@@ -201,7 +201,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	public void testRenameProjectDescriptionWhenUploading() throws Throwable {
 		setServerURLToTestUrl();
 
-		UiTestUtils.createTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 		ProjectManager.getInstance().getCurrentProject().setDescription(testDescription);
 
 		UiTestUtils.createValidUser(getActivity());
@@ -229,7 +229,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		setServerURLToTestUrl();
 
 		String testProject = UiTestUtils.JAPANESE_PROJECT_NAME;
-		UiTestUtils.createTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 
 		UiTestUtils.createValidUser(getActivity());
 
@@ -250,7 +250,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		setServerURLToTestUrl();
 
 		String projectName = UiTestUtils.DEFAULT_TEST_PROJECT_NAME;
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 
 		//Adds a sufficient number of media files so that the project is big enough (5 files ~0.4MB) for download-testing
 		int numberMediaFiles = 5;

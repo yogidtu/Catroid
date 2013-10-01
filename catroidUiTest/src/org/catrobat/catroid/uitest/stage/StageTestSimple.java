@@ -40,7 +40,7 @@ public class StageTestSimple extends BaseActivityInstrumentationTestCase<MainMen
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.createEmptyProject();
+		UiTestUtils.createProjectWithOneSpriteAndStartScript();
 		ScreenValues.SCREEN_HEIGHT = 20;
 		ScreenValues.SCREEN_WIDTH = 20;
 

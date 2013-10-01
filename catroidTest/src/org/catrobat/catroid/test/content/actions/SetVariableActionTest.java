@@ -54,7 +54,7 @@ public class SetVariableActionTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		testSprite = new Sprite("testSprite");
-		project = new Project(null, "testProject");
+		project = new Project(getContext(), "testProject");
 	}
 
 	public void testChangeVariable() throws InterruptedException {

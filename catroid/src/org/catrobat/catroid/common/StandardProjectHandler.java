@@ -81,7 +81,6 @@ public class StandardProjectHandler {
 		String varRandomTo = context.getString(R.string.default_project_var_random_to);
 
 		Project defaultProject = new Project(context, projectName);
-		defaultProject.setDeviceData(context); // density anywhere here
 		StorageHandler.getInstance().saveProject(defaultProject);
 		ProjectManager.getInstance().setProject(defaultProject);
 
@@ -280,14 +279,13 @@ public class StandardProjectHandler {
 		return defaultProject;
 	}
 
-    public static Project createAndSaveEmptyProject(String projectName, Context context) {
-        Project emptyProject = new Project(context, projectName);
-        emptyProject.setDeviceData(context);
-        StorageHandler.getInstance().saveProject(emptyProject);
-        ProjectManager.getInstance().setProject(emptyProject);
+	public static Project createAndSaveEmptyProject(String projectName, Context context) {
+		Project emptyProject = new Project(context, projectName);
+		StorageHandler.getInstance().saveProject(emptyProject);
+		ProjectManager.getInstance().setProject(emptyProject);
 
-        return emptyProject;
-    }
+		return emptyProject;
+	}
 
 	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
 			int fileId, Context context) throws IOException {

@@ -185,7 +185,7 @@ public class UploadDialogTest extends BaseActivityInstrumentationTestCase<MainMe
 		}
 		assertFalse("testProject was not deleted!", directory.exists());
 
-		uploadProject = new Project(getActivity(), testProject);
+		uploadProject = new Project(getInstrumentation().getTargetContext(), testProject);
 		ProjectManager.getInstance().setProject(uploadProject);
 		StorageHandler.getInstance().saveProject(uploadProject);
 

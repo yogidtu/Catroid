@@ -57,11 +57,11 @@ public class FormulaEditorKeyboardTest extends BaseActivityInstrumentationTestCa
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	private void createProject(String projectName) throws InterruptedException {
-		project = new Project(null, projectName);
+		project = new Project(getInstrumentation().getTargetContext(), projectName);
 		firstSprite = new Sprite("firstSprite");
 		secondSprite = new Sprite("secondSprite");
 		Script startScript1 = new StartScript(firstSprite);

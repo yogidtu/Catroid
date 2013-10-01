@@ -63,11 +63,11 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 	protected void setUp() throws Exception {
 		super.setUp();
 		createProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	private void createProject() {
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		placeAtBrick = new PlaceAtBrick(sprite, INITIAL_X, INITIAL_Y);

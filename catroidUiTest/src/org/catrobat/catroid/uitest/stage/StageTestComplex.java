@@ -193,7 +193,7 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 		ScreenValues.SCREEN_HEIGHT = SCREEN_HEIGHT;
 		ScreenValues.SCREEN_WIDTH = SCREEN_WIDTH;
 
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 
 		// yellow Sprite
 		Sprite yellowSprite = new Sprite("yellowSprite");

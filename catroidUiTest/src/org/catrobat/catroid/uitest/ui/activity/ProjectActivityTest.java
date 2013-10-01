@@ -105,7 +105,7 @@ public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<Mai
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 		UiTestUtils.prepareStageForTest();
 
 		projectManager = ProjectManager.getInstance();
@@ -123,7 +123,7 @@ public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<Mai
 	}
 
 	public void testCopySpriteWithUserVariables() {
-		Project project = new Project(null, "testProject");
+		Project project = new Project(getInstrumentation().getTargetContext(), "testProject");
 
 		Sprite firstSprite = new Sprite("firstSprite");
 		Sprite secondSprite = new Sprite(defaultSpriteName);
@@ -174,7 +174,7 @@ public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<Mai
 	}
 
 	public void testUserVariableSelectionAfterCopySprite() {
-		Project project = new Project(null, "testProject");
+		Project project = new Project(getInstrumentation().getTargetContext(), "testProject");
 
 		String firstUserVariableName = "p";
 		String secondUserVariableName = "q";

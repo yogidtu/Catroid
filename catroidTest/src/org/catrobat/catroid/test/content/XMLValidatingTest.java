@@ -52,31 +52,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XMLValidatingTest extends AndroidTestCase {
-	private String testProjectName = "xmlTestProjectName";
 
-	public XMLValidatingTest() throws IOException {
+	@Override
+	public void setUp() throws IOException {
+		TestUtils.createTestProjectWithDefaultName(getContext());
 	}
 
 	@Override
 	public void tearDown() throws Exception {
-		TestUtils.clearProject(testProjectName);
+		TestUtils.deleteTestProjects();
 		super.tearDown();
-	}
-
-	@Override
-	public void setUp() {
-		TestUtils.clearProject(testProjectName);
 	}
 
 	public void testSerializeProjectWithAllBricks() throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException, IOException, JSONException {
+		Project testProject = ProjectManager.getInstance().getCurrentProject();
 
-		File projectDirectory = new File(Constants.DEFAULT_ROOT + "/" + testProjectName);
+		File projectDirectory = new File(Constants.DEFAULT_ROOT + "/" + testProject.getName());
 		if (projectDirectory.exists()) {
 			UtilFile.deleteDirectory(projectDirectory);
 		}
 
-		Project project = new Project(getContext(), testProjectName);
 		Sprite sprite = new Sprite("testSprite");
 		Script startScript = new StartScript(sprite);
 		Script whenScript = new WhenScript(sprite);
@@ -84,9 +80,8 @@ public class XMLValidatingTest extends AndroidTestCase {
 		sprite.addScript(startScript);
 		sprite.addScript(whenScript);
 		sprite.addScript(broadcastScript);
-		project.addSprite(sprite);
+		testProject.addSprite(sprite);
 
-		ProjectManager.getInstance().setProject(project);
 		ProjectManager.getInstance().setCurrentSprite(sprite);
 		ProjectManager.getInstance().setCurrentScript(startScript);
 
@@ -112,7 +107,7 @@ public class XMLValidatingTest extends AndroidTestCase {
 		}
 
 		assertTrue("no bricks added to the start script", startScript.getBrickList().size() > 0);
-		StorageHandler.getInstance().saveProject(project);
+		StorageHandler.getInstance().saveProject(testProject);
 		// TODO: add XML validation based on xsd
 		//	XMLValidationUtil.sendProjectXMLToServerForValidating(project);
 	}

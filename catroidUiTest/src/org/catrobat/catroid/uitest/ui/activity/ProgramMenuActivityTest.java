@@ -185,7 +185,7 @@ public class ProgramMenuActivityTest extends BaseActivityInstrumentationTestCase
 	}
 
 	private void createProject() {
-		Project project = new Project(null, UiTestUtils.PROJECTNAME1);
+		Project project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.PROJECTNAME1);
 
 		Sprite spriteCat = new Sprite(backgroundName);
 		Script startScriptCat = new StartScript(spriteCat);

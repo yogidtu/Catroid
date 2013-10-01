@@ -245,7 +245,7 @@ public class SensorTest extends InstrumentationTestCase {
 	}
 
 	private void createProject() {
-		this.project = new Project(null, "testProject");
+		this.project = new Project(getInstrumentation().getTargetContext(), "testProject");
 		firstSprite = new Sprite("zwoosh");
 		startScript1 = new StartScript(firstSprite);
 		changeBrick = new ChangeSizeByNBrick(firstSprite, 10);

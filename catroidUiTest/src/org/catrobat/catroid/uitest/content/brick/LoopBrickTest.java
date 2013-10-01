@@ -58,7 +58,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	@Override
@@ -267,7 +267,7 @@ public class LoopBrickTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		LoopBeginBrick beginBrick;
 		LoopEndBrick endBrick;
 
-		project = new Project(null, "testProject");
+		project = new Project(getInstrumentation().getTargetContext(), "testProject");
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 

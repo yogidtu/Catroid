@@ -162,7 +162,7 @@ public class WhenBrickTest extends BaseActivityInstrumentationTestCase<ScriptAct
 
 	private void createProject() {
 
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		script.addBrick(new PlaceAtBrick(sprite, 100, 100));

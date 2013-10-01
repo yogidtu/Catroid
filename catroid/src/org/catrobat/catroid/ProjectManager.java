@@ -172,8 +172,17 @@ public class ProjectManager {
 	}
 
 	public void deleteCurrentProject() {
-		StorageHandler.getInstance().deleteProject(project);
-		project = null;
+		deleteProject(project.getName());
+	}
+
+	public boolean deleteProject(String name) {
+		if (!StorageHandler.getInstance().projectExists(name)) {
+			return false;
+		}
+		if (project != null && name.equals(project.getName())) {
+			project = null;
+		}
+		return StorageHandler.getInstance().deleteProject(name);
 	}
 
 	public boolean renameProject(String newProjectName, Context context) {

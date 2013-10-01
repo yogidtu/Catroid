@@ -61,7 +61,7 @@ public class ChangeVariableTest extends BaseActivityInstrumentationTestCase<Main
 	public void setUp() throws Exception {
 		super.setUp();
 		createProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	public void testCreateNewUserVariableAndDeletion() {
@@ -176,7 +176,7 @@ public class ChangeVariableTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	private void createProject() {
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		changeVariableBrick = new ChangeVariableBrick(sprite, 10);

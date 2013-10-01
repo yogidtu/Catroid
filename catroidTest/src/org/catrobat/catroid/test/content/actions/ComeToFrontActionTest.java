@@ -36,13 +36,18 @@ import org.catrobat.catroid.test.utils.TestUtils;
 public class ComeToFrontActionTest extends AndroidTestCase {
 
 	@Override
+	protected void setUp() throws Exception {
+		TestUtils.createTestProjectWithDefaultName(getContext());
+	}
+
+	@Override
 	public void tearDown() throws Exception {
-		TestUtils.clearProject("testProject");
+		TestUtils.deleteTestProjects();
 		super.tearDown();
 	}
 
 	public void testComeToFront() {
-		Project project = new Project(getContext(), "testProject");
+		Project project = ProjectManager.getInstance().getCurrentProject();
 		Group parentGroup = new Group();
 
 		Sprite bottomSprite = new Sprite("catroid");
@@ -62,7 +67,6 @@ public class ComeToFrontActionTest extends AndroidTestCase {
 		project.addSprite(bottomSprite);
 		project.addSprite(middleSprite);
 		project.addSprite(topSprite);
-		ProjectManager.getInstance().setProject(project);
 
 		ComeToFrontAction action = ExtendedActions.comeToFront(bottomSprite);
 		bottomSprite.look.addAction(action);
@@ -83,7 +87,7 @@ public class ComeToFrontActionTest extends AndroidTestCase {
 	}
 
 	public void testBoundaries() {
-		Project project = new Project(getContext(), "testProject");
+		Project project = ProjectManager.getInstance().getCurrentProject();
 		Group parentGroup = new Group();
 
 		Sprite firstSprite = new Sprite("firstSprite");
@@ -96,8 +100,6 @@ public class ComeToFrontActionTest extends AndroidTestCase {
 			sprite.look.setZIndex(Integer.MAX_VALUE);
 			project.addSprite(sprite);
 		}
-
-		ProjectManager.getInstance().setProject(project);
 
 		ComeToFrontAction action = ExtendedActions.comeToFront(firstSprite);
 		firstSprite.look.addAction(action);

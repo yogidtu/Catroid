@@ -23,17 +23,17 @@
 package org.catrobat.catroid.uitest.ui.dialog;
 
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.jayway.android.robotium.solo.Solo;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.MyProjectsActivity;
+import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -59,17 +59,19 @@ public class RenameSpriteDialogTest extends BaseActivityInstrumentationTestCase<
 	}
 
 	public void testRenameSpriteDialog() throws NameNotFoundException, IOException {
-		createTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 		solo.sleep(200);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.sleep(1000);
 		assertTrue("Cannot click on project.", UiTestUtils.clickOnTextInList(solo, testProject));
+		solo.waitForActivity(ProgramMenuActivity.class, 5000);
 		solo.clickLongOnText(cat);
 
 		solo.clickOnText(solo.getString(R.string.rename));
 		solo.sleep(100);
-		solo.clearEditText(0);
-		UiTestUtils.enterText(solo, 0, kat);
+		EditText editText = solo.getEditText(0);
+		solo.clearEditText(editText);
+		solo.enterText(editText, kat);
 		solo.sendKey(Solo.ENTER);
 		solo.sleep(200);
 
@@ -80,7 +82,7 @@ public class RenameSpriteDialogTest extends BaseActivityInstrumentationTestCase<
 	}
 
 	public void testRenameSpriteDialogMixedCase() throws NameNotFoundException, IOException {
-		createTestProject(testProject);
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), testProject);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.sleep(500);
@@ -96,21 +98,5 @@ public class RenameSpriteDialogTest extends BaseActivityInstrumentationTestCase<
 		ListView spriteList = (ListView) solo.getCurrentActivity().findViewById(android.R.id.list);
 		String first = ((Sprite) spriteList.getItemAtPosition(1)).getName();
 		assertEquals("The first sprite name was not renamed to Mixed Case", first, catMixedCase);
-	}
-
-	public void createTestProject(String projectName) {
-		StorageHandler storageHandler = StorageHandler.getInstance();
-		Project project = new Project(getActivity(), projectName);
-		Sprite firstSprite = new Sprite("cat");
-		Sprite secondSprite = new Sprite("dog");
-		Sprite thirdSprite = new Sprite("horse");
-		Sprite fourthSprite = new Sprite("pig");
-
-		project.addSprite(firstSprite);
-		project.addSprite(secondSprite);
-		project.addSprite(thirdSprite);
-		project.addSprite(fourthSprite);
-
-		storageHandler.saveProject(project);
 	}
 }

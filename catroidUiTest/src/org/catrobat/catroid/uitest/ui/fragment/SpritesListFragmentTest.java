@@ -56,7 +56,7 @@ public class SpritesListFragmentTest extends BaseActivityInstrumentationTestCase
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 
 		project = ProjectManager.getInstance().getCurrentProject();
 		sprite = new Sprite(SPRITE_NAME);

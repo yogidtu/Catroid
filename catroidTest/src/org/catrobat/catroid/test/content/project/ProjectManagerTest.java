@@ -55,6 +55,8 @@ import java.util.Map;
 public class ProjectManagerTest extends InstrumentationTestCase {
 
 	private String projectNameOne = "Ulumulu";
+	private String oldProjectName = "oldProject";
+	private String newProjectName = "newProject";
 	private String spriteNameOne = "Zuul";
 	private String spriteNameTwo = "Zuuul";
 
@@ -63,9 +65,7 @@ public class ProjectManagerTest extends InstrumentationTestCase {
 
 	@Override
 	public void tearDown() throws Exception {
-		TestUtils.clearProject(projectNameOne);
-		TestUtils.clearProject("oldProject");
-		TestUtils.clearProject("newProject");
+		TestUtils.deleteTestProjects(projectNameOne, oldProjectName, newProjectName);
 		super.tearDown();
 	}
 
@@ -165,8 +165,6 @@ public class ProjectManagerTest extends InstrumentationTestCase {
 	}
 
 	public void testRenameProject() throws IOException {
-		String oldProjectName = "oldProject";
-		String newProjectName = "newProject";
 		ProjectManager projectManager = ProjectManager.getInstance();
 
 		Project project = createTestProject(oldProjectName);

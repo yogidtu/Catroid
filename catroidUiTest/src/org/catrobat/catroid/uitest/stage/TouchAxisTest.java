@@ -76,7 +76,7 @@ public class TouchAxisTest extends BaseActivityInstrumentationTestCase<MainMenuA
 		ScreenValues.SCREEN_HEIGHT = 800;
 		ScreenValues.SCREEN_WIDTH = 480;
 
-		Project testProject = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		Project testProject = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		final String alphaTestImageName = "alpha_test_image.png";
 
 		Sprite touchSprite = new Sprite("touchSprite");

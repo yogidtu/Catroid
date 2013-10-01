@@ -276,7 +276,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 			e.printStackTrace();
 			fail("Standard Project not created");
 		}
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 		solo.sleep(200);
 
 		String myProjectsText = solo.getString(R.string.main_menu_programs);
@@ -326,7 +326,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 			e.printStackTrace();
 			fail("Standard Project not created");
 		}
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 		solo.sleep(200);
 
 		String myProjectsText = solo.getString(R.string.main_menu_programs);
@@ -449,7 +449,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		deleteCacheProjects = true;
 
 		//create first cache test project and set it as current project 
-		Project firstCacheTestProject = new Project(getActivity(), "cachetestProject" + 0);
+		Project firstCacheTestProject = new Project(getInstrumentation().getTargetContext(), "cachetestProject" + 0);
 		StorageHandler.getInstance().saveProject(firstCacheTestProject);
 		UiTestUtils.saveFileToProject(cacheProjectName + 0, StageListener.SCREENSHOT_MANUAL_FILE_NAME,
 				IMAGE_RESOURCE_2, getInstrumentation().getContext(), UiTestUtils.FileTypes.ROOT);
@@ -457,7 +457,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 		for (int i = 1; i < numberOfCacheProjects; i++) {
 			solo.sleep(500);
-			StorageHandler.getInstance().saveProject(new Project(getActivity(), "cachetestProject" + i));
+			StorageHandler.getInstance().saveProject(new Project(getInstrumentation().getTargetContext(), "cachetestProject" + i));
 			UiTestUtils.saveFileToProject(cacheProjectName + i, StageListener.SCREENSHOT_MANUAL_FILE_NAME,
 					IMAGE_RESOURCE_2, getInstrumentation().getContext(), UiTestUtils.FileTypes.ROOT);
 		}
@@ -738,7 +738,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 	public void testDeleteManyProjects() {
 		for (int count = 0; count < 10; count++) {
-			UiTestUtils.createTestProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME + " " + count);
+			UiTestUtils.createTestProject(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME + " " + count);
 		}
 
 		solo.sleep(200);
@@ -1735,7 +1735,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		LookData backgroundRed;
 		ProjectManager projectManager = ProjectManager.getInstance();
 
-		UiTestUtils.createEmptyProject();
+		UiTestUtils.createProjectWithOneSpriteAndStartScript();
 
 		File imageFile1 = UiTestUtils.saveFileToProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME,
 				StageListener.SCREENSHOT_MANUAL_FILE_NAME, IMAGE_RESOURCE_4, getInstrumentation().getContext(),
@@ -1845,12 +1845,12 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 	}
 
 	private void createProjects() {
-		Project project2 = new Project(getActivity(), UiTestUtils.PROJECTNAME1);
+		Project project2 = new Project(getInstrumentation().getTargetContext(), UiTestUtils.PROJECTNAME1);
 		StorageHandler.getInstance().saveProject(project2);
 
 		solo.sleep(2000);
 
-		Project project1 = new Project(getActivity(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		Project project1 = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		StorageHandler.getInstance().saveProject(project1);
 		ProjectManager.getInstance().setProject(project1);
 		ProjectManager projectManager = ProjectManager.getInstance();
@@ -1883,11 +1883,11 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 	}
 
 	private void createProjectsWithoutSprites() {
-		Project project1 = new Project(getActivity(), UiTestUtils.PROJECTNAME1);
+		Project project1 = new Project(getInstrumentation().getTargetContext(), UiTestUtils.PROJECTNAME1);
 		StorageHandler.getInstance().saveProject(project1);
 		solo.sleep(2000);
 
-		Project project2 = new Project(getActivity(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		Project project2 = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		StorageHandler.getInstance().saveProject(project2);
 		solo.sleep(2000);
 	}

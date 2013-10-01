@@ -55,7 +55,7 @@ public class SetDescriptionDialogTest extends BaseActivityInstrumentationTestCas
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	public void testMultiLineProjectDescription() {
 		StorageHandler storageHandler = StorageHandler.getInstance();
-		Project uploadProject = new Project(getActivity(), testProject);
+		Project uploadProject = new Project(getInstrumentation().getTargetContext(), testProject);
 		storageHandler.saveProject(uploadProject);
 
 		solo.sleep(300);

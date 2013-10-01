@@ -138,7 +138,7 @@ public class SetSizeToBrickTest extends BaseActivityInstrumentationTestCase<Main
 		ScreenValues.SCREEN_HEIGHT = SCREEN_HEIGHT;
 		ScreenValues.SCREEN_WIDTH = SCREEN_WIDTH;
 
-		project = new Project(getActivity(), projectName);
+		project = new Project(getInstrumentation().getTargetContext(), projectName);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		setSizeToBrick = new SetSizeToBrick(sprite, 100);

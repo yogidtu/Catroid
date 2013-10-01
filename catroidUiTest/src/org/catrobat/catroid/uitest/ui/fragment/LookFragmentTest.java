@@ -103,7 +103,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 		UiTestUtils.prepareStageForTest();
 
 		projectManager = ProjectManager.getInstance();
@@ -141,7 +141,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		projectManager.getCurrentProject().getXmlHeader().virtualScreenWidth = display.getWidth();
 		projectManager.getCurrentProject().getXmlHeader().virtualScreenHeight = display.getHeight();
 
-		UiTestUtils.getIntoLooksFromMainMenu(solo, true);
+		UiTestUtils.getIntoLooksFromMainMenu(solo, 0);
 
 		copy = solo.getString(R.string.copy);
 		rename = solo.getString(R.string.rename);
@@ -1204,7 +1204,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 
 		UiTestUtils.clickOnHomeActionBarButton(solo);
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
-		UiTestUtils.getIntoLooksFromMainMenu(solo, true);
+		UiTestUtils.getIntoLooksFromMainMenu(solo, 0);
 
 		int[] fileResolutionAfterCrop = lookData.getMeasure();
 		int[] displayedResolutionAfterCrop = getDisplayedMeasure(lookData);

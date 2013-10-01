@@ -63,7 +63,7 @@ public class DeleteDialogTest extends BaseActivityInstrumentationTestCase<MainMe
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.createTestProject();
+		UiTestUtils.createTestProject(getInstrumentation().getTargetContext());
 		soundInfoList = ProjectManager.getInstance().getCurrentSprite().getSoundList();
 		lookDataList = ProjectManager.getInstance().getCurrentSprite().getLookDataList();
 	}
@@ -81,7 +81,7 @@ public class DeleteDialogTest extends BaseActivityInstrumentationTestCase<MainMe
 		String buttonOkText = solo.getString(R.string.yes);
 		String buttonCancelText = solo.getString(R.string.no);
 		String deleteLookText = solo.getString(R.string.delete);
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.switchToFragmentInScriptActivity(solo, UiTestUtils.LOOKS_INDEX);
 		UiTestUtils.waitForFragment(solo, R.id.fragment_look);
@@ -114,7 +114,7 @@ public class DeleteDialogTest extends BaseActivityInstrumentationTestCase<MainMe
 		String buttonOkText = solo.getString(R.string.yes);
 		String buttonCancelText = solo.getString(R.string.no);
 		String deleteSoundText = solo.getString(R.string.delete);
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 
 		UiTestUtils.switchToFragmentInScriptActivity(solo, UiTestUtils.SOUNDS_INDEX);
 		solo.clickLongOnText(soundName);

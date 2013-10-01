@@ -332,18 +332,22 @@ public class StorageHandler {
 		}
 	}
 
-	public boolean deleteProject(Project project) {
-		if (project != null) {
-			return UtilFile.deleteDirectory(new File(buildProjectPath(project.getName())));
+	public boolean deleteProject(ProjectData projectData) {
+		if (projectData == null) {
+			return false;
 		}
-		return false;
+		return deleteProject(projectData.projectName);
 	}
 
-	public boolean deleteProject(ProjectData projectData) {
-		if (projectData != null) {
-			return UtilFile.deleteDirectory(new File(buildProjectPath(projectData.projectName)));
+	public boolean deleteProject(String projectName) {
+		if (projectName == null || projectName == "") {
+			return false;
 		}
-		return false;
+		File projectDirectory = new File(buildProjectPath(projectName));
+		if (!projectDirectory.isDirectory()) {
+			return false;
+		}
+		return UtilFile.deleteDirectory(projectDirectory);
 	}
 
 	public boolean projectExists(String projectName) {

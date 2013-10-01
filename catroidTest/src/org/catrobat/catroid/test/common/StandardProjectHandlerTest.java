@@ -24,6 +24,7 @@ package org.catrobat.catroid.test.common;
 
 import android.test.AndroidTestCase;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.ScreenValues;
@@ -39,29 +40,23 @@ import java.io.IOException;
 
 public class StandardProjectHandlerTest extends AndroidTestCase {
 
-	private String testProjectName = "testStandardProjectBuilding";
-
-	public StandardProjectHandlerTest() throws IOException {
+	@Override
+	public void setUp() throws IOException {
+		StandardProjectHandler.createAndSaveStandardProject(TestUtils.DEFAULT_TEST_PROJECT_NAME, getContext());
 	}
 
 	@Override
 	public void tearDown() throws Exception {
-		TestUtils.clearProject(testProjectName);
+		TestUtils.deleteTestProjects();
 		super.tearDown();
 	}
 
-	@Override
-	public void setUp() {
-		TestUtils.clearProject(testProjectName);
-	}
-
 	public void testCreateStandardProject() throws IOException {
+		Project testProject = ProjectManager.getInstance().getCurrentProject();
 		ScreenValues.SCREEN_WIDTH = 720;
 		ScreenValues.SCREEN_HEIGHT = 1134;
 
-		Project testProject = StandardProjectHandler.createAndSaveStandardProject(testProjectName, getContext());
-
-		assertEquals("The Project has the wrong name.", testProjectName, testProject.getName());
+		assertEquals("The Project has the wrong name.", TestUtils.DEFAULT_TEST_PROJECT_NAME, testProject.getName());
 		assertEquals("wrong number of sprites.", 5, testProject.getSpriteList().size());
 
 		int backgroundSpriteIndex = 0;
@@ -90,8 +85,7 @@ public class StandardProjectHandlerTest extends AndroidTestCase {
 	}
 
 	public void testDefaultProjectScreenshot() throws IOException {
-		StandardProjectHandler.createAndSaveStandardProject(testProjectName, getContext());
-		String projectPath = Constants.DEFAULT_ROOT + "/" + testProjectName;
+		String projectPath = Constants.DEFAULT_ROOT + "/" + ProjectManager.getInstance().getCurrentProject().getName();
 
 		File file = new File(projectPath + "/" + StageListener.SCREENSHOT_MANUAL_FILE_NAME);
 		assertFalse("Manual screenshot shouldn't exist in default project", file.exists());

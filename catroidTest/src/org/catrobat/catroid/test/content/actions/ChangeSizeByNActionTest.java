@@ -22,14 +22,14 @@
  */
 package org.catrobat.catroid.test.content.actions;
 
-import android.test.InstrumentationTestCase;
+import android.test.AndroidTestCase;
 
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ChangeSizeByNAction;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
 
-public class ChangeSizeByNActionTest extends InstrumentationTestCase {
+public class ChangeSizeByNActionTest extends AndroidTestCase {
 
 	private static final float CHANGE_SIZE = 20f;
 	private static final float DELTA = 0.0001f;

@@ -179,13 +179,13 @@ public class SwitchToLookCrashTest extends BaseActivityInstrumentationTestCase<M
 
 	private void prepareTest() {
 		createProject();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 		UiTestUtils.switchToFragmentInScriptActivity(solo, UiTestUtils.LOOKS_INDEX);
 	}
 
 	private void createProject() {
 		StorageHandler storageHandler = StorageHandler.getInstance();
-		Project project = new Project(getActivity(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		Project project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 
 		Sprite backgroundSprite = project.getSpriteList().get(0);
 		Script startScript = new StartScript(backgroundSprite);

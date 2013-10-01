@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -137,6 +138,7 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void create() {
+		Log.d("StageListener", "creating StageListener...");
 		font = new BitmapFont();
 		font.setColor(1f, 0f, 0.05f, 1f);
 		font.setScale(1.2f);
@@ -191,7 +193,7 @@ public class StageListener implements ApplicationListener {
 		}
 		paused = false;
 		SoundManager.getInstance().resume();
-		for (Sprite sprite : sprites) {
+		for (Sprite sprite : ProjectManager.getInstance().getCurrentProject().getSpriteList()) {
 			sprite.resume();
 		}
 	}
@@ -202,7 +204,7 @@ public class StageListener implements ApplicationListener {
 		}
 		paused = true;
 		SoundManager.getInstance().pause();
-		for (Sprite sprite : sprites) {
+		for (Sprite sprite : ProjectManager.getInstance().getCurrentProject().getSpriteList()) {
 			sprite.pause();
 		}
 	}

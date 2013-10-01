@@ -93,7 +93,7 @@ public class TurnRightBrickTest extends BaseActivityInstrumentationTestCase<Scri
 	}
 
 	private void createProject() {
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		Sprite sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		turnRightBrick = new TurnRightBrick(sprite, 0);

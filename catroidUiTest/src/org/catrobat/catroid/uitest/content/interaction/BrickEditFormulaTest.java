@@ -37,8 +37,8 @@ public class BrickEditFormulaTest extends BaseActivityInstrumentationTestCase<Ma
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.createTestProjectWithEveryBrick();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.createTestProjectWithEveryBrick(getInstrumentation().getTargetContext());
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	private void checkBrick(int brickName) {

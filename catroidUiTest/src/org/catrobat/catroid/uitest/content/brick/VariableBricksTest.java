@@ -54,7 +54,7 @@ public class VariableBricksTest extends BaseActivityInstrumentationTestCase<Main
 		super.setUp();
 		createProject();
 		UiTestUtils.prepareStageForTest();
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class VariableBricksTest extends BaseActivityInstrumentationTestCase<Main
 	}
 
 	private void createProject() {
-		project = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		project = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		sprite = new Sprite("cat");
 		Script script = new StartScript(sprite);
 		ProjectManager.getInstance().setProject(project);

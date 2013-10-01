@@ -102,7 +102,7 @@ public class SingleExecutionWhenBrickTest extends BaseActivityInstrumentationTes
 		ScreenValues.SCREEN_HEIGHT = SCREEN_HEIGHT;
 		ScreenValues.SCREEN_WIDTH = SCREEN_WIDTH;
 
-		projectWhenBrick = new Project(null, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
+		projectWhenBrick = new Project(getInstrumentation().getTargetContext(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 
 		// yellow Sprite
 		yellowSprite = new Sprite("yellowSprite");

@@ -50,7 +50,7 @@ public class ScriptDeleteTest extends BaseActivityInstrumentationTestCase<MainMe
 	public void setUp() throws Exception {
 		super.setUp();
 		createTestProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
-		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
+		UiTestUtils.getIntoScriptActivityFromMainMenu(solo, 2);
 	}
 
 	public void testAddLooksCategoryBrick() {
@@ -123,7 +123,7 @@ public class ScriptDeleteTest extends BaseActivityInstrumentationTestCase<MainMe
 	private void createTestProject(String projectName) {
 		double size = 0.8;
 
-		Project project = new Project(null, projectName);
+		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
 		Sprite firstSprite = new Sprite("cat");
 
 		Script testScript = new StartScript(firstSprite);

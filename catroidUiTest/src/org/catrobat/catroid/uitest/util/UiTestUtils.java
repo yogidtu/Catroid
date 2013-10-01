@@ -154,6 +154,7 @@ public class UiTestUtils {
 	private static List<InternToken> internTokenList = new ArrayList<InternToken>();
 
 	public static final String DEFAULT_TEST_PROJECT_NAME = "testProject";
+	private static final String DEFAULT_TEST_SPRITE_NAME = "cat";
 	public static final String PROJECTNAME1 = "testingproject1";
 	public static final String PROJECTNAME2 = "testingproject2";
 	public static final String PROJECTNAME3 = "testingproject3";
@@ -535,12 +536,12 @@ public class UiTestUtils {
 		return location;
 	}
 
-	public static List<Brick> createTestProjectWithTwoSprites(String projectName) {
+	public static List<Brick> createTestProjectWithTwoSprites(Context context, String projectName) {
 		int xPosition = 457;
 		int yPosition = 598;
 		double size = 0.8;
 
-		Project project = new Project(null, projectName);
+		Project project = new Project(context, projectName);
 		Sprite firstSprite = new Sprite("cat");
 		Sprite secondSprite = new Sprite("second_sprite");
 
@@ -576,12 +577,12 @@ public class UiTestUtils {
 		return brickList;
 	}
 
-	public static List<Brick> createTestProject(String projectName) {
+	public static List<Brick> createTestProject(Context context, String projectName) {
 		int xPosition = 457;
 		int yPosition = 598;
 		double size = 0.8;
 
-		Project project = new Project(null, projectName);
+		Project project = new Project(context, projectName);
 		Sprite firstSprite = new Sprite("cat");
 
 		Script testScript = new StartScript(firstSprite);
@@ -601,6 +602,9 @@ public class UiTestUtils {
 		firstSprite.addScript(testScript);
 
 		project.addSprite(firstSprite);
+		//project.addSprite(new Sprite("dog"));
+		//project.addSprite(new Sprite("horse"));
+		//project.addSprite(new Sprite("pig"));
 
 		projectManager.setFileChecksumContainer(new FileChecksumContainer());
 		projectManager.setProject(project);
@@ -615,12 +619,12 @@ public class UiTestUtils {
 		return brickList;
 	}
 
-	public static List<Brick> createTestProject() {
-		return createTestProject(DEFAULT_TEST_PROJECT_NAME);
+	public static List<Brick> createTestProject(Context context) {
+		return createTestProject(context, DEFAULT_TEST_PROJECT_NAME);
 	}
 
-	public static List<Brick> createTestProjectNestedLoops() {
-		Project project = new Project(null, DEFAULT_TEST_PROJECT_NAME);
+	public static List<Brick> createTestProjectNestedLoops(Context context) {
+		Project project = new Project(context, DEFAULT_TEST_PROJECT_NAME);
 		Sprite firstSprite = new Sprite("cat");
 
 		Script testScript = new StartScript(firstSprite);
@@ -653,8 +657,8 @@ public class UiTestUtils {
 		return brickList;
 	}
 
-	public static List<Brick> createTestProjectIfBricks() {
-		Project project = new Project(null, DEFAULT_TEST_PROJECT_NAME);
+	public static List<Brick> createTestProjectIfBricks(Context context) {
+		Project project = new Project(context, DEFAULT_TEST_PROJECT_NAME);
 		Sprite firstSprite = new Sprite("cat");
 
 		Script testScript = new StartScript(firstSprite);
@@ -687,8 +691,8 @@ public class UiTestUtils {
 		return brickList;
 	}
 
-	public static List<Brick> createTestProjectWithEveryBrick() {
-		Project project = new Project(null, DEFAULT_TEST_PROJECT_NAME);
+	public static List<Brick> createTestProjectWithEveryBrick(Context context) {
+		Project project = new Project(context, DEFAULT_TEST_PROJECT_NAME);
 		Sprite firstSprite = new Sprite("cat");
 
 		Script testScript = new StartScript(firstSprite);
@@ -750,8 +754,8 @@ public class UiTestUtils {
 		return brickList;
 	}
 
-	public static void createTestProjectForActionModeDelete() {
-		Project project = new Project(null, DEFAULT_TEST_PROJECT_NAME);
+	public static void createTestProjectForActionModeDelete(Context context) {
+		Project project = new Project(context, DEFAULT_TEST_PROJECT_NAME);
 		Sprite firstSprite = new Sprite("cat");
 
 		Script firstScript = new StartScript(firstSprite);
@@ -785,16 +789,19 @@ public class UiTestUtils {
 
 	}
 
-	public static void createEmptyProject() {
-		Project project = new Project(null, DEFAULT_TEST_PROJECT_NAME);
-		Sprite firstSprite = new Sprite("cat");
+	public static void createProjectWithOneSpriteAndStartScript() {
+		try {
+			projectManager.initializeNewProject(DEFAULT_TEST_PROJECT_NAME, null, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Project project = projectManager.getCurrentProject();
+		Sprite firstSprite = new Sprite(DEFAULT_TEST_SPRITE_NAME);
 		Script testScript = new StartScript(firstSprite);
 
 		firstSprite.addScript(testScript);
 		project.addSprite(firstSprite);
 
-		projectManager.setFileChecksumContainer(new FileChecksumContainer());
-		projectManager.setProject(project);
 		projectManager.setCurrentSprite(firstSprite);
 		projectManager.setCurrentScript(testScript);
 	}
@@ -1307,8 +1314,8 @@ public class UiTestUtils {
 		static final long serialVersionUID = 1L;
 		private final float catrobatLanguageVersion;
 
-		public ProjectWithCatrobatLanguageVersion(String name, float catrobatLanguageVersion) {
-			super(null, name);
+		public ProjectWithCatrobatLanguageVersion(Context context, String name, float catrobatLanguageVersion) {
+			super(context, name);
 			this.catrobatLanguageVersion = catrobatLanguageVersion;
 		}
 
@@ -1318,8 +1325,10 @@ public class UiTestUtils {
 		}
 	}
 
-	public static boolean createTestProjectOnLocalStorageWithCatrobatLanguageVersion(float catrobatLanguageVersion) {
-		Project project = new ProjectWithCatrobatLanguageVersion(DEFAULT_TEST_PROJECT_NAME, catrobatLanguageVersion);
+	public static boolean createTestProjectOnLocalStorageWithCatrobatLanguageVersion(Context context,
+			float catrobatLanguageVersion) {
+		Project project = new ProjectWithCatrobatLanguageVersion(context, DEFAULT_TEST_PROJECT_NAME,
+				catrobatLanguageVersion);
 		Sprite firstSprite = new Sprite("cat");
 		Script testScript = new StartScript(firstSprite);
 
@@ -1373,10 +1382,6 @@ public class UiTestUtils {
 		solo.waitForActivity(ProgramMenuActivity.class.getSimpleName());
 	}
 
-	public static void getIntoSoundsFromMainMenu(Solo solo) {
-		getIntoSoundsFromMainMenu(solo, 0);
-	}
-
 	public static void getIntoSoundsFromMainMenu(Solo solo, int spriteIndex) {
 		getIntoProgramMenuFromMainMenu(solo, spriteIndex);
 
@@ -1386,20 +1391,12 @@ public class UiTestUtils {
 		solo.sleep(200);
 	}
 
-	public static void getIntoLooksFromMainMenu(Solo solo) {
-		getIntoLooksFromMainMenu(solo, 0, false);
-	}
-
-	public static void getIntoLooksFromMainMenu(Solo solo, boolean isBackground) {
-		getIntoLooksFromMainMenu(solo, 0, isBackground);
-	}
-
-	public static void getIntoLooksFromMainMenu(Solo solo, int spriteIndex, boolean isBackground) {
+	public static void getIntoLooksFromMainMenu(Solo solo, int spriteIndex) {
 		getIntoProgramMenuFromMainMenu(solo, spriteIndex);
 
 		String textToClickOn = "";
 
-		if (isBackground) {
+		if (spriteIndex <= 1) {
 			textToClickOn = solo.getString(R.string.backgrounds);
 		} else {
 			textToClickOn = solo.getString(R.string.looks);
@@ -1408,10 +1405,6 @@ public class UiTestUtils {
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 		solo.waitForView(ListView.class);
 		solo.sleep(200);
-	}
-
-	public static void getIntoScriptActivityFromMainMenu(Solo solo) {
-		getIntoScriptActivityFromMainMenu(solo, 0);
 	}
 
 	public static void getIntoScriptActivityFromMainMenu(Solo solo, int spriteIndex) {

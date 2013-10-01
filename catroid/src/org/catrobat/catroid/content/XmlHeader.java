@@ -30,8 +30,8 @@ public class XmlHeader implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String programName;
-	private String description;
+	private String programName = "";
+	private String description = "";
 
 	@XStreamAlias("screenWidth")
 	public int virtualScreenWidth = 0;

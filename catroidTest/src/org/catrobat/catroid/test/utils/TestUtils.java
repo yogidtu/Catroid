@@ -28,7 +28,6 @@ import android.util.SparseArray;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.FileChecksumContainer;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
@@ -38,7 +37,6 @@ import org.catrobat.catroid.content.bricks.HideBrick;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.NotificationData;
 import org.catrobat.catroid.utils.StatusBarNotificationManager;
-import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -94,14 +92,6 @@ public class TestUtils {
 		}
 
 		return createTestMediaFile(filePath, fileID, context);
-	}
-
-	public static boolean clearProject(String projectname) {
-		File directory = new File(Constants.DEFAULT_ROOT + "/" + projectname);
-		if (directory.exists()) {
-			return UtilFile.deleteDirectory(directory);
-		}
-		return false;
 	}
 
 	public static File createTestMediaFile(String filePath, int fileID, Context context) throws IOException {
@@ -173,10 +163,9 @@ public class TestUtils {
 	//		}
 	//	}
 
-	public static Project createTestProjectOnLocalStorageWithCatrobatLanguageVersionAndName(
+	public static Project createTestProjectOnLocalStorageWithCatrobatLanguageVersionAndName(Context context,
 			float catrobatLanguageVersion, String name) {
-		//		Project project = new ProjectWithCatrobatLanguageVersion(name, catrobatLanguageVersion);
-		Project project = new Project(null, name);
+		Project project = new Project(context, name);
 		project.setCatrobatLanguageVersion(catrobatLanguageVersion);
 
 		Sprite firstSprite = new Sprite("cat");
@@ -191,24 +180,25 @@ public class TestUtils {
 		return project;
 	}
 
-	public static Project createTestProjectOnLocalStorageWithCatrobatLanguageVersion(float catrobatLanguageVersion) {
-		return createTestProjectOnLocalStorageWithCatrobatLanguageVersionAndName(catrobatLanguageVersion,
+	public static void createTestProjectWithDefaultName(Context context) throws IOException {
+		createTestProject(context, DEFAULT_TEST_PROJECT_NAME);
+	}
+
+	public static void createTestProject(Context context, String projectName) throws IOException {
+		ProjectManager.getInstance().deleteProject(projectName);
+		ProjectManager.getInstance().initializeNewProject(projectName, context, true);
+	}
+
+	public static Project createTestProjectOnLocalStorageWithCatrobatLanguageVersion(Context context,
+			float catrobatLanguageVersion) {
+		return createTestProjectOnLocalStorageWithCatrobatLanguageVersionAndName(context, catrobatLanguageVersion,
 				DEFAULT_TEST_PROJECT_NAME);
 	}
 
 	public static void deleteTestProjects(String... additionalProjectNames) {
-		ProjectManager.getInstance().setFileChecksumContainer(new FileChecksumContainer());
-
-		File directory = new File(Constants.DEFAULT_ROOT + "/" + DEFAULT_TEST_PROJECT_NAME);
-		if (directory.exists()) {
-			UtilFile.deleteDirectory(directory);
-		}
-
+		ProjectManager.getInstance().deleteProject(DEFAULT_TEST_PROJECT_NAME);
 		for (String name : additionalProjectNames) {
-			directory = new File(Constants.DEFAULT_ROOT + "/" + name);
-			if (directory.exists()) {
-				UtilFile.deleteDirectory(directory);
-			}
+			ProjectManager.getInstance().deleteProject(name);
 		}
 	}
 

@@ -75,22 +75,18 @@ public class MediaPathTest extends InstrumentationTestCase {
 
 	private String imageName = "testImage.png";
 	private String soundName = "testSound.mp3";
-	private String projectName = "testProject7";
+	private String projectName = "testProject";
+	private String projectMockName = "mockProject";
 	private String bigBlueName = "bigblue.png";
 
 	@Override
 	protected void setUp() throws Exception {
+		Utils.updateScreenWidthAndHeight(getInstrumentation().getContext());
+		TestUtils.createTestProject(getInstrumentation().getTargetContext(), projectName);
+		project = ProjectManager.getInstance().getCurrentProject();
 
-		TestUtils.clearProject(projectName);
-		TestUtils.clearProject("mockProject");
-
-		project = new Project(getInstrumentation().getTargetContext(), projectName);
-		StorageHandler.getInstance().saveProject(project);
-		ProjectManager.getInstance().setProject(project);
-		ProjectManager.getInstance().setFileChecksumContainer(new FileChecksumContainer());
-
-		Project mockProject = new Project(getInstrumentation().getTargetContext(), "mockProject");
-		StorageHandler.getInstance().saveProject(mockProject);
+		TestUtils.createTestProject(getInstrumentation().getTargetContext(), projectMockName);
+		Project mockProject = ProjectManager.getInstance().getCurrentProject();
 
 		testImage = TestUtils.saveFileToProject(mockProject.getName(), imageName, IMAGE_FILE_ID, getInstrumentation()
 				.getContext(), TestUtils.TYPE_IMAGE_FILE);
@@ -101,17 +97,16 @@ public class MediaPathTest extends InstrumentationTestCase {
 		testSound = TestUtils.saveFileToProject(mockProject.getName(), soundName, SOUND_FILE_ID, getInstrumentation()
 				.getContext(), TestUtils.TYPE_SOUND_FILE);
 
-		//copy files with the Storagehandler copy function
+		ProjectManager.getInstance().setProject(project);
+
 		testImageCopy = StorageHandler.getInstance().copyImage(projectName, testImage.getAbsolutePath(), null);
 		testImageCopy2 = StorageHandler.getInstance().copyImage(projectName, testImage.getAbsolutePath(), null);
 		testSoundCopy = StorageHandler.getInstance().copySoundFile(testSound.getAbsolutePath());
-
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		TestUtils.clearProject(projectName);
-		TestUtils.clearProject("mockProject");
+		TestUtils.deleteTestProjects(projectName, projectMockName);
 		super.tearDown();
 	}
 
