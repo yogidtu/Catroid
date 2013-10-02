@@ -179,8 +179,6 @@
     <string name="dialog_confirm_delete_program_title">Delete this program?</string>
     <string name="dialog_confirm_delete_multiple_programs_title">Delete these programs?</string>
     <string name="dialog_confirm_delete_program_message">This can not be undone!</string>
-    <string name="details_date_today">Today</string>
-    <string name="details_date_yesterday">Yesterday</string>
     <string name="dialog_copy_project_title">Copy program</string>
     <!--  -->
 

@@ -157,8 +157,6 @@
     <string name="dialog_confirm_delete_program_title">"Dit programma verwijderen?"</string>
     <string name="dialog_confirm_delete_multiple_programs_title">"Deze programma\'s verwijderen?"</string>
     <string name="dialog_confirm_delete_program_message">"Dit kan niet ongedaan worden gemaakt!"</string>
-    <string name="details_date_today">"Vandaag"</string>
-    <string name="details_date_yesterday">"Gisteren"</string>
     <!--  -->
 
 

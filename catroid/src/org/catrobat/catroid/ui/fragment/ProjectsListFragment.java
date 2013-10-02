@@ -220,8 +220,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 			}
 		});
 
-		adapter = new ProjectAdapter(getActivity(), R.layout.activity_my_projects_list_item,
-				R.id.my_projects_activity_project_title, projectList);
+		adapter = new ProjectAdapter(getActivity(), projectList);
 		setListAdapter(adapter);
 		initClickListener();
 	}
@@ -318,7 +317,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 
 	@Override
 	public void onProjectEdit(int position) {
-		LoadProjectTask loadProjectTask = new LoadProjectTask(getActivity(), (adapter.getItem(position)).projectName,
+		LoadProjectTask loadProjectTask = new LoadProjectTask(getActivity(), adapter.getItem(position).projectName,
 				true, true);
 		loadProjectTask.setOnLoadProjectCompleteListener(parentFragment);
 		loadProjectTask.execute();

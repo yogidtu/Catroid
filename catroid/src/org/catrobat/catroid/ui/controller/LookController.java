@@ -43,6 +43,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.squareup.picasso.Picasso;
 
 import org.catrobat.catroid.BuildConfig;
 import org.catrobat.catroid.ProjectManager;
@@ -91,7 +92,12 @@ public class LookController {
 			holder.lookNameTextView.setTag(position);
 			holder.lookElement.setTag(position);
 
-			holder.lookImageView.setImageBitmap(lookData.getThumbnailBitmap());
+			Picasso.with(lookAdapter.getContext()) //
+					.load(new File(lookData.getAbsolutePath())) //
+					.resizeDimen(R.dimen.thumbnail_width, R.dimen.thumbnail_height) //
+					.centerCrop() //
+					.into(holder.lookImageView);
+
 			holder.lookNameTextView.setText(lookData.getLookName());
 
 			holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -323,7 +329,6 @@ public class LookController {
 				StorageHandler.getInstance().deleteFile(selectedLookData.getAbsolutePath()); //reduce usage in container or delete it
 
 				selectedLookData.setLookFilename(newLookFile.getName());
-				selectedLookData.resetThumbnailBitmap();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

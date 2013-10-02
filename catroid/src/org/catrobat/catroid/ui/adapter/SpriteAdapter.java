@@ -38,10 +38,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.content.Sprite;
 
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -175,7 +178,11 @@ public class SpriteAdapter extends ArrayAdapter<Sprite> {
 		if (firstLookData == null) {
 			holder.image.setImageBitmap(null);
 		} else {
-			holder.image.setImageBitmap(firstLookData.getThumbnailBitmap());
+			Picasso.with(context) //
+					.load(new File(firstLookData.getAbsolutePath())) //
+					.resizeDimen(R.dimen.thumbnail_width, R.dimen.thumbnail_height) //
+					.centerCrop() //
+					.into(holder.image);
 		}
 
 		holder.scripts.setText(context.getResources().getString(R.string.number_of_scripts) + " "

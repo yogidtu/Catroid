@@ -48,8 +48,8 @@
 
         <ImageView
             android:id="@+id/fragment_look_item_image_view"
-            android:layout_width="72dp"
-            android:layout_height="65dp"
+            android:layout_width="@dimen/thumbnail_width"
+            android:layout_height="@dimen/thumbnail_height"
             android:layout_centerVertical="true"
             android:layout_marginLeft="9dp"
             android:background="@drawable/image_contour"

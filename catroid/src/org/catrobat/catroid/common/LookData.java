@@ -22,7 +22,6 @@
  */
 package org.catrobat.catroid.common;
 
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.badlogic.gdx.Gdx;
@@ -31,7 +30,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.utils.ImageEditing;
 import org.catrobat.catroid.utils.Utils;
 
 import java.io.FileNotFoundException;
@@ -42,11 +40,8 @@ public class LookData implements Serializable, Cloneable {
 
 	private String name;
 	private String fileName;
-	private transient Bitmap thumbnailBitmap;
 	private transient Integer width;
 	private transient Integer height;
-	private static final transient int THUMBNAIL_WIDTH = 150;
-	private static final transient int THUMBNAIL_HEIGHT = 150;
 	private transient Pixmap pixmap = null;
 	private transient Pixmap originalPixmap = null;
 	private transient TextureRegion region = null;
@@ -140,18 +135,6 @@ public class LookData implements Serializable, Cloneable {
 	private String getPathToImageDirectory() {
 		return Utils.buildPath(Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
 				Constants.IMAGE_DIRECTORY);
-	}
-
-	public Bitmap getThumbnailBitmap() {
-		if (thumbnailBitmap == null) {
-			thumbnailBitmap = ImageEditing.getScaledBitmapFromPath(getAbsolutePath(), THUMBNAIL_HEIGHT,
-					THUMBNAIL_WIDTH, false);
-		}
-		return thumbnailBitmap;
-	}
-
-	public void resetThumbnailBitmap() {
-		thumbnailBitmap = null;
 	}
 
 	public int[] getMeasure() {

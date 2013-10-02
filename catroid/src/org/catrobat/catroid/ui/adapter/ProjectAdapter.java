@@ -22,41 +22,49 @@
  */
 package org.catrobat.catroid.ui.adapter;
 
+import static android.text.format.DateUtils.DAY_IN_MILLIS;
+import static android.text.format.DateUtils.FORMAT_ABBREV_MONTH;
+import static android.text.format.DateUtils.FORMAT_SHOW_TIME;
+import static android.text.format.DateUtils.FORMAT_SHOW_YEAR;
+import static android.text.format.DateUtils.SECOND_IN_MILLIS;
+import static android.text.format.DateUtils.isToday;
+
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.ProjectData;
-import org.catrobat.catroid.io.ProjectScreenshotLoader;
+import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeSet;
 
-public class ProjectAdapter extends ArrayAdapter<ProjectData> {
-	private boolean showDetails;
-	private int selectMode;
+public class ProjectAdapter extends BaseAdapter {
+	private static LayoutInflater inflater;
+	private boolean showDetails = false;
+	private int selectMode = ListView.CHOICE_MODE_NONE;;
+	private List<ProjectData> projects;
 	private Set<Integer> checkedProjects = new TreeSet<Integer>();
 	private OnProjectEditListener onProjectEditListener;
 	private Context context;
@@ -70,20 +78,38 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 		private TextView dateChanged;
 		private View projectDetails;
 		private ImageView arrow;
-		// temporarily removed - because of upcoming release, and bad performance of projectdescription
-		//		public TextView description;
 	}
 
-	private static LayoutInflater inflater;
-	private ProjectScreenshotLoader screenshotLoader;
+	public interface OnProjectEditListener {
+		public void onProjectChecked();
 
-	public ProjectAdapter(Context context, int resource, int textViewResourceId, List<ProjectData> objects) {
-		super(context, resource, textViewResourceId, objects);
-		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		screenshotLoader = new ProjectScreenshotLoader(context);
-		showDetails = false;
-		selectMode = ListView.CHOICE_MODE_NONE;
+		public void onProjectEdit(int position);
+	}
+
+	public ProjectAdapter(Context context, List<ProjectData> projects) {
+		inflater = LayoutInflater.from(context);
 		this.context = context;
+		this.projects = projects;
+	}
+
+	@Override
+	public int getCount() {
+		return projects.size();
+	}
+
+	@Override
+	public ProjectData getItem(int position) {
+		return projects.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return position;
+	}
+
+	@Override
+	public int getViewTypeCount() {
+		return 1;
 	}
 
 	public void setOnProjectEditListener(OnProjectEditListener listener) {
@@ -123,8 +149,7 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 	}
 
 	@Override
-	public View getView(final int position, View convView, ViewGroup parent) {
-		View convertView = convView;
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		final ViewHolder holder;
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.activity_my_projects_list_item, null);
@@ -137,68 +162,79 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 			holder.dateChanged = (TextView) convertView.findViewById(R.id.my_projects_activity_project_changed_2);
 			holder.projectDetails = convertView.findViewById(R.id.my_projects_activity_list_item_details);
 			holder.arrow = (ImageView) convertView.findViewById(R.id.arrow_right);
-			// temporarily removed - because of upcoming release, and bad performance of projectdescription
-			//			holder.description = (TextView) convertView.findViewById(R.id.my_projects_activity_description);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		// ------------------------------------------------------------
 		ProjectData projectData = getItem(position);
-		String projectName = projectData.projectName;
 
-		//set name of project:
-		holder.projectName.setText(projectName);
+		holder.projectName.setText(projectData.projectName);
 
-		// set size of project:
-		holder.size.setText(UtilFile.getSizeAsString(new File(Utils.buildProjectPath(projectName))));
+		File projectDirectory = new File(Utils.buildProjectPath(projectData.projectName));
 
-		//set last changed:
-		Date projectLastModificationDate = new Date(projectData.lastUsed);
-		Date now = new Date();
-		Date yesterday = new Date(now.getTime() - DateUtils.DAY_IN_MILLIS);
-		DateFormat mediumDateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-		DateFormat shortTimeFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
-		String projectLastModificationDateString = "";
+		setThumbnail(holder, projectDirectory);
 
-		Calendar nowCalendar = Calendar.getInstance();
-		nowCalendar.setTime(now);
+		setOnLongClickListener(holder);
 
-		Calendar yesterdayCalendar = Calendar.getInstance();
-		yesterdayCalendar.setTime(yesterday);
+		setOnClickListener(holder, position);
 
-		Calendar projectLastModificationDateCalendar = Calendar.getInstance();
-		projectLastModificationDateCalendar.setTime(projectLastModificationDate);
+		setOnCheckedChangeListener(holder, position);
 
-		if (mediumDateFormat.format(projectLastModificationDate).equals(mediumDateFormat.format(now))) {
-			projectLastModificationDateString = getContext().getString(R.string.details_date_today) + " "
-					+ shortTimeFormat.format(projectLastModificationDate);
-		} else if (mediumDateFormat.format(projectLastModificationDate).equals(mediumDateFormat.format(yesterday))) {
-			projectLastModificationDateString = getContext().getString(R.string.details_date_yesterday);
-		} else {
-			projectLastModificationDateString = mediumDateFormat.format(projectLastModificationDate);
-		}
-
-		holder.dateChanged.setText(projectLastModificationDateString);
-
-		//set project image (threaded):
-		screenshotLoader.loadAndShowScreenshot(projectName, holder.image);
-
-		if (!showDetails) {
-			holder.projectDetails.setVisibility(View.GONE);
-			holder.projectName.setSingleLine(true);
-			int standardItemHeight = context.getResources().getDimensionPixelSize(R.dimen.my_projects_list_item_height);
-			holder.background.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-					standardItemHeight));
-
-		} else {
+		if (showDetails) {
 			holder.projectDetails.setVisibility(View.VISIBLE);
 			holder.projectName.setSingleLine(false);
-			holder.background.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-					LayoutParams.WRAP_CONTENT));
+			holder.size.setText(UtilFile.getSizeAsString(projectDirectory));
+			holder.dateChanged.setText(lastModified(projectData));
+		} else {
+			holder.projectDetails.setVisibility(View.GONE);
+			holder.projectName.setSingleLine(true);
 		}
 
+		if (selectMode == ListView.CHOICE_MODE_NONE) {
+			holder.checkbox.setVisibility(View.GONE);
+			holder.arrow.setVisibility(View.VISIBLE);
+			holder.background.setBackgroundResource(R.drawable.button_background_selector);
+			clearCheckedProjects();
+		} else {
+			holder.checkbox.setVisibility(View.VISIBLE);
+			holder.checkbox.setChecked(checkedProjects.contains(position));
+			holder.arrow.setVisibility(View.GONE);
+			holder.background.setBackgroundResource(R.drawable.button_background_shadowed);
+		}
+
+		return convertView;
+	}
+
+	private void setOnClickListener(final ViewHolder holder, final int position) {
+		holder.background.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				if (selectMode != ListView.CHOICE_MODE_NONE) {
+					holder.checkbox.setChecked(!holder.checkbox.isChecked());
+				} else if (onProjectEditListener != null) {
+					onProjectEditListener.onProjectEdit(position);
+				}
+
+			}
+		});
+	}
+
+	private void setOnLongClickListener(final ViewHolder holder) {
+		holder.background.setOnLongClickListener(new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View view) {
+				if (selectMode != ListView.CHOICE_MODE_NONE) {
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+
+	private void setOnCheckedChangeListener(final ViewHolder holder, final int position) {
 		holder.checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
@@ -218,69 +254,46 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 				}
 			}
 		});
-
-		holder.background.setOnLongClickListener(new OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View view) {
-				if (selectMode != ListView.CHOICE_MODE_NONE) {
-					return true;
-				}
-				return false;
-			}
-		});
-
-		holder.background.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View view) {
-				if (selectMode != ListView.CHOICE_MODE_NONE) {
-					holder.checkbox.setChecked(!holder.checkbox.isChecked());
-				} else if (onProjectEditListener != null) {
-					onProjectEditListener.onProjectEdit(position);
-				}
-
-			}
-		});
-
-		if (checkedProjects.contains(position)) {
-			holder.checkbox.setChecked(true);
-		} else {
-			holder.checkbox.setChecked(false);
-		}
-		if (selectMode != ListView.CHOICE_MODE_NONE) {
-			holder.checkbox.setVisibility(View.VISIBLE);
-			holder.arrow.setVisibility(View.GONE);
-			holder.background.setBackgroundResource(R.drawable.button_background_shadowed);
-		} else {
-			holder.checkbox.setVisibility(View.GONE);
-			holder.checkbox.setChecked(false);
-			holder.arrow.setVisibility(View.VISIBLE);
-			holder.background.setBackgroundResource(R.drawable.button_background_selector);
-			clearCheckedProjects();
-		}
-
-		//set project description:
-
-		// temporarily removed - because of upcoming release, and bad performance of projectdescription
-		//		ProjectManager projectManager = ProjectManager.getInstance();
-		//		String currentProjectName = projectManager.getCurrentProject().getName();
-
-		//		if (projectName.equalsIgnoreCase(currentProjectName)) {
-		//			holder.description.setText(projectManager.getCurrentProject().description);
-		//		} else {
-		//			projectManager.loadProject(projectName, context, false);
-		//			holder.description.setText(projectManager.getCurrentProject().description);
-		//			projectManager.loadProject(currentProjectName, context, false);
-		//		}
-
-		return convertView;
 	}
 
-	public interface OnProjectEditListener {
-		public void onProjectChecked();
+	private void setThumbnail(final ViewHolder holder, File projectDirectory) {
+		File screenshot = new File(projectDirectory, StageListener.SCREENSHOT_MANUAL_FILE_NAME);
+		if (!(screenshot.exists() && screenshot.isFile() && screenshot.length() > 0)) {
+			screenshot = new File(projectDirectory, StageListener.SCREENSHOT_AUTOMATIC_FILE_NAME);
+		}
+		if (!(screenshot.exists() && screenshot.isFile() && screenshot.length() > 0)) {
+			holder.image.setImageBitmap(null);
+		} else {
+			Picasso.with(context) //
+					.load(screenshot) //
+					.resizeDimen(R.dimen.thumbnail_width, R.dimen.thumbnail_height) //
+					.centerCrop() //
+					.into(holder.image);
+		}
+	}
 
-		public void onProjectEdit(int position);
+	private String lastModified(ProjectData projectData) {
+		String lastModificationDate;
+		long now = System.currentTimeMillis();
+		if (isToday(projectData.lastUsed)) {
+			lastModificationDate = DateUtils.getRelativeTimeSpanString(projectData.lastUsed, now, DAY_IN_MILLIS) + " "
+					+ DateUtils.formatDateTime(context, projectData.lastUsed, FORMAT_SHOW_TIME);
+		} else if (isYesterday(projectData.lastUsed)) {
+			lastModificationDate = DateUtils.getRelativeTimeSpanString(projectData.lastUsed, now, DAY_IN_MILLIS,
+					FORMAT_ABBREV_MONTH | FORMAT_SHOW_YEAR).toString();
+		} else {
+			lastModificationDate = DateUtils.formatDateTime(context, projectData.lastUsed, FORMAT_ABBREV_MONTH
+					| FORMAT_SHOW_YEAR);
+		}
+		return lastModificationDate;
+	}
+
+	private boolean isYesterday(long day) {
+		long today = System.currentTimeMillis();
+		int startDay = Time.getJulianDay(day, TimeZone.getDefault().getOffset(day) / SECOND_IN_MILLIS);
+		int currentDay = Time.getJulianDay(today, TimeZone.getDefault().getOffset(today) / SECOND_IN_MILLIS);
+
+		return Math.abs(currentDay - startDay) == 1;
 	}
 
 }

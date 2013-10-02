@@ -90,12 +90,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 	private File renameDirectory = null;
 	private boolean unzip;
-	private boolean deleteCacheProjects = false;
-	private int numberOfCacheProjects = 27;
-	private String cacheProjectName = "cachetestProject";
 
-	// temporarily removed - because of upcoming release, and bad performance of projectdescription	
-	//	private final String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus consequat lacinia ante, ut sollicitudin est hendrerit ut. Nunc at hendrerit mauris. Morbi tincidunt eleifend ligula, eget gravida ante fermentum vitae. Cras dictum nunc non quam posuere dignissim. Etiam vel gravida lacus. Vivamus facilisis, nunc sit amet placerat rutrum, nisl orci accumsan odio, vitae pretium ipsum urna nec ante. Donec scelerisque viverra felis a varius. Sed lacinia ultricies mi, eu euismod leo ultricies eu. Nunc eleifend dignissim nulla eget dictum. Quisque mi eros, faucibus et pretium a, tempor et libero. Etiam dui felis, ultrices id gravida quis, tempor a turpis.Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam consequat velit eu elit adipiscing eu feugiat sapien euismod. Nunc sollicitudin rhoncus velit nec malesuada. Donec velit quam, luctus in sodales eu, viverra vitae massa. Aenean sed dolor sapien, et lobortis lacus. Proin a est vitae metus fringilla malesuada. Pellentesque eu adipiscing diam. Maecenas massa ante, tincidunt volutpat dapibus vitae, mollis in enim. Sed dictum dolor ultricies metus varius sit amet scelerisque lacus convallis. Nullam dui nisl, mollis a molestie non, tempor vitae arcu. Phasellus vitae metus pellentesque ligula scelerisque adipiscing vitae sed quam. Quisque porta rhoncus magna a porttitor. In ac magna nulla. Donec quis lacus felis, in bibendum massa. ";
 	private final String lorem = "Lorem ipsum dolor sit amet";
 
 	public MyProjectsActivityTest() {
@@ -127,13 +122,6 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		if (renameDirectory != null && renameDirectory.isDirectory()) {
 			UtilFile.deleteDirectory(renameDirectory);
 			renameDirectory = null;
-		}
-		if (deleteCacheProjects) {
-			for (int i = 0; i < numberOfCacheProjects; i++) {
-				File directory = new File(Utils.buildProjectPath(cacheProjectName + i));
-				UtilFile.deleteDirectory(directory);
-			}
-			deleteCacheProjects = false;
 		}
 
 		// normally super.teardown should be called last
@@ -404,8 +392,8 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 		int currentViewID;
 		int pixelColor;
-		int expectedImageWidth = getActivity().getResources().getDimensionPixelSize(R.dimen.project_thumbnail_width);
-		int expectedImageHeigth = getActivity().getResources().getDimensionPixelSize(R.dimen.project_thumbnail_height);
+		int expectedImageWidth = getActivity().getResources().getDimensionPixelSize(R.dimen.thumbnail_width);
+		int expectedImageHeigth = getActivity().getResources().getDimensionPixelSize(R.dimen.thumbnail_height);
 		int imageViewID = R.id.my_projects_activity_project_image;
 		Bitmap viewBitmap;
 		int counter = 0;
@@ -442,123 +430,6 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		}
 		if (counter == 0) {
 			fail("no imageviews tested");
-		}
-	}
-
-	public void testImageCache() {
-		deleteCacheProjects = true;
-
-		//create first cache test project and set it as current project 
-		Project firstCacheTestProject = new Project(getActivity(), "cachetestProject" + 0);
-		StorageHandler.getInstance().saveProject(firstCacheTestProject);
-		UiTestUtils.saveFileToProject(cacheProjectName + 0, StageListener.SCREENSHOT_MANUAL_FILE_NAME,
-				IMAGE_RESOURCE_2, getInstrumentation().getContext(), UiTestUtils.FileTypes.ROOT);
-		ProjectManager.getInstance().setProject(firstCacheTestProject);
-
-		for (int i = 1; i < numberOfCacheProjects; i++) {
-			solo.sleep(500);
-			StorageHandler.getInstance().saveProject(new Project(getActivity(), "cachetestProject" + i));
-			UiTestUtils.saveFileToProject(cacheProjectName + i, StageListener.SCREENSHOT_MANUAL_FILE_NAME,
-					IMAGE_RESOURCE_2, getInstrumentation().getContext(), UiTestUtils.FileTypes.ROOT);
-		}
-
-		Log.v(MY_PROJECTS_ACTIVITY_TEST_TAG, "before sleep");
-		solo.sleep(100);
-		Log.v(MY_PROJECTS_ACTIVITY_TEST_TAG, "after sleep");
-		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
-		Log.v(MY_PROJECTS_ACTIVITY_TEST_TAG, "after intent");
-		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
-		Log.v(MY_PROJECTS_ACTIVITY_TEST_TAG, "activity visible");
-
-		ArrayList<ListView> listViews = solo.getCurrentViews(ListView.class);
-		while (solo.getCurrentViews(ListView.class).size() == 0) {
-			solo.sleep(100);
-			listViews = solo.getCurrentViews(ListView.class);
-		}
-
-		ListView projectList = listViews.get(0);
-
-		ArrayList<TextView> textViews = solo.getCurrentViews(TextView.class, projectList);
-		String firstCacheProjectName = "";
-		String secondCacheProjectName = "";
-
-		int projectTitleCounter = 0;
-		for (TextView textView : textViews) {
-			if (projectTitleCounter == 2) {
-				break;
-			}
-			if (textView.getId() == R.id.my_projects_activity_project_title) {
-				projectTitleCounter++;
-				switch (projectTitleCounter) {
-					case 1:
-						firstCacheProjectName = textView.getText().toString();
-						break;
-
-					case 2:
-						secondCacheProjectName = textView.getText().toString();
-						break;
-				}
-			}
-		}
-
-		Project secondCacheTestProject = StorageHandler.getInstance().loadProject(secondCacheProjectName);
-		UiTestUtils.saveFileToProject(secondCacheProjectName, StageListener.SCREENSHOT_MANUAL_FILE_NAME,
-				IMAGE_RESOURCE_3, getInstrumentation().getContext(), UiTestUtils.FileTypes.ROOT);
-		StorageHandler.getInstance().saveProject(secondCacheTestProject);
-		solo.sleep(2000);
-		firstCacheTestProject = StorageHandler.getInstance().loadProject(firstCacheProjectName);
-		UiTestUtils.saveFileToProject(firstCacheProjectName, "screenshot.png", IMAGE_RESOURCE_2, getInstrumentation()
-				.getContext(), UiTestUtils.FileTypes.ROOT);
-		StorageHandler.getInstance().saveProject(firstCacheTestProject);
-		ProjectManager.getInstance().setProject(firstCacheTestProject);
-
-		//leave and reenter MyProjectsActivity 
-		solo.goBack();
-		solo.sleep(500);
-		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
-		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
-
-		solo.scrollToBottom();
-		Log.v(MY_PROJECTS_ACTIVITY_TEST_TAG, "scroll bottom");
-		solo.scrollToTop();
-		Log.v(MY_PROJECTS_ACTIVITY_TEST_TAG, "scroll up");
-		solo.sleep(500);
-		int currentViewID;
-		int pixelColor;
-		int imageViewID = R.id.my_projects_activity_project_image;
-		Bitmap viewBitmap;
-		int counter = 0;
-		ArrayList<View> currentViewList = solo.getCurrentViews();
-		for (View viewToTest : currentViewList) {
-			currentViewID = viewToTest.getId();
-			if (imageViewID == currentViewID) {
-				counter++;
-				viewToTest.buildDrawingCache();
-				viewBitmap = viewToTest.getDrawingCache();
-				int testPixelX = viewBitmap.getWidth() / 2;
-				int testPixelY = viewBitmap.getHeight() / 2;
-
-				//the following equals ARGB value #ffffffff, which is
-				//the white value on the emulated test device
-				int expectedWhite = -1;
-				switch (counter) {
-					case 1:
-						pixelColor = viewBitmap.getPixel(testPixelX, testPixelY);
-						assertEquals("Image color should be white", expectedWhite, pixelColor);
-						break;
-					case 2:
-						pixelColor = viewBitmap.getPixel(testPixelX, testPixelY);
-						assertEquals("Image color should be black",
-								solo.getCurrentActivity().getResources().getColor(R.color.solid_black), pixelColor);
-						break;
-					case 3:
-						pixelColor = viewBitmap.getPixel(testPixelX, testPixelY);
-						assertEquals("Image color should be white", expectedWhite, pixelColor);
-						break;
-					default:
-						break;
-				}
-			}
 		}
 	}
 
@@ -1287,8 +1158,10 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 		projectFilePath = Utils.buildPath(Utils.buildProjectPath(UiTestUtils.PROJECTNAME1), Constants.PROJECTCODE_NAME);
 		projectCodeFile = new File(projectFilePath);
-		Date now = new Date();
-		succeededInSettingModifiedDate = projectCodeFile.setLastModified(now.getTime() - DateUtils.DAY_IN_MILLIS);
+		long now = System.currentTimeMillis();
+		long today = now;
+		long yesterday = today - DateUtils.DAY_IN_MILLIS;
+		succeededInSettingModifiedDate = projectCodeFile.setLastModified(yesterday);
 		assertTrue("Failed to set last modified on " + projectFilePath, succeededInSettingModifiedDate);
 
 		solo.sleep(200);
@@ -1308,8 +1181,10 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		projectDetails = solo.getView(R.id.my_projects_activity_list_item_details);
 		assertEquals("Project details are not showing!", View.VISIBLE, projectDetails.getVisibility());
 
-		assertTrue("Last access is not correct!", solo.searchText(solo.getString(R.string.details_date_today)));
-		assertTrue("Last access is not correct!", solo.searchText(solo.getString(R.string.details_date_yesterday)));
+		assertTrue("Last access is not correct!",
+				solo.searchText(DateUtils.getRelativeTimeSpanString(today, now, DateUtils.DAY_IN_MILLIS, 0).toString()));
+		assertTrue("Last access is not correct!", solo.searchText(DateUtils.getRelativeTimeSpanString(yesterday, now,
+				DateUtils.DAY_IN_MILLIS, 0).toString()));
 		assertTrue("Last access is not correct!", solo.searchText(mediumDateFormat.format(date)));
 	}
 
@@ -1399,9 +1274,6 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		solo.clickOnText(solo.getString(R.string.ok));
 		solo.waitForDialogToClose(500);
 
-		// temporarily removed - should be added when displaying projectdescription
-		//		assertTrue("description is not shown in activity", solo.searchText("Lorem ipsum"));
-		//		assertTrue("description is not shown in activity", solo.searchText("ultricies"));
 		solo.waitForText(UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		UiTestUtils.longClickOnTextInList(solo, UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		assertTrue("context menu not loaded in 5 seconds", solo.waitForText(actionSetDescriptionText, 0, 5000));
@@ -1438,10 +1310,6 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		solo.sleep(300);
 		solo.clickOnText(solo.getString(R.string.ok));
 		solo.sleep(500);
-
-		// temporarily removed - should be added when displaying projectdescription
-		//		assertTrue("description is not shown in activity", solo.searchText("Lorem ipsum"));
-		//		assertTrue("description is not shown in activity", solo.searchText("ultricies"));
 
 		assertEquals("The project is not first in list", UiTestUtils.PROJECTNAME1, ((ProjectData) (solo
 				.getCurrentViews(ListView.class).get(0).getAdapter().getItem(0))).projectName);
