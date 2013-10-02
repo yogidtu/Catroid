@@ -40,10 +40,13 @@ import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
+import org.catrobat.catroid.ui.BackPackActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.SoundAdapter;
+import org.catrobat.catroid.ui.controller.BackPackListManager;
+import org.catrobat.catroid.ui.controller.SoundController;
 import org.catrobat.catroid.ui.fragment.SoundFragment;
 import org.catrobat.catroid.uitest.mockups.MockSoundActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
@@ -52,6 +55,7 @@ import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private static final int RESOURCE_SOUND = org.catrobat.catroid.uitest.R.raw.longsound;
@@ -68,6 +72,8 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 	private String renameDialogTitle;
 	private String delete;
 	private String deleteDialogTitle;
+	private String backPackDialogTitle;
+	private String backPackTitle;
 
 	private SoundInfo soundInfo;
 	private SoundInfo soundInfo2;
@@ -81,6 +87,8 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 
 	private ProjectManager projectManager;
 
+	private BackPackListManager backPackListManager;
+
 	public SoundFragmentTest() {
 		super(MainMenuActivity.class);
 	}
@@ -90,6 +98,7 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 		super.setUp();
 		UiTestUtils.createTestProject();
 
+		backPackListManager = BackPackListManager.getInstance();
 		projectManager = ProjectManager.getInstance();
 		soundInfoList = projectManager.getCurrentSprite().getSoundList();
 
@@ -117,6 +126,8 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 
 		rename = solo.getString(R.string.rename);
 		renameDialogTitle = solo.getString(R.string.rename_sound_dialog);
+		backPackDialogTitle = solo.getString(R.string.backpack);
+		backPackTitle = solo.getString(R.string.backpack_title);
 		delete = solo.getString(R.string.delete);
 		deleteDialogTitle = solo.getString(R.string.dialog_confirm_delete_sound_title);
 
@@ -160,8 +171,10 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 
 		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
 		solo.clickOnCheckBox(0);
+
 		solo.clickOnText(SECOND_TEST_SOUND_NAME);
 		assertFalse("Mediaplayer is playing within the checkbox action", soundInfo2.isPlaying);
+		solo.clickOnText(SECOND_TEST_SOUND_NAME);
 
 		UiTestUtils.acceptAndCloseActionMode(solo);
 
@@ -169,6 +182,24 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 
 		assertEquals("No sound has been copied!", ++numberOfSoundsBeforeCopy, numberOfSoundsAfterCopy);
 
+	}
+
+	public void testCopySelectAll() {
+		int numberOfSoundsBeforeCopy = getCurrentNumberOfSounds();
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		String selectAll = solo.getString(R.string.select_all).toUpperCase(Locale.getDefault());
+		solo.clickOnText(selectAll);
+
+		for (CheckBox checkBox : solo.getCurrentViews(CheckBox.class)) {
+			assertTrue("CheckBox is not Checked!", checkBox.isChecked());
+		}
+		assertFalse("Select All is still shown", solo.waitForText(selectAll, 1, 200, false, true));
+
+		UiTestUtils.acceptAndCloseActionMode(solo);
+
+		int numberOfSoundsAfterCopy = getCurrentNumberOfSounds();
+
+		assertEquals("No all sounds have been copied!", numberOfSoundsBeforeCopy * 2, numberOfSoundsAfterCopy);
 	}
 
 	public void testDeleteSoundContextMenu() {
@@ -276,7 +307,7 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 		checkVisibilityOfViews(VISIBLE, GONE, VISIBLE, GONE, VISIBLE, GONE, GONE);
 
 		// test the text fields
-		solo.clickOnText(FIRST_TEST_SOUND_NAME);
+		solo.clickOnView(playImageButton);
 		solo.sleep(timeToWait);
 
 		assertTrue("Mediaplayer is not playing although play button was touched", soundInfo.isPlaying);
@@ -343,7 +374,7 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 		Intent intent = new Intent(getInstrumentation().getContext(), MockSoundActivity.class);
 		intent.putExtras(bundleForExternalSource);
 
-		getSoundFragment().startActivityForResult(intent, SoundFragment.REQUEST_SELECT_MUSIC);
+		getSoundFragment().startActivityForResult(intent, SoundController.REQUEST_SELECT_MUSIC);
 		solo.sleep(1000);
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 		solo.assertCurrentActivity("Should be in SoundActivity", ScriptActivity.class.getSimpleName());
@@ -396,6 +427,79 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 		UiTestUtils.acceptAndCloseActionMode(solo);
 		assertFalse("Rename dialog showed up", solo.waitForText(renameDialogTitle, 0, TIME_TO_WAIT));
 		assertFalse("ActionMode didn't disappear", solo.waitForText(rename, 0, TIME_TO_WAIT));
+	}
+
+	public void testBackPackActionModeIfNothingSelected() {
+
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.backpack), R.id.backpack, getActivity());
+
+		assertTrue("Bottom bar is visible", solo.getView(R.id.bottom_bar).getVisibility() == View.GONE);
+
+		// Check if rename ActionMode disappears if nothing was selected
+		checkIfCheckboxesAreCorrectlyChecked(false, false);
+		UiTestUtils.acceptAndCloseActionMode(solo);
+		solo.sleep(2000);
+		assertFalse("BackPack dialog title didn't show up", solo.waitForText(backPackDialogTitle, 0, TIME_TO_WAIT));
+	}
+
+	public void testBackPackActionModeIfSomethingSelectedAndPressingBack() {
+
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.backpack), R.id.backpack, getActivity());
+
+		solo.clickOnCheckBox(1);
+		checkIfCheckboxesAreCorrectlyChecked(false, true);
+
+		assertTrue("BackPack dialog title didn't show up", solo.waitForText(backPackDialogTitle, 0, TIME_TO_WAIT));
+		solo.goBack();
+		assertFalse("BackPack title didn't show up", solo.waitForText(backPackTitle, 0, TIME_TO_WAIT));
+
+	}
+
+	public void testBackPackActionModeIfSomethingSelectedForBackPack() {
+
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.backpack), R.id.backpack, getActivity());
+
+		solo.clickOnCheckBox(1);
+		checkIfCheckboxesAreCorrectlyChecked(false, true);
+
+		UiTestUtils.acceptAndCloseActionMode(solo);
+
+		solo.waitForActivity(BackPackActivity.class.getSimpleName(), 1000);
+		assertTrue("BackPack title didn't show up", solo.waitForText(backPackTitle, 0, TIME_TO_WAIT));
+
+	}
+
+	public void testBackPackSoundContextMenu() {
+		SoundAdapter adapter = getSoundAdapter();
+		assertNotNull("Could not get Adapter", adapter);
+
+		clickOnContextMenuItem(FIRST_TEST_SOUND_NAME, solo.getString(R.string.backpack));
+
+		solo.waitForDialogToClose(1000);
+
+		assertTrue("BackPack title didn't show up", solo.waitForText(backPackTitle, 0, TIME_TO_WAIT));
+	}
+
+	public void testBackPackSoundContextMenuAndCheckPlaying() {
+
+		ImageButton playImageButton = (ImageButton) solo.getView(R.id.fragment_sound_item_play_image_button);
+		SoundAdapter adapter = getSoundAdapter();
+		assertNotNull("Could not get Adapter", adapter);
+		int timeToWait = 1000;
+
+		clickOnContextMenuItem(FIRST_TEST_SOUND_NAME, solo.getString(R.string.backpack));
+
+		solo.waitForDialogToClose(1000);
+
+		assertTrue("BackPack title didn't show up", solo.waitForText(backPackTitle, 0, TIME_TO_WAIT));
+
+		soundInfoList = backPackListManager.getSoundInfoArrayList();
+		SoundInfo soundInfo = soundInfoList.get(0);
+
+		solo.clickOnView(playImageButton);
+		solo.sleep(timeToWait);
+
+		assertTrue("Mediaplayer is not playing although play button was touched", soundInfo.isPlaying);
 	}
 
 	public void testRenameActionModeIfSomethingSelectedAndPressingBack() {
@@ -491,6 +595,39 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 		solo.sleep(500);
 
 		checkIfContextMenuAppears(true, true);
+	}
+
+	public void testItemClick() {
+		UiTestUtils.clickOnActionBar(solo, R.id.delete);
+		solo.clickInList(1);
+
+		ArrayList<CheckBox> checkBoxList = solo.getCurrentViews(CheckBox.class);
+		assertTrue("CheckBox not checked", checkBoxList.get(0).isChecked());
+
+		UiTestUtils.acceptAndCloseActionMode(solo);
+		assertTrue("default project not visible", solo.searchText(solo.getString(R.string.yes)));
+		solo.clickOnButton(solo.getString(R.string.yes));
+
+		assertFalse("Sound not deleted", solo.waitForText(FIRST_TEST_SOUND_NAME, 0, 200));
+	}
+
+	public void testDeleteSelectAll() {
+		UiTestUtils.openActionMode(solo, delete, R.id.delete, getActivity());
+		String selectAll = solo.getString(R.string.select_all).toUpperCase(Locale.getDefault());
+		solo.clickOnText(selectAll);
+
+		for (CheckBox checkBox : solo.getCurrentViews(CheckBox.class)) {
+			assertTrue("CheckBox is not Checked!", checkBox.isChecked());
+		}
+		assertFalse("Select All is still shown", solo.waitForText(selectAll, 1, 200, false, true));
+
+		UiTestUtils.acceptAndCloseActionMode(solo);
+		String yes = solo.getString(R.string.yes);
+		solo.waitForText(yes);
+		solo.clickOnText(yes);
+
+		assertFalse("Sound was not Deleted!", solo.waitForText(FIRST_TEST_SOUND_NAME, 1, 200));
+		assertFalse("Sound was not Deleted!", solo.waitForText(SECOND_TEST_SOUND_NAME, 1, 200));
 	}
 
 	public void testDeleteActionModeCheckingAndTitle() {
