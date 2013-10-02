@@ -97,7 +97,7 @@ public class Formula implements Serializable {
 	}
 
 	public int interpretInteger(Sprite sprite) {
-		return (Integer) formulaTree.interpretRecursive(sprite);
+		return ((Double) formulaTree.interpretRecursive(sprite)).intValue();
 	}
 
 	public double interpretDouble(Sprite sprite) {
@@ -105,7 +105,7 @@ public class Formula implements Serializable {
 	}
 
 	public float interpretFloat(Sprite sprite) {
-		return (Float) formulaTree.interpretRecursive(sprite);
+		return ((Double) formulaTree.interpretRecursive(sprite)).floatValue();
 	}
 
 	public char interpretChar(Sprite sprite) {
