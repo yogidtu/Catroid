@@ -279,40 +279,47 @@ public class FormulaElement implements Serializable {
 				right = rightChild.interpretRecursive(sprite);
 				return java.lang.Math.min((Double) left, (Double) right);
 			case TRUE:
-				return 1.0;
+				return 1d;
 			case FALSE:
-				return 0.0;
+				return 0d;
 			case LETTER:
 				rightChild.interpretRecursive(sprite);
 				int index = ((Double) left).intValue() - 1;
 				if (index < 0) {
-					return 0.0;
-					// TODO handle this with correct exception or errorcode (NaN, Null etc..)
-					// What about empty strings('') ?
+					return "";
 				} else if (index >= rightChild.value.length()) {
-					index = rightChild.value.length() - 1;
+					return "";
 				}
-				return (double) rightChild.value.charAt(index); // TODO return char not ASCII value!
+				return String.valueOf(rightChild.value.charAt(index));
 			case LENGTH:
 				if (leftChild == null) {
 					return 0d;
 				}
 				if (leftChild.type == ElementType.NUMBER) {
-					return 1.0;
+					return 1d;
 				}
 				if (leftChild.type == ElementType.STRING) {
 					return (double) leftChild.value.length();
 				}
 
 			case JOIN:
-				String result = "";
+				String first = "";
 				if (leftChild != null) {
-					result = leftChild.value;
+					if (leftChild.getElementType() != ElementType.STRING) {
+						first += leftChild.interpretRecursive(sprite);
+					} else {
+						first = leftChild.value;
+					}
 				}
+				String second = "";
 				if (rightChild != null) {
-					result += rightChild.value;
+					if (rightChild.getElementType() != ElementType.STRING) {
+						second += rightChild.interpretRecursive(sprite);
+					} else {
+						second = rightChild.value;
+					}
 				}
-				return result;
+				return first + second;
 		}
 		return 0d;
 	}
@@ -410,7 +417,6 @@ public class FormulaElement implements Serializable {
 	}
 
 	private Object interpretValueAsString(String value) throws NumberFormatException {
-		// TODO
 
 		if (parent == null) {
 			return value;
@@ -432,7 +438,7 @@ public class FormulaElement implements Serializable {
 		return Double.valueOf(value);
 	}
 
-	private Object checkDegeneratedDoubleValues(Object valueToCheck) {
+	private Object checkDegeneratedDoubleValues(Object valueToCheck) throws NumberFormatException {
 
 		if (valueToCheck instanceof String) {
 			return valueToCheck;
@@ -441,6 +447,7 @@ public class FormulaElement implements Serializable {
 		if (valueToCheck == null) {
 			return 1.0;
 		}
+
 		if (((Double) valueToCheck).doubleValue() == Double.NEGATIVE_INFINITY) {
 			return -Double.MAX_VALUE;
 		}
@@ -448,7 +455,7 @@ public class FormulaElement implements Serializable {
 			return Double.MAX_VALUE;
 		}
 		if (((Double) valueToCheck).isNaN()) {
-			return 1.0;
+			throw new NumberFormatException();
 		}
 
 		return valueToCheck;

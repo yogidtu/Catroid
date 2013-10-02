@@ -108,11 +108,6 @@ public class Formula implements Serializable {
 		return ((Double) formulaTree.interpretRecursive(sprite)).floatValue();
 	}
 
-	public char interpretChar(Sprite sprite) {
-		Double interpretation = (Double) formulaTree.interpretRecursive(sprite);
-		return (char) interpretation.intValue();
-	}
-
 	public String interpretString(Sprite sprite) {
 		return (String) formulaTree.interpretRecursive(sprite);
 	}
@@ -204,18 +199,17 @@ public class Formula implements Serializable {
 			int logicalFormulaResultIdentifier = result ? R.string.formula_editor_true : R.string.formula_editor_false;
 			return context.getString(logicalFormulaResultIdentifier);
 		} else if (formulaTree.hasFunctionCharacterReturnType()) {
-			char result = this.interpretChar(sprite);
+			String result = this.interpretString(sprite);
 			return String.valueOf(result);
 		} else if (formulaTree.hasFunctionStringReturnType() || formulaTree.getElementType() == ElementType.STRING) {
 			return interpretString(sprite);
 		} else {
-			double interpretationResult = 0;
+			float interpretationResult = 0;
 			try {
-				interpretationResult = this.interpretDouble(sprite);
+				interpretationResult = (float) this.interpretDouble(sprite);
 			} catch (NumberFormatException numberFormatException) {
 				return String.valueOf("NaN");
 			}
-
 			interpretationResult *= 100;
 			interpretationResult = Math.round(interpretationResult) / 100f;
 			return String.valueOf(interpretationResult);
