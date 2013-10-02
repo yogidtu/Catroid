@@ -49,10 +49,10 @@ public class MultiplayerBtManager {
 		this.btAdapter = BluetoothAdapter.getDefaultAdapter();
 	}
 
-	public BluetoothSocket connectToMACAddress(String mac_address) {
+	public BluetoothSocket connectToMACAddress(String macAddress) {
 		BluetoothDevice multiplayerDevice = null;
 		btAdapter.cancelDiscovery();
-		multiplayerDevice = btAdapter.getRemoteDevice(mac_address);
+		multiplayerDevice = btAdapter.getRemoteDevice(macAddress);
 
 		if (!connected) {
 			try {

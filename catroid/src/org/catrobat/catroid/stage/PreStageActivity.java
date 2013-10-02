@@ -200,9 +200,9 @@ public class PreStageActivity extends Activity {
 		finish();
 	}
 
-	private void startBluetoothCommunication(boolean autoConnect, String title, String waiting_text) {
+	private void startBluetoothCommunication(boolean autoConnect, String title, String waitingText) {
 		Log.d("PreStageActivity", "startBluetoothCommunication with custom Title");
-		connectingProgressDialog = ProgressDialog.show(this, "", waiting_text, true);
+		connectingProgressDialog = ProgressDialog.show(this, "", waitingText, true);
 		Intent serverIntent = new Intent(this, DeviceListActivity.class);
 		serverIntent.putExtra(DeviceListActivity.AUTO_CONNECT, autoConnect);
 		serverIntent.putExtra(DeviceListActivity.OTHER_DEVICE_TITLE, title);
