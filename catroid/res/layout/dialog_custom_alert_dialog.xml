@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0" encoding="utf-8"?>
+<!--
  *  Catroid: An on-device visual programming system for Android devices
  *  Copyright (C) 2010-2013 The Catrobat Team
  *  (<http://developer.catrobat.org/credits>)
@@ -19,26 +20,21 @@
  *  
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package org.catrobat.catroid.test.content.actions;
+ -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/DefaultDialog"
+    android:layout_margin="0dp"
+    android:orientation="vertical"
+    android:padding="0dp" >
 
-import android.test.InstrumentationTestCase;
+    <TextView
+        android:id="@+id/dialog_text_text_view"
+        style="@style/DefaultDialog.TextView"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dialog_item_margin"
+        android:gravity="center_vertical"
+        android:minHeight="30dp"
+        android:padding="0dp"
+        android:text="" />
 
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.content.actions.SetVolumeToAction;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.io.SoundManager;
-
-public class SetVolumeToActionTest extends InstrumentationTestCase {
-	private final Formula volume = new Formula(50.6f);
-
-	public void testVolume() {
-		Sprite sprite = new Sprite("testSprite");
-
-		SetVolumeToAction action = ExtendedActions.setVolumeTo(sprite, volume);
-		action.act(1.0f);
-		assertEquals("Incorrect sprite volume value after SetVolumeToBrick executed", volume.interpretFloat(sprite),
-				SoundManager.getInstance().getVolume());
-	}
-}
+</LinearLayout>

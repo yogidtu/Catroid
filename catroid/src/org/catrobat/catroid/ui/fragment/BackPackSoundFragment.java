@@ -66,6 +66,7 @@ import org.catrobat.catroid.ui.adapter.BackPackSoundAdapter;
 import org.catrobat.catroid.ui.adapter.SoundBaseAdapter;
 import org.catrobat.catroid.ui.controller.BackPackListManager;
 import org.catrobat.catroid.ui.controller.SoundController;
+import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.dialogs.DeleteSoundDialog;
 
 public class BackPackSoundFragment extends BackPackActivityFragment implements SoundBaseAdapter.OnSoundEditListener,
@@ -225,7 +226,7 @@ public class BackPackSoundFragment extends BackPackActivityFragment implements S
 					.findViewById(R.id.fragment_sound_item_main_linear_layout);
 			holder.checkbox = (CheckBox) convertView.findViewById(R.id.fragment_sound_item_checkbox);
 			holder.titleTextView = (TextView) convertView.findViewById(R.id.fragment_sound_item_title_text_view);
-			holder.timeSeperatorTextView = (TextView) convertView
+			holder.timeSeparatorTextView = (TextView) convertView
 					.findViewById(R.id.fragment_sound_item_time_seperator_text_view);
 			holder.timeDurationTextView = (TextView) convertView
 					.findViewById(R.id.fragment_sound_item_duration_text_view);
@@ -420,7 +421,7 @@ public class BackPackSoundFragment extends BackPackActivityFragment implements S
 			titleId = R.string.dialog_confirm_delete_multiple_sounds_title;
 		}
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		AlertDialog.Builder builder = new CustomAlertDialogBuilder(getActivity());
 		builder.setTitle(titleId);
 		builder.setMessage(R.string.dialog_confirm_delete_sound_message);
 		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {

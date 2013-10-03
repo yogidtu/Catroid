@@ -105,7 +105,7 @@ public class StageListener implements ApplicationListener {
 	private float virtualWidth;
 	private float virtualHeight;
 
-	enum ScreenModes {
+	private enum ScreenModes {
 		STRETCH, MAXIMIZE
 	};
 
@@ -121,8 +121,6 @@ public class StageListener implements ApplicationListener {
 	private int testHeight = 0;
 
 	private StageDialog stageDialog;
-
-	private boolean texturesRendered = false;
 
 	public int maximizeViewPortX = 0;
 	public int maximizeViewPortY = 0;
@@ -155,6 +153,7 @@ public class StageListener implements ApplicationListener {
 		}
 
 		project = ProjectManager.getInstance().getCurrentProject();
+		pathForScreenshot = Utils.buildProjectPath(project.getName()) + "/";
 
 		virtualWidth = project.getXmlHeader().virtualScreenWidth;
 		virtualHeight = project.getXmlHeader().virtualScreenHeight;
@@ -179,24 +178,30 @@ public class StageListener implements ApplicationListener {
 				stage.addActor(sprite.look);
 				sprite.resume();
 			}
-		}
+			for (Sprite sprite : sprites) {
+				sprite.resetSprite();
+				sprite.look.createBrightnessContrastShader();
+				stage.addActor(sprite.look);
+				sprite.resume();
+			}
 
-		if (sprites.size() > 0) {
-			sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
-		}
+			if (sprites.size() > 0) {
+				sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
+			}
 
-		if (DEBUG) {
-			OrthoCamController camController = new OrthoCamController(camera);
-			InputMultiplexer multiplexer = new InputMultiplexer();
-			multiplexer.addProcessor(camController);
-			multiplexer.addProcessor(stage);
-			Gdx.input.setInputProcessor(multiplexer);
-			fpsLogger = new FPSLogger();
-		} else {
-			Gdx.input.setInputProcessor(stage);
+			if (DEBUG) {
+				OrthoCamController camController = new OrthoCamController(camera);
+				InputMultiplexer multiplexer = new InputMultiplexer();
+				multiplexer.addProcessor(camController);
+				multiplexer.addProcessor(stage);
+				Gdx.input.setInputProcessor(multiplexer);
+				fpsLogger = new FPSLogger();
+			} else {
+				Gdx.input.setInputProcessor(stage);
+			}
+			axes = new Texture(Gdx.files.internal("stage/red_pixel.bmp"));
+			skipFirstFrameForAutomaticScreenshot = true;
 		}
-		axes = new Texture(Gdx.files.internal("stage/red_pixel.bmp"));
-		skipFirstFrameForAutomaticScreenshot = true;
 	}
 
 	public void menuResume() {
@@ -229,7 +234,7 @@ public class StageListener implements ApplicationListener {
 		}
 		this.stageDialog = stageDialog;
 
-		ProjectManager.getInstance().getCurrentProject().getUserVariables().resetAllUserVariables();
+		project.getUserVariables().resetAllUserVariables();
 
 		if (this.isLiveWallpaper) {
 			create();
@@ -249,7 +254,7 @@ public class StageListener implements ApplicationListener {
 				sprite.resume();
 			}
 		}
-		renderTextures();
+
 		for (Sprite sprite : sprites) {
 			sprite.look.refreshTextures();
 		}
@@ -258,7 +263,7 @@ public class StageListener implements ApplicationListener {
 
 	@Override
 	public void pause() {
-		if (finished || (sprites == null)) {
+		if (finished) {
 			return;
 		}
 		if (!paused) {
@@ -287,18 +292,15 @@ public class StageListener implements ApplicationListener {
 		if (reloadProject) {
 			int spriteSize = sprites.size();
 			for (int i = 0; i < spriteSize; i++) {
-				Sprite sprite = sprites.get(i);
-				sprite.pause();
+				sprites.get(i).pause();
 			}
 			stage.clear();
 			SoundManager.getInstance().clear();
 
-			project = ProjectManager.getInstance().getCurrentProject();
-			sprites = project.getSpriteList();
+			Sprite sprite;
 			if (spriteSize > 0) {
 				sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
 			}
-			Sprite sprite;
 			for (int i = 0; i < spriteSize; i++) {
 				sprite = sprites.get(i);
 				sprite.resetSprite();
@@ -317,11 +319,6 @@ public class StageListener implements ApplicationListener {
 			} catch (Exception e) {
 				//TODO: handle expection here, probably NullPointer when LWP
 			}
-		}
-
-		if (!texturesRendered) {
-			renderTextures();
-			texturesRendered = true;
 		}
 
 		switch (screenMode) {
@@ -426,13 +423,6 @@ public class StageListener implements ApplicationListener {
 			makeScreenshot = false;
 		}
 
-		//		if (paused && !finished) {
-		//			batch.setProjectionMatrix(camera.combined);
-		//			batch.begin();
-		//			batch.draw(pauseScreen, -pauseScreen.getWidth() / 2, -pauseScreen.getHeight() / 2);
-		//			batch.end();
-		//		}
-
 		if (axesOn && !finished) {
 			drawAxes();
 		}
@@ -486,7 +476,7 @@ public class StageListener implements ApplicationListener {
 		while (makeScreenshot) {
 			Thread.yield();
 		}
-		return this.saveScreenshot(this.screenshot, SCREENSHOT_MANUAL_FILE_NAME);
+		return saveScreenshot(this.screenshot, SCREENSHOT_MANUAL_FILE_NAME);
 	}
 
 	private boolean saveScreenshot(byte[] screenshot, String fileName) {
@@ -516,6 +506,7 @@ public class StageListener implements ApplicationListener {
 		FileHandle image = Gdx.files.absolute(pathForScreenshot + fileName);
 		OutputStream stream = image.write(false);
 		try {
+			new File(pathForScreenshot + Constants.NO_MEDIA_FILE).createNewFile();
 			centerSquareBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
 			stream.close();
 		} catch (IOException e) {
@@ -555,19 +546,6 @@ public class StageListener implements ApplicationListener {
 		whiteBackground.setPixmap(whiteBackgroundPixmap);
 		whiteBackground.setTextureRegion();
 		return whiteBackground;
-	}
-
-	private void renderTextures() {
-		List<Sprite> sprites = project.getSpriteList();
-		int spriteSize = sprites.size();
-		for (int i = 0; i > spriteSize; i++) {
-			List<LookData> data = sprites.get(i).getLookDataList();
-			int dataSize = data.size();
-			for (int j = 0; j < dataSize; j++) {
-				LookData lookData = data.get(j);
-				lookData.setTextureRegion();
-			}
-		}
 	}
 
 	private void disposeTextures() {

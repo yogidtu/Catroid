@@ -20,25 +20,36 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.test.content.actions;
+package org.catrobat.catroid.ui.dialogs;
 
-import android.test.InstrumentationTestCase;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.content.actions.SetVolumeToAction;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.io.SoundManager;
+import org.catrobat.catroid.livewallpaper.R;
 
-public class SetVolumeToActionTest extends InstrumentationTestCase {
-	private final Formula volume = new Formula(50.6f);
+public class CustomAlertDialogBuilder extends AlertDialog.Builder {
 
-	public void testVolume() {
-		Sprite sprite = new Sprite("testSprite");
+	private TextView textView;
 
-		SetVolumeToAction action = ExtendedActions.setVolumeTo(sprite, volume);
-		action.act(1.0f);
-		assertEquals("Incorrect sprite volume value after SetVolumeToBrick executed", volume.interpretFloat(sprite),
-				SoundManager.getInstance().getVolume());
+	public CustomAlertDialogBuilder(Context context) {
+		super(context);
+		View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_custom_alert_dialog, null);
+		textView = (TextView) dialogView.findViewById(R.id.dialog_text_text_view);
+		setView(dialogView);
+	}
+
+	@Override
+	public CustomAlertDialogBuilder setMessage(int messageId) {
+		textView.setText(messageId);
+		return this;
+	}
+
+	@Override
+	public CustomAlertDialogBuilder setMessage(CharSequence message) {
+		textView.setText(message);
+		return this;
 	}
 }
