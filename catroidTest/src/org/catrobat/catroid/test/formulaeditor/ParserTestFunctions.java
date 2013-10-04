@@ -38,25 +38,11 @@ import java.util.List;
 public class ParserTestFunctions extends AndroidTestCase {
 
 	private static final double DELTA = 0.01;
-	private static final float LOOK_ALPHA = 50f;
-	private static final float LOOK_Y_POSITION = 23.4f;
-	private static final float LOOK_X_POSITION = 5.6f;
-	private static final float LOOK_BRIGHTNESS = 70f;
-	private static final float LOOK_SCALE = 90.3f;
-	private static final float LOOK_ROTATION = 30.7f;
-	private static final int LOOK_ZPOSITION = 3;
 	private Sprite testSprite;
 
 	@Override
 	protected void setUp() {
 		testSprite = new Sprite("sprite");
-		testSprite.look.setXInUserInterfaceDimensionUnit(LOOK_X_POSITION);
-		testSprite.look.setYInUserInterfaceDimensionUnit(LOOK_Y_POSITION);
-		testSprite.look.setTransparencyInUserInterfaceDimensionUnit(LOOK_ALPHA);
-		testSprite.look.setBrightnessInUserInterfaceDimensionUnit(LOOK_BRIGHTNESS);
-		testSprite.look.setSizeInUserInterfaceDimensionUnit(LOOK_SCALE);
-		testSprite.look.setRotation(LOOK_ROTATION);
-		testSprite.look.setZIndex(LOOK_ZPOSITION);
 	}
 
 	public void testSin() {
