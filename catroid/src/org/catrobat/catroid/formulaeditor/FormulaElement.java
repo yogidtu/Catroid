@@ -303,23 +303,23 @@ public class FormulaElement implements Serializable {
 				}
 
 			case JOIN:
-				String first = "";
+				String firstPart = "";
 				if (leftChild != null) {
 					if (leftChild.getElementType() != ElementType.STRING) {
-						first += leftChild.interpretRecursive(sprite);
+						firstPart += leftChild.interpretRecursive(sprite);
 					} else {
-						first = leftChild.value;
+						firstPart = leftChild.value;
 					}
 				}
-				String second = "";
+				String secondPart = "";
 				if (rightChild != null) {
 					if (rightChild.getElementType() != ElementType.STRING) {
-						second += rightChild.interpretRecursive(sprite);
+						secondPart += rightChild.interpretRecursive(sprite);
 					} else {
-						second = rightChild.value;
+						secondPart = rightChild.value;
 					}
 				}
-				return first + second;
+				return firstPart + secondPart;
 		}
 		return 0d;
 	}
@@ -455,7 +455,7 @@ public class FormulaElement implements Serializable {
 			return Double.MAX_VALUE;
 		}
 		if (((Double) valueToCheck).isNaN()) {
-			throw new NumberFormatException();
+			throw new NumberFormatException("NaN");
 		}
 
 		return valueToCheck;
