@@ -36,7 +36,7 @@ public class FormulaElement implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static enum ElementType {
-		OPERATOR, FUNCTION, NUMBER, SENSOR, USER_VARIABLE, BRACKET, STRING, CHAR
+		OPERATOR, FUNCTION, NUMBER, SENSOR, USER_VARIABLE, BRACKET, STRING
 	}
 
 	public static final Double NOT_EXISTING_USER_VARIABLE_INTERPRETATION_VALUE = 0d;
@@ -296,7 +296,7 @@ public class FormulaElement implements Serializable {
 					return 0d;
 				}
 				if (leftChild.type == ElementType.NUMBER) {
-					return 1d;
+					return (double) leftChild.value.length();
 				}
 				if (leftChild.type == ElementType.STRING) {
 					return (double) leftChild.value.length();
@@ -305,18 +305,32 @@ public class FormulaElement implements Serializable {
 			case JOIN:
 				String firstPart = "";
 				if (leftChild != null) {
-					if (leftChild.getElementType() != ElementType.STRING) {
-						firstPart += leftChild.interpretRecursive(sprite);
-					} else {
+					if (leftChild.getElementType() == ElementType.NUMBER) {
+						Double number = ((Double) leftChild.interpretRecursive(sprite));
+						if (isInteger(number)) {
+							firstPart += number.intValue();
+						} else {
+							firstPart += number;
+						}
+					} else if (leftChild.getElementType() == ElementType.STRING) {
 						firstPart = leftChild.value;
+					} else if (leftChild.getElementType() != ElementType.STRING) {
+						firstPart += leftChild.interpretRecursive(sprite);
 					}
 				}
 				String secondPart = "";
 				if (rightChild != null) {
-					if (rightChild.getElementType() != ElementType.STRING) {
-						secondPart += rightChild.interpretRecursive(sprite);
-					} else {
+					if (rightChild.getElementType() == ElementType.NUMBER) {
+						Double number = ((Double) rightChild.interpretRecursive(sprite));
+						if (isInteger(number)) {
+							secondPart += number.intValue();
+						} else {
+							secondPart += number;
+						}
+					} else if (rightChild.getElementType() == ElementType.STRING) {
 						secondPart = rightChild.value;
+					} else if (rightChild.getElementType() != ElementType.STRING) {
+						secondPart += rightChild.interpretRecursive(sprite);
 					}
 				}
 				return firstPart + secondPart;
@@ -517,14 +531,6 @@ public class FormulaElement implements Serializable {
 			return Operators.getOperatorByValue(value).isLogicalOperator;
 		}
 		return false;
-	}
-
-	public boolean hasFunctionCharacterReturnType() {
-		Functions function = Functions.getFunctionByValue(value);
-		if (function == null) {
-			return false;
-		}
-		return function.returnType == ElementType.CHAR;
 	}
 
 	public boolean hasFunctionStringReturnType() {

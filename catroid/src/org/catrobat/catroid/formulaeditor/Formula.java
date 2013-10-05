@@ -198,9 +198,6 @@ public class Formula implements Serializable {
 			boolean result = this.interpretBoolean(sprite);
 			int logicalFormulaResultIdentifier = result ? R.string.formula_editor_true : R.string.formula_editor_false;
 			return context.getString(logicalFormulaResultIdentifier);
-		} else if (formulaTree.hasFunctionCharacterReturnType()) {
-			String result = this.interpretString(sprite);
-			return String.valueOf(result);
 		} else if (formulaTree.hasFunctionStringReturnType() || formulaTree.getElementType() == ElementType.STRING) {
 			return interpretString(sprite);
 		} else {
