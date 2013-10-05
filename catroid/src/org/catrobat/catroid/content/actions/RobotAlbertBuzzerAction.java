@@ -22,15 +22,15 @@
  */
 package org.catrobat.catroid.content.actions;
 
+import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
+
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.robot.albert.RobotAlbert;
 
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
-
 public class RobotAlbertBuzzerAction extends TemporalAction {
 	private static final int MIN = 0;
-	private static final int MAX = 255;
+	private static final int MAX = 100;
 
 	private Formula value;
 	private Sprite sprite;
@@ -45,9 +45,10 @@ public class RobotAlbertBuzzerAction extends TemporalAction {
 			loudness = MAX;
 		}
 
-		//Log.d("RobotAlbert", "RobotAlbertBuzzerAction before send: value=" + value);
-		RobotAlbert.sendRobotAlbertBuzzerMessage(loudness);
-		//Log.d("RobotAlbert", "RobotAlbertBuzzerAction after sended");
+		float conv = (loudness * 255.0f) / 100.0f;
+		int value = (int) conv;
+
+		RobotAlbert.sendRobotAlbertBuzzerMessage(value);
 	}
 
 	public void setValue(Formula value) {

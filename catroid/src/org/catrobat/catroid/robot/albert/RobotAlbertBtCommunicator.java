@@ -118,24 +118,6 @@ public class RobotAlbertBtCommunicator extends RobotAlbertCommunicator {
 				}
 
 			}
-
-			/*
-			 * try {
-			 * returnMessage = receiveMessage();
-			 * if ((returnMessage.length >= 2)
-			 * && ((returnMessage[0] == LCPMessage.REPLY_COMMAND) || (returnMessage[0] ==
-			 * LCPMessage.DIRECT_COMMAND_NOREPLY))) {
-			 * dispatchMessage(returnMessage);
-			 * }
-			 * 
-			 * } catch (IOException e) {
-			 * // don't inform the user when connection is already closed
-			 * if (connected) {
-			 * sendState(STATE_RECEIVEERROR);
-			 * }
-			 * return;
-			 * }
-			 */
 		}
 	}
 
@@ -181,21 +163,6 @@ public class RobotAlbertBtCommunicator extends RobotAlbertCommunicator {
 					}
 					return;
 				}
-
-				// try another method for connection, this should work on the HTC desire, credits to Michael Biermann
-				//				try {
-				//
-				//					Method mMethod = btDevice.getClass().getMethod("createRfcommSocket", new Class[] { int.class });
-				//					btSocketTemporary = (BluetoothSocket) mMethod.invoke(btDevice, Integer.valueOf(1));
-				//					btSocketTemporary.connect();
-				//				} catch (Exception e1) {
-				//					if (uiHandler == null) {
-				//						throw new IOException();
-				//					} else {
-				//						sendState(STATE_CONNECTERROR);
-				//					}
-				//					return;
-				//				}
 			}
 			btSocket = btSocketTemporary;
 			inputStream = btSocket.getInputStream();
@@ -256,11 +223,6 @@ public class RobotAlbertBtCommunicator extends RobotAlbertCommunicator {
 		myHandler.removeMessages(1);
 		myHandler.removeMessages(2);
 
-		/*
-		 * moveMotor(0, 0, 0);
-		 * moveMotor(1, 0, 0);
-		 * moveMotor(2, 0, 0);
-		 */
 		resetRobotAlbert();
 
 	}
@@ -333,16 +295,6 @@ public class RobotAlbertBtCommunicator extends RobotAlbertCommunicator {
 		if (DEBUG_OUTPUT == true) {
 			Log.d("RobotAlbertBtComm", "receiveMessage:  leftDistance=" + leftDistance);
 			Log.d("RobotAlbertBtComm", "receiveMessage: rightDistance=" + rightDistance);
-			//Log.d("RobotAlbertBtComm", "receiveMessage: leftMotor=" + buffer[8]);
-			//Log.d("RobotAlbertBtComm", "receiveMessage: rightMotor=" + buffer[9]);
-			//Log.d("RobotAlbertBtComm", "receiveMessage: buffer[13]=" + buffer[13]);
-			//Log.d("RobotAlbertBtComm", "receiveMessage: buffer[14]=" + buffer[14]);
-			//Log.d("RobotAlbertBtComm", "receiveMessage: buffer[15]=" + buffer[15]);
-			//Log.d("RobotAlbertBtComm", "receiveMessage: buffer[16]=" + buffer[16]);
-			//Log.d("RobotAlbertBtComm", "receiveMessage: buffer[17]=" + buffer[17]);
-			//Log.d("RobotAlbertBtComm", "receiveMessage: buffer[18]=" + buffer[18]);
-			//Log.d("RobotAlbertBtComm", "receiveMessage: buffer[19]=" + buffer[19]);
-			//Log.d("RobotAlbertBtComm", "receiveMessage: buffer[20]=" + buffer[20]);
 		}
 
 		return buffer;
