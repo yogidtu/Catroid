@@ -42,7 +42,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.catrobat.catroid.R;
+import org.catrobat.albert.R;
 
 /**
  * Simple dialog for entering text with ok and cancel button will not permit to

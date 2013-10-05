@@ -42,7 +42,7 @@
  */
 package org.catrobat.catroid.bluetooth;
 
-import org.catrobat.catroid.R;
+import org.catrobat.albert.R;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
