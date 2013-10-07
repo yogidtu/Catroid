@@ -346,43 +346,54 @@ public class FormulaElement implements Serializable {
 			Double left;
 			Double right;
 
-			if (leftObject instanceof String) {
-				left = Double.valueOf((String) leftObject);
-			} else {
-				left = (Double) leftObject;
-			}
-			if (rightObject instanceof String) {
-				right = Double.valueOf((String) rightObject);
-			} else {
-				right = (Double) rightObject;
-			}
-
 			switch (operator) {
 				case PLUS:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return left + right;
 				case MINUS:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return left - right;
 				case MULT:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return left * right;
 				case DIVIDE:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return left / right;
 				case POW:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return java.lang.Math.pow(left, right);
 				case EQUAL:
-					return left.equals(right) ? 1d : 0d; //TODO Double equality, may round first?
+					return interpretOperatorEqual(leftObject, rightObject);
 				case NOT_EQUAL:
-					return left.equals(right) ? 0d : 1d;//TODO Double equality, may round first?
+					return interpretOperatorEqual(leftObject, rightObject) == 1d ? 0d : 1d;
 				case GREATER_THAN:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return left.compareTo(right) > 0 ? 1d : 0d;
 				case GREATER_OR_EQUAL:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return left.compareTo(right) >= 0 ? 1d : 0d;
 				case SMALLER_THAN:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return left.compareTo(right) < 0 ? 1d : 0d;
 				case SMALLER_OR_EQUAL:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return left.compareTo(right) <= 0 ? 1d : 0d;
 				case LOGICAL_AND:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return (left * right) != 0d ? 1d : 0d;
 				case LOGICAL_OR:
+					left = (Double) interpretOperatorDefault(leftObject);
+					right = (Double) interpretOperatorDefault(rightObject);
 					return left != 0d || right != 0d ? 1d : 0d;
 			}
 
@@ -438,6 +449,13 @@ public class FormulaElement implements Serializable {
 
 		boolean isParentAFunction = Functions.getFunctionByValue(parent.value) != null;
 		if (isParentAFunction && Functions.getFunctionByValue(parent.value).returnType == ElementType.STRING) {
+			if (Functions.getFunctionByValue(parent.value) == Functions.LETTER && parent.leftChild == this) {
+				try {
+					return Double.valueOf(value);
+				} catch (NumberFormatException numberFormatexception) {
+					return Double.valueOf(0);
+				}
+			}
 			return value;
 		}
 
@@ -449,7 +467,56 @@ public class FormulaElement implements Serializable {
 			return Double.valueOf(0.0);
 		}
 
+		boolean isParentAOperator = Operators.getOperatorByValue(parent.value) != null;
+		if (isParentAOperator
+				&& (Operators.getOperatorByValue(parent.value) == Operators.EQUAL || Operators
+						.getOperatorByValue(parent.value) == Operators.NOT_EQUAL)) {
+			return value;
+		}
+
 		return Double.valueOf(value);
+	}
+
+	private Double interpretOperatorEqual(Object left, Object right) {
+
+		if (left instanceof String && right instanceof String) {
+			int compareResult = ((String) left).compareTo((String) right);
+			if (compareResult == 0) {
+				return 1d;
+			}
+		}
+		if (left instanceof Double && right instanceof String) {
+			try {
+				int compareResult = ((Double) left).compareTo(Double.valueOf((String) right));
+				if (compareResult == 0) {
+					return 1d;
+				}
+			} catch (NumberFormatException numberFormatException) {
+				return 0d;
+			}
+		}
+		if (left instanceof String && right instanceof Double) {
+			try {
+				int compareResult = Double.valueOf((String) left).compareTo((Double) right);
+				if (compareResult == 0) {
+					return 1d;
+				}
+			} catch (NumberFormatException numberFormatException) {
+				return 0d;
+			}
+		}
+		if (left instanceof Double && right instanceof Double) {
+			return (((Double) left).compareTo((Double) right) == 0) ? 1d : 0d;
+		}
+		return 0d;
+	}
+
+	private Object interpretOperatorDefault(Object object) throws NumberFormatException {
+		if (object instanceof String) {
+			return Double.valueOf((String) object);
+		} else {
+			return object;
+		}
 	}
 
 	private Object checkDegeneratedDoubleValues(Object valueToCheck) throws NumberFormatException {
