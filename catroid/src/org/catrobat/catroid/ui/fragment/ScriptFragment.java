@@ -50,7 +50,10 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.AllowedAfterDeadEndBrick;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.DeadEndBrick;
+import org.catrobat.catroid.content.bricks.NestingBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
@@ -234,7 +237,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			int lastVisibleBrick = listView.getLastVisiblePosition();
 			int position = ((1 + lastVisibleBrick - firstVisibleBrick) / 2);
 			position += firstVisibleBrick;
-			adapter.addNewBrick(position, brickToBeAdded);
+			adapter.addNewBrick(position, brickToBeAdded, true);
 		}
 		adapter.notifyDataSetChanged();
 	}
@@ -504,6 +507,10 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	};
 
 	private void copyBrick(Brick brick) {
+		if (brick instanceof NestingBrick
+				&& (brick instanceof AllowedAfterDeadEndBrick || brick instanceof DeadEndBrick)) {
+			return;
+		}
 
 		if (brick instanceof ScriptBrick) {
 			scriptToEdit = ((ScriptBrick) brick).initScript(ProjectManager.getInstance().getCurrentSprite());
@@ -516,19 +523,32 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 			return;
 		}
+
 		int brickId = adapter.getBrickList().indexOf(brick);
 		if (brickId == -1) {
 			return;
 		}
 
 		int newPosition = adapter.getCount();
-
 		Brick copy = brick.clone();
+		Script scriptList = ProjectManager.getInstance().getCurrentScript();
 
-		Script scriptList;
-		scriptList = ProjectManager.getInstance().getCurrentScript();
-		scriptList.addBrick(copy);
-		adapter.addNewMultipleBricks(newPosition, copy);
+		if (brick instanceof NestingBrick) {
+			NestingBrick nestingBrick = (NestingBrick) copy;
+			nestingBrick.initialize();
+			List<NestingBrick> nestingBrickList = nestingBrick.getAllNestingBrickParts(true);
+
+			for (int i = 0; i < nestingBrickList.size(); ++i) {
+				if (nestingBrickList.get(i) instanceof DeadEndBrick && i < nestingBrickList.size() - 1) {
+					Log.w(TAG, "Adding a DeadEndBrick in the middle of the NestingBricks");
+				}
+				scriptList.addBrick(nestingBrickList.get(i));
+			}
+		} else {
+			scriptList.addBrick(copy);
+		}
+
+		adapter.addNewBrick(newPosition, copy, false);
 		adapter.initBrickList();
 
 		ProjectManager.getInstance().saveProject();
