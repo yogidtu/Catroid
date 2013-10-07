@@ -141,7 +141,8 @@ public class BrickCategoryFragment extends SherlockListFragment {
 		if (sharedPreferences.getBoolean("setting_mindstorm_bricks", false)) {
 			categories.add(inflater.inflate(R.layout.brick_category_lego_nxt, null));
 		}
-		if (sharedPreferences.getBoolean("setting_robot_albert_bricks", false)) {
+		//just temporary for developing robot Albert implementation of Pocket Code; Set default settings of Albert bricks true
+		if (sharedPreferences.getBoolean("setting_robot_albert_bricks", true)) {
 			categories.add(inflater.inflate(R.layout.brick_category_robot_albert, null));
 		}
 
