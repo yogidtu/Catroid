@@ -186,16 +186,11 @@ public class StageListener implements ApplicationListener {
 		skipFirstFrameForAutomaticScreenshot = true;
 	}
 
-	/**
-	 * @return
-	 */
 	private ScreenModes getScreenMode() {
 		if (ProjectManager.getInstance().getCurrentProject().getScreenMode().equals(ScreenModes.STRETCH.name())) {
 			return ScreenModes.STRETCH;
-		} else {
-			return ScreenModes.MAXIMIZE;
 		}
-
+		return ScreenModes.MAXIMIZE;
 	}
 
 	void menuResume() {
@@ -266,11 +261,7 @@ public class StageListener implements ApplicationListener {
 			saveScreenshot(thumbnail, SCREENSHOT_AUTOMATIC_FILE_NAME);
 		}
 
-		if (screenMode == ScreenModes.STRETCH) {
-			ProjectManager.getInstance().getCurrentProject().setScreenMode(ScreenModes.STRETCH.name());
-		} else if (screenMode == ScreenModes.MAXIMIZE) {
-			ProjectManager.getInstance().getCurrentProject().setScreenMode(ScreenModes.MAXIMIZE.name());
-		}
+		ProjectManager.getInstance().getCurrentProject().setScreenMode(screenMode.name());
 	}
 
 	@Override
