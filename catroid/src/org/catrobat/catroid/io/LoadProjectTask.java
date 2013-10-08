@@ -66,9 +66,7 @@ public class LoadProjectTask extends AsyncTask<Void, Void, Boolean> {
 	@Override
 	protected Boolean doInBackground(Void... arg0) {
 		Project currentProject = ProjectManager.getInstance().getCurrentProject();
-		if (currentProject == null) {
-			return ProjectManager.getInstance().loadProject(projectName, activity, false);
-		} else if (!currentProject.getName().equals(projectName)) {
+		if (currentProject == null || !currentProject.getName().equals(projectName)) {
 			return ProjectManager.getInstance().loadProject(projectName, activity, false);
 		}
 		return true;
@@ -80,6 +78,7 @@ public class LoadProjectTask extends AsyncTask<Void, Void, Boolean> {
 
 		if (onLoadProjectCompleteListener != null) {
 			if (!success && showErrorMessage) {
+				linearLayoutProgressCircle.setVisibility(View.GONE);
 				Utils.showErrorDialog(activity, R.string.error_load_project);
 			} else {
 				onLoadProjectCompleteListener.onLoadProjectSuccess(startProjectActivity);
