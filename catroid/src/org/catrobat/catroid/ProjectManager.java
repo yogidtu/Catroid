@@ -159,7 +159,6 @@ public class ProjectManager {
 
 		currentSprite = null;
 		currentScript = null;
-		saveProject();
 	}
 
 	public Project getCurrentProject() {
