@@ -101,6 +101,7 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 
 		if (!BackPackListManager.isBackpackFlag()) {
 			BackPackListManager.getInstance().setSoundInfoArrayListEmpty();
+			BackPackListManager.getInstance().setLookDataArrayListEmpty();
 		}
 	}
 

@@ -293,6 +293,7 @@ public class SoundController {
 
 	public void deleteCheckedSounds(Activity activity, SoundBaseAdapter adapter, ArrayList<SoundInfo> soundInfoList,
 			MediaPlayer mediaPlayer) {
+		Log.d("TAG", "SoundController-->deleteCheckedSounds()");
 		SortedSet<Integer> checkedSounds = adapter.getCheckedItems();
 		Iterator<Integer> iterator = checkedSounds.iterator();
 		SoundController.getInstance().stopSoundAndUpdateList(mediaPlayer, soundInfoList, adapter);
