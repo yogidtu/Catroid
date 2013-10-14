@@ -301,7 +301,7 @@ public class FormulaElement implements Serializable {
 				if (leftChild.type == ElementType.STRING) {
 					return (double) leftChild.value.length();
 				}
-
+				return (double) ((String) left).length();
 			case JOIN:
 				String firstPart = "";
 				if (leftChild != null) {

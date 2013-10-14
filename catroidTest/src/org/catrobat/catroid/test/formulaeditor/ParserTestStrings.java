@@ -59,6 +59,9 @@ public class ParserTestStrings extends AndroidTestCase {
 	}
 
 	//TODO: Decision: string with number -> compute (f.e '1.1' + compute should eval to string or number ?
+	//TODO: testLengthWithUserVariableAsParameterInterpretation
+	//TODO: testLetterWithUserVariableParameterS
+	//TODO: testJoinWithUserVariableParameterS
 
 	public void testStringToNumberInterpretation() {
 		String stringWithNumber = "9.9";
@@ -92,8 +95,6 @@ public class ParserTestStrings extends AndroidTestCase {
 		assertEquals("Formula interpretation is not as expected: " + Functions.LENGTH.name() + "(" + number + ")",
 				(double) number.length(), parseTree.interpretRecursive(testSprite));
 	}
-
-	//TODO: testLengthWithUserVariableAsParameterInterpretation
 
 	public void testLetter() {
 		String letterString = "letterString";
@@ -172,9 +173,27 @@ public class ParserTestStrings extends AndroidTestCase {
 				+ letterString + ")", String.valueOf(letterString.charAt(normalizedIndex)),
 				parseTree.interpretRecursive(testSprite));
 
-	}
+		String firstParameter = "hello";
+		String secondParameter = " world";
+		normalizedIndex = Integer.valueOf(index) - 1;
+		internTokenList = buildDoubleParameterFunction(Functions.JOIN, InternTokenType.STRING, firstParameter,
+				InternTokenType.STRING, secondParameter);
+		internTokenList = buildSingleParameterFunction(Functions.LENGTH, internTokenList);
+		internTokenList = buildDoubleParameterFunction(Functions.LETTER, internTokenList, InternTokenType.STRING,
+				firstParameter + secondParameter);
+		internParser = new InternFormulaParser(internTokenList);
+		parseTree = internParser.parseFormula();
+		assertNotNull("Formula is not parsed correctly: " + Functions.LETTER.name() + "(" + Functions.LENGTH.name()
+				+ "(" + Functions.JOIN.name() + "(" + firstParameter + "," + secondParameter + ")" + ")" + ","
+				+ firstParameter + secondParameter + ")", parseTree);
+		assertEquals(
+				"Formula interpretation is not as expected: " + Functions.LETTER.name() + "(" + Functions.LENGTH.name()
+						+ "(" + Functions.JOIN.name() + "(" + firstParameter + "," + secondParameter + ")" + ")" + ","
+						+ firstParameter + secondParameter + ")", String.valueOf((firstParameter + secondParameter)
+						.charAt((firstParameter + secondParameter).length() - 1)),
+				parseTree.interpretRecursive(testSprite));
 
-	// TODO: Decision first Parameter of letter() only Integer? -> Force Interpretation of first param string ...
+	}
 
 	public void testJoin() {
 		String firstParameter = "first";
@@ -324,12 +343,33 @@ public class ParserTestStrings extends AndroidTestCase {
 		return tokenList;
 	}
 
+	private List<InternToken> buildDoubleParameterFunction(Functions function, List<InternToken> internTokenList,
+			InternTokenType secondParameter, String secondParameterNumberValue) {
+		List<InternToken> tokenList = new LinkedList<InternToken>();
+		tokenList.add(new InternToken(InternTokenType.FUNCTION_NAME, function.name()));
+		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_OPEN));
+		tokenList.addAll(internTokenList);
+		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETER_DELIMITER));
+		tokenList.add(new InternToken(secondParameter, secondParameterNumberValue));
+		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_CLOSE));
+		return tokenList;
+	}
+
 	private List<InternToken> buildSingleParameterFunction(Functions function, InternTokenType firstParameter,
 			String parameterNumberValue) {
 		List<InternToken> tokenList = new LinkedList<InternToken>();
 		tokenList.add(new InternToken(InternTokenType.FUNCTION_NAME, function.name()));
 		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_OPEN));
 		tokenList.add(new InternToken(firstParameter, parameterNumberValue));
+		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_CLOSE));
+		return tokenList;
+	}
+
+	private List<InternToken> buildSingleParameterFunction(Functions function, List<InternToken> internTokenList) {
+		List<InternToken> tokenList = new LinkedList<InternToken>();
+		tokenList.add(new InternToken(InternTokenType.FUNCTION_NAME, function.name()));
+		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_OPEN));
+		tokenList.addAll(internTokenList);
 		tokenList.add(new InternToken(InternTokenType.FUNCTION_PARAMETERS_BRACKET_CLOSE));
 		return tokenList;
 	}
