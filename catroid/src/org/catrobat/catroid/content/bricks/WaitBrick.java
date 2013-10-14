@@ -22,32 +22,18 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;
-
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
-import org.catrobat.catroid.utils.Utils;
 
 import java.util.List;
 
-public class WaitBrick extends BrickBaseType implements OnClickListener, FormulaBrick {
+public class WaitBrick extends BrickBaseType implements FormulaBrick {
 	private static final long serialVersionUID = 1L;
 	private Formula timeToWaitInSeconds;
-
-	private transient View prototypeView;
 
 	public WaitBrick(Sprite sprite, int timeToWaitInMillisecondsValue) {
 		this.sprite = sprite;
@@ -89,96 +75,8 @@ public class WaitBrick extends BrickBaseType implements OnClickListener, Formula
 	}
 
 	@Override
-	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
-		if (animationState) {
-			return view;
-		}
-
-		view = View.inflate(context, R.layout.brick_wait, null);
-		view = getViewWithAlpha(alphaValue);
-
-		setCheckboxView(R.id.brick_wait_checkbox);
-
-		final Brick brickInstance = this;
-		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				checked = isChecked;
-				adapter.handleCheck(brickInstance, isChecked);
-			}
-		});
-
-		TextView text = (TextView) view.findViewById(R.id.brick_wait_prototype_text_view);
-		TextView edit = (TextView) view.findViewById(R.id.brick_wait_edit_text);
-		timeToWaitInSeconds.setTextFieldId(R.id.brick_wait_edit_text);
-		timeToWaitInSeconds.refreshTextField(view);
-
-		TextView times = (TextView) view.findViewById(R.id.brick_wait_second_text_view);
-
-		if (timeToWaitInSeconds.isSingleNumberFormula()) {
-			times.setText(view.getResources().getQuantityString(R.plurals.second_plural,
-					Utils.convertDoubleToPluralInteger(timeToWaitInSeconds.interpretDouble(sprite))));
-		} else {
-
-			// Random Number to get into the "other" keyword for values like 0.99 or 2.001 seconds or degrees
-			// in hopefully all possible languages
-			times.setText(view.getResources().getQuantityString(R.plurals.second_plural,
-					Utils.TRANSLATION_PLURAL_OTHER_INTEGER));
-		}
-
-		text.setVisibility(View.GONE);
-		edit.setVisibility(View.VISIBLE);
-		edit.setOnClickListener(this);
-		return view;
-	}
-
-	@Override
-	public View getPrototypeView(Context context) {
-		prototypeView = View.inflate(context, R.layout.brick_wait, null);
-		TextView textWait = (TextView) prototypeView.findViewById(R.id.brick_wait_prototype_text_view);
-		textWait.setText(String.valueOf(timeToWaitInSeconds.interpretInteger(sprite)));
-		TextView times = (TextView) prototypeView.findViewById(R.id.brick_wait_second_text_view);
-		times.setText(context.getResources().getQuantityString(R.plurals.second_plural,
-				Utils.convertDoubleToPluralInteger(timeToWaitInSeconds.interpretDouble(sprite))));
-		return prototypeView;
-	}
-
-	@Override
 	public Brick clone() {
 		return new WaitBrick(getSprite(), timeToWaitInSeconds.clone());
-	}
-
-	@Override
-	public View getViewWithAlpha(int alphaValue) {
-
-		if (view != null) {
-
-			View layout = (View) view.findViewById(R.id.brick_wait_layout);
-			Drawable background = layout.getBackground();
-			background.setAlpha(alphaValue);
-
-			TextView textWaitLabel = (TextView) view.findViewById(R.id.brick_wait_label);
-			TextView textWaitSeconds = (TextView) view.findViewById(R.id.brick_wait_second_text_view);
-			TextView editWait = (TextView) view.findViewById(R.id.brick_wait_edit_text);
-
-			textWaitLabel.setTextColor(textWaitLabel.getTextColors().withAlpha(alphaValue));
-			textWaitSeconds.setTextColor(textWaitSeconds.getTextColors().withAlpha(alphaValue));
-			editWait.setTextColor(editWait.getTextColors().withAlpha(alphaValue));
-			editWait.getBackground().setAlpha(alphaValue);
-
-			this.alphaValue = (alphaValue);
-
-		}
-
-		return view;
-	}
-
-	@Override
-	public void onClick(View view) {
-		if (checkbox.getVisibility() == View.VISIBLE) {
-			return;
-		}
-		FormulaEditorFragment.showFragment(view, this, timeToWaitInSeconds);
 	}
 
 	@Override

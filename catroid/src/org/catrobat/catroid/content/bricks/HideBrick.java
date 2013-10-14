@@ -22,17 +22,8 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.view.View;
-import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;import android.widget.TextView;
-
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
@@ -56,27 +47,6 @@ public class HideBrick extends BrickBaseType {
 	}
 
 	@Override
-	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
-		if (animationState) {
-			return view;
-		}
-		view = View.inflate(context, R.layout.brick_hide, null);
-		view = getViewWithAlpha(alphaValue);
-
-		setCheckboxView(R.id.brick_hide_checkbox);
-		final Brick brickInstance = this;
-		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				checked = isChecked;
-				adapter.handleCheck(brickInstance, isChecked);
-			}
-		});
-
-		return view;
-	}
-
-	@Override
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
 		HideBrick copyBrick = (HideBrick) clone();
 		copyBrick.sprite = sprite;
@@ -84,29 +54,8 @@ public class HideBrick extends BrickBaseType {
 	}
 
 	@Override
-	public View getViewWithAlpha(int alphaValue) {
-		if (view != null) {
-			Log.d("TAG", "VIEW != NULL");
-			View layout = (View) view.findViewById(R.id.brick_hide_layout);
-			Drawable background = layout.getBackground();
-			background.setAlpha(alphaValue);
-			this.alphaValue = (alphaValue);
-
-			TextView hideLabel = (TextView) view.findViewById(R.id.brick_hide_label);
-			hideLabel.setTextColor(hideLabel.getTextColors().withAlpha(alphaValue));
-		}
-
-		return view;
-	}
-
-	@Override
 	public Brick clone() {
 		return new HideBrick(getSprite());
-	}
-
-	@Override
-	public View getPrototypeView(Context context) {
-		return View.inflate(context, R.layout.brick_hide, null);
 	}
 
 	@Override

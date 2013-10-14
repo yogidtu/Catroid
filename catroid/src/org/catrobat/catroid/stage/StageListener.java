@@ -47,7 +47,6 @@ import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.ui.dialogs.StageDialog;
 
 import java.util.List;
 
@@ -94,8 +93,6 @@ public class StageListener implements ApplicationListener {
 	private int testY = 0;
 	private int testWidth = 0;
 	private int testHeight = 0;
-
-	private StageDialog stageDialog;
 
 	public int maximizeViewPortX = 0;
 	public int maximizeViewPortY = 0;
@@ -183,11 +180,10 @@ public class StageListener implements ApplicationListener {
 		}
 	}
 
-	public void reloadProject(Context context, StageDialog stageDialog) {
+	public void reloadProject(Context context) {
 		if (reloadProject) {
 			return;
 		}
-		this.stageDialog = stageDialog;
 
 		project.getUserVariables().resetAllUserVariables();
 
@@ -262,13 +258,6 @@ public class StageListener implements ApplicationListener {
 			paused = true;
 			firstStart = true;
 			reloadProject = false;
-			try {
-				synchronized (stageDialog) {
-					stageDialog.notify();
-				}
-			} catch (Exception e) {
-				//TODO: handle expection here, probably NullPointer when LWP
-			}
 		}
 
 		switch (screenMode) {

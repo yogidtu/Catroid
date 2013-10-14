@@ -22,16 +22,8 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;import android.widget.TextView;
-
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
@@ -56,27 +48,6 @@ public class IfOnEdgeBounceBrick extends BrickBaseType {
 	}
 
 	@Override
-	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
-		if (animationState) {
-			return view;
-		}
-		view = View.inflate(context, R.layout.brick_if_on_edge_bounce, null);
-		view = getViewWithAlpha(alphaValue);
-
-		setCheckboxView(R.id.brick_if_on_edge_bounce_checkbox);
-		final Brick brickInstance = this;
-		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				checked = isChecked;
-				adapter.handleCheck(brickInstance, isChecked);
-			}
-		});
-
-		return view;
-	}
-
-	@Override
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
 		IfOnEdgeBounceBrick copyBrick = (IfOnEdgeBounceBrick) clone();
 		copyBrick.sprite = sprite;
@@ -84,31 +55,8 @@ public class IfOnEdgeBounceBrick extends BrickBaseType {
 	}
 
 	@Override
-	public View getViewWithAlpha(int alphaValue) {
-
-		if (view != null) {
-
-			View layout = (View) view.findViewById(R.id.brick_if_on_edge_bounce_layout);
-			Drawable background = layout.getBackground();
-			background.setAlpha(alphaValue);
-			this.alphaValue = (alphaValue);
-
-			TextView ifBounceLabel = (TextView) view.findViewById(R.id.brick_if_on_edge_bounce_label);
-			ifBounceLabel.setTextColor(ifBounceLabel.getTextColors().withAlpha(alphaValue));
-
-		}
-
-		return view;
-	}
-
-	@Override
 	public Brick clone() {
 		return new IfOnEdgeBounceBrick(sprite);
-	}
-
-	@Override
-	public View getPrototypeView(Context context) {
-		return View.inflate(context, R.layout.brick_if_on_edge_bounce, null);
 	}
 
 	@Override

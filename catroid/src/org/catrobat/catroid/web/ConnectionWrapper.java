@@ -29,8 +29,6 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
 import com.squareup.okhttp.OkHttpClient;
 
-import org.catrobat.catroid.utils.StatusBarNotificationManager;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -79,9 +77,9 @@ public class ConnectionWrapper {
 			}
 			if (!uploadRequest.ok()) {
 				Log.v(TAG, "Upload not succesful");
-				StatusBarNotificationManager.getInstance().cancelNotification(notificationId);
+				//StatusBarNotificationManager.getInstance().cancelNotification(notificationId);
 			} else {
-				StatusBarNotificationManager.getInstance().showOrUpdateNotification(notificationId, 100);
+				//StatusBarNotificationManager.getInstance().showOrUpdateNotification(notificationId, 100);
 			}
 
 			answer = uploadRequest.body();

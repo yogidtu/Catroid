@@ -22,16 +22,10 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import android.content.Context;
-import android.view.View;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
 
 import java.io.Serializable;
 import java.util.List;
@@ -53,29 +47,10 @@ public interface Brick extends Serializable {
 	//needed for the Sprite#clone()-Method
 	public Brick copyBrickForSprite(Sprite sprite, Script script);
 
-	public View getView(Context context, int brickId, BaseAdapter adapter);
-
-	public View getPrototypeView(Context context);
-
 	public Brick clone();
 
 	public int getRequiredResources();
 
-	public void setCheckboxVisibility(int visibility);
-
 	public int getAlphaValue();
 
-	public void setBrickAdapter(BrickAdapter adapter);
-
-	public CheckBox getCheckBox();
-
-	public boolean isChecked();
-
-	public void setCheckedBoolean(boolean newValue);
-
-	public void setCheckboxView(int id);
-
-	public View getViewWithAlpha(int alphaValue);
-
-	void setAnimationState(boolean animationState);
 }

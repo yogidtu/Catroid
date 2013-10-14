@@ -45,12 +45,13 @@ public abstract class NestingBrick extends BrickBaseType {
 
 	public abstract void initialize();
 
-	public abstract boolean isDraggableOver(Brick brick);
-
 	/**
-	 * 
-	 * @return List of NestingBricks in order of their appearance
+	 * @param sorted
+	 * @return
 	 */
-	public abstract List<NestingBrick> getAllNestingBrickParts(boolean sorted);
+	public List<NestingBrick> getAllNestingBrickParts(boolean sorted) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

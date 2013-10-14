@@ -22,32 +22,19 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;
-
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import java.util.List;
 
-public class TurnLeftBrick extends BrickBaseType implements OnClickListener, FormulaBrick {
+public class TurnLeftBrick extends BrickBaseType implements FormulaBrick {
 
 	private static final long serialVersionUID = 1L;
 	private Formula degrees;
-
-	private transient View prototypeView;
 
 	public TurnLeftBrick(Sprite sprite, double degreesValue) {
 		this.sprite = sprite;
@@ -81,81 +68,8 @@ public class TurnLeftBrick extends BrickBaseType implements OnClickListener, For
 	}
 
 	@Override
-	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
-		if (animationState) {
-			return view;
-		}
-		view = View.inflate(context, R.layout.brick_turn_left, null);
-		view = getViewWithAlpha(alphaValue);
-
-		setCheckboxView(R.id.brick_turn_left_checkbox);
-
-		final Brick brickInstance = this;
-		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				checked = isChecked;
-				adapter.handleCheck(brickInstance, isChecked);
-			}
-		});
-
-		TextView textDegrees = (TextView) view.findViewById(R.id.brick_turn_left_prototype_text_view);
-		TextView editDegrees = (TextView) view.findViewById(R.id.brick_turn_left_edit_text);
-		degrees.setTextFieldId(R.id.brick_turn_left_edit_text);
-		degrees.refreshTextField(view);
-
-		textDegrees.setVisibility(View.GONE);
-		editDegrees.setVisibility(View.VISIBLE);
-		editDegrees.setOnClickListener(this);
-		return view;
-	}
-
-	@Override
-	public View getPrototypeView(Context context) {
-		prototypeView = View.inflate(context, R.layout.brick_turn_left, null);
-		TextView textDegrees = (TextView) prototypeView.findViewById(R.id.brick_turn_left_prototype_text_view);
-		textDegrees.setText(String.valueOf(degrees.interpretDouble(sprite)));
-		return prototypeView;
-	}
-
-	@Override
 	public Brick clone() {
 		return new TurnLeftBrick(getSprite(), degrees.clone());
-	}
-
-	@Override
-	public View getViewWithAlpha(int alphaValue) {
-
-		if (view != null) {
-
-			View layout = (View) view.findViewById(R.id.brick_turn_left_layout);
-			Drawable background = layout.getBackground();
-			background.setAlpha(alphaValue);
-
-			TextView turnLeftLabel = (TextView) view.findViewById(R.id.brick_turn_left_label);
-			TextView textDegrees = (TextView) view.findViewById(R.id.brick_turn_left_prototype_text_view);
-			TextView times = (TextView) view.findViewById(R.id.brick_turn_left_degree_text_view);
-			TextView editDegrees = (TextView) view.findViewById(R.id.brick_turn_left_edit_text);
-
-			textDegrees.setTextColor(textDegrees.getTextColors().withAlpha(alphaValue));
-			turnLeftLabel.setTextColor(turnLeftLabel.getTextColors().withAlpha(alphaValue));
-			times.setTextColor(times.getTextColors().withAlpha(alphaValue));
-			editDegrees.setTextColor(editDegrees.getTextColors().withAlpha(alphaValue));
-			editDegrees.getBackground().setAlpha(alphaValue);
-
-			this.alphaValue = (alphaValue);
-
-		}
-
-		return view;
-	}
-
-	@Override
-	public void onClick(View view) {
-		if (checkbox.getVisibility() == View.VISIBLE) {
-			return;
-		}
-		FormulaEditorFragment.showFragment(view, this, degrees);
 	}
 
 	@Override

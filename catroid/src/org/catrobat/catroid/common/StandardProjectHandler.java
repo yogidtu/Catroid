@@ -25,7 +25,6 @@ package org.catrobat.catroid.common;
 import android.content.Context;
 
 import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
@@ -49,7 +48,7 @@ import org.catrobat.catroid.formulaeditor.Functions;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.stage.StageListener;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.utils.Utils;
 
 import java.io.BufferedOutputStream;
@@ -106,8 +105,7 @@ public class StandardProjectHandler {
 		File backgroundFile = copyFromResourceInProject(projectName, Constants.IMAGE_DIRECTORY, backgroundName,
 				R.drawable.default_project_background, context);
 
-		copyFromResourceInProject(projectName, ".", StageListener.SCREENSHOT_AUTOMATIC_FILE_NAME,
-				R.drawable.default_project_screenshot, context, false);
+		//	copyFromResourceInProject(projectName, ".", StageListener.SCREENSHOT_AUTOMATIC_FILE_NAME, R.drawable.default_project_screenshot, context, false);
 
 		LookData moleLookData1 = new LookData();
 		moleLookData1.setLookName(mole1Name);
@@ -280,14 +278,14 @@ public class StandardProjectHandler {
 		return defaultProject;
 	}
 
-    public static Project createAndSaveEmptyProject(String projectName, Context context) {
-        Project emptyProject = new Project(context, projectName);
-        emptyProject.setDeviceData(context);
-        StorageHandler.getInstance().saveProject(emptyProject);
-        ProjectManager.getInstance().setProject(emptyProject);
+	public static Project createAndSaveEmptyProject(String projectName, Context context) {
+		Project emptyProject = new Project(context, projectName);
+		emptyProject.setDeviceData(context);
+		StorageHandler.getInstance().saveProject(emptyProject);
+		ProjectManager.getInstance().setProject(emptyProject);
 
-        return emptyProject;
-    }
+		return emptyProject;
+	}
 
 	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
 			int fileId, Context context) throws IOException {

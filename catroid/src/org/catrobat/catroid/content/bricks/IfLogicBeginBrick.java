@@ -22,32 +22,21 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-import org.catrobat.catroid.livewallpaper.R;
-import org.catrobat.catroid.common.BrickValues;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class IfLogicBeginBrick extends NestingBrick implements OnClickListener, FormulaBrick {
+public class IfLogicBeginBrick extends NestingBrick implements FormulaBrick {
 	private static final long serialVersionUID = 1L;
 	private static final String TAG = IfLogicBeginBrick.class.getSimpleName();
 	public static final int EXECUTE_ELSE_PART = -1;
@@ -102,83 +91,6 @@ public class IfLogicBeginBrick extends NestingBrick implements OnClickListener, 
 	}
 
 	@Override
-	public View getView(Context context, int brickId, BaseAdapter baseAdapter) {
-		if (animationState) {
-			return view;
-		}
-		if (view == null) {
-			alphaValue = 255;
-		}
-
-		view = View.inflate(context, R.layout.brick_if_begin_if, null);
-		view = getViewWithAlpha(alphaValue);
-
-		setCheckboxView(R.id.brick_if_begin_checkbox);
-		final Brick brickInstance = this;
-
-		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				checked = isChecked;
-				adapter.handleCheck(brickInstance, isChecked);
-			}
-		});
-
-		TextView prototypeTextView = (TextView) view.findViewById(R.id.brick_if_begin_prototype_text_view);
-		TextView ifBeginTextView = (TextView) view.findViewById(R.id.brick_if_begin_edit_text);
-
-		ifCondition.setTextFieldId(R.id.brick_if_begin_edit_text);
-		ifCondition.refreshTextField(view);
-
-		prototypeTextView.setVisibility(View.GONE);
-		ifBeginTextView.setVisibility(View.VISIBLE);
-
-		ifBeginTextView.setOnClickListener(this);
-
-		return view;
-	}
-
-	@Override
-	public View getViewWithAlpha(int alphaValue) {
-
-		if (view != null) {
-
-			View layout = (View) view.findViewById(R.id.brick_if_begin_layout);
-			Drawable background = layout.getBackground();
-			background.setAlpha(alphaValue);
-
-			TextView ifLabel = (TextView) view.findViewById(R.id.if_label);
-			TextView ifLabelEnd = (TextView) view.findViewById(R.id.if_label_second_part);
-			TextView editX = (TextView) view.findViewById(R.id.brick_if_begin_edit_text);
-			ifLabel.setTextColor(ifLabel.getTextColors().withAlpha(alphaValue));
-			ifLabelEnd.setTextColor(ifLabelEnd.getTextColors().withAlpha(alphaValue));
-			editX.setTextColor(editX.getTextColors().withAlpha(alphaValue));
-			editX.getBackground().setAlpha(alphaValue);
-
-			this.alphaValue = (alphaValue);
-
-		}
-
-		return view;
-	}
-
-	@Override
-	public View getPrototypeView(Context context) {
-		View prototypeView = View.inflate(context, R.layout.brick_if_begin_if, null);
-		TextView textIfBegin = (TextView) prototypeView.findViewById(R.id.brick_if_begin_prototype_text_view);
-		textIfBegin.setText(String.valueOf(BrickValues.IF_CONDITION));
-		return prototypeView;
-	}
-
-	@Override
-	public void onClick(View view) {
-		if (checkbox.getVisibility() == View.VISIBLE) {
-			return;
-		}
-		FormulaEditorFragment.showFragment(view, this, ifCondition);
-	}
-
-	@Override
 	public boolean isInitialized() {
 		if (ifElseBrick == null) {
 			return false;
@@ -208,15 +120,6 @@ public class IfLogicBeginBrick extends NestingBrick implements OnClickListener, 
 		}
 
 		return nestingBrickList;
-	}
-
-	@Override
-	public boolean isDraggableOver(Brick brick) {
-		if (brick == ifElseBrick) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 
 	@Override

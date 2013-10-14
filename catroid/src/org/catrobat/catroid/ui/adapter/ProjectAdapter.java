@@ -40,9 +40,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.common.ProjectData;
-import org.catrobat.catroid.io.ProjectScreenshotLoader;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 
@@ -65,7 +64,6 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 		private RelativeLayout background;
 		private CheckBox checkbox;
 		private TextView projectName;
-		private ImageView image;
 		private TextView size;
 		private TextView dateChanged;
 		private View projectDetails;
@@ -75,12 +73,10 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 	}
 
 	private static LayoutInflater inflater;
-	private ProjectScreenshotLoader screenshotLoader;
 
 	public ProjectAdapter(Context context, int resource, int textViewResourceId, List<ProjectData> objects) {
 		super(context, resource, textViewResourceId, objects);
 		inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		screenshotLoader = new ProjectScreenshotLoader(context);
 		showDetails = false;
 		selectMode = ListView.CHOICE_MODE_NONE;
 		this.context = context;
@@ -132,7 +128,6 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 			holder.background = (RelativeLayout) convertView.findViewById(R.id.my_projects_activity_item_background);
 			holder.checkbox = (CheckBox) convertView.findViewById(R.id.project_checkbox);
 			holder.projectName = (TextView) convertView.findViewById(R.id.my_projects_activity_project_title);
-			holder.image = (ImageView) convertView.findViewById(R.id.my_projects_activity_project_image);
 			holder.size = (TextView) convertView.findViewById(R.id.my_projects_activity_size_of_project_2);
 			holder.dateChanged = (TextView) convertView.findViewById(R.id.my_projects_activity_project_changed_2);
 			holder.projectDetails = convertView.findViewById(R.id.my_projects_activity_list_item_details);
@@ -181,9 +176,6 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 		}
 
 		holder.dateChanged.setText(projectLastModificationDateString);
-
-		//set project image (threaded):
-		screenshotLoader.loadAndShowScreenshot(projectName, holder.image);
 
 		if (!showDetails) {
 			holder.projectDetails.setVisibility(View.GONE);

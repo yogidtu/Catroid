@@ -22,14 +22,8 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-import android.widget.BaseAdapter;
-
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
@@ -64,42 +58,6 @@ public class WhenStartedBrick extends ScriptBrick {
 	}
 
 	@Override
-	public View getView(Context context, int brickId, final BaseAdapter baseAdapter) {
-		if (animationState) {
-			return view;
-
-		}
-		view = View.inflate(context, R.layout.brick_when_started, null);
-
-		setCheckboxView(R.id.brick_when_started_checkbox);
-
-		//method moved to to DragAndDropListView since it is not working on 2.x
-		/*
-		 * checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		 * 
-		 * @Override
-		 * public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		 * checked = isChecked;
-		 * if (!checked) {
-		 * for (Brick currentBrick : adapter.getCheckedBricks()) {
-		 * currentBrick.setCheckedBoolean(false);
-		 * }
-		 * }
-		 * adapter.handleCheck(brickInstance, checked);
-		 * 
-		 * }
-		 * });
-		 */
-
-		return view;
-	}
-
-	@Override
-	public View getPrototypeView(Context context) {
-		return View.inflate(context, R.layout.brick_when_started, null);
-	}
-
-	@Override
 	public Brick clone() {
 		return new WhenStartedBrick(getSprite(), null);
 	}
@@ -111,21 +69,6 @@ public class WhenStartedBrick extends ScriptBrick {
 		}
 
 		return script;
-	}
-
-	@Override
-	public View getViewWithAlpha(int alphaValue) {
-
-		if (view != null) {
-
-			View layout = view.findViewById(R.id.brick_when_started_layout);
-			Drawable background = layout.getBackground();
-			background.setAlpha(alphaValue);
-			this.alphaValue = (alphaValue);
-
-		}
-
-		return view;
 	}
 
 	@Override

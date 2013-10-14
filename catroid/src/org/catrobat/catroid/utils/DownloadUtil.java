@@ -92,9 +92,9 @@ public class DownloadUtil {
 		downloadIntent.putExtra(ProjectDownloadService.RECEIVER_TAG, new DownloadReceiver(new Handler()));
 		downloadIntent.putExtra(ProjectDownloadService.DOWNLOAD_NAME_TAG, programName);
 		downloadIntent.putExtra(ProjectDownloadService.URL_TAG, url);
-		StatusBarNotificationManager manager = StatusBarNotificationManager.getInstance();
-		int notificationId = manager.createDownloadNotification(context, programName);
-		downloadIntent.putExtra(ProjectDownloadService.ID_TAG, notificationId);
+		//StatusBarNotificationManager manager = StatusBarNotificationManager.getInstance();
+		//int notificationId = manager.createDownloadNotification(context, programName);
+		//downloadIntent.putExtra(ProjectDownloadService.ID_TAG, notificationId);
 		context.startService(downloadIntent);
 	}
 
@@ -122,8 +122,8 @@ public class DownloadUtil {
 					progress = 100;
 				}
 
-				StatusBarNotificationManager.getInstance().showOrUpdateNotification(notificationId,
-						Long.valueOf(progress).intValue());
+				//				StatusBarNotificationManager.getInstance().showOrUpdateNotification(notificationId,
+				//						Long.valueOf(progress).intValue());
 			}
 		}
 	}

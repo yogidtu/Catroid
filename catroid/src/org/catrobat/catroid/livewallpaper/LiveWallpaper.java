@@ -195,7 +195,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		}
 
 		public void changeWallpaperProgram() {
-			this.localStageListener.reloadProject(getApplicationContext(), null);
+			this.localStageListener.reloadProject(getApplicationContext());
 			activateTextToSpeechIfNeeded();
 		}
 

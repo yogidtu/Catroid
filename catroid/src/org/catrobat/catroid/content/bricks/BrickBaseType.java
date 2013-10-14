@@ -22,16 +22,12 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import android.content.Context;
 import android.view.View;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
 
 import java.util.List;
 
@@ -39,21 +35,9 @@ public class BrickBaseType implements Brick {
 	private static final long serialVersionUID = 1L;
 	protected transient View view;
 	protected Sprite sprite;
-	protected transient CheckBox checkbox;
 	protected transient boolean checked = false;
-	protected transient BrickAdapter adapter;
 	protected transient int alphaValue = 255;
 	public transient boolean animationState = false;
-
-	@Override
-	public boolean isChecked() {
-		return checked;
-	}
-
-	@Override
-	public void setAnimationState(boolean animationState) {
-		this.animationState = animationState;
-	}
 
 	@Override
 	public int getAlphaValue() {
@@ -66,68 +50,12 @@ public class BrickBaseType implements Brick {
 	}
 
 	@Override
-	public void setCheckboxVisibility(int visibility) {
-		if (checkbox != null) {
-			checkbox.setVisibility(visibility);
-			if (visibility == View.GONE) {
-				checked = false;
-			}
-		}
-	}
-
-	@Override
-	public void setBrickAdapter(BrickAdapter adapter) {
-		this.adapter = adapter;
-	}
-
-	@Override
-	public CheckBox getCheckBox() {
-		return checkbox;
-	}
-
-	@Override
-	public void setCheckedBoolean(boolean newValue) {
-		checked = newValue;
-	}
-
-	@Override
-	public void setCheckboxView(int id) {
-		int checkboxVisibility = View.GONE;
-		boolean enabled = true;
-		boolean isChecked = false;
-		if (checkbox != null) {
-			checkboxVisibility = checkbox.getVisibility();
-			enabled = checkbox.isEnabled();
-			isChecked = checkbox.isChecked();
-		}
-		checkbox = (CheckBox) view.findViewById(id);
-		checkbox.setChecked(isChecked);
-		checkbox.setVisibility(checkboxVisibility);
-		checkbox.setEnabled(enabled);
-	}
-
-	@Override
 	public int getRequiredResources() {
 		return NO_RESOURCES;
 	}
 
 	@Override
-	public View getViewWithAlpha(int alphaValue) {
-		return null;
-	}
-
-	@Override
 	public Brick clone() {
-		return null;
-	}
-
-	@Override
-	public View getView(Context context, int brickId, BaseAdapter adapter) {
-		return null;
-	}
-
-	@Override
-	public View getPrototypeView(Context context) {
 		return null;
 	}
 

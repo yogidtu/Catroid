@@ -22,10 +22,6 @@
  */
 package org.catrobat.catroid.content.bricks;
 
-import android.content.Context;
-import android.view.View;
-import android.widget.BaseAdapter;
-
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 
@@ -34,11 +30,6 @@ public abstract class ScriptBrick extends BrickBaseType implements AllowedAfterD
 	private static final long serialVersionUID = 1L;
 
 	public abstract Script initScript(Sprite sprite);
-
-	@Override
-	public View getNoPuzzleView(Context context, int brickId, BaseAdapter adapter) {
-		return getView(context, brickId, adapter);
-	}
 
 	@Override
 	public abstract Brick clone();
