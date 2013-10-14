@@ -349,4 +349,12 @@ public class ExtendedActions extends Actions {
 		action.setSprite(sprite);
 		return action;
 	}
+
+	public static SayForBrickAction say(Sprite sprite, String text, Formula duration) {
+		SayForBrickAction action = action(SayForBrickAction.class);
+		action.setSprite(sprite);
+		action.setText(text);
+		action.setDurationInSeconds(duration);
+		return action;
+	}
 }
