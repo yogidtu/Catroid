@@ -91,24 +91,24 @@ public class Formula implements Serializable {
 		displayText = text;
 	}
 
-	public boolean interpretBoolean(Sprite sprite) {
+	public boolean interpretBoolean(Sprite sprite) throws ClassCastException {
 		int result = interpretInteger(sprite);
 		return result != 0 ? true : false;
 	}
 
-	public int interpretInteger(Sprite sprite) {
+	public int interpretInteger(Sprite sprite) throws ClassCastException {
 		return ((Double) formulaTree.interpretRecursive(sprite)).intValue();
 	}
 
-	public double interpretDouble(Sprite sprite) {
+	public double interpretDouble(Sprite sprite) throws ClassCastException {
 		return (Double) formulaTree.interpretRecursive(sprite);
 	}
 
-	public float interpretFloat(Sprite sprite) {
+	public float interpretFloat(Sprite sprite) throws ClassCastException {
 		return ((Double) formulaTree.interpretRecursive(sprite)).floatValue();
 	}
 
-	public String interpretString(Sprite sprite) {
+	public String interpretString(Sprite sprite) throws ClassCastException {
 		return (String) formulaTree.interpretRecursive(sprite);
 	}
 

@@ -40,7 +40,12 @@ public class ChangeVariableAction extends Action {
 			return true;
 		}
 		double originalValue = userVariable.getValue();
-		double value = changeVariable.interpretDouble(sprite);
+		double value;
+		try {
+			value = changeVariable.interpretDouble(sprite);
+		} catch (ClassCastException classCastException) {
+			value = 0;
+		}
 		userVariable.setValue(originalValue + value);
 		return true;
 	}

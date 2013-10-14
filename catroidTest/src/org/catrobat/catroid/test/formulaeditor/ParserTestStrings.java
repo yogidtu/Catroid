@@ -58,7 +58,6 @@ public class ParserTestStrings extends AndroidTestCase {
 				parseTree.interpretRecursive(testSprite));
 	}
 
-	//TODO: Decision: string with number -> compute (f.e '1.1' + compute should eval to string or number ?
 	//TODO: testLengthWithUserVariableAsParameterInterpretation
 	//TODO: testLetterWithUserVariableParameterS
 	//TODO: testJoinWithUserVariableParameterS

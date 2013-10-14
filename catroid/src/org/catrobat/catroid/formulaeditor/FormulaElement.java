@@ -444,7 +444,11 @@ public class FormulaElement implements Serializable {
 	private Object interpretValueAsString(String value) throws NumberFormatException {
 
 		if (parent == null) {
-			return value;
+			try {
+				return Double.valueOf(value);
+			} catch (NumberFormatException numberFormatexception) {
+				return value;
+			}
 		}
 
 		boolean isParentAFunction = Functions.getFunctionByValue(parent.value) != null;
