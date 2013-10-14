@@ -178,12 +178,6 @@ public class StageListener implements ApplicationListener {
 				stage.addActor(sprite.look);
 				sprite.resume();
 			}
-			for (Sprite sprite : sprites) {
-				sprite.resetSprite();
-				sprite.look.createBrightnessContrastShader();
-				stage.addActor(sprite.look);
-				sprite.resume();
-			}
 
 			if (sprites.size() > 0) {
 				sprites.get(0).look.setLookData(createWhiteBackgroundLookData());
@@ -361,10 +355,10 @@ public class StageListener implements ApplicationListener {
 
 			/*
 			 * Necessary for UiTests, when EMMA - code coverage is enabled.
-			 *
+			 * 
 			 * Without setting DYNAMIC_SAMPLING_RATE_FOR_ACTIONS to false(via reflection), before
 			 * the UiTest enters the stage, random segmentation faults(triggered by EMMA) will occur.
-			 *
+			 * 
 			 * Can be removed, when EMMA is replaced by an other code coverage tool, or when a
 			 * future EMMA - update will fix the bugs.
 			 */
