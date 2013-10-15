@@ -575,4 +575,5 @@
  	<string name="lwp_allow_sounds">Allow sounds </string> 
  	<string name="lwp_select_program">Select program </string>
  	<string name="lwp_no_landscape_support">Unfortuanetely, this livewallpaper does not support landscape screen orientation.</string>
+ 	<string name="lwp_app_name">Pocket Code Livewallpaper</string>
 </resources>

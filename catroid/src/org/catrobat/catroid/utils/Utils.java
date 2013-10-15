@@ -46,21 +46,14 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import org.catrobat.catroid.livewallpaper.BuildConfig;
 import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.ScreenValues;
@@ -68,6 +61,8 @@ import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.livewallpaper.BuildConfig;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 
 import java.io.File;
@@ -171,18 +166,6 @@ public class Utils {
 		});
 		Dialog errorDialog = builder.create();
 		errorDialog.show();
-	}
-
-	public static View addSelectAllActionModeButton(LayoutInflater inflator, ActionMode mode, Menu menu) {
-		mode.getMenuInflater().inflate(R.menu.menu_actionmode, menu);
-		com.actionbarsherlock.view.MenuItem item = menu.findItem(R.id.select_all);
-		View view = item.getActionView();
-		if (view.getId() == R.id.select_all) {
-			View selectAllView = inflator.inflate(R.layout.action_mode_select_all, null);
-			item.setActionView(selectAllView);
-			return selectAllView;
-		}
-		return null;
 	}
 
 	public static String md5Checksum(File file) {
@@ -398,15 +381,6 @@ public class Utils {
 			return null;
 		}
 		return pixmap;
-	}
-
-	public static void setBottomBarActivated(Activity activity, boolean isActive) {
-		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
-
-		if (bottomBarLayout != null) {
-			bottomBarLayout.findViewById(R.id.button_add).setClickable(isActive);
-			bottomBarLayout.findViewById(R.id.button_play).setClickable(isActive);
-		}
 	}
 
 	public static boolean isStandardProject(Project projectToCheck, Context context) {

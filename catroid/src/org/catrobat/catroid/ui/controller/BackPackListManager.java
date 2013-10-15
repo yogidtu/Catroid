@@ -23,7 +23,6 @@
 package org.catrobat.catroid.ui.controller;
 
 import org.catrobat.catroid.common.SoundInfo;
-import org.catrobat.catroid.ui.adapter.SoundBaseAdapter;
 
 import java.util.ArrayList;
 
@@ -34,7 +33,7 @@ public class BackPackListManager {
 	private static final ArrayList<SoundInfo> ACTION_BAR_SOUND_INFO_ARRAY_LIST = new ArrayList<SoundInfo>();
 	private static SoundInfo currentSoundInfo;
 	private static ArrayList<SoundInfo> currentSoundInfoArrayList;
-	private static SoundBaseAdapter currentAdapter;
+	//private static SoundBaseAdapter currentAdapter;
 	private static boolean backpackFlag;
 
 	private BackPackListManager() {
@@ -76,17 +75,17 @@ public class BackPackListManager {
 		currentSoundInfoArrayList = soundInfoList;
 	}
 
-	public void setCurrentSoundAdapter(SoundBaseAdapter adapter) {
-		currentAdapter = adapter;
-	}
+	//	public void setCurrentSoundAdapter(SoundBaseAdapter adapter) {
+	//		currentAdapter = adapter;
+	//	}
 
 	public static ArrayList<SoundInfo> getCurrentSoundInfoArrayList() {
 		return currentSoundInfoArrayList;
 	}
 
-	public static SoundBaseAdapter getCurrentAdapter() {
-		return currentAdapter;
-	}
+	//	public static SoundBaseAdapter getCurrentAdapter() {
+	//		return currentAdapter;
+	//	}
 
 	public static void setBackPackFlag(boolean currentBackpackFlag) {
 		backpackFlag = currentBackpackFlag;

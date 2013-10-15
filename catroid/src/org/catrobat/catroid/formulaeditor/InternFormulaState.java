@@ -76,20 +76,4 @@ public class InternFormulaState {
 		this.externCursorPosition = externCursorPosition;
 	}
 
-	public InternFormula createInternFormulaFromState() {
-		List<InternToken> deepCopyOfInternTokenFormula = new LinkedList<InternToken>();
-		InternFormulaTokenSelection deepCopyOfInternFormulaTokenSelection = null;
-
-		for (InternToken tokenToCopy : internTokenFormulaList) {
-			deepCopyOfInternTokenFormula.add(tokenToCopy.deepCopy());
-		}
-
-		if (tokenSelection != null) {
-			deepCopyOfInternFormulaTokenSelection = tokenSelection.deepCopy();
-		}
-
-		return new InternFormula(deepCopyOfInternTokenFormula, deepCopyOfInternFormulaTokenSelection,
-				externCursorPosition);
-	}
-
 }

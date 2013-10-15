@@ -22,15 +22,14 @@
  */
 package org.catrobat.catroid.formulaeditor;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
+import org.catrobat.catroid.livewallpaper.R;
 
 import java.io.Serializable;
 
@@ -121,22 +120,6 @@ public class Formula implements Serializable {
 		formulaTextFieldId = id;
 	}
 
-	public String getDisplayString(Context context) {
-		if (displayText != null) {
-			return displayText;
-		}
-
-		if (context != null) {
-			internFormula.generateExternFormulaStringAndInternExternMapping(context);
-		}
-		return internFormula.getExternFormulaString();
-
-	}
-
-	public void refreshTextField(View view) {
-		refreshTextField(view, getDisplayString(view.getContext()));
-	}
-
 	public void refreshTextField(View view, String formulaString) {
 		if (formulaTextFieldId != null && formulaTree != null && view != null) {
 			TextView formulaTextField = (TextView) view.findViewById(formulaTextFieldId);
@@ -165,7 +148,8 @@ public class Formula implements Serializable {
 	}
 
 	public InternFormulaState getInternFormulaState() {
-		return internFormula.getInternFormulaState();
+		return null;
+		//	return internFormula.getInternFormulaState();
 	}
 
 	public boolean containsElement(FormulaElement.ElementType elementType) {
