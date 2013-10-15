@@ -73,23 +73,10 @@ public class CopyProjectTask extends AsyncTask<String, Long, Boolean> {
 	protected void onPostExecute(Boolean result) {
 		super.onPostExecute(result);
 
-		//quickfix: if fragment is not attached an instrumentation fault occurs
-		//return if fragment is detached
-		//		if (!parentFragment.isAdded()) {
-		//			return;
-		//			//parentFragment.onAttach(parentActivity);
-		//		}
-
 		if (!result) {
 			//Utils.showErrorDialog(parentFragment.getActivity(), R.string.error_copy_project);
 			return;
 		}
-
-		//		Toast.makeText(
-		//				parentFragment.getActivity(),
-		//				parentFragment.getString(R.string.project_name) + " " + newName + " "
-		//						+ parentFragment.getString(R.string.copy_project_finished), Toast.LENGTH_SHORT).show();
-		//	parentFragment.onCopyProject();
 	}
 
 	private void copyDirectory(File destinationFile, File sourceFile) throws IOException {
