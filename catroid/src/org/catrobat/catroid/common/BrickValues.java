@@ -51,10 +51,4 @@ public class BrickValues {
 	public static final int REPEAT = 10;
 	public static final int IF_CONDITION = 1;
 
-	//Constants Lego
-	public static final String LEGO_MOTOR = "A";
-	public static final int LEGO_ANGLE = 180;
-	public static final int LEGO_SPEED = 100;
-	public static final int LEGO_DURATION = 1;
-	public static final int LEGO_FREQUENCY = 2;
 }

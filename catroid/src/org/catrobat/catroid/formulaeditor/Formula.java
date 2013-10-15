@@ -38,8 +38,6 @@ public class Formula implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private FormulaElement formulaTree;
 	private transient Integer formulaTextFieldId = null;
-	private transient InternFormula internFormula = null;
-	private transient String displayText = null;
 
 	public Object readResolve() {
 
@@ -47,14 +45,11 @@ public class Formula implements Serializable {
 			formulaTree = new FormulaElement(ElementType.NUMBER, "0 ", null);
 		}
 
-		internFormula = new InternFormula(formulaTree.getInternTokenList());
-
 		return this;
 	}
 
 	public Formula(FormulaElement formulaElement) {
 		formulaTree = formulaElement;
-		internFormula = new InternFormula(formulaTree.getInternTokenList());
 	}
 
 	public Formula(Integer value) {
@@ -62,10 +57,8 @@ public class Formula implements Serializable {
 			formulaTree = new FormulaElement(ElementType.OPERATOR, Operators.MINUS.toString(), null);
 			formulaTree.setRightChild(new FormulaElement(ElementType.NUMBER, Long.toString(Math.abs((long) value)),
 					formulaTree));
-			internFormula = new InternFormula(formulaTree.getInternTokenList());
 		} else {
 			formulaTree = new FormulaElement(ElementType.NUMBER, value.toString(), null);
-			internFormula = new InternFormula(formulaTree.getInternTokenList());
 		}
 	}
 
@@ -78,15 +71,9 @@ public class Formula implements Serializable {
 			formulaTree = new FormulaElement(ElementType.OPERATOR, Operators.MINUS.toString(), null);
 			formulaTree.setRightChild(new FormulaElement(ElementType.NUMBER, Double.toString(Math.abs(value)),
 					formulaTree));
-			internFormula = new InternFormula(formulaTree.getInternTokenList());
 		} else {
 			formulaTree = new FormulaElement(ElementType.NUMBER, value.toString(), null);
-			internFormula = new InternFormula(formulaTree.getInternTokenList());
 		}
-	}
-
-	public void setDisplayText(String text) {
-		displayText = text;
 	}
 
 	public boolean interpretBoolean(Sprite sprite) {
@@ -110,9 +97,7 @@ public class Formula implements Serializable {
 	}
 
 	public void setRoot(FormulaElement formula) {
-		displayText = null;
 		formulaTree = formula;
-		internFormula = new InternFormula(formula.getInternTokenList());
 
 	}
 
@@ -145,11 +130,6 @@ public class Formula implements Serializable {
 
 	public void prepareToRemove() {
 		formulaTextFieldId = null;
-	}
-
-	public InternFormulaState getInternFormulaState() {
-		return null;
-		//	return internFormula.getInternFormulaState();
 	}
 
 	public boolean containsElement(FormulaElement.ElementType elementType) {
