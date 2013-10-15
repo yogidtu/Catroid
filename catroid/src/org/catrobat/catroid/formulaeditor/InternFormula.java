@@ -76,6 +76,7 @@ public class InternFormula {
 		updateInternCursorPosition();
 
 	}
+
 	public void updateInternCursorPosition() {
 		int cursorPositionTokenIndex = externInternRepresentationMapping
 				.getInternTokenByExternIndex(externCursorPosition);
