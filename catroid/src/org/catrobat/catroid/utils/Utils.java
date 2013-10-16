@@ -283,7 +283,7 @@ public class Utils {
 			String projectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
 
 			if (projectName != null) {
-				Log.d("Utils", "projectName != null");
+				Log.d("Utils-ifneeded", "projectName != null");
 				ProjectManager.getInstance().loadProject(projectName, context, false);
 			} else if (ProjectManager.getInstance().canLoadProject(context.getString(R.string.default_project_name))) {
 				Log.d("Utils", "ELSE IF");
@@ -344,6 +344,7 @@ public class Utils {
 
 		List<String> projectNameList = UtilFile.getProjectNames(new File(Constants.DEFAULT_ROOT));
 		for (String projectName : projectNameList) {
+			Log.d("Utils", "ProjectName: " + projectName);
 			if (ProjectManager.getInstance().canLoadProject(projectName)) {
 				loadableProject = StorageHandler.getInstance().loadProject(projectName);
 				break;

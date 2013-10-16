@@ -130,6 +130,7 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 		PreStageActivity.shutdownPersistentResources();
 
 		String projectName = getIntent().getStringExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
+
 		if (projectName != null) {
 			Log.d("MainMenu", "projectName not null");
 			loadProjectInBackground(projectName);
