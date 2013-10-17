@@ -19,8 +19,25 @@
  *  GNU Affero General Public License for more details.
  *  
  *  You should have received a copy of the GNU Affero General Public License
+<<<<<<< HEAD
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+=======
+<<<<<<< HEAD
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=======
+<<<<<<< HEAD
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+=======
+<<<<<<< HEAD
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+=======
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+>>>>>>> 720aaf6cbe9aee7a0e7d646f68077f2c109f3301
+>>>>>>> legonxt
+>>>>>>> 8292b67ac3db182c3ea78ab7aead0366a4ba8e44
 -->
+>>>>>>> andi_legonxt
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceScreen
