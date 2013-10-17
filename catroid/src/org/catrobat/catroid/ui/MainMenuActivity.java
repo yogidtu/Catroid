@@ -366,21 +366,21 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 		}
 	}
 
-	private void setMainMenuButtonContinueText() {
-		Button mainMenuButtonContinue = (Button) this.findViewById(R.id.main_menu_button_continue);
-		TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(this, R.style.MainMenuButtonTextSecondLine);
-		SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-		String mainMenuContinue = this.getString(R.string.main_menu_continue);
-
-		spannableStringBuilder.append(mainMenuContinue);
-		spannableStringBuilder.append("\n");
-		spannableStringBuilder.append(Utils.getCurrentProjectName(this));
-
-		spannableStringBuilder.setSpan(textAppearanceSpan, mainMenuContinue.length() + 1,
-				spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
-		mainMenuButtonContinue.setText(spannableStringBuilder);
-	}
+	//	private void setMainMenuButtonContinueText() {
+	//		Button mainMenuButtonContinue = (Button) this.findViewById(R.id.main_menu_button_continue);
+	//		TextAppearanceSpan textAppearanceSpan = new TextAppearanceSpan(this, R.style.MainMenuButtonTextSecondLine);
+	//		SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+	//		String mainMenuContinue = this.getString(R.string.main_menu_continue);
+	//
+	//		spannableStringBuilder.append(mainMenuContinue);
+	//		spannableStringBuilder.append("\n");
+	//		spannableStringBuilder.append(Utils.getCurrentProjectName(this));
+	//
+	//		spannableStringBuilder.setSpan(textAppearanceSpan, mainMenuContinue.length() + 1,
+	//				spannableStringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+	//
+	//		mainMenuButtonContinue.setText(spannableStringBuilder);
+	//	}
 
 	private void setMainMenuButtonEnabled(boolean enabled) {
 		Button mainMenuButtonContinue = (Button) this.findViewById(R.id.main_menu_button_continue);

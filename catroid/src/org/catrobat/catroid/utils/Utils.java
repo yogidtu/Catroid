@@ -299,15 +299,16 @@ public class Utils {
 			String projectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
 
 			if (projectName != null) {
-				Log.d("Utils-ifneeded", "projectName != null");
+				Log.d("Utils-ifneeded", "projectName != null: " + projectName);
 				ProjectManager.getInstance().loadProject(projectName, context, false);
-			} else if (ProjectManager.getInstance().canLoadProject(context.getString(R.string.default_project_name))) {
-				Log.d("Utils", "ELSE IF");
-				ProjectManager.getInstance().loadProject(context.getString(R.string.default_project_name), context,
-						false);
-			} else {
-				//ProjectManager.getInstance().initializeDefaultProject(context);
 			}
+			//			 else if (ProjectManager.getInstance().canLoadProject(context.getString(R.string.default_project_name))) {
+			//				Log.d("Utils", "ELSE IF");
+			//				ProjectManager.getInstance().loadProject(context.getString(R.string.default_project_name), context,
+			//						false);
+			//			} else {
+			//				ProjectManager.getInstance().initializeDefaultProject(context);
+			//			}
 		}
 	}
 

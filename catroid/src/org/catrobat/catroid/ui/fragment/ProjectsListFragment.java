@@ -437,8 +437,8 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 		}
 
 		if (projectList.isEmpty()) {
-			ProjectManager projectManager = ProjectManager.getInstance();
-			projectManager.initializeDefaultProject(getActivity());
+			//ProjectManager projectManager = ProjectManager.getInstance();
+			//projectManager.initializeDefaultProject(getActivity());
 		} else if (ProjectManager.getInstance().getCurrentProject() == null) {
 			Utils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_PROJECTNAME_KEY,
 					projectList.get(0).projectName);
