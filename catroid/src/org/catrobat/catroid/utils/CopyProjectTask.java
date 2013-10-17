@@ -69,6 +69,7 @@ public class CopyProjectTask extends AsyncTask<String, Long, Boolean> {
 		super.onPostExecute(result);
 
 		if (!result) {
+			//Utils.showErrorDialog(parentFragment.getActivity(), R.string.error_copy_project);
 			return;
 		}
 	}

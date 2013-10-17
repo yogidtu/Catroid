@@ -35,7 +35,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.io.SoundManager;
 
@@ -58,6 +57,7 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 			addPreferencesFromResource(R.xml.livewallpapersettings);
 			handleAboutPocketCodePreference();
 			handleAboutThisWallpaperPreference();
+			handleGetMoreWallpapers();
 			handleSelectProgramDialog();
 			handleAllowSoundsCheckBox();
 
@@ -107,6 +107,21 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 
 		}
 
+		private void handleGetMoreWallpapers() {
+			Preference pref = findPreference(getResources().getString(R.string.get_more_wallpapers));
+
+			pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					GetMoreWallpapersDialog getMoreWallpapersDialog = new GetMoreWallpapersDialog(context);
+					getMoreWallpapersDialog.show();
+					return false;
+				}
+			});
+
+		}
+
 		private void handleAboutThisWallpaperPreference() {
 			Preference pref = findPreference(getResources().getString(R.string.about_this_wallpaper));
 
@@ -130,7 +145,7 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
 
-					AboutPocketCodeDialog aboutDialog = new AboutPocketCodeDialog(context);
+					GetMoreWallpapersDialog aboutDialog = new GetMoreWallpapersDialog(context);
 					aboutDialog.show();
 					return false;
 				}
