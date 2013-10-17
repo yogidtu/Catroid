@@ -535,6 +535,47 @@ public class UiTestUtils {
 		return location;
 	}
 
+	public static List<Brick> createTestProjectWithTwoSprites(String projectName) {
+		int xPosition = 457;
+		int yPosition = 598;
+		double size = 0.8;
+
+		Project project = new Project(null, projectName);
+		Sprite firstSprite = new Sprite("cat");
+		Sprite secondSprite = new Sprite("second_sprite");
+
+		Script testScript = new StartScript(firstSprite);
+
+		ArrayList<Brick> brickList = new ArrayList<Brick>();
+		brickList.add(new HideBrick(firstSprite));
+		brickList.add(new ShowBrick(firstSprite));
+		brickList.add(new SetSizeToBrick(firstSprite, size));
+		brickList.add(new GoNStepsBackBrick(firstSprite, 1));
+		brickList.add(new ComeToFrontBrick(firstSprite));
+		brickList.add(new PlaceAtBrick(firstSprite, xPosition, yPosition));
+
+		for (Brick brick : brickList) {
+			testScript.addBrick(brick);
+		}
+
+		firstSprite.addScript(testScript);
+
+		project.addSprite(firstSprite);
+		project.addSprite(secondSprite);
+
+		projectManager.setFileChecksumContainer(new FileChecksumContainer());
+		projectManager.setProject(project);
+		projectManager.setCurrentSprite(firstSprite);
+		projectManager.setCurrentScript(testScript);
+		StorageHandler.getInstance().saveProject(project);
+
+		// the application version is needed when the project will be uploaded
+		// 0.7.3beta is the lowest possible version currently accepted by the web
+		Reflection.setPrivateField(project.getXmlHeader(), "applicationVersion", "0.7.3beta");
+
+		return brickList;
+	}
+
 	public static List<Brick> createTestProject(String projectName) {
 		int xPosition = 457;
 		int yPosition = 598;
@@ -682,8 +723,8 @@ public class UiTestUtils {
 		brickList.add(new SetGhostEffectBrick(firstSprite, 0));
 		brickList.add(new SetLookBrick(firstSprite));
 		brickList.add(new SetSizeToBrick(firstSprite, 0));
-		brickList.add(new SetVolumeToBrick(firstSprite, 0));
 		brickList.add(new SetVariableBrick(firstSprite, 0));
+		brickList.add(new SetVolumeToBrick(firstSprite, 0));
 		brickList.add(new SetXBrick(firstSprite, 0));
 		brickList.add(new SetYBrick(firstSprite, 0));
 		brickList.add(new ShowBrick(firstSprite));
@@ -1154,8 +1195,8 @@ public class UiTestUtils {
 		comparePixelArrayWithPixelScreenArrayWithTolerance(pixelArray, screenArray, x, y, screenWidth, screenHeight, 10);
 	}
 
-	public static void comparePixelArrayWithPixelScreenArrayWithTolerance(byte[] pixelArray, byte[] screenArray, int x, int y,
-			int screenWidth, int screenHeight, int tolerance) {
+	public static void comparePixelArrayWithPixelScreenArrayWithTolerance(byte[] pixelArray, byte[] screenArray, int x,
+			int y, int screenWidth, int screenHeight, int tolerance) {
 		assertEquals("Length of pixel array not 4", 4, pixelArray.length);
 		int convertedX = x + (screenWidth / 2);
 		int convertedY = y + (screenHeight / 2);
@@ -1565,5 +1606,12 @@ public class UiTestUtils {
 			}
 		}
 		return false;
+	}
+
+	public static String ecsapeRegularExpressionMetaCharacters(String stringToEscape) {
+		stringToEscape = stringToEscape.replaceAll("\n", " ");
+		stringToEscape = stringToEscape.replaceAll("\\)", "\\)");
+		stringToEscape = stringToEscape.replaceAll("\\(", "\\(");
+		return stringToEscape;
 	}
 }
