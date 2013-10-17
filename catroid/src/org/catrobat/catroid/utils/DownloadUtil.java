@@ -33,7 +33,6 @@ import android.util.Log;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.transfers.ProjectDownloadService;
 import org.catrobat.catroid.ui.dialogs.OverwriteRenameDialog;
-import org.catrobat.catroid.web.ProgressBufferedOutputStream;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -115,12 +114,12 @@ public class DownloadUtil {
 		protected void onReceiveResult(int resultCode, Bundle resultData) {
 			super.onReceiveResult(resultCode, resultData);
 			if (resultCode == Constants.UPDATE_DOWNLOAD_PROGRESS) {
-				long progress = resultData.getLong(ProgressBufferedOutputStream.TAG_PROGRESS);
-				boolean endOfFileReached = resultData.getBoolean(ProgressBufferedOutputStream.TAG_ENDOFFILE);
-				Integer notificationId = resultData.getInt(ProgressBufferedOutputStream.TAG_NOTIFICATION_ID);
-				if (endOfFileReached) {
-					progress = 100;
-				}
+				//				long progress = resultData.getLong(ProgressBufferedOutputStream.TAG_PROGRESS);
+				//				boolean endOfFileReached = resultData.getBoolean(ProgressBufferedOutputStream.TAG_ENDOFFILE);
+				//	Integer notificationId = resultData.getInt(ProgressBufferedOutputStream.TAG_NOTIFICATION_ID);
+				//				if (endOfFileReached) {
+				//					progress = 100;
+				//				}
 
 				//				StatusBarNotificationManager.getInstance().showOrUpdateNotification(notificationId,
 				//						Long.valueOf(progress).intValue());

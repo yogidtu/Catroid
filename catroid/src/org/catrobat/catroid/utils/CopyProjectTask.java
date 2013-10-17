@@ -33,8 +33,6 @@ import java.io.IOException;
 
 public class CopyProjectTask extends AsyncTask<String, Long, Boolean> {
 
-	private String newName;
-
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
@@ -43,9 +41,6 @@ public class CopyProjectTask extends AsyncTask<String, Long, Boolean> {
 	@Override
 	protected Boolean doInBackground(String... projectNameArray) {
 		String newProjectName = projectNameArray[0];
-		newName = newProjectName;
-		//		int notificationId = StatusBarNotificationManager.getInstance().createCopyNotification(
-		//				parentFragment.getActivity(), newProjectName);
 		String oldProjectName = projectNameArray[1];
 
 		try {
@@ -74,7 +69,6 @@ public class CopyProjectTask extends AsyncTask<String, Long, Boolean> {
 		super.onPostExecute(result);
 
 		if (!result) {
-			//Utils.showErrorDialog(parentFragment.getActivity(), R.string.error_copy_project);
 			return;
 		}
 	}
