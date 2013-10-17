@@ -145,8 +145,8 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
 
-					GetMoreWallpapersDialog aboutDialog = new GetMoreWallpapersDialog(context);
-					aboutDialog.show();
+					AboutPocketCodeDialog aboutPocketCodeDialog = new AboutPocketCodeDialog(context);
+					aboutPocketCodeDialog.show();
 					return false;
 				}
 			});

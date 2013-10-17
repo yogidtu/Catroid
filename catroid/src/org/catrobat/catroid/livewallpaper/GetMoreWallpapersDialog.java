@@ -44,8 +44,8 @@ public class GetMoreWallpapersDialog extends Dialog {
 		setContentView(R.layout.dialog_get_more_wallpapers);
 		setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
 
-		setTitle(R.string.get_more_wallpapers);
-		setCanceledOnTouchOutside(true);
+		//		setTitle(R.string.get_more_wallpapers);
+		//		setCanceledOnTouchOutside(true);
 
 		//		TextView aboutUrlTextView = (TextView) findViewById(R.id.dialog_about_text_view_url);
 		//		aboutUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
