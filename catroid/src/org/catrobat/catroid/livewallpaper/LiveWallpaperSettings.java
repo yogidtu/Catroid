@@ -57,7 +57,8 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 			addPreferencesFromResource(R.xml.livewallpapersettings);
 			handleAboutPocketCodePreference();
 			handleAboutThisWallpaperPreference();
-			handleGetMoreWallpapers();
+			handleCreateWallpapers();
+			handleDownloadWallpapers();
 			handleSelectProgramDialog();
 			handleAllowSoundsCheckBox();
 
@@ -107,21 +108,6 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 
 		}
 
-		private void handleGetMoreWallpapers() {
-			Preference pref = findPreference(getResources().getString(R.string.get_more_wallpapers));
-
-			pref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					GetMoreWallpapersDialog getMoreWallpapersDialog = new GetMoreWallpapersDialog(context);
-					getMoreWallpapersDialog.show();
-					return false;
-				}
-			});
-
-		}
-
 		private void handleAboutThisWallpaperPreference() {
 			Preference pref = findPreference(getResources().getString(R.string.about_this_wallpaper));
 
@@ -150,6 +136,14 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 					return false;
 				}
 			});
+
+		}
+
+		private void handleCreateWallpapers() {
+
+		}
+
+		private void handleDownloadWallpapers() {
 
 		}
 
