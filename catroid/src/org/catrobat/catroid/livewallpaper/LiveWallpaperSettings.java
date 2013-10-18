@@ -23,9 +23,17 @@
 package org.catrobat.catroid.livewallpaper;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -37,6 +45,8 @@ import android.preference.PreferenceManager;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.io.SoundManager;
+
+import java.util.List;
 
 @SuppressLint("NewApi")
 public class LiveWallpaperSettings extends PreferenceActivity {
@@ -141,9 +151,57 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 
 		private void handleCreateWallpapers() {
 
+			Preference licence = findPreference(getResources().getString(R.string.create_programs));
+
+			licence.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					checkIfPocketCodeInstalled();
+					//TODO: start pocket code
+					return false;
+				}
+			});
+
 		}
 
 		private void handleDownloadWallpapers() {
+
+		}
+
+		private void checkIfPocketCodeInstalled() {
+			final Activity activity = getActivity();
+			Intent intent = new Intent("android.intent.action.MAIN");
+			intent.setComponent(new ComponentName(Constants.POCKET_CODE_PACKAGE_NAME,
+					Constants.POCKET_CODE_INTENT_ACTIVITY_NAME));
+
+			List<ResolveInfo> packageList = activity.getPackageManager().queryIntentActivities(intent,
+					PackageManager.MATCH_DEFAULT_ONLY);
+
+			if (packageList.size() <= 0) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+				builder.setMessage(R.string.pocket_code_not_installed).setCancelable(false)
+						.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+
+								Intent downloadPocketPaintIntent = new Intent(Intent.ACTION_VIEW, Uri
+										.parse(Constants.POCKET_CODE_DOWNLOAD_LINK));
+								activity.startActivity(downloadPocketPaintIntent);
+							}
+						}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+				AlertDialog alert = builder.create();
+				alert.show();
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+				builder.setMessage("Pocket Code is installed. Yaaay");
+				builder.show();
+			}
 
 		}
 

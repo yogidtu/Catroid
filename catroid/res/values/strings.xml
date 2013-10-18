@@ -185,5 +185,7 @@
  	<string name="lwp_app_name">Pocket Code Livewallpaper</string>
  	<string name="create_programs">Create new wallpaper</string>
  	<string name="download_programs">Explore</string>
+ 	
+ 	<string name="pocket_code_not_installed">Pocket Code is not installed. Do you want to install it?</string>
  	    
 </resources>
