@@ -359,7 +359,11 @@ public class Utils {
 	public static Project findValidProject() {
 		Project loadableProject = null;
 
+		Log.d("Utils", "findValidProject");
+
 		List<String> projectNameList = UtilFile.getProjectNames(new File(Constants.DEFAULT_ROOT));
+
+		Log.d("Utils", "projectNamesList.size" + Integer.toString(projectNameList.size()));
 		for (String projectName : projectNameList) {
 			Log.d("Utils", "ProjectName: " + projectName);
 			if (ProjectManager.getInstance().canLoadProject(projectName)) {

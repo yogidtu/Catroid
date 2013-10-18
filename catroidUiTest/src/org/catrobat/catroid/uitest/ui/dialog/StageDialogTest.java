@@ -53,7 +53,7 @@ import java.util.List;
 
 public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
-	private String testProject = UiTestUtils.PROJECTNAME1;
+	private String testProject = UiTestUtils.DEFAULT_TEST_PROJECT_NAME;
 
 	public StageDialogTest() {
 		super(MainMenuActivity.class);
@@ -80,7 +80,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 		//ProjectManager.getInstance().setProject(project);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
-		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		assertTrue("Program is not in stage activity", solo.waitForActivity(ProjectActivity.class.getSimpleName()));
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
 		solo.sleep(1000);
@@ -92,11 +92,13 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	}
 
 	public void testBackToPreviousActivity() {
-		createAndSaveTestProject(testProject);
+		//createAndSaveTestProject(testProject);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
-		assertTrue("Cannot click project.", UiTestUtils.clickOnTextInList(solo, testProject));
+		//assertTrue("Cannot click project.", UiTestUtils.clickOnTextInList(solo, testProject));
+		assertTrue("Cannot click project.", solo.waitForText(testProject));
+		solo.clickOnText(testProject);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 
 		Activity previousActivity = getActivity();
