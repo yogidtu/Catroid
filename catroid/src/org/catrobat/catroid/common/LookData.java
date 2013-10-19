@@ -50,11 +50,12 @@ public class LookData implements Serializable, Cloneable {
 	private transient Pixmap pixmap = null;
 	private transient Pixmap originalPixmap = null;
 	private transient TextureRegion region = null;
+	private boolean showBubble = false;
+	private byte[] bubble = null;
 
 	@Override
 	public LookData clone() {
 		LookData cloneLookData = new LookData();
-
 		cloneLookData.name = this.name;
 		cloneLookData.fileName = this.fileName;
 		String filePath = getPathToImageDirectory() + "/" + fileName;
@@ -74,14 +75,21 @@ public class LookData implements Serializable, Cloneable {
 	}
 
 	public TextureRegion getTextureRegion() {
-		if (region == null) {
-			region = new TextureRegion(new Texture(getPixmap()));
-		}
+		setTextureRegion();
 		return region;
 	}
 
 	public void setTextureRegion() {
-		this.region = new TextureRegion(new Texture(getPixmap()));
+		if (this.showBubble == true) {
+			Pixmap speechBubblePixmap = new Pixmap(this.bubble, 0, bubble.length);
+			Pixmap newPixmap = getPixmap();
+			pixmap = null;
+			// TODO place bubble at correct position
+			newPixmap.drawPixmap(speechBubblePixmap, 50, 50);
+			this.region = new TextureRegion(new Texture(newPixmap));
+		} else {
+			this.region = new TextureRegion(new Texture(getPixmap()));
+		}
 	}
 
 	public Pixmap getPixmap() {
@@ -168,4 +176,10 @@ public class LookData implements Serializable, Cloneable {
 	public String toString() {
 		return name;
 	}
+
+	public void setShowBubble(byte[] bubble, boolean show) {
+		this.bubble = bubble;
+		this.showBubble = show;
+	}
+
 }

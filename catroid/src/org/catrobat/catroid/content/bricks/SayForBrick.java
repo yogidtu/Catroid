@@ -23,8 +23,10 @@
 package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
@@ -40,6 +42,7 @@ import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class SayForBrick extends BrickBaseType implements OnClickListener, FormulaBrick {
@@ -182,8 +185,22 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		sequence.addAction(ExtendedActions.placeAt(sprite, text, duration));
-		//TODO
+		Context context = view.getContext();
+		View bubble = View.inflate(context, R.layout.bubble_speech, null);
+		//		((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(String.valueOf("easy"));
+		bubble.setDrawingCacheEnabled(true);
+		bubble.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+		bubble.layout(0, 0, bubble.getWidth(), bubble.getHeight());
+		bubble.buildDrawingCache();
+		Bitmap bitmap = bubble.getDrawingCache();
+
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
+		byte[] speechBubble = stream.toByteArray();
+		bubble.setDrawingCacheEnabled(false);
+		// TODO at the text!
+		sequence.addAction(ExtendedActions.say(sprite, speechBubble, duration));
 		return null;
 	}
 }
