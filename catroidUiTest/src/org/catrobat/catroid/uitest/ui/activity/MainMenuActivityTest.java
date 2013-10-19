@@ -72,6 +72,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 
 	@Override
 	public void tearDown() throws Exception {
+		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", true);
 		UtilFile.deleteDirectory(new File(Utils.buildProjectPath(projectNameWithBlacklistedCharacters)));
 		UtilFile.deleteDirectory(new File(Utils.buildProjectPath(projectNameWithWhitelistedCharacters)));
 		// normally super.teardown should be called last
@@ -81,6 +82,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 	}
 
 	public void testCreateNewProject() {
+		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", false);
 		File directory = new File(Constants.DEFAULT_ROOT + "/" + testProject);
 		UtilFile.deleteDirectory(directory);
 		assertFalse("testProject was not deleted!", directory.exists());
