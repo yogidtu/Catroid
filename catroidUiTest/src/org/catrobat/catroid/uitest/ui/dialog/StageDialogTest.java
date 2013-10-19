@@ -71,6 +71,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	protected void tearDown() throws Exception {
 		// normally super.teardown should be called last
 		// but tests crashed with Nullpointer
+		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", false);
 		super.tearDown();
 		ProjectManager.getInstance().deleteCurrentProject();
 	}
@@ -78,6 +79,8 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	public void testBackButtonPressedTwice() {
 		//Project project = createAndSaveTestProject(testProject);
 		//ProjectManager.getInstance().setProject(project);
+
+		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", false);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		assertTrue("Program is not in stage activity", solo.waitForActivity(ProjectActivity.class.getSimpleName()));
