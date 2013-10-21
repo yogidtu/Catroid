@@ -80,7 +80,7 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 		//Project project = createAndSaveTestProject(testProject);
 		//ProjectManager.getInstance().setProject(project);
 
-		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", false);
+		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", true);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		assertTrue("Program is not in stage activity", solo.waitForActivity(ProjectActivity.class.getSimpleName()));
