@@ -245,6 +245,7 @@ public class StorageHandler {
 		Log.d("StorageHandler", "loadProject");
 		try {
 			File projectCodeFile = new File(buildProjectPath(projectName), PROJECTCODE_NAME);
+			Log.d("StorageHandler", projectCodeFile.getAbsolutePath());
 			if (projectCodeFile.exists()) {
 				return (Project) xstream.fromXML(new FileInputStream(projectCodeFile));
 			}

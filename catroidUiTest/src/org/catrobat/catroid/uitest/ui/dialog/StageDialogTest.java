@@ -24,6 +24,7 @@ package org.catrobat.catroid.uitest.ui.dialog;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -63,8 +64,8 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	public void setUp() throws Exception {
 		super.setUp();
 		UiTestUtils.prepareStageForTest();
-		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", true);
 		UiTestUtils.createTestProject();
+		solo.sleep(1000);
 		//Project project = createAndSaveTestProject(testProject);
 		//ProjectManager.getInstance().setProject(project);
 	}
@@ -73,7 +74,6 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	protected void tearDown() throws Exception {
 		// normally super.teardown should be called last
 		// but tests crashed with Nullpointer
-		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", false);
 		super.tearDown();
 		ProjectManager.getInstance().deleteCurrentProject();
 	}
@@ -84,9 +84,12 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 
 		//Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", true);
 
+		Log.d("Test", "Test");
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 
-		solo.clickOnText(solo.getString(R.string.main_menu_continue));
+		solo.clickOnText(solo.getString(R.string.main_menu_programs));
+
+		solo.clickOnText(UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 		assertTrue("Program is not in stage activity", solo.waitForActivity(ProjectActivity.class.getSimpleName()));
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
 		solo.waitForActivity(StageActivity.class.getSimpleName());
@@ -137,6 +140,8 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 		StorageHandler.getInstance().saveProject(project);
 		ProjectManager.getInstance().setProject(project);
 
+		solo.clickOnText(solo.getString(R.string.main_menu_programs));
+		solo.goBack();
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);
@@ -268,6 +273,8 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 
 		StorageHandler.getInstance().saveProject(project);
 
+		solo.clickOnText(solo.getString(R.string.main_menu_programs));
+		solo.goBack();
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_play);

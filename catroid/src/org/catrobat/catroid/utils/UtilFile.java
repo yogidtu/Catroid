@@ -23,6 +23,7 @@
 package org.catrobat.catroid.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
@@ -165,6 +166,9 @@ public class UtilFile {
 	public static List<String> getProjectNames(File directory) {
 		List<String> projectList = new ArrayList<String>();
 		File[] sdFileList = directory.listFiles();
+		if (sdFileList == null) {
+			Log.d("UtilFile", "sdFileList == null");
+		}
 		for (File file : sdFileList) {
 			FilenameFilter filenameFilter = new FilenameFilter() {
 				@Override
