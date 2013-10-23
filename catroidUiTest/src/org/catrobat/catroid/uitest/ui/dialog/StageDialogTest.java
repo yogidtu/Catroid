@@ -63,8 +63,10 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 	public void setUp() throws Exception {
 		super.setUp();
 		UiTestUtils.prepareStageForTest();
-		Project project = createAndSaveTestProject(testProject);
-		ProjectManager.getInstance().setProject(project);
+		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", true);
+		UiTestUtils.createTestProject();
+		//Project project = createAndSaveTestProject(testProject);
+		//ProjectManager.getInstance().setProject(project);
 	}
 
 	@Override
@@ -80,7 +82,9 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 		//Project project = createAndSaveTestProject(testProject);
 		//ProjectManager.getInstance().setProject(project);
 
-		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", true);
+		//Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", true);
+
+		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		assertTrue("Program is not in stage activity", solo.waitForActivity(ProjectActivity.class.getSimpleName()));

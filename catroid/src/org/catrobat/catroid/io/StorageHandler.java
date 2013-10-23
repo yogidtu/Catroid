@@ -245,7 +245,10 @@ public class StorageHandler {
 		Log.d("StorageHandler", "loadProject");
 		try {
 			File projectCodeFile = new File(buildProjectPath(projectName), PROJECTCODE_NAME);
-			return (Project) xstream.fromXML(new FileInputStream(projectCodeFile));
+			if (projectCodeFile.exists()) {
+				return (Project) xstream.fromXML(new FileInputStream(projectCodeFile));
+			}
+			return null;
 		} catch (Exception exception) {
 			Log.e(TAG, "Loading project " + projectName + " failed.", exception);
 			return null;

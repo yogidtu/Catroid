@@ -301,6 +301,8 @@ public class Utils {
 			if (projectName != null) {
 				Log.d("Utils-ifneeded", "projectName != null: " + projectName);
 				ProjectManager.getInstance().loadProject(projectName, context, false);
+			} else {
+				Log.d("Utils-ifneeded", "projectName == null");
 			}
 			//			 else if (ProjectManager.getInstance().canLoadProject(context.getString(R.string.default_project_name))) {
 			//				Log.d("Utils", "ELSE IF");
@@ -309,6 +311,7 @@ public class Utils {
 			//			} else {
 			//				ProjectManager.getInstance().initializeDefaultProject(context);
 			//			}
+
 		}
 	}
 
