@@ -257,7 +257,7 @@ public class StageListener implements ApplicationListener {
 	public void finish() {
 		finished = true;
 		SoundManager.getInstance().clear();
-		if (thumbnail != null) {
+		if (thumbnail != null && !makeAutomaticScreenshot) {
 			saveScreenshot(thumbnail, SCREENSHOT_AUTOMATIC_FILE_NAME);
 		}
 
@@ -313,6 +313,10 @@ public class StageListener implements ApplicationListener {
 				screenshotX = 0;
 				screenshotY = 0;
 				break;
+
+			default:
+				break;
+
 		}
 
 		batch.setProjectionMatrix(camera.combined);
@@ -443,6 +447,10 @@ public class StageListener implements ApplicationListener {
 		Bitmap centerSquareBitmap;
 		int[] colors = new int[length / 4];
 
+		if (colors.length != screenshotWidth * screenshotHeight) {
+			return false;
+		}
+
 		for (int i = 0; i < length; i += 4) {
 			colors[i / 4] = Color.argb(255, screenshot[i + 0] & 0xFF, screenshot[i + 1] & 0xFF,
 					screenshot[i + 2] & 0xFF);
@@ -495,6 +503,8 @@ public class StageListener implements ApplicationListener {
 				screenMode = ScreenModes.MAXIMIZE;
 				break;
 		}
+
+		makeAutomaticScreenshot = true;
 	}
 
 	private LookData createWhiteBackgroundLookData() {
