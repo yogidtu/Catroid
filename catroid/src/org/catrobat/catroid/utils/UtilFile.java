@@ -172,9 +172,11 @@ public class UtilFile {
 				return filename.contentEquals(Constants.PROJECTCODE_NAME);
 			}
 		};
-		for (File file : fileList) {
-			if (file.isDirectory() && file.list(filenameFilter).length != 0) {
-				projectList.add(file.getName());
+		if (fileList != null) {
+			for (File file : fileList) {
+				if (file.isDirectory() && file.list(filenameFilter).length != 0) {
+					projectList.add(file.getName());
+				}
 			}
 		}
 		return projectList;
