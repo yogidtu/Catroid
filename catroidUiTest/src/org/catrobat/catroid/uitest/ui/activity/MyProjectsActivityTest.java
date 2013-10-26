@@ -762,8 +762,6 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 			assertFalse("Project not deleted",
 					solo.waitForText(UiTestUtils.DEFAULT_TEST_PROJECT_NAME + " " + count, 0, 200));
 		}
-
-		assertTrue("default project not visible", solo.searchText(solo.getString(R.string.default_project_name)));
 	}
 
 	public void testItemClick() {
