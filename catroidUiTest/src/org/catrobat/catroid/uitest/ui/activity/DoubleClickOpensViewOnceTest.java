@@ -43,7 +43,7 @@ import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.ui.adapter.ScriptAdapter;
 import org.catrobat.catroid.ui.dialogs.LoginRegisterDialog;
 import org.catrobat.catroid.ui.dialogs.NewProjectDialog;
 import org.catrobat.catroid.ui.dialogs.NewSpriteDialog;
@@ -479,7 +479,7 @@ public class DoubleClickOpensViewOnceTest extends TestSuite {
 			final View brickView = solo.getView(R.id.brick_hide_layout);
 			ScriptActivity activity = (ScriptActivity) solo.getCurrentActivity();
 			ScriptFragment scriptFragment = (ScriptFragment) activity.getFragment(ScriptActivity.FRAGMENT_SCRIPTS);
-			final BrickAdapter brickAdapter = scriptFragment.getAdapter();
+			final ScriptAdapter brickAdapter = scriptFragment.getAdapter();
 
 			checkDoubleClickOpensViewOnce(new OnClickCommand() {
 				@Override

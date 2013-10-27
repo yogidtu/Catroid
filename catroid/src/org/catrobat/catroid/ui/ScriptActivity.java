@@ -43,7 +43,7 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.ui.adapter.ScriptAdapter;
 import org.catrobat.catroid.ui.adapter.ScriptActivityAdapterInterface;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListView;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
@@ -337,7 +337,7 @@ public class ScriptActivity extends BaseActivity {
 				if (listView.isCurrentlyDragging()) {
 					listView.resetDraggingScreen();
 
-					BrickAdapter adapter = scriptFragment.getAdapter();
+					ScriptAdapter adapter = scriptFragment.getAdapter();
 					adapter.removeDraggedBrick();
 					return true;
 				}

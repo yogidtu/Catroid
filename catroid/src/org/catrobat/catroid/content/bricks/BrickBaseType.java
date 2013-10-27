@@ -31,7 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.ui.adapter.ScriptAdapter;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class BrickBaseType implements Brick {
 	protected Sprite sprite;
 	protected transient CheckBox checkbox;
 	protected transient boolean checked = false;
-	protected transient BrickAdapter adapter;
+	protected transient ScriptAdapter adapter;
 	protected transient int alphaValue = 255;
 	public transient boolean animationState = false;
 
@@ -76,7 +76,7 @@ public class BrickBaseType implements Brick {
 	}
 
 	@Override
-	public void setBrickAdapter(BrickAdapter adapter) {
+	public void setBrickAdapter(ScriptAdapter adapter) {
 		this.adapter = adapter;
 	}
 

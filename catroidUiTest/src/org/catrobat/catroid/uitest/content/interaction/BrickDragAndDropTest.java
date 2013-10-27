@@ -34,7 +34,7 @@ import org.catrobat.catroid.content.bricks.SetXBrick;
 import org.catrobat.catroid.content.bricks.StopAllSoundsBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.ui.MainMenuActivity;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.ui.adapter.ScriptAdapter;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -64,7 +64,7 @@ public class BrickDragAndDropTest extends BaseActivityInstrumentationTestCase<Ma
 		// clicks on spriteName needed to get focus on listview for solo without adding hovering brick
 
 		ListView view = UiTestUtils.getScriptListView(solo);
-		BrickAdapter adapter = (BrickAdapter) view.getAdapter();
+		ScriptAdapter adapter = (ScriptAdapter) view.getAdapter();
 
 		UiTestUtils.addNewBrick(solo, R.string.brick_set_x);
 		assertEquals("Wrong number of Bricks", 2, adapter.getCount());
@@ -148,7 +148,7 @@ public class BrickDragAndDropTest extends BaseActivityInstrumentationTestCase<Ma
 		solo.clickOnScreen(200, 200);
 		solo.sleep(200);
 
-		BrickAdapter adapter = (BrickAdapter) UiTestUtils.getScriptListView(solo).getAdapter();
+		ScriptAdapter adapter = (ScriptAdapter) UiTestUtils.getScriptListView(solo).getAdapter();
 		assertEquals("Brick was not added.", 2, adapter.getCount());
 	}
 }

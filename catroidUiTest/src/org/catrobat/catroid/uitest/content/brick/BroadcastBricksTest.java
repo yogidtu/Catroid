@@ -37,7 +37,7 @@ import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BroadcastBrick;
 import org.catrobat.catroid.content.bricks.BroadcastWaitBrick;
 import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.ui.adapter.ScriptAdapter;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
@@ -185,7 +185,7 @@ public class BroadcastBricksTest extends BaseActivityInstrumentationTestCase<Scr
 
 	private void checkSetupBricks() {
 		ListView view = UiTestUtils.getScriptListView(solo);
-		BrickAdapter adapter = (BrickAdapter) view.getAdapter();
+		ScriptAdapter adapter = (ScriptAdapter) view.getAdapter();
 
 		assertEquals("String has changed", solo.getString(R.string.brick_broadcast_default_value),
 				defaultBroadcastMessage);

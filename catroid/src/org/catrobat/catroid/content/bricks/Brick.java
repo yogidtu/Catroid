@@ -31,7 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.ui.adapter.ScriptAdapter;
 
 import java.io.Serializable;
 import java.util.List;
@@ -65,7 +65,7 @@ public interface Brick extends Serializable {
 
 	public int getAlphaValue();
 
-	public void setBrickAdapter(BrickAdapter adapter);
+	public void setBrickAdapter(ScriptAdapter adapter);
 
 	public CheckBox getCheckBox();
 
