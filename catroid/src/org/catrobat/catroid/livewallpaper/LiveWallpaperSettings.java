@@ -23,6 +23,7 @@
 package org.catrobat.catroid.livewallpaper;
 
 import android.annotation.SuppressLint;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -35,7 +36,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.io.SoundManager;
 
@@ -70,8 +70,10 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					SelectProgramDialog selectProgramDialog = new SelectProgramDialog(context);
-					selectProgramDialog.show();
+					FragmentTransaction ft = getFragmentManager().beginTransaction();
+					ft.replace(android.R.id.content, new SelectProgramFragment());
+					ft.addToBackStack(null);
+					ft.commit();
 					return false;
 				}
 			});

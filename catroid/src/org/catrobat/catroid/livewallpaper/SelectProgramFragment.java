@@ -22,17 +22,17 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -49,34 +49,31 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class SelectProgramDialog extends Dialog {
-
-	private Context context;
+public class SelectProgramFragment extends PreferenceFragment {
 	private String selectedProject;
+	private SelectProgramFragment selectProgramFragment;
 
-	public SelectProgramDialog(Context context) {
-		super(context);
-		this.context = context;
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		selectProgramFragment = this;
+		return inflater.inflate(R.layout.fragment_lwp_select_program, container, false);
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.dialog_lwp_select_program);
+	public void onStart() {
+		super.onStart();
 		addRadioButtons();
 		addOkButton();
 		addCancelButton();
 	}
 
 	private void addRadioButtons() {
-		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.dialog_lwp_select_project_radiogroup);
+		RadioGroup radioGroup = (RadioGroup) getView().findViewById(R.id.dialog_lwp_select_project_radiogroup);
 
 		File rootDirectory = new File(Constants.DEFAULT_ROOT);
 		int numOfProjects = UtilFile.getProjectNames(rootDirectory).size();
 
-		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		String currentProjectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
 
 		RadioButton[] radioButton = new RadioButton[numOfProjects];
@@ -84,9 +81,9 @@ public class SelectProgramDialog extends Dialog {
 		List<String> projectNames = UtilFile.getProjectNames(rootDirectory);
 		java.util.Collections.sort(projectNames, new SortIgnoreCase());
 		for (String projectName : projectNames) {
-			radioButton[i] = new RadioButton(context);
+			radioButton[i] = new RadioButton(getActivity());
 			radioButton[i].setText(projectName);
-			radioButton[i].setTextColor(Color.WHITE);
+			radioButton[i].setTextColor(Color.BLACK);
 			radioGroup.addView(radioButton[i], i);
 			if (projectName.equals(currentProjectName)) {
 				radioGroup.check(radioButton[i].getId());
@@ -98,21 +95,22 @@ public class SelectProgramDialog extends Dialog {
 
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				RadioButton checkedRadioButton = (RadioButton) findViewById(checkedId);
+				RadioButton checkedRadioButton = (RadioButton) getView().findViewById(checkedId);
 				selectedProject = checkedRadioButton.getText().toString();
 			}
 		});
 	}
 
 	private void addOkButton() {
-		Button okButton = (Button) findViewById(R.id.dialog_lwp_select_project_ok_button);
+		Button okButton = (Button) getView().findViewById(R.id.dialog_lwp_select_project_ok_button);
 		okButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 
 				if (selectedProject == null) {
-					dismiss();
+					getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
+					getFragmentManager().popBackStack();
 					return;
 				}
 				new LoadProject().execute();
@@ -121,11 +119,12 @@ public class SelectProgramDialog extends Dialog {
 	}
 
 	private void addCancelButton() {
-		Button cancelButton = (Button) findViewById(R.id.dialog_lwp_select_project_cancel_button);
+		Button cancelButton = (Button) getView().findViewById(R.id.dialog_lwp_select_project_cancel_button);
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				dismiss();
+				getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
+				getFragmentManager().popBackStack();
 			}
 		});
 	}
@@ -143,9 +142,9 @@ public class SelectProgramDialog extends Dialog {
 		private ProgressDialog progress;
 
 		public LoadProject() {
-			progress = new ProgressDialog(getContext());
-			progress.setTitle(context.getString(R.string.please_wait));
-			progress.setMessage(context.getString(R.string.loading));
+			progress = new ProgressDialog(getActivity());
+			progress.setTitle(getActivity().getString(R.string.please_wait));
+			progress.setMessage(getActivity().getString(R.string.loading));
 			progress.setCancelable(false);
 		}
 
@@ -162,11 +161,12 @@ public class SelectProgramDialog extends Dialog {
 				ProjectManager projectManager = ProjectManager.getInstance();
 				if (projectManager.getCurrentProject() != null
 						&& projectManager.getCurrentProject().getName().equals(selectedProject)) {
-					dismiss();
+					getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
+					getFragmentManager().popBackStack();
 					return null;
 				}
 				projectManager.setProject(project);
-				SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+				SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 				Editor editor = sharedPreferences.edit();
 				editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
 				editor.commit();
@@ -177,7 +177,8 @@ public class SelectProgramDialog extends Dialog {
 		@Override
 		protected void onPostExecute(Void result) {
 			LiveWallpaper.liveWallpaperEngine.changeWallpaperProgram();
-			dismiss();
+			getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
+			getFragmentManager().popBackStack();
 			if (progress.isShowing()) {
 				progress.dismiss();
 			}
