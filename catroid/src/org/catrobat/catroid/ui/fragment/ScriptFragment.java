@@ -34,7 +34,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -50,7 +49,10 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.AllowedAfterDeadEndBrick;
 import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.DeadEndBrick;
+import org.catrobat.catroid.content.bricks.NestingBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.ui.BottomBar;
 import org.catrobat.catroid.ui.ScriptActivity;
@@ -68,7 +70,6 @@ import java.util.concurrent.locks.Lock;
 
 public class ScriptFragment extends ScriptActivityFragment implements OnCategorySelectedListener, OnBrickEditListener {
 
-	private static final String ARGUMENTS_SELECTED_CATEGORY = "selected_category";
 	public static final String TAG = ScriptFragment.class.getSimpleName();
 
 	private static String actionModeTitle;
@@ -85,11 +86,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 	private Sprite sprite;
 	private Script scriptToEdit;
-	private String selectedCategory;
 
-	private boolean addNewScript;
-
-	private NewBrickAddedReceiver brickAddedReceiver;
 	private BrickListChangedReceiver brickListChangedReceiver;
 
 	private Lock viewSwitchLock = new ViewSwitchLock();
@@ -114,11 +111,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
-		if (savedInstanceState != null) {
-			selectedCategory = savedInstanceState.getString(ARGUMENTS_SELECTED_CATEGORY);
-		}
-
 		initListeners();
 	}
 
@@ -141,12 +133,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		outState.putString(ARGUMENTS_SELECTED_CATEGORY, selectedCategory);
-		super.onSaveInstanceState(outState);
-	}
-
-	@Override
 	public void onStart() {
 		super.onStart();
 		sprite = ProjectManager.getInstance().getCurrentSprite();
@@ -165,16 +151,9 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			return;
 		}
 
-		if (brickAddedReceiver == null) {
-			brickAddedReceiver = new NewBrickAddedReceiver();
-		}
-
 		if (brickListChangedReceiver == null) {
 			brickListChangedReceiver = new BrickListChangedReceiver();
 		}
-
-		IntentFilter filterBrickAdded = new IntentFilter(ScriptActivity.ACTION_NEW_BRICK_ADDED);
-		getActivity().registerReceiver(brickAddedReceiver, filterBrickAdded);
 
 		IntentFilter filterBrickListChanged = new IntentFilter(ScriptActivity.ACTION_BRICK_LIST_CHANGED);
 		getActivity().registerReceiver(brickListChangedReceiver, filterBrickListChanged);
@@ -186,9 +165,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	public void onPause() {
 		super.onPause();
 		ProjectManager projectManager = ProjectManager.getInstance();
-		if (brickAddedReceiver != null) {
-			getActivity().unregisterReceiver(brickAddedReceiver);
-		}
 
 		if (brickListChangedReceiver != null) {
 			getActivity().unregisterReceiver(brickListChangedReceiver);
@@ -197,10 +173,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 			projectManager.saveProject();
 			projectManager.getCurrentProject().removeUnusedBroadcastMessages(); // TODO: Find better place
 		}
-	}
-
-	public void setAddNewScript() {
-		addNewScript = true;
 	}
 
 	public BrickAdapter getAdapter() {
@@ -214,8 +186,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 	@Override
 	public void onCategorySelected(String category) {
-		selectedCategory = category;
-		AddBrickFragment addBrickFragment = AddBrickFragment.newInstance(selectedCategory, this);
+		AddBrickFragment addBrickFragment = AddBrickFragment.newInstance(category, this);
 		FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		fragmentTransaction.add(R.id.script_fragment_container, addBrickFragment,
@@ -227,15 +198,11 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	}
 
 	public void updateAdapterAfterAddNewBrick(Brick brickToBeAdded) {
-		if (addNewScript) {
-			addNewScript = false;
-		} else {
-			int firstVisibleBrick = listView.getFirstVisiblePosition();
-			int lastVisibleBrick = listView.getLastVisiblePosition();
-			int position = ((1 + lastVisibleBrick - firstVisibleBrick) / 2);
-			position += firstVisibleBrick;
-			adapter.addNewBrick(position, brickToBeAdded);
-		}
+		int firstVisibleBrick = listView.getFirstVisiblePosition();
+		int lastVisibleBrick = listView.getLastVisiblePosition();
+		int position = ((1 + lastVisibleBrick - firstVisibleBrick) / 2);
+		position += firstVisibleBrick;
+		adapter.addNewBrick(position, brickToBeAdded, true);
 		adapter.notifyDataSetChanged();
 	}
 
@@ -264,7 +231,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		listView.setOnDragAndDropListener(adapter);
 		listView.setAdapter(adapter);
 		registerForContextMenu(listView);
-		addNewScript = false;
 	}
 
 	private void showCategoryFragment() {
@@ -371,25 +337,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 		DeleteLookDialog deleteLookDialog = DeleteLookDialog.newInstance(selectedBrickPosition);
 		deleteLookDialog.show(getFragmentManager(), DeleteLookDialog.DIALOG_FRAGMENT_TAG);
-	}
-
-	private class NewBrickAddedReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(ScriptActivity.ACTION_NEW_BRICK_ADDED)) {
-				Brick brickToBeAdded = null;
-				Object tempObject = intent.getExtras().get("added_brick");
-				if (tempObject instanceof Brick) {
-					brickToBeAdded = (Brick) tempObject;
-				}
-
-				if (brickToBeAdded == null) {
-					Log.w(TAG, "NewBrickAddedReceiver: no Brick given in extras");
-					return;
-				}
-				updateAdapterAfterAddNewBrick(brickToBeAdded);
-			}
-		}
 	}
 
 	private class BrickListChangedReceiver extends BroadcastReceiver {
@@ -504,6 +451,10 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	};
 
 	private void copyBrick(Brick brick) {
+		if (brick instanceof NestingBrick
+				&& (brick instanceof AllowedAfterDeadEndBrick || brick instanceof DeadEndBrick)) {
+			return;
+		}
 
 		if (brick instanceof ScriptBrick) {
 			scriptToEdit = ((ScriptBrick) brick).initScript(ProjectManager.getInstance().getCurrentSprite());
@@ -516,19 +467,28 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 
 			return;
 		}
+
 		int brickId = adapter.getBrickList().indexOf(brick);
 		if (brickId == -1) {
 			return;
 		}
 
 		int newPosition = adapter.getCount();
-
 		Brick copy = brick.clone();
+		Script scriptList = ProjectManager.getInstance().getCurrentScript();
 
-		Script scriptList;
-		scriptList = ProjectManager.getInstance().getCurrentScript();
-		scriptList.addBrick(copy);
-		adapter.addNewMultipleBricks(newPosition, copy);
+		if (brick instanceof NestingBrick) {
+			NestingBrick nestingBrickCopy = (NestingBrick) copy;
+			nestingBrickCopy.initialize();
+
+			for (Brick nestingBrick : nestingBrickCopy.getAllNestingBrickParts(true)) {
+				scriptList.addBrick(nestingBrick);
+			}
+		} else {
+			scriptList.addBrick(copy);
+		}
+
+		adapter.addNewBrick(newPosition, copy, false);
 		adapter.initBrickList();
 
 		ProjectManager.getInstance().saveProject();
