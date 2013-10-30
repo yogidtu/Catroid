@@ -69,7 +69,6 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 		private TextView size;
 		private TextView dateChanged;
 		private View projectDetails;
-		private ImageView arrow;
 		// temporarily removed - because of upcoming release, and bad performance of projectdescription
 		//		public TextView description;
 	}
@@ -136,7 +135,6 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 			holder.size = (TextView) convertView.findViewById(R.id.my_projects_activity_size_of_project_2);
 			holder.dateChanged = (TextView) convertView.findViewById(R.id.my_projects_activity_project_changed_2);
 			holder.projectDetails = convertView.findViewById(R.id.my_projects_activity_list_item_details);
-			holder.arrow = (ImageView) convertView.findViewById(R.id.arrow_right);
 			// temporarily removed - because of upcoming release, and bad performance of projectdescription
 			//			holder.description = (TextView) convertView.findViewById(R.id.my_projects_activity_description);
 			convertView.setTag(holder);
@@ -250,12 +248,10 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 		}
 		if (selectMode != ListView.CHOICE_MODE_NONE) {
 			holder.checkbox.setVisibility(View.VISIBLE);
-			holder.arrow.setVisibility(View.GONE);
 			holder.background.setBackgroundResource(R.drawable.button_background_shadowed);
 		} else {
 			holder.checkbox.setVisibility(View.GONE);
 			holder.checkbox.setChecked(false);
-			holder.arrow.setVisibility(View.VISIBLE);
 			holder.background.setBackgroundResource(R.drawable.button_background_selector);
 			clearCheckedProjects();
 		}
