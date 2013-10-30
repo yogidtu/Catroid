@@ -51,6 +51,7 @@ import org.catrobat.catroid.io.SoundManager;
 import java.util.List;
 
 public class StageListener implements ApplicationListener {
+
 	private static final float DELTA_ACTIONS_DIVIDER_MAXIMUM = 50f;
 	private static final int ACTIONS_COMPUTATION_TIME_MAXIMUM = 8;
 	private static final boolean DEBUG = false;
