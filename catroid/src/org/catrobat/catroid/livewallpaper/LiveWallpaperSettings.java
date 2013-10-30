@@ -35,6 +35,9 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.io.SoundManager;
@@ -55,12 +58,17 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 		@Override
 		public void onCreate(final Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			getActivity().getActionBar().hide();
 			addPreferencesFromResource(R.xml.livewallpapersettings);
 			handleAboutPocketCodePreference();
 			handleAboutThisWallpaperPreference();
 			handleSelectProgramDialog();
 			handleAllowSoundsCheckBox();
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+			getActivity().getActionBar().setTitle(R.string.lwp_app_name);
+			return super.onCreateView(inflater, container, savedInstanceState);
 		}
 
 		private void handleSelectProgramDialog() {

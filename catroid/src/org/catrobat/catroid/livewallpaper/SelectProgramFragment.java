@@ -67,16 +67,8 @@ public class SelectProgramFragment extends ListFragment implements OnProjectEdit
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		selectProgramFragment = this;
+		getActivity().getActionBar().setTitle(R.string.lwp_select_program);
 		return inflater.inflate(R.layout.fragment_lwp_select_program, container, false);
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-
-		//		addRadioButtons();
-		//		addOkButton();
-		//		addCancelButton();
 	}
 
 	@Override
@@ -105,68 +97,6 @@ public class SelectProgramFragment extends ListFragment implements OnProjectEdit
 	private void initClickListener() {
 		adapter.setOnProjectEditListener(this);
 	}
-
-	//	private void addRadioButtons() {
-	//		RadioGroup radioGroup = (RadioGroup) getView().findViewById(R.id.dialog_lwp_select_project_radiogroup);
-	//
-	//		File rootDirectory = new File(Constants.DEFAULT_ROOT);
-	//		int numOfProjects = UtilFile.getProjectNames(rootDirectory).size();
-	//
-	//		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-	//		String currentProjectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
-	//
-	//		RadioButton[] radioButton = new RadioButton[numOfProjects];
-	//		int i = 0;
-	//		List<String> projectNames = UtilFile.getProjectNames(rootDirectory);
-	//		java.util.Collections.sort(projectNames, new SortIgnoreCase());
-	//		for (String projectName : projectNames) {
-	//			radioButton[i] = new RadioButton(getActivity());
-	//			radioButton[i].setText(projectName);
-	//			radioButton[i].setTextColor(Color.BLACK);
-	//			radioGroup.addView(radioButton[i], i);
-	//			if (projectName.equals(currentProjectName)) {
-	//				radioGroup.check(radioButton[i].getId());
-	//			}
-	//			i++;
-	//		}
-	//
-	//		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-	//
-	//			@Override
-	//			public void onCheckedChanged(RadioGroup group, int checkedId) {
-	//				RadioButton checkedRadioButton = (RadioButton) getView().findViewById(checkedId);
-	//				selectedProject = checkedRadioButton.getText().toString();
-	//			}
-	//		});
-	//	}
-	//
-	//	private void addOkButton() {
-	//		Button okButton = (Button) getView().findViewById(R.id.dialog_lwp_select_project_ok_button);
-	//		okButton.setOnClickListener(new View.OnClickListener() {
-	//
-	//			@Override
-	//			public void onClick(View v) {
-	//
-	//				if (selectedProject == null) {
-	//					getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
-	//					getFragmentManager().popBackStack();
-	//					return;
-	//				}
-	//				new LoadProject().execute();
-	//			}
-	//		});
-	//	}
-	//
-	//	private void addCancelButton() {
-	//		Button cancelButton = (Button) getView().findViewById(R.id.dialog_lwp_select_project_cancel_button);
-	//		cancelButton.setOnClickListener(new View.OnClickListener() {
-	//			@Override
-	//			public void onClick(View v) {
-	//				getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
-	//				getFragmentManager().popBackStack();
-	//			}
-	//		});
-	//	}
 
 	private class SortIgnoreCase implements Comparator<ProjectData> {
 		@Override
