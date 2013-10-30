@@ -10,6 +10,10 @@
       android:title = "@string/about_this_wallpaper"
       android:key="@string/about_this_wallpaper" />
     
+    <Preference 
+      android:title = "@string/create_programs"
+      android:key="@string/create_programs" />
+    
      <PreferenceCategory android:title = "@string/lwp_preferences" />
      
      <CheckBoxPreference
