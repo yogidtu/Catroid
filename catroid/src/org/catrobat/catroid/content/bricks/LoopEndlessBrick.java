@@ -37,7 +37,7 @@ public class LoopEndlessBrick extends LoopEndBrick implements DeadEndBrick {
 	}
 
 	@Override
-	public LoopEndlessBrick clone() {
+	public Brick clone() {
 		return new LoopEndlessBrick(getSprite(), getLoopBeginBrick());
 	}
 

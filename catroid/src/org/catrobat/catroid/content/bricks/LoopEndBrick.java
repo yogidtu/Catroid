@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -88,6 +89,19 @@ public class LoopEndBrick extends NestingBrick implements AllowedAfterDeadEndBri
 	public void initialize() {
 		loopBeginBrick = new ForeverBrick(sprite);
 		Log.w(TAG, "Not supposed to create the LoopBeginBrick!");
+	}
+
+	@Override
+	public List<NestingBrick> getAllNestingBrickParts(boolean sorted) {
+		List<NestingBrick> nestingBrickList = new ArrayList<NestingBrick>();
+		if (sorted) {
+			nestingBrickList.add(loopBeginBrick);
+			nestingBrickList.add(this);
+		} else {
+			nestingBrickList.add(this);
+			nestingBrickList.add(loopBeginBrick);
+		}
+		return nestingBrickList;
 	}
 
 	@Override
