@@ -725,7 +725,6 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		solo.clickOnText(buttonDeleteText);
 		solo.waitForText(yes);
 		solo.clickOnText(yes);
-		assertTrue("delete dialog not closed in time", solo.waitForText(defaultProjectName));
 		assertFalse("project " + UiTestUtils.PROJECTNAME1 + " is still visible",
 				solo.searchText(UiTestUtils.PROJECTNAME1, 1));
 		assertNotSame("the deleted project is still the current project", UiTestUtils.DEFAULT_TEST_PROJECT_NAME,
