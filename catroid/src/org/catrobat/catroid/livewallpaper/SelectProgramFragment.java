@@ -31,7 +31,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,7 @@ import org.catrobat.catroid.common.ProjectData;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.adapter.ProjectAdapter;
-import org.catrobat.catroid.ui.adapter.ProjectAdapter.OnProjectEditListener;
+import org.catrobat.catroid.ui.adapter.ProjectAdapter.OnProjectClickedListener;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
@@ -54,12 +53,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class SelectProgramFragment extends ListFragment implements OnProjectEditListener {
+public class SelectProgramFragment extends ListFragment implements OnProjectClickedListener {
 	private String selectedProject;
 	private SelectProgramFragment selectProgramFragment;
-
-	//	private SpriteAdapter spriteAdapter;
-	//	private ArrayList<Sprite> spriteList;
 
 	private List<ProjectData> projectList;
 	private ProjectAdapter adapter;
@@ -157,13 +153,10 @@ public class SelectProgramFragment extends ListFragment implements OnProjectEdit
 
 	@Override
 	public void onProjectChecked() {
-		Log.d("LWPM", "Project Checked");
 	}
 
 	@Override
-	public void onProjectEdit(int position) {
-		// TODO:				
-		Log.d("LWPM", "Clicked on project: " + projectList.get(position).projectName);
+	public void onProjectClicked(int position) {
 		selectedProject = projectList.get(position).projectName;
 
 		AlertDialog.Builder builder = new CustomAlertDialogBuilder(getActivity());

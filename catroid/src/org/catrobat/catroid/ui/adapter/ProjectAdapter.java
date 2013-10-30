@@ -58,7 +58,7 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 	private boolean showDetails;
 	private int selectMode;
 	private Set<Integer> checkedProjects = new TreeSet<Integer>();
-	private OnProjectEditListener onProjectEditListener;
+	private OnProjectClickedListener onProjectClickedListener;
 	private Context context;
 
 	private static class ViewHolder {
@@ -85,8 +85,8 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 		this.context = context;
 	}
 
-	public void setOnProjectEditListener(OnProjectEditListener listener) {
-		onProjectEditListener = listener;
+	public void setOnProjectEditListener(OnProjectClickedListener listener) {
+		onProjectClickedListener = listener;
 	}
 
 	public void setShowDetails(boolean showDetails) {
@@ -211,8 +211,8 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 				}
 				notifyDataSetChanged();
 
-				if (onProjectEditListener != null) {
-					onProjectEditListener.onProjectChecked();
+				if (onProjectClickedListener != null) {
+					onProjectClickedListener.onProjectChecked();
 				}
 			}
 		});
@@ -234,8 +234,8 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 			public void onClick(View view) {
 				if (selectMode != ListView.CHOICE_MODE_NONE) {
 					holder.checkbox.setChecked(!holder.checkbox.isChecked());
-				} else if (onProjectEditListener != null) {
-					onProjectEditListener.onProjectEdit(position);
+				} else if (onProjectClickedListener != null) {
+					onProjectClickedListener.onProjectClicked(position);
 				}
 
 			}
@@ -271,12 +271,13 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 		//		}
 
 		return convertView;
+
 	}
 
-	public interface OnProjectEditListener {
+	public interface OnProjectClickedListener {
 		public void onProjectChecked();
 
-		public void onProjectEdit(int position);
+		public void onProjectClicked(int position);
 	}
 
 }
