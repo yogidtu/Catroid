@@ -22,36 +22,47 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
+import android.app.AlertDialog;
+import android.app.ListFragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.common.ProjectData;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.ui.adapter.ProjectAdapter;
+import org.catrobat.catroid.ui.adapter.ProjectAdapter.OnProjectEditListener;
+import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.utils.UtilFile;
+import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class SelectProgramFragment extends PreferenceFragment {
+public class SelectProgramFragment extends ListFragment implements OnProjectEditListener {
 	private String selectedProject;
 	private SelectProgramFragment selectProgramFragment;
+
+	//	private SpriteAdapter spriteAdapter;
+	//	private ArrayList<Sprite> spriteList;
+
+	private List<ProjectData> projectList;
+	private ProjectAdapter adapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,78 +73,106 @@ public class SelectProgramFragment extends PreferenceFragment {
 	@Override
 	public void onStart() {
 		super.onStart();
-		addRadioButtons();
-		addOkButton();
-		addCancelButton();
+
+		//		addRadioButtons();
+		//		addOkButton();
+		//		addCancelButton();
 	}
 
-	private void addRadioButtons() {
-		RadioGroup radioGroup = (RadioGroup) getView().findViewById(R.id.dialog_lwp_select_project_radiogroup);
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		initListeners();
+	}
 
+	private void initListeners() {
 		File rootDirectory = new File(Constants.DEFAULT_ROOT);
-		int numOfProjects = UtilFile.getProjectNames(rootDirectory).size();
-
-		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		String currentProjectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
-
-		RadioButton[] radioButton = new RadioButton[numOfProjects];
-		int i = 0;
-		List<String> projectNames = UtilFile.getProjectNames(rootDirectory);
-		java.util.Collections.sort(projectNames, new SortIgnoreCase());
-		for (String projectName : projectNames) {
-			radioButton[i] = new RadioButton(getActivity());
-			radioButton[i].setText(projectName);
-			radioButton[i].setTextColor(Color.BLACK);
-			radioGroup.addView(radioButton[i], i);
-			if (projectName.equals(currentProjectName)) {
-				radioGroup.check(radioButton[i].getId());
-			}
-			i++;
+		File projectCodeFile;
+		projectList = new ArrayList<ProjectData>();
+		for (String projectName : UtilFile.getProjectNames(rootDirectory)) {
+			projectCodeFile = new File(Utils.buildPath(Utils.buildProjectPath(projectName), Constants.PROJECTCODE_NAME));
+			projectList.add(new ProjectData(projectName, projectCodeFile.lastModified()));
 		}
 
-		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		Collections.sort(projectList, new SortIgnoreCase());
 
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				RadioButton checkedRadioButton = (RadioButton) getView().findViewById(checkedId);
-				selectedProject = checkedRadioButton.getText().toString();
-			}
-		});
+		adapter = new ProjectAdapter(getActivity(), R.layout.activity_my_projects_list_item,
+				R.id.my_projects_activity_project_title, projectList);
+		setListAdapter(adapter);
+		initClickListener();
 	}
 
-	private void addOkButton() {
-		Button okButton = (Button) getView().findViewById(R.id.dialog_lwp_select_project_ok_button);
-		okButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				if (selectedProject == null) {
-					getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
-					getFragmentManager().popBackStack();
-					return;
-				}
-				new LoadProject().execute();
-			}
-		});
+	private void initClickListener() {
+		adapter.setOnProjectEditListener(this);
 	}
 
-	private void addCancelButton() {
-		Button cancelButton = (Button) getView().findViewById(R.id.dialog_lwp_select_project_cancel_button);
-		cancelButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
-				getFragmentManager().popBackStack();
-			}
-		});
-	}
+	//	private void addRadioButtons() {
+	//		RadioGroup radioGroup = (RadioGroup) getView().findViewById(R.id.dialog_lwp_select_project_radiogroup);
+	//
+	//		File rootDirectory = new File(Constants.DEFAULT_ROOT);
+	//		int numOfProjects = UtilFile.getProjectNames(rootDirectory).size();
+	//
+	//		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+	//		String currentProjectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
+	//
+	//		RadioButton[] radioButton = new RadioButton[numOfProjects];
+	//		int i = 0;
+	//		List<String> projectNames = UtilFile.getProjectNames(rootDirectory);
+	//		java.util.Collections.sort(projectNames, new SortIgnoreCase());
+	//		for (String projectName : projectNames) {
+	//			radioButton[i] = new RadioButton(getActivity());
+	//			radioButton[i].setText(projectName);
+	//			radioButton[i].setTextColor(Color.BLACK);
+	//			radioGroup.addView(radioButton[i], i);
+	//			if (projectName.equals(currentProjectName)) {
+	//				radioGroup.check(radioButton[i].getId());
+	//			}
+	//			i++;
+	//		}
+	//
+	//		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+	//
+	//			@Override
+	//			public void onCheckedChanged(RadioGroup group, int checkedId) {
+	//				RadioButton checkedRadioButton = (RadioButton) getView().findViewById(checkedId);
+	//				selectedProject = checkedRadioButton.getText().toString();
+	//			}
+	//		});
+	//	}
+	//
+	//	private void addOkButton() {
+	//		Button okButton = (Button) getView().findViewById(R.id.dialog_lwp_select_project_ok_button);
+	//		okButton.setOnClickListener(new View.OnClickListener() {
+	//
+	//			@Override
+	//			public void onClick(View v) {
+	//
+	//				if (selectedProject == null) {
+	//					getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
+	//					getFragmentManager().popBackStack();
+	//					return;
+	//				}
+	//				new LoadProject().execute();
+	//			}
+	//		});
+	//	}
+	//
+	//	private void addCancelButton() {
+	//		Button cancelButton = (Button) getView().findViewById(R.id.dialog_lwp_select_project_cancel_button);
+	//		cancelButton.setOnClickListener(new View.OnClickListener() {
+	//			@Override
+	//			public void onClick(View v) {
+	//				getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
+	//				getFragmentManager().popBackStack();
+	//			}
+	//		});
+	//	}
 
-	private class SortIgnoreCase implements Comparator<Object> {
+	private class SortIgnoreCase implements Comparator<ProjectData> {
 		@Override
-		public int compare(Object o1, Object o2) {
-			String s1 = (String) o1;
-			String s2 = (String) o2;
+		public int compare(ProjectData o1, ProjectData o2) {
+			String s1 = o1.projectName;
+			String s2 = o2.projectName;
 			return s1.toLowerCase(Locale.getDefault()).compareTo(s2.toLowerCase(Locale.getDefault()));
 		}
 	}
@@ -184,5 +223,35 @@ public class SelectProgramFragment extends PreferenceFragment {
 			}
 			super.onPostExecute(result);
 		}
+	}
+
+	@Override
+	public void onProjectChecked() {
+		Log.d("LWPM", "Project Checked");
+	}
+
+	@Override
+	public void onProjectEdit(int position) {
+		// TODO:				
+		Log.d("LWPM", "Clicked on project: " + projectList.get(position).projectName);
+		selectedProject = projectList.get(position).projectName;
+
+		AlertDialog.Builder builder = new CustomAlertDialogBuilder(getActivity());
+		builder.setMessage(R.string.lwp_confirm_set_program_message);
+		builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+
+		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				new LoadProject().execute();
+			}
+		});
+		AlertDialog alertDialog = builder.create();
+		alertDialog.show();
 	}
 }

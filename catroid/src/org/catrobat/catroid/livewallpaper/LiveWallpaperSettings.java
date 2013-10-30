@@ -55,12 +55,12 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 		@Override
 		public void onCreate(final Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
+			getActivity().getActionBar().hide();
 			addPreferencesFromResource(R.xml.livewallpapersettings);
 			handleAboutPocketCodePreference();
 			handleAboutThisWallpaperPreference();
 			handleSelectProgramDialog();
 			handleAllowSoundsCheckBox();
-
 		}
 
 		private void handleSelectProgramDialog() {

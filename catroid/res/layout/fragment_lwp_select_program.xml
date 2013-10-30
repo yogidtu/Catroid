@@ -21,46 +21,8 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:gravity="left"
-    android:id="@+id/lwp_linear_layout_rg">    
-    
-    
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:fillViewport="true">
-        <RadioGroup
-            android:id="@+id/dialog_lwp_select_project_radiogroup"
-	     	android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:scrollbars="vertical"
-		    android:padding="10dp">
-		</RadioGroup>
-    </ScrollView>
-    
-    <LinearLayout 
-    android:id="@+id/lwp_linear_layout_rg_buttons" 
-    android:layout_height="wrap_content" 
-    android:layout_width="match_parent">
-    <Button 
-        android:id="@+id/dialog_lwp_select_project_ok_button" 
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content" 
-        android:layout_weight="1" 
-        android:text="@string/ok">
-    </Button>
-    <Button 
-        android:id="@+id/dialog_lwp_select_project_cancel_button" 
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-        android:layout_weight="1" 
-        android:text="@string/cancel_button">
-    </Button>
-</LinearLayout>
-
-</LinearLayout>
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/list"
+    style="@style/ListViewShadowed"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
