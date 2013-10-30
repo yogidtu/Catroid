@@ -14,10 +14,6 @@
       android:title = "@string/create_programs"
       android:key="@string/create_programs" />
     
-    <Preference 
-      android:title ="@string/download_programs"
-      android:key="@string/download_programs" />
-    
      <PreferenceCategory android:title = "@string/lwp_preferences" />
      
      <CheckBoxPreference

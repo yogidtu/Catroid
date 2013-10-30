@@ -68,7 +68,6 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 			handleAboutPocketCodePreference();
 			handleAboutThisWallpaperPreference();
 			handleCreateWallpapers();
-			handleDownloadWallpapers();
 			handleSelectProgramDialog();
 			handleAllowSoundsCheckBox();
 
@@ -157,25 +156,25 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					checkIfPocketCodeInstalled();
-					//TODO: start pocket code
+					Intent pocketCodeIntent = new Intent("android.intent.action.MAIN");
+					pocketCodeIntent.setComponent(new ComponentName(Constants.POCKET_CODE_PACKAGE_NAME,
+							Constants.POCKET_CODE_INTENT_ACTIVITY_NAME));
+					boolean isInstalled = checkIfPocketCodeInstalled(pocketCodeIntent);
+					if (isInstalled) {
+
+						pocketCodeIntent.addCategory("android.intent.category.LAUNCHER");
+						startActivity(pocketCodeIntent);
+					}
+
 					return false;
 				}
 			});
 
 		}
 
-		private void handleDownloadWallpapers() {
-
-		}
-
-		private void checkIfPocketCodeInstalled() {
+		private boolean checkIfPocketCodeInstalled(Intent pocketCodeIntent) {
 			final Activity activity = getActivity();
-			Intent intent = new Intent("android.intent.action.MAIN");
-			intent.setComponent(new ComponentName(Constants.POCKET_CODE_PACKAGE_NAME,
-					Constants.POCKET_CODE_INTENT_ACTIVITY_NAME));
-
-			List<ResolveInfo> packageList = activity.getPackageManager().queryIntentActivities(intent,
+			List<ResolveInfo> packageList = activity.getPackageManager().queryIntentActivities(pocketCodeIntent,
 					PackageManager.MATCH_DEFAULT_ONLY);
 
 			if (packageList.size() <= 0) {
@@ -197,10 +196,9 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 						});
 				AlertDialog alert = builder.create();
 				alert.show();
+				return false;
 			} else {
-				AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-				builder.setMessage("Pocket Code is installed. Yaaay");
-				builder.show();
+				return true;
 			}
 
 		}
