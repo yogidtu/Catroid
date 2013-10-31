@@ -96,7 +96,7 @@ public class PointToBrickTest extends BaseActivityInstrumentationTestCase<Script
 		solo.waitForText(spinnerNewText);
 		solo.clickInList(0);
 		solo.goBack();
-		solo.goBack();
+		//solo.goBack();
 
 		assertEquals("Wrong selection", newSpriteName, ((Spinner) solo.getView(R.id.brick_point_to_spinner))
 				.getSelectedItem().toString());

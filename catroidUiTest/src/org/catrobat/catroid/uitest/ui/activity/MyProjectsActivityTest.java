@@ -361,7 +361,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		String yes = solo.getString(R.string.yes);
 		solo.waitForText(yes);
 		solo.clickOnText(yes);
-		assertTrue("delete dialog not closed in time", solo.waitForText(standardProjectName));
+		assertFalse("standard project was restored", solo.waitForText(standardProjectName));
 
 		solo.waitForText(standardProjectName);
 		assertTrue("longclick on project '" + standardProjectName + "' in list not successful",
