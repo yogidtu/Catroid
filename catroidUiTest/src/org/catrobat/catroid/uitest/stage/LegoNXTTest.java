@@ -41,7 +41,6 @@ import org.catrobat.catroid.content.bricks.LegoNxtMotorTurnAngleBrick;
 import org.catrobat.catroid.content.bricks.LegoNxtPlayToneBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.legonxt.LegoNXTBtCommunicator;
 import org.catrobat.catroid.legonxt.LegoNXTCommunicator;
 import org.catrobat.catroid.stage.StageActivity;
@@ -55,6 +54,7 @@ import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -326,6 +326,11 @@ public class LegoNXTTest extends BaseActivityInstrumentationTestCase<MainMenuAct
 		setLookBrick.setLook(lookData);
 		firstSprite.getLookDataList().add(lookData);
 
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 	}
 }

@@ -44,6 +44,7 @@ import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private static final int SCREEN_WIDTH = 480;
@@ -79,8 +80,8 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 		solo.sleep(1400);
 		byte[] screenArray = StageActivity.stageListener.getPixels(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-		UiTestUtils.comparePixelArrayWithPixelScreenArrayWithTolerance(WHITE_PIXEL, screenArray, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,
-				0);
+		UiTestUtils.comparePixelArrayWithPixelScreenArrayWithTolerance(WHITE_PIXEL, screenArray, 0, 0, SCREEN_WIDTH,
+				SCREEN_HEIGHT, 0);
 
 		UiTestUtils
 				.comparePixelArrayWithPixelScreenArray(RED_PIXEL, screenArray, -41, -41, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -307,7 +308,12 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 		project.addSprite(greenSprite);
 		project.addSprite(blueSprite);
 
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 
 		File yellowImageFile = UiTestUtils.saveFileToProject(project.getName(), yellowImageName,
 				org.catrobat.catroid.uitest.R.raw.yellow_image, getInstrumentation().getContext(),
@@ -330,7 +336,12 @@ public class StageTestComplex extends BaseActivityInstrumentationTestCase<MainMe
 		redLookData.setLookFilename(redImageFile.getName());
 		blackLookData.setLookFilename(blackImageFile.getName());
 
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(project);
 	}
 }

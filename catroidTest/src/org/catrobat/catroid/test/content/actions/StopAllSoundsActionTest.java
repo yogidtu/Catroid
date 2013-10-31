@@ -33,7 +33,6 @@ import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.content.actions.PlaySoundAction;
 import org.catrobat.catroid.content.actions.StopAllSoundsAction;
 import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
@@ -107,7 +106,12 @@ public class StopAllSoundsActionTest extends InstrumentationTestCase {
 		final String projectName = TestUtils.DEFAULT_TEST_PROJECT_NAME;
 
 		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(project);
 
 		soundFile = TestUtils.saveFileToProject(projectName, "soundTest.mp3", soundFileId, getInstrumentation()

@@ -35,7 +35,6 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
@@ -184,7 +183,6 @@ public class SwitchToLookCrashTest extends BaseActivityInstrumentationTestCase<M
 	}
 
 	private void createProject() {
-		StorageHandler storageHandler = StorageHandler.getInstance();
 		Project project = new Project(getActivity(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
 
 		Sprite backgroundSprite = project.getSpriteList().get(0);
@@ -199,7 +197,12 @@ public class SwitchToLookCrashTest extends BaseActivityInstrumentationTestCase<M
 		ProjectManager.getInstance().setProject(project);
 		ProjectManager.getInstance().setCurrentSprite(backgroundSprite);
 		ProjectManager.getInstance().setCurrentScript(startScript);
-		storageHandler.saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 	}
 
 	private LookFragment getLookFragment() {

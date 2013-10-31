@@ -69,6 +69,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.SoundInfo;
+import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.BackPackActivity;
 import org.catrobat.catroid.ui.BottomBar;
@@ -272,10 +273,6 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 	public void onPause() {
 		super.onPause();
 
-		ProjectManager projectManager = ProjectManager.getInstance();
-		if (projectManager.getCurrentProject() != null) {
-			projectManager.saveProject();
-		}
 		SoundController.getInstance().stopSound(mediaPlayer, soundInfoList);
 		adapter.notifyDataSetChanged();
 
@@ -302,6 +299,15 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 		editor.putBoolean(SoundController.SHARED_PREFERENCE_NAME, getShowDetails());
 		editor.commit();
 
+		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+		if (currentProject != null) {
+			try {
+				currentProject.save();
+			} catch (IOException e) {
+				// TODO show error message to user
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

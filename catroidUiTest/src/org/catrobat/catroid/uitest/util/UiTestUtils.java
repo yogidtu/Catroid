@@ -535,7 +535,7 @@ public class UiTestUtils {
 		return location;
 	}
 
-	public static List<Brick> createTestProjectWithTwoSprites(String projectName) {
+	public static List<Brick> createTestProjectWithTwoSprites(String projectName) throws IOException {
 		int xPosition = 457;
 		int yPosition = 598;
 		double size = 0.8;
@@ -567,7 +567,7 @@ public class UiTestUtils {
 		projectManager.setProject(project);
 		projectManager.setCurrentSprite(firstSprite);
 		projectManager.setCurrentScript(testScript);
-		StorageHandler.getInstance().saveProject(project);
+		project.save();
 
 		// the application version is needed when the project will be uploaded
 		// 0.7.3beta is the lowest possible version currently accepted by the web
@@ -606,7 +606,12 @@ public class UiTestUtils {
 		projectManager.setProject(project);
 		projectManager.setCurrentSprite(firstSprite);
 		projectManager.setCurrentScript(testScript);
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error creating test project");
+		}
 
 		// the application version is needed when the project will be uploaded
 		// 0.7.3beta is the lowest possible version currently accepted by the web
@@ -884,20 +889,27 @@ public class UiTestUtils {
 
 	public static Project createProject(String projectName, ArrayList<Sprite> spriteList, Context context) {
 		Project project = new Project(context, projectName);
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(project);
 
 		for (Sprite sprite : spriteList) {
 			ProjectManager.getInstance().addSprite(sprite);
 		}
-
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		return project;
 	}
 
 	public static void createProjectForCopySprite(String projectName, Context context) {
-		StorageHandler storageHandler = StorageHandler.getInstance();
-
 		Project project = new Project(context, projectName);
 		Sprite firstSprite = new Sprite(context.getString(R.string.default_project_sprites_mole_name));
 		Sprite secondSprite = new Sprite("second_sprite");
@@ -1013,7 +1025,12 @@ public class UiTestUtils {
 		ProjectManager.getInstance().setCurrentSprite(firstSprite);
 		ProjectManager.getInstance().setCurrentScript(firstSpriteScript);
 
-		storageHandler.saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 	}
 
 	public static List<InternToken> getInternTokenList() {
@@ -1318,7 +1335,8 @@ public class UiTestUtils {
 		}
 	}
 
-	public static boolean createTestProjectOnLocalStorageWithCatrobatLanguageVersion(float catrobatLanguageVersion) {
+	public static void createTestProjectOnLocalStorageWithCatrobatLanguageVersion(float catrobatLanguageVersion)
+			throws IOException {
 		Project project = new ProjectWithCatrobatLanguageVersion(DEFAULT_TEST_PROJECT_NAME, catrobatLanguageVersion);
 		Sprite firstSprite = new Sprite("cat");
 		Script testScript = new StartScript(firstSprite);
@@ -1330,7 +1348,7 @@ public class UiTestUtils {
 		ProjectManager.getInstance().setProject(project);
 		ProjectManager.getInstance().setCurrentSprite(firstSprite);
 		ProjectManager.getInstance().setCurrentScript(testScript);
-		return StorageHandler.getInstance().saveProject(project);
+		project.save();
 	}
 
 	public static void goToHomeActivity(Activity activity) {

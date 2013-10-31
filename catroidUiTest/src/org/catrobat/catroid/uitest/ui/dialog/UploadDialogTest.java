@@ -33,7 +33,6 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
@@ -42,6 +41,7 @@ import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.web.ServerCalls;
 
 import java.io.File;
+import java.io.IOException;
 
 public class UploadDialogTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private String testProject = UiTestUtils.PROJECTNAME1;
@@ -186,8 +186,13 @@ public class UploadDialogTest extends BaseActivityInstrumentationTestCase<MainMe
 		assertFalse("testProject was not deleted!", directory.exists());
 
 		uploadProject = new Project(getActivity(), testProject);
+		try {
+			uploadProject.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(uploadProject);
-		StorageHandler.getInstance().saveProject(uploadProject);
 
 		File file = new File(Constants.DEFAULT_ROOT + "/" + testProject + "/" + Constants.PROJECTCODE_NAME);
 		assertTrue(testProject + " was not created!", file.exists());

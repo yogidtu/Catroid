@@ -33,6 +33,7 @@ import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MultipleBroadcastsTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
@@ -74,7 +75,7 @@ public class MultipleBroadcastsTest extends BaseActivityInstrumentationTestCase<
 
 	}
 
-	private void createProject() {
+	private void createProject() throws IOException {
 		ArrayList<Sprite> spriteList = new ArrayList<Sprite>();
 
 		sprite1 = new Sprite("sprite1");
@@ -121,6 +122,6 @@ public class MultipleBroadcastsTest extends BaseActivityInstrumentationTestCase<
 		sprite4.addScript(broadcastScript4);
 		spriteList.add(sprite4);
 
-		UiTestUtils.createProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME, spriteList, null);
+		UiTestUtils.createProject(UiTestUtils.DEFAULT_TEST_PROJECT_NAME, spriteList, getActivity());
 	}
 }

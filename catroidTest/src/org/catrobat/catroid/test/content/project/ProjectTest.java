@@ -83,7 +83,7 @@ public class ProjectTest extends AndroidTestCase {
 		assertEquals("Platform should be the old one", OLD_PLATFORM, platform);
 
 		// update the device data
-		project.setDeviceData(getContext());
+		project.updateDeviceDataToXmlHeader(getContext());
 
 		languageVersion = (Float) Reflection.getPrivateField(header, "catrobatLanguageVersion");
 		assertEquals("Version should be the current one", Constants.SUPPORTED_CATROBAT_LANGUAGE_VERSION,

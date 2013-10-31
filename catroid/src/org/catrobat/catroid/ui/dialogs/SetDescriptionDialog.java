@@ -27,6 +27,8 @@ import android.os.Bundle;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 
+import java.io.IOException;
+
 public class SetDescriptionDialog extends MultiLineTextDialog {
 
 	private static final String BUNDLE_ARGUMENTS_OLD_PROJECT_DESCRIPTION = "old_project_description";
@@ -101,7 +103,12 @@ public class SetDescriptionDialog extends MultiLineTextDialog {
 
 	private void setDescription(String description) {
 		projectManager.getCurrentProject().setDescription(description);
-		projectManager.saveProject();
+		try {
+			projectManager.getCurrentProject().save();
+		} catch (IOException e) {
+			// TODO show error message to user
+			e.printStackTrace();
+		}
 		updateProjectDescriptionListener();
 	}
 

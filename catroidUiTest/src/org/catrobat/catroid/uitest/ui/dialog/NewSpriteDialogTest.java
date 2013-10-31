@@ -22,7 +22,6 @@
  */
 package org.catrobat.catroid.uitest.ui.dialog;
 
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.widget.EditText;
 
 import com.jayway.android.robotium.solo.Solo;
@@ -31,7 +30,6 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
@@ -59,7 +57,7 @@ public class NewSpriteDialogTest extends BaseActivityInstrumentationTestCase<Mai
 		ProjectManager.getInstance().deleteCurrentProject();
 	}
 
-	public void testNewSpriteDialog() throws NameNotFoundException, IOException {
+	public void testNewSpriteDialog() {
 		createTestProject(testingproject);
 		solo.sleep(300);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
@@ -120,12 +118,16 @@ public class NewSpriteDialogTest extends BaseActivityInstrumentationTestCase<Mai
 		solo.assertCurrentActivity("Current Activity is not ScriptActivity", ScriptActivity.class);
 	}
 
-	public void createTestProject(String projectName) {
-		StorageHandler storageHandler = StorageHandler.getInstance();
+	private void createTestProject(String projectName) {
 		Project project = new Project(getActivity(), projectName);
 		Sprite firstSprite = new Sprite("cat");
 		project.addSprite(firstSprite);
-		storageHandler.saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 	}
 
 	private void enterTextAndCloseDialog(String text) {

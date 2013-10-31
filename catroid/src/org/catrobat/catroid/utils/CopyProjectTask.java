@@ -48,6 +48,7 @@ public class CopyProjectTask extends AsyncTask<String, Long, Boolean> {
 		super.onPreExecute();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected Boolean doInBackground(String... projectNameArray) {
 		String newProjectName = projectNameArray[0];

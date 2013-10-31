@@ -58,6 +58,7 @@ import org.catrobat.catroid.ui.dragndrop.DragAndDropListView;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListener;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -569,7 +570,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 	}
 
-	public void addNewMultipleBricks(int position, Brick brickToBeAdded) {
+	public void addNewMultipleBricks(int position, Brick brickToBeAdded) throws IOException {
 
 		if (draggedBrick != null) {
 			Log.w(TAG, "Want to add Brick while there is another one currently dragged.");
@@ -617,7 +618,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 
 		notifyDataSetChanged();
 
-		ProjectManager.getInstance().saveProject();
+		ProjectManager.getInstance().getCurrentProject().save();
 
 	}
 

@@ -34,7 +34,6 @@ import org.catrobat.catroid.content.bricks.PlaceAtBrick;
 import org.catrobat.catroid.content.bricks.SetGhostEffectBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
@@ -42,6 +41,7 @@ import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class TransparentWhenBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
@@ -183,7 +183,12 @@ public class TransparentWhenBrickTest extends BaseActivityInstrumentationTestCas
 
 		project.addSprite(fish);
 
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 
 		File catImageFile = UiTestUtils.saveFileToProject(project.getName(), catFilename,
 				org.catrobat.catroid.uitest.R.drawable.catroid_sunglasses, getInstrumentation().getContext(),
@@ -194,7 +199,12 @@ public class TransparentWhenBrickTest extends BaseActivityInstrumentationTestCas
 		lookDataCat.setLookFilename(catImageFile.getName());
 		lookDataFish.setLookFilename(fishImageFile.getName());
 
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(project);
-		StorageHandler.getInstance().saveProject(project);
 	}
 }

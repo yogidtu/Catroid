@@ -25,6 +25,7 @@ package org.catrobat.catroid.test.content.actions;
 import android.test.AndroidTestCase;
 
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.PointToAction;
@@ -36,7 +37,7 @@ public class PointToActionTest extends AndroidTestCase {
 	public void testPointTo() {
 		Sprite sprite = new Sprite("sprite");
 		Sprite pointedSprite = new Sprite("pointedSprite");
-		Project project = new Project();
+		Project project = new Project(getContext(), getContext().getString(R.string.default_project_name));
 		project.addSprite(sprite);
 		project.addSprite(pointedSprite);
 		ProjectManager.getInstance().setProject(project);

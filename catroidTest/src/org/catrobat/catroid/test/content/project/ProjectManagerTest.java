@@ -42,7 +42,6 @@ import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.ShowBrick;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
 import org.catrobat.catroid.utils.Utils;
@@ -173,7 +172,12 @@ public class ProjectManagerTest extends InstrumentationTestCase {
 		if (!projectManager.renameProject(newProjectName, getInstrumentation().getContext())) {
 			fail("could not rename Project");
 		}
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 
 		File oldProjectFolder = new File(Constants.DEFAULT_ROOT + "/" + oldProjectName);
 		File oldProjectFile = new File(Constants.DEFAULT_ROOT + "/" + oldProjectName + "/" + Constants.PROJECTCODE_NAME);
@@ -194,14 +198,17 @@ public class ProjectManagerTest extends InstrumentationTestCase {
 	}
 
 	public Project createTestProject(String projectName) throws IOException {
-		StorageHandler storageHandler = StorageHandler.getInstance();
-
 		int xPosition = 457;
 		int yPosition = 598;
 		double size = 0.8;
 
 		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
-		storageHandler.saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(project);
 		Sprite firstSprite = new Sprite("cat");
 		Sprite secondSprite = new Sprite("dog");
@@ -243,7 +250,12 @@ public class ProjectManagerTest extends InstrumentationTestCase {
 		ProjectManager.getInstance().getFileChecksumContainer()
 				.addChecksum(Utils.md5Checksum(image), image.getAbsolutePath());
 
-		storageHandler.saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		return project;
 	}
 }

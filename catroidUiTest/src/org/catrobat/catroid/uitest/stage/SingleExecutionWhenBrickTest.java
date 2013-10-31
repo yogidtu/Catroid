@@ -37,13 +37,13 @@ import org.catrobat.catroid.content.bricks.SetGhostEffectBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class SingleExecutionWhenBrickTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private static final int SCREEN_WIDTH = 480;
@@ -183,7 +183,12 @@ public class SingleExecutionWhenBrickTest extends BaseActivityInstrumentationTes
 
 		projectWhenBrick.addSprite(greenSprite);
 
-		StorageHandler.getInstance().saveProject(projectWhenBrick);
+		try {
+			projectWhenBrick.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 
 		File yellowImageFile = UiTestUtils.saveFileToProject(projectWhenBrick.getName(), yellowImageName,
 				org.catrobat.catroid.uitest.R.raw.yellow_image, getInstrumentation().getContext(),
@@ -202,7 +207,12 @@ public class SingleExecutionWhenBrickTest extends BaseActivityInstrumentationTes
 		blueLookData.setLookFilename(blueImageFile.getName());
 
 		greenLookData.setLookFilename(greenImageFile.getName());
-		StorageHandler.getInstance().saveProject(projectWhenBrick);
+		try {
+			projectWhenBrick.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(projectWhenBrick);
 	}
 }

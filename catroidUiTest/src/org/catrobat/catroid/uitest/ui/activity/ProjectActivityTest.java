@@ -63,7 +63,6 @@ import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.InternToken;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.MyProjectsActivity;
@@ -277,7 +276,7 @@ public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<Mai
 				solo.searchText((defaultSpriteName + solo.getString(R.string.copy_sprite_name_suffix) + "1")));
 	}
 
-	public void testCopySprite() {
+	public void testCopySprite() throws IOException {
 		defaultSpriteName = solo.getString(R.string.default_project_sprites_mole_name);
 		UiTestUtils.createProjectForCopySprite(UiTestUtils.PROJECTNAME1, getActivity());
 
@@ -378,13 +377,16 @@ public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<Mai
 		assertTrue("Sprite not shown in List", solo.searchText(spriteToCheckName));
 	}
 
-	public void testAddedSpriteVisibleOnLongList() {
-		addSprite("dog");
-		addSprite("mouse");
-		addSprite("bear");
-		addSprite("tiger");
-		addSprite("lion");
-		addSprite("eagle");
+	public void testAddedSpriteVisibleOnLongList() throws IOException {
+		Project project = projectManager.getCurrentProject();
+
+		project.addSprite(new Sprite("dog"));
+		project.addSprite(new Sprite("mouse"));
+		project.addSprite(new Sprite("bear"));
+		project.addSprite(new Sprite("tiger"));
+		project.addSprite(new Sprite("lion"));
+		project.addSprite(new Sprite("eagle"));
+		project.save();
 
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
 
@@ -1215,15 +1217,6 @@ public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<Mai
 		solo.enterText(0, spriteName);
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.sleep(200);
-	}
-
-	private void addSprite(String spriteName) {
-		Project project = projectManager.getCurrentProject();
-
-		project.addSprite(new Sprite(spriteName));
-
-		projectManager.setProject(project);
-		StorageHandler.getInstance().saveProject(project);
 	}
 
 	private void checkVisibilityOfViews(View detailsView, boolean visible) {

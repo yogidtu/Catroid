@@ -55,6 +55,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.SoundInfo;
+import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
@@ -67,6 +68,7 @@ import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.dialogs.RenameSpriteDialog;
 import org.catrobat.catroid.utils.Utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -176,10 +178,6 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 	@Override
 	public void onPause() {
 		super.onPause();
-		ProjectManager projectManager = ProjectManager.getInstance();
-		if (projectManager.getCurrentProject() != null) {
-			projectManager.saveProject();
-		}
 
 		if (spriteRenamedReceiver != null) {
 			getActivity().unregisterReceiver(spriteRenamedReceiver);
@@ -199,6 +197,16 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 
 		editor.putBoolean(SHARED_PREFERENCE_NAME, getShowDetails());
 		editor.commit();
+
+		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+		if (currentProject != null) {
+			try {
+				currentProject.save();
+			} catch (IOException e) {
+				// TODO show error message to user
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

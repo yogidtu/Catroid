@@ -32,7 +32,6 @@ import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.content.actions.PlaySoundAction;
 import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
@@ -91,13 +90,23 @@ public class PlaySoundActionTest extends InstrumentationTestCase {
 		assertTrue("Second MediaPlayer is not playing", mediaPlayers.get(1).isPlaying());
 	}
 
-	private void createTestProject() throws IOException {
+	private void createTestProject() {
 		Project project = new Project(getInstrumentation().getTargetContext(), projectName);
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(project);
 
-		soundFile = TestUtils.saveFileToProject(projectName, "soundTest.mp3", soundFileId, getInstrumentation()
-				.getContext(), TestUtils.TYPE_SOUND_FILE);
+		try {
+			soundFile = TestUtils.saveFileToProject(projectName, "soundTest.mp3", soundFileId, getInstrumentation()
+					.getContext(), TestUtils.TYPE_SOUND_FILE);
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error importing sound file");
+		}
 	}
 
 	private SoundInfo createSoundInfo(File soundFile) {

@@ -46,6 +46,7 @@ import com.actionbarsherlock.view.MenuItem;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.LoadProjectTask;
 import org.catrobat.catroid.io.LoadProjectTask.OnLoadProjectCompleteListener;
 import org.catrobat.catroid.stage.PreStageActivity;
@@ -63,6 +64,7 @@ import org.catrobat.catroid.utils.UtilZip;
 import org.catrobat.catroid.utils.Utils;
 import org.catrobat.catroid.web.ServerCalls;
 
+import java.io.IOException;
 import java.util.concurrent.locks.Lock;
 
 public class MainMenuActivity extends BaseActivity implements OnCheckTokenCompleteListener,
@@ -129,11 +131,15 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 		if (!Utils.externalStorageAvailable()) {
 			return;
 		}
-
-		if (ProjectManager.getInstance().getCurrentProject() != null) {
-			ProjectManager.getInstance().saveProject();
-			Utils.saveToPreferences(this, Constants.PREF_PROJECTNAME_KEY, ProjectManager.getInstance()
-					.getCurrentProject().getName());
+		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+		if (currentProject != null) {
+			Utils.saveToPreferences(this, Constants.PREF_PROJECTNAME_KEY, currentProject.getName());
+			try {
+				currentProject.save();
+			} catch (IOException e) {
+				// TODO show error message to user
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -49,7 +49,6 @@ import org.catrobat.catroid.content.bricks.PlaceAtBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.ShowBrick;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
@@ -208,7 +207,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		assertFalse("Play button is visible", solo.searchButton(solo.getString(R.id.button_play)));
 	}
 
-	public void testLoadProject() {
+	public void testLoadProject() throws IOException {
 		File directory = new File(Constants.DEFAULT_ROOT + "/" + testProject2);
 		UtilFile.deleteDirectory(directory);
 		assertFalse(testProject2 + " was not deleted!", directory.exists());
@@ -231,7 +230,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		assertEquals("Sprite at index 4 is not \"pig\"!", "pig", fourth.getName());
 	}
 
-	public void testResume() {
+	public void testResume() throws IOException {
 		File directory = new File(Constants.DEFAULT_ROOT + "/" + testProject3);
 		UtilFile.deleteDirectory(directory);
 		assertFalse(testProject3 + " was not deleted!", directory.exists());
@@ -271,9 +270,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		// Prevent Utils from returning true in isApplicationDebuggable
 		Reflection.setPrivateField(Utils.class, "isUnderTest", true);
 
-		boolean result = UiTestUtils
-				.createTestProjectOnLocalStorageWithCatrobatLanguageVersion(CATROBAT_LANGUAGE_VERSION_NOT_SUPPORTED);
-		assertTrue("Could not create test project.", result);
+		UiTestUtils.createTestProjectOnLocalStorageWithCatrobatLanguageVersion(CATROBAT_LANGUAGE_VERSION_NOT_SUPPORTED);
 
 		runTestOnUiThread(new Runnable() {
 			public void run() {
@@ -286,8 +283,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		solo.waitForDialogToClose(500);
 	}
 
-	public void createTestProject(String projectName) {
-		StorageHandler storageHandler = StorageHandler.getInstance();
+	public void createTestProject(String projectName) throws IOException {
 
 		int xPosition = 457;
 		int yPosition = 598;
@@ -324,10 +320,10 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		project.addSprite(thirdSprite);
 		project.addSprite(fourthSprite);
 
-		storageHandler.saveProject(project);
+		project.save();
 	}
 
-	public void testOverrideMyFirstProject() {
+	public void testOverrideMyFirstProject() throws IOException {
 		String standardProjectName = solo.getString(R.string.default_project_name);
 		Project standardProject = null;
 
@@ -343,7 +339,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 			fail("Could not create standard project");
 		}
 		ProjectManager.getInstance().setProject(standardProject);
-		StorageHandler.getInstance().saveProject(standardProject);
+		standardProject.save();
 
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 		solo.sleep(300);
@@ -359,7 +355,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		assertEquals("Number of bricks in background sprite was wrong", 6, backgroundSprite.getNumberOfBricks());
 		ProjectManager.getInstance().setCurrentSprite(backgroundSprite);
 		ProjectManager.getInstance().setCurrentScript(startingScript);
-		StorageHandler.getInstance().saveProject(standardProject);
+		standardProject.save();
 
 		UiTestUtils.goBackToHome(getInstrumentation());
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
@@ -382,7 +378,7 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 				ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).getNumberOfBricks());
 	}
 
-	public void testProjectNameVisible() {
+	public void testProjectNameVisible() throws IOException {
 		createTestProject(testProject);
 		createTestProject(testProject2);
 

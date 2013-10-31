@@ -267,7 +267,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		}
 	}
 
-	public void testInvalidProject() {
+	public void testInvalidProject() throws IOException {
 		unzip = true;
 		saveProjectsToZip();
 		try {
@@ -391,7 +391,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 	}
 
 	@Device
-	public void testProjectsAndImagesVisible() {
+	public void testProjectsAndImagesVisible() throws IOException {
 		createProjects();
 		solo.sleep(200);
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
@@ -450,14 +450,25 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 		//create first cache test project and set it as current project 
 		Project firstCacheTestProject = new Project(getActivity(), "cachetestProject" + 0);
-		StorageHandler.getInstance().saveProject(firstCacheTestProject);
+		try {
+			firstCacheTestProject.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		UiTestUtils.saveFileToProject(cacheProjectName + 0, StageListener.SCREENSHOT_MANUAL_FILE_NAME,
 				IMAGE_RESOURCE_2, getInstrumentation().getContext(), UiTestUtils.FileTypes.ROOT);
 		ProjectManager.getInstance().setProject(firstCacheTestProject);
 
 		for (int i = 1; i < numberOfCacheProjects; i++) {
 			solo.sleep(500);
-			StorageHandler.getInstance().saveProject(new Project(getActivity(), "cachetestProject" + i));
+			Project tempProject = new Project(getActivity(), "cachetestProject" + i);
+			try {
+				tempProject.save();
+			} catch (IOException e) {
+				e.printStackTrace();
+				fail("error saving project");
+			}
 			UiTestUtils.saveFileToProject(cacheProjectName + i, StageListener.SCREENSHOT_MANUAL_FILE_NAME,
 					IMAGE_RESOURCE_2, getInstrumentation().getContext(), UiTestUtils.FileTypes.ROOT);
 		}
@@ -504,12 +515,22 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		Project secondCacheTestProject = StorageHandler.getInstance().loadProject(secondCacheProjectName);
 		UiTestUtils.saveFileToProject(secondCacheProjectName, StageListener.SCREENSHOT_MANUAL_FILE_NAME,
 				IMAGE_RESOURCE_3, getInstrumentation().getContext(), UiTestUtils.FileTypes.ROOT);
-		StorageHandler.getInstance().saveProject(secondCacheTestProject);
+		try {
+			secondCacheTestProject.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		solo.sleep(2000);
 		firstCacheTestProject = StorageHandler.getInstance().loadProject(firstCacheProjectName);
 		UiTestUtils.saveFileToProject(firstCacheProjectName, "screenshot.png", IMAGE_RESOURCE_2, getInstrumentation()
 				.getContext(), UiTestUtils.FileTypes.ROOT);
-		StorageHandler.getInstance().saveProject(firstCacheTestProject);
+		try {
+			firstCacheTestProject.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(firstCacheTestProject);
 
 		//leave and reenter MyProjectsActivity 
@@ -953,7 +974,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 	public void testRenameProject() {
 		createProjects();
-		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", false);
+		//Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", false);
 		String currentProjectName = ProjectManager.getInstance().getCurrentProject().getName();
 		solo.sleep(200);
 		String buttonPositiveText = solo.getString(R.string.ok);
@@ -1268,7 +1289,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		assertTrue("Menu item still says \"Hide Details\"!", solo.searchText(showDetailsText));
 	}
 
-	public void testProjectDetailsLastAccess() {
+	public void testProjectDetailsLastAccess() throws IOException {
 		String showDetailsText = solo.getString(R.string.show_details);
 
 		Date date = new Date(1357038000000l);
@@ -1689,7 +1710,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		assertTrue("Long Projectname not found", solo.searchText(longProjectName));
 	}
 
-	public void testScreenshotUpdate() {
+	public void testScreenshotUpdate() throws IOException {
 		createProjectWithBackgrounds();
 
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
@@ -1729,7 +1750,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		assertTrue("The screenshot has not been changed", greenPixel2 == greenPixel3);
 	}
 
-	private void createProjectWithBackgrounds() {
+	private void createProjectWithBackgrounds() throws IOException {
 
 		LookData backgroundGreen;
 		LookData backgroundRed;
@@ -1765,7 +1786,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		SetLookBrick setBackgroundBrick = new SetLookBrick(projectManager.getCurrentSprite());
 		projectManager.getCurrentScript().addBrick(setBackgroundBrick);
 		setBackgroundBrick.setLook(backgroundGreen);
-		StorageHandler.getInstance().saveProject(projectManager.getCurrentProject());
+		projectManager.getCurrentProject().save();
 	}
 
 	private void playTheProject(boolean switchGreenToRed, boolean switchRedToGreen, boolean makeScreenshot) {
@@ -1846,12 +1867,22 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 	private void createProjects() {
 		Project project2 = new Project(getActivity(), UiTestUtils.PROJECTNAME1);
-		StorageHandler.getInstance().saveProject(project2);
+		try {
+			project2.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			assertTrue("save error", false);
+		}
 
 		solo.sleep(2000);
 
 		Project project1 = new Project(getActivity(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
-		StorageHandler.getInstance().saveProject(project1);
+		try {
+			project1.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			assertTrue("save error", false);
+		}
 		ProjectManager.getInstance().setProject(project1);
 		ProjectManager projectManager = ProjectManager.getInstance();
 
@@ -1869,7 +1900,12 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		lookDataList.add(lookData);
 		projectManager.getFileChecksumContainer().addChecksum(lookData.getChecksum(), lookData.getAbsolutePath());
 
-		StorageHandler.getInstance().saveProject(project1);
+		try {
+			project1.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			assertTrue("save error", false);
+		}
 
 		//-------------------------------------------------
 
@@ -1882,13 +1918,13 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		solo.sleep(1000);
 	}
 
-	private void createProjectsWithoutSprites() {
+	private void createProjectsWithoutSprites() throws IOException {
 		Project project1 = new Project(getActivity(), UiTestUtils.PROJECTNAME1);
-		StorageHandler.getInstance().saveProject(project1);
+		project1.save();
 		solo.sleep(2000);
 
 		Project project2 = new Project(getActivity(), UiTestUtils.DEFAULT_TEST_PROJECT_NAME);
-		StorageHandler.getInstance().saveProject(project2);
+		project2.save();
 		solo.sleep(2000);
 	}
 

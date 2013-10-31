@@ -63,7 +63,6 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 	private String uploadDialogTitle;
 	private int serverProjectId;
 
-	private Project standardProject;
 	private float currentLanguageVersion;
 
 	public ProjectUpAndDownloadTest() {
@@ -89,15 +88,20 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		super.tearDown();
 	}
 
-	private void setServerURLToTestUrl() throws Throwable {
-		runTestOnUiThread(new Runnable() {
-			public void run() {
-				ServerCalls.useTestUrl = true;
-			}
-		});
+	private void setServerURLToTestUrl() {
+		try {
+			runTestOnUiThread(new Runnable() {
+				public void run() {
+					ServerCalls.useTestUrl = true;
+				}
+			});
+		} catch (Throwable e) {
+			e.printStackTrace();
+			fail("Server URL could not be set to test URL");
+		}
 	}
 
-	public void testUploadProjectSuccessAndTokenReplacementAfterUpload() throws Throwable {
+	public void testUploadProjectSuccessAndTokenReplacementAfterUpload() throws IOException {
 		setServerURLToTestUrl();
 		UiTestUtils.createTestProject(testProject);
 
@@ -116,7 +120,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		downloadProject(newTestProject, testProject);
 	}
 
-	public void testUploadProjectOldCatrobatLanguageVersion() throws Throwable {
+	public void testUploadProjectOldCatrobatLanguageVersion() throws IOException {
 		setServerURLToTestUrl();
 
 		UiTestUtils.createTestProject(testProject);
@@ -132,7 +136,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		Project testProject = ProjectManager.getInstance().getCurrentProject();
 		Reflection.setPrivateField(Constants.class, "SUPPORTED_CATROBAT_LANGUAGE_VERSION", 0.3f);
 
-		StorageHandler.getInstance().saveProject(testProject);
+		testProject.save();
 
 		solo.clickOnText(solo.getString(R.string.main_menu_upload));
 		solo.waitForText(uploadDialogTitle);
@@ -159,7 +163,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		UiTestUtils.clearAllUtilTestProjects();
 	}
 
-	public void testRenameProjectNameAndDescriptionWhenUploading() throws Throwable {
+	public void testRenameProjectNameAndDescriptionWhenUploading() throws IOException {
 		setServerURLToTestUrl();
 
 		String originalProjectName = testProject;
@@ -198,7 +202,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 				serverProjectDescription.equalsIgnoreCase(projectDescriptionSetWhenUploading));
 	}
 
-	public void testRenameProjectDescriptionWhenUploading() throws Throwable {
+	public void testRenameProjectDescriptionWhenUploading() throws IOException {
 		setServerURLToTestUrl();
 
 		UiTestUtils.createTestProject(testProject);
@@ -225,7 +229,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 				downloadedProject.getDescription());
 	}
 
-	public void testUpAndDownloadJapaneseUnicodeProject() throws Throwable {
+	public void testUpAndDownloadJapaneseUnicodeProject() throws IOException {
 		setServerURLToTestUrl();
 
 		String testProject = UiTestUtils.JAPANESE_PROJECT_NAME;
@@ -246,7 +250,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		assertTrue("Project name on server was changed", serverProjectName.equalsIgnoreCase(testProject));
 	}
 
-	public void testDownload() throws Throwable {
+	public void testDownload() throws IOException {
 		setServerURLToTestUrl();
 
 		String projectName = UiTestUtils.DEFAULT_TEST_PROJECT_NAME;
@@ -268,7 +272,7 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 			ProjectManager.getInstance().getFileChecksumContainer()
 					.addChecksum(soundInfo.getChecksum(), soundInfo.getAbsolutePath());
 		}
-		StorageHandler.getInstance().saveProject(ProjectManager.getInstance().getCurrentProject());
+		ProjectManager.getInstance().getCurrentProject().save();
 		Project newProject = StorageHandler.getInstance().loadProject(projectName);
 		ProjectManager.getInstance().setProject(newProject);
 
@@ -286,10 +290,9 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 		assertTrue("Project was successfully downloaded", serverProjectName.equalsIgnoreCase(projectName));
 	}
 
-	public void testUploadStandardProject() throws Throwable {
-		if (!createAndSaveStandardProject() || this.standardProject == null) {
-			fail("Standard project not created");
-		}
+	public void testUploadStandardProject() throws IOException {
+		StandardProjectHandler.createAndSaveStandardProject(solo.getString(R.string.default_project_name),
+				getInstrumentation().getTargetContext());
 
 		setServerURLToTestUrl();
 		UiTestUtils.createValidUser(getActivity());
@@ -324,10 +327,9 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 	}
 
-	public void testUploadModifiedStandardProject() throws Throwable {
-		if (!createAndSaveStandardProject() || this.standardProject == null) {
-			fail("Standard project not created");
-		}
+	public void testUploadModifiedStandardProject() throws IOException {
+		StandardProjectHandler.createAndSaveStandardProject(solo.getString(R.string.default_project_name),
+				getInstrumentation().getTargetContext());
 
 		setServerURLToTestUrl();
 		UiTestUtils.createValidUser(getActivity());
@@ -360,19 +362,6 @@ public class ProjectUpAndDownloadTest extends BaseActivityInstrumentationTestCas
 
 		assertTrue("Upload of the modified standard project should be possible, but did not succeed",
 				solo.waitForText(solo.getString(R.string.notification_upload_finished), 0, 10000));
-	}
-
-	private boolean createAndSaveStandardProject() {
-		try {
-			standardProject = StandardProjectHandler.createAndSaveStandardProject(
-					solo.getString(R.string.default_project_name), getInstrumentation().getTargetContext());
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		ProjectManager.getInstance().setProject(standardProject);
-		StorageHandler.getInstance().saveProject(standardProject);
-		return true;
 	}
 
 	private void uploadProject(String uploadProjectName, String uploadProjectDescription) {

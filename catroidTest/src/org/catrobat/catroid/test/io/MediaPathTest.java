@@ -85,12 +85,22 @@ public class MediaPathTest extends InstrumentationTestCase {
 		TestUtils.clearProject("mockProject");
 
 		project = new Project(getInstrumentation().getTargetContext(), projectName);
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(project);
 		ProjectManager.getInstance().setFileChecksumContainer(new FileChecksumContainer());
 
 		Project mockProject = new Project(getInstrumentation().getTargetContext(), "mockProject");
-		StorageHandler.getInstance().saveProject(mockProject);
+		try {
+			mockProject.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 
 		testImage = TestUtils.saveFileToProject(mockProject.getName(), imageName, IMAGE_FILE_ID, getInstrumentation()
 				.getContext(), TestUtils.TYPE_IMAGE_FILE);
@@ -314,6 +324,11 @@ public class MediaPathTest extends InstrumentationTestCase {
 			whenScript.addBrick(brick);
 		}
 
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 	}
 }

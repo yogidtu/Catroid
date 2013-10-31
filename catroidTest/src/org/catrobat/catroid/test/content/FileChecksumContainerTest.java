@@ -61,7 +61,12 @@ public class FileChecksumContainerTest extends InstrumentationTestCase {
 		testCopyFile.getXmlHeader().virtualScreenHeight = 1000;
 		testCopyFile.getXmlHeader().virtualScreenWidth = 1000;
 		projectManager = ProjectManager.getInstance();
-		storageHandler.saveProject(testCopyFile);
+		try {
+			testCopyFile.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		projectManager.setProject(testCopyFile);
 
 		final String imagePath = Constants.DEFAULT_ROOT + "/testImage.png";

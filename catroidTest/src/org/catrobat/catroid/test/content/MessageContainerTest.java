@@ -32,10 +32,10 @@ import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.BroadcastBrick;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -95,7 +95,7 @@ public class MessageContainerTest extends AndroidTestCase {
 		assertEquals("Broadcast message is not in the message container", true, keySet.contains(broadcastMessage1));
 	}
 
-	private void createTestProjects() {
+	private void createTestProjects() throws IOException {
 		Project project1 = new Project(getContext(), projectName1);
 
 		Sprite sprite1 = new Sprite("cat");
@@ -108,8 +108,7 @@ public class MessageContainerTest extends AndroidTestCase {
 		sprite1.addScript(broadcastScript1);
 
 		project1.addSprite(sprite1);
-
-		StorageHandler.getInstance().saveProject(project1);
+		project1.save();
 
 		Project project2 = new Project(getContext(), projectName2);
 
@@ -123,8 +122,7 @@ public class MessageContainerTest extends AndroidTestCase {
 		sprite2.addScript(broadcastScript2);
 
 		project2.addSprite(sprite2);
-
-		StorageHandler.getInstance().saveProject(project2);
+		project2.save();
 	}
 
 	@SuppressWarnings("unchecked")

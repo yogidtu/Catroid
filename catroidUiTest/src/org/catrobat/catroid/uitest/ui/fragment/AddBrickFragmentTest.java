@@ -33,6 +33,8 @@ import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
+import java.io.IOException;
+
 public class AddBrickFragmentTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
 	private static final String KEY_SETTINGS_MINDSTORM_BRICKS = "setting_mindstorm_bricks";
@@ -51,7 +53,7 @@ public class AddBrickFragmentTest extends BaseActivityInstrumentationTestCase<Ma
 		super.tearDown();
 	}
 
-	public void testBrickCategories() {
+	public void testBrickCategories() throws IOException {
 		goToAddBrickFromMainMenu();
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
 
@@ -68,7 +70,7 @@ public class AddBrickFragmentTest extends BaseActivityInstrumentationTestCase<Ma
 		checkActionBarInACategory(solo.getString(R.string.category_lego_nxt), "lego nxt");
 	}
 
-	public void testCorrectReturnToScriptFragment() {
+	public void testCorrectReturnToScriptFragment() throws IOException {
 		goToAddBrickFromMainMenu();
 
 		String currentSprite = ProjectManager.getInstance().getCurrentSprite().getName();
@@ -84,7 +86,7 @@ public class AddBrickFragmentTest extends BaseActivityInstrumentationTestCase<Ma
 		solo.goBack();
 	}
 
-	public void testCorrectReturnToCategoriesFragment() {
+	public void testCorrectReturnToCategoriesFragment() throws IOException {
 		goToAddBrickFromMainMenu();
 		String categoriesString = solo.getString(R.string.categories);
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
@@ -126,7 +128,7 @@ public class AddBrickFragmentTest extends BaseActivityInstrumentationTestCase<Ma
 		solo.goBack();
 	}
 
-	private void goToAddBrickFromMainMenu() {
+	private void goToAddBrickFromMainMenu() throws IOException {
 		UiTestUtils.createTestProject();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());

@@ -29,7 +29,6 @@ import android.util.Log;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
 import org.catrobat.catroid.utils.UtilZip;
@@ -38,6 +37,7 @@ import org.catrobat.catroid.web.ServerCalls;
 import org.catrobat.catroid.web.WebconnectionException;
 
 import java.io.File;
+import java.io.IOException;
 
 /*
  * This tests need an internet connection
@@ -274,7 +274,12 @@ public class ServerCallsTest extends AndroidTestCase {
 					.createTestProjectOnLocalStorageWithCatrobatLanguageVersion(Constants.SUPPORTED_CATROBAT_LANGUAGE_VERSION);
 
 			Reflection.setPrivateField(project.getXmlHeader(), "applicationVersion", "0.7.3beta");
-			StorageHandler.getInstance().saveProject(project);
+			try {
+				project.save();
+			} catch (IOException e) {
+				e.printStackTrace();
+				fail("error saving project");
+			}
 
 			String projectPath = Constants.DEFAULT_ROOT + "/" + TestUtils.DEFAULT_TEST_PROJECT_NAME;
 

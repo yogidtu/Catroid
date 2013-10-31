@@ -33,13 +33,13 @@ import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.WhenScript;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.content.bricks.TurnLeftBrick;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class TouchAxisTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
@@ -100,14 +100,24 @@ public class TouchAxisTest extends BaseActivityInstrumentationTestCase<MainMenuA
 
 		testProject.addSprite(touchSprite);
 
-		StorageHandler.getInstance().saveProject(testProject);
+		try {
+			testProject.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 
 		File alphaTestImage = UiTestUtils.saveFileToProject(testProject.getName(), alphaTestImageName,
 				org.catrobat.catroid.uitest.R.raw.alpha_test_image, getInstrumentation().getContext(),
 				UiTestUtils.FileTypes.IMAGE);
 		touchLookData.setLookFilename(alphaTestImage.getName());
 
-		StorageHandler.getInstance().saveProject(testProject);
+		try {
+			testProject.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(testProject);
 	}
 }

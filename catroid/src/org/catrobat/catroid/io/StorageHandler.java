@@ -253,14 +253,14 @@ public class StorageHandler {
 		}
 	}
 
-	public boolean saveProject(Project project) {
+	@Deprecated
+	public void saveProject(Project project) throws IOException, IllegalArgumentException {
 		BufferedWriter writer = null;
 
 		loadSaveLock.lock();
 		try {
-
 			if (project == null) {
-				return false;
+				throw new IllegalArgumentException("Project was null");
 			}
 
 			File projectDirectory = new File(buildProjectPath(project.getName()));
@@ -271,10 +271,6 @@ public class StorageHandler {
 			String projectXml = XML_HEADER.concat(xstream.toXML(project));
 			writer.write(projectXml);
 			writer.flush();
-			return true;
-		} catch (Exception exception) {
-			Log.e(TAG, "Saving project " + project.getName() + " failed.", exception);
-			return false;
 		} finally {
 			if (writer != null) {
 				try {

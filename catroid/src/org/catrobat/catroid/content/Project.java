@@ -23,7 +23,9 @@
 package org.catrobat.catroid.content;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -33,8 +35,10 @@ import org.catrobat.catroid.common.MessageContainer;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
+import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.utils.Utils;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +62,7 @@ public class Project implements Serializable {
 		ifLandscapeSwitchWidthAndHeight();
 		xmlHeader.virtualScreenWidth = ScreenValues.SCREEN_WIDTH;
 		xmlHeader.virtualScreenHeight = ScreenValues.SCREEN_HEIGHT;
-		setDeviceData(context);
+		updateDeviceDataToXmlHeader(context);
 
 		MessageContainer.clear();
 
@@ -71,6 +75,20 @@ public class Project implements Serializable {
 		Sprite background = new Sprite(context.getString(R.string.background));
 		background.look.setZIndex(0);
 		addSprite(background);
+	}
+
+	public void save() throws IOException {
+
+		//if (asynchronTask) {
+		SaveProjectAsynchronousTask saveTask = new SaveProjectAsynchronousTask();
+		saveTask.execute();
+		//		} else {
+		//			try {
+		//				StorageHandler.getInstance().saveProject(this);
+		//			} catch (IllegalArgumentException exception) {
+		//				exception.printStackTrace();
+		//			}
+		//		}
 	}
 
 	private void ifLandscapeSwitchWidthAndHeight() {
@@ -129,7 +147,7 @@ public class Project implements Serializable {
 		xmlHeader.setCatrobatLanguageVersion(catrobatLanguageVersion);
 	}
 
-	public void setDeviceData(Context context) {
+	public void updateDeviceDataToXmlHeader(Context context) {
 		// TODO add other header values
 		xmlHeader.setPlatform(Constants.PLATFORM_NAME);
 		xmlHeader.setPlatformVersion(Build.VERSION.SDK_INT);
@@ -180,6 +198,32 @@ public class Project implements Serializable {
 		if (broadcastMessageToAdd != null && !broadcastMessageToAdd.isEmpty()
 				&& !broadcastMessages.contains(broadcastMessageToAdd)) {
 			broadcastMessages.add(broadcastMessageToAdd);
+		}
+	}
+
+	private class SaveProjectAsynchronousTask extends AsyncTask<Void, Void, Boolean> {
+
+		@SuppressWarnings("deprecation")
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			try {
+				StorageHandler.getInstance().saveProject(Project.this);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+				return false;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean success) {
+			if (!success) {
+				Log.e("Project.java", "Saving project wasn't successful");
+				//TODO show error dialog to user
+			}
 		}
 	}
 }

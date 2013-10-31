@@ -43,7 +43,6 @@ import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ForeverBrick;
 import org.catrobat.catroid.content.bricks.LoopEndBrick;
 import org.catrobat.catroid.content.bricks.ShowBrick;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
@@ -76,7 +75,7 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 		super.tearDown();
 	}
 
-	public void testCopyScript() {
+	public void testCopyScript() throws IOException {
 		UiTestUtils.createTestProject();
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 
@@ -663,15 +662,14 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 			standardProject = StandardProjectHandler.createAndSaveStandardProject(
 					UiTestUtils.DEFAULT_TEST_PROJECT_NAME, getInstrumentation().getTargetContext());
 		} catch (IOException e) {
-			fail("Could not create standard project");
 			e.printStackTrace();
+			fail("Could not create standard project");
 		}
 
 		if (standardProject == null) {
 			fail("Could not create standard project");
 		}
 		ProjectManager.getInstance().setProject(standardProject);
-		StorageHandler.getInstance().saveProject(standardProject);
 
 		UiTestUtils.getIntoScriptActivityFromMainMenu(solo);
 		String categoryLooks = solo.getString(R.string.category_looks);

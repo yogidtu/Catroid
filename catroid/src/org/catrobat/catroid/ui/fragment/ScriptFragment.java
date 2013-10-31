@@ -47,6 +47,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
@@ -62,6 +63,7 @@ import org.catrobat.catroid.ui.dragndrop.DragAndDropListView;
 import org.catrobat.catroid.ui.fragment.BrickCategoryFragment.OnCategorySelectedListener;
 import org.catrobat.catroid.utils.Utils;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
@@ -161,14 +163,19 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	@Override
 	public void onPause() {
 		super.onPause();
-		ProjectManager projectManager = ProjectManager.getInstance();
 
 		if (brickListChangedReceiver != null) {
 			getActivity().unregisterReceiver(brickListChangedReceiver);
 		}
-		if (projectManager.getCurrentProject() != null) {
-			projectManager.saveProject();
-			projectManager.getCurrentProject().removeUnusedBroadcastMessages(); // TODO: Find better place
+		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+		if (currentProject != null) {
+			currentProject.removeUnusedBroadcastMessages(); // TODO: Find better place
+			try {
+				currentProject.save();
+			} catch (IOException e) {
+				// TODO show error message to user
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -472,10 +479,20 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		Script scriptList;
 		scriptList = ProjectManager.getInstance().getCurrentScript();
 		scriptList.addBrick(copy);
-		adapter.addNewMultipleBricks(newPosition, copy);
+		try {
+			adapter.addNewMultipleBricks(newPosition, copy);
+		} catch (IOException e) {
+			// TODO show error message to user
+			e.printStackTrace();
+		}
 		adapter.initBrickList();
 
-		ProjectManager.getInstance().saveProject();
+		try {
+			ProjectManager.getInstance().getCurrentProject().save();
+		} catch (IOException e) {
+			// TODO show error message to user
+			e.printStackTrace();
+		}
 		adapter.notifyDataSetChanged();
 	}
 

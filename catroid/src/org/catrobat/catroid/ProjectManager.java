@@ -23,7 +23,6 @@
 package org.catrobat.catroid;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.catrobat.catroid.common.Constants;
@@ -46,7 +45,6 @@ public class ProjectManager {
 	private Project project;
 	private Script currentScript;
 	private Sprite currentSprite;
-	private boolean asynchronTask = true;
 
 	private FileChecksumContainer fileChecksumContainer = new FileChecksumContainer();
 
@@ -120,19 +118,6 @@ public class ProjectManager {
 		return StorageHandler.getInstance().loadProject(projectName) != null;
 	}
 
-	public void saveProject() {
-		if (project == null) {
-			return;
-		}
-
-		if (asynchronTask) {
-			SaveProjectAsynchronousTask saveTask = new SaveProjectAsynchronousTask();
-			saveTask.execute();
-		} else {
-			StorageHandler.getInstance().saveProject(project);
-		}
-	}
-
 	public boolean initializeDefaultProject(Context context) {
 		try {
 			fileChecksumContainer = new FileChecksumContainer();
@@ -203,7 +188,6 @@ public class ProjectManager {
 
 		if (directoryRenamed) {
 			project.setName(newProjectName);
-			saveProject();
 		}
 
 		if (!directoryRenamed) {
@@ -280,14 +264,5 @@ public class ProjectManager {
 
 	public void setFileChecksumContainer(FileChecksumContainer fileChecksumContainer) {
 		this.fileChecksumContainer = fileChecksumContainer;
-	}
-
-	private class SaveProjectAsynchronousTask extends AsyncTask<Void, Void, Void> {
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			StorageHandler.getInstance().saveProject(project);
-			return null;
-		}
 	}
 }

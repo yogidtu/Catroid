@@ -28,7 +28,6 @@ import android.test.InstrumentationTestCase;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.utils.TestUtils;
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
@@ -132,12 +131,12 @@ public class UtilFileTest extends InstrumentationTestCase {
 		UtilFile.deleteDirectory(testDirectory);
 	}
 
-	public void testGetProjectNames() {
+	public void testGetProjectNames() throws IOException {
 		Project project = new Project(null, projectName);
 		ProjectManager.getInstance().setProject(project);
 		Sprite sprite = new Sprite("new sprite");
 		project.addSprite(sprite);
-		StorageHandler.getInstance().saveProject(project);
+		project.save();
 
 		File catroidDirectoryFile = new File(CATROID_DIRECTORY);
 		File project1Directory = new File(catroidDirectoryFile + "/" + projectName);

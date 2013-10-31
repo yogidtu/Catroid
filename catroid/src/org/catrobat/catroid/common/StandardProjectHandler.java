@@ -81,8 +81,8 @@ public class StandardProjectHandler {
 		String varRandomTo = context.getString(R.string.default_project_var_random_to);
 
 		Project defaultProject = new Project(context, projectName);
-		defaultProject.setDeviceData(context); // density anywhere here
-		StorageHandler.getInstance().saveProject(defaultProject);
+		defaultProject.updateDeviceDataToXmlHeader(context); // density anywhere here
+		defaultProject.save();
 		ProjectManager.getInstance().setProject(defaultProject);
 
 		UserVariablesContainer userVariables = defaultProject.getUserVariables();
@@ -275,19 +275,19 @@ public class StandardProjectHandler {
 		glideToBrick.setXDestination(new Formula(160));
 		glideToBrick.setYDestination(new Formula(-275));
 
-		StorageHandler.getInstance().saveProject(defaultProject);
+		defaultProject.save();
 
 		return defaultProject;
 	}
 
-    public static Project createAndSaveEmptyProject(String projectName, Context context) {
-        Project emptyProject = new Project(context, projectName);
-        emptyProject.setDeviceData(context);
-        StorageHandler.getInstance().saveProject(emptyProject);
-        ProjectManager.getInstance().setProject(emptyProject);
+	public static Project createAndSaveEmptyProject(String projectName, Context context) throws IOException {
+		Project emptyProject = new Project(context, projectName);
+		emptyProject.updateDeviceDataToXmlHeader(context);
+		emptyProject.save();
+		ProjectManager.getInstance().setProject(emptyProject);
 
-        return emptyProject;
-    }
+		return emptyProject;
+	}
 
 	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
 			int fileId, Context context) throws IOException {

@@ -37,7 +37,6 @@ import org.catrobat.catroid.content.bricks.PlaySoundBrick;
 import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.MyProjectsActivity;
@@ -48,6 +47,7 @@ import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,7 +123,12 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 		sprite.addScript(script);
 		project.addSprite(sprite);
 
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		ProjectManager.getInstance().setProject(project);
 
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
@@ -255,7 +260,12 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 
 		firstSprite.getSoundList().add(soundInfo);
 
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 
 		solo.clickOnText(solo.getString(R.string.main_menu_continue));
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());
@@ -329,8 +339,13 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 		Project project = createTestProject(testProject);
 		project.getXmlHeader().virtualScreenWidth = 480;
 		project.getXmlHeader().virtualScreenHeight = 700;
-		project.setDeviceData(getActivity());
-		StorageHandler.getInstance().saveProject(project);
+		project.updateDeviceDataToXmlHeader(getActivity());
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
 		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
 		solo.waitForFragmentById(R.id.fragment_projects_list);
@@ -402,7 +417,12 @@ public class StageDialogTest extends BaseActivityInstrumentationTestCase<MainMen
 
 	private Project createAndSaveTestProject(String projectName) {
 		Project project = createTestProject(projectName);
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		return project;
 	}
 

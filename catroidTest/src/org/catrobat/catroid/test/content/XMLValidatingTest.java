@@ -39,7 +39,6 @@ import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BroadcastReceiverBrick;
 import org.catrobat.catroid.content.bricks.WhenBrick;
 import org.catrobat.catroid.content.bricks.WhenStartedBrick;
-import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.utils.TestUtils;
 import org.catrobat.catroid.ui.fragment.CategoryBricksFactory;
 import org.catrobat.catroid.utils.UtilFile;
@@ -112,7 +111,12 @@ public class XMLValidatingTest extends AndroidTestCase {
 		}
 
 		assertTrue("no bricks added to the start script", startScript.getBrickList().size() > 0);
-		StorageHandler.getInstance().saveProject(project);
+		try {
+			project.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail("error saving project");
+		}
 		// TODO: add XML validation based on xsd
 		//	XMLValidationUtil.sendProjectXMLToServerForValidating(project);
 	}
