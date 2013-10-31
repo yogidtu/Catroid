@@ -71,14 +71,14 @@
 
 
     <!-- New Object Dialog -->
-    <string name="dialog_new_object_look_header">with Look from&#8230;</string>
+    <string name="dialog_new_object_look_header">with Look from…</string>
     <string name="dialog_new_object_pocketpaint">Pocket Paint</string>
     <string name="dialog_new_object_gallery">Gallery</string>
     <string name="dialog_new_object_camera">Camera</string>
     <string name="dialog_new_object_look_preview">look preview</string>
     <string name="dialog_new_object_name">Object name</string>
-    <string name="dialog_new_object_switch_title">New object created</string>
-    <string name="dialog_new_object_switch_message">Switch to new object?</string>
+    <string name="dialog_new_object_switch_title">New Object created</string>
+    <string name="dialog_new_object_switch_message">Switch to new Object?</string>
     <!--  -->
 
 

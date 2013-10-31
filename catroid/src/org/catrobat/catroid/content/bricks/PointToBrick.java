@@ -28,7 +28,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.DataSetObserver;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -168,8 +167,7 @@ public class PointToBrick extends BrickBaseType {
 		if (view != null) {
 
 			View layout = view.findViewById(R.id.brick_point_to_layout);
-			Drawable background = layout.getBackground();
-			background.setAlpha(alphaValue);
+			layout.getBackground().setAlpha(alphaValue);
 
 			TextView textPointToLabel = (TextView) view.findViewById(R.id.brick_point_to_label);
 			textPointToLabel.setTextColor(textPointToLabel.getTextColors().withAlpha(alphaValue));
@@ -180,8 +178,7 @@ public class PointToBrick extends BrickBaseType {
 				((TextView) adapterView.getChildAt(0)).setTextColor(color);
 			}
 
-			this.alphaValue = (alphaValue);
-
+			this.alphaValue = alphaValue;
 		}
 
 		return view;
@@ -376,8 +373,7 @@ public class PointToBrick extends BrickBaseType {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							ProjectManager projectManager = ProjectManager.getInstance();
-							projectManager.setCurrentSprite(pointedObject);
+							ProjectManager.getInstance().setCurrentSprite(pointedObject);
 
 							Intent intent = new Intent(context, ProgramMenuActivity.class);
 							intent.putExtra(ProgramMenuActivity.FORWARD_TO_SCRIPT_ACTIVITY,
@@ -397,6 +393,7 @@ public class PointToBrick extends BrickBaseType {
 							dialog.dismiss();
 						}
 					}).create();
+			dialog.setCanceledOnTouchOutside(true);
 			dialog.show();
 		}
 

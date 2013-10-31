@@ -32,15 +32,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import com.actionbarsherlock.app.SherlockDialogFragment;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -58,20 +58,22 @@ import org.catrobat.catroid.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 
-public class NewSpriteDialog extends SherlockDialogFragment {
+public class NewSpriteDialog extends DialogFragment {
 
 	public static final String DIALOG_FRAGMENT_TAG = "dialog_new_sprite";
 
-	public static final int REQUEST_SELECT_IMAGE = 0;
-	public static final int REQUEST_CREATE_POCKET_PAINT_IMAGE = 1;
-	public static final int REQUEST_TAKE_PICTURE = 2;
+	private static final int REQUEST_SELECT_IMAGE = 0;
+	private static final int REQUEST_CREATE_POCKET_PAINT_IMAGE = 1;
+	private static final int REQUEST_TAKE_PICTURE = 2;
 
 	public enum ActionAfterFinished {
-		ACTION_FORWARD_TO_NEW_OBJECT, ACTION_UPDATE_SPINNER
+		ACTION_FORWARD_TO_NEW_OBJECT, ACTION_UPDATE_SPINNER;
+		static final String KEY = "action";
 	};
 
 	public enum DialogWizardStep {
-		STEP_1, STEP_2
+		STEP_1, STEP_2;
+		static final String KEY = "step";
 	}
 
 	private final ActionAfterFinished requestedAction;
@@ -79,7 +81,6 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 
 	private Uri lookUri;
 	private View dialogView;
-	private AlertDialog dialog;
 
 	private String newObjectName = null;
 	private SpinnerAdapterWrapper spinnerAdapter;
@@ -87,6 +88,16 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 	public NewSpriteDialog() {
 		this.requestedAction = ActionAfterFinished.ACTION_FORWARD_TO_NEW_OBJECT;
 		this.wizardStep = DialogWizardStep.STEP_1;
+	}
+
+	static NewSpriteDialog newInstance() {
+		NewSpriteDialog newSpriteDialog = new NewSpriteDialog();
+
+		Bundle arguments = new Bundle();
+		arguments.putInt(ActionAfterFinished.KEY, ActionAfterFinished.ACTION_FORWARD_TO_NEW_OBJECT.ordinal());
+		arguments.putInt(DialogWizardStep.KEY, DialogWizardStep.STEP_1.ordinal());
+		newSpriteDialog.setArguments(arguments);
+		return newSpriteDialog;
 	}
 
 	public NewSpriteDialog(SpinnerAdapterWrapper spinnerAdapter) {
@@ -111,33 +122,18 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 		setupGalleryButton(dialogView);
 		setupCameraButton(dialogView);
 
+		AlertDialog dialog = null;
+		AlertDialog.Builder dialogBuilder = new CustomAlertDialogBuilder(getActivity()).setView(dialogView).setTitle(
+				R.string.new_sprite_dialog_title);
 		if (wizardStep == DialogWizardStep.STEP_1) {
-			dialog = new CustomAlertDialogBuilder(getActivity()).setView(dialogView)
-					.setTitle(R.string.new_sprite_dialog_title).create();
-			dialogView.findViewById(R.id.dialog_new_object_step_2_layout).setVisibility(View.INVISIBLE);
+			dialog = createDialogStepOne(dialogBuilder);
 		} else if (wizardStep == DialogWizardStep.STEP_2) {
-			dialog = new CustomAlertDialogBuilder(getActivity()).setView(dialogView)
-					.setTitle(R.string.new_sprite_dialog_title).setPositiveButton(R.string.ok, null)
-					.setNegativeButton(R.string.cancel_button, null).create();
-
-			dialogView.findViewById(R.id.dialog_new_object_step_1_layout).setVisibility(View.INVISIBLE);
-
-			ImageView imageView = (ImageView) dialogView.findViewById(R.id.dialog_new_object_look_preview);
-			if (newObjectName == null) {
-				newObjectName = getString(R.string.new_sprite_dialog_default_sprite_name);
-			}
-			newObjectName = Utils.getUniqueObjectName(newObjectName);
-
-			imageView.setImageURI(lookUri);
-			EditText editTextNewObject = (EditText) dialogView.findViewById(R.id.dialog_new_object_name_edit_text);
-			editTextNewObject.setHint(newObjectName);
+			dialog = createDialogStepTwo(dialogBuilder);
 		}
-
 		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
 			@Override
 			public void onShow(final DialogInterface dialog) {
-
 				Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
 				button.setOnClickListener(new View.OnClickListener() {
 
@@ -150,7 +146,33 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 				});
 			}
 		});
+		dialog.setCanceledOnTouchOutside(true);
+		dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
+		return dialog;
+	}
+
+	private AlertDialog createDialogStepOne(AlertDialog.Builder dialogBuilder) {
+		AlertDialog dialog = dialogBuilder.create();
+		dialogView.findViewById(R.id.dialog_new_object_step_2_layout).setVisibility(View.GONE);
+		return dialog;
+	}
+
+	private AlertDialog createDialogStepTwo(AlertDialog.Builder dialogBuilder) {
+		AlertDialog dialog = dialogBuilder.setPositiveButton(R.string.ok, null)
+				.setNegativeButton(R.string.cancel_button, null).create();
+
+		dialogView.findViewById(R.id.dialog_new_object_step_1_layout).setVisibility(View.GONE);
+
+		ImageView imageView = (ImageView) dialogView.findViewById(R.id.dialog_new_object_look_preview);
+		if (newObjectName == null) {
+			newObjectName = getString(R.string.new_sprite_dialog_default_sprite_name);
+		}
+		newObjectName = Utils.getUniqueObjectName(newObjectName);
+
+		imageView.setImageURI(lookUri);
+		EditText editTextNewObject = (EditText) dialogView.findViewById(R.id.dialog_new_object_name_edit_text);
+		editTextNewObject.setHint(newObjectName);
 		return dialog;
 	}
 
@@ -169,8 +191,6 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 					break;
 				case REQUEST_SELECT_IMAGE:
 					lookUri = decodeUri(data.getData());
-					newObjectName = lookUri.toString();
-					newObjectName = newObjectName.substring(newObjectName.lastIndexOf('/') + 1, newObjectName.length());
 					newObjectName = new File(lookUri.toString()).getName();
 					break;
 				case REQUEST_TAKE_PICTURE:
@@ -189,6 +209,7 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 
 	@Override
 	public void onDismiss(DialogInterface dialog) {
+		super.onDismiss(dialog);
 		if (spinnerAdapter != null) {
 			spinnerAdapter.updateSpinner();
 		}
@@ -214,13 +235,11 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 
 	private void setupPocketPaintButton(View parentView) {
 		View paintroidButton = parentView.findViewById(R.id.dialog_new_object_paintroid);
-		LinearLayout linearLayout = (LinearLayout) parentView.findViewById(R.id.dialog_new_object_chooser_layout);
 
 		if (LookController.getInstance().checkIfPocketPaintIsInstalled(getPocketPaintIntent(), getActivity())) {
 			paintroidButton.setOnClickListener(new OnClickListener() {
-
 				@Override
-				public void onClick(View v) {
+				public void onClick(View view) {
 					Intent intent = new Intent("android.intent.action.MAIN");
 					intent.setComponent(new ComponentName(Constants.POCKET_PAINT_PACKAGE_NAME,
 							Constants.POCKET_PAINT_INTENT_ACTIVITY_NAME));
@@ -237,6 +256,7 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 				}
 			});
 		} else {
+			LinearLayout linearLayout = (LinearLayout) parentView.findViewById(R.id.dialog_new_object_chooser_layout);
 			paintroidButton.setVisibility(View.GONE);
 			linearLayout.setWeightSum(2f);
 		}
@@ -245,10 +265,10 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 	private void setupGalleryButton(View parentView) {
 		View galleryButton = parentView.findViewById(R.id.dialog_new_object_gallery);
 
-		galleryButton.setOnClickListener(new OnClickListener() {
+		galleryButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(View view) {
 				Intent intent = new Intent(Intent.ACTION_PICK,
 						android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
 				intent.putExtra(MediaStore.EXTRA_OUTPUT, lookUri);
@@ -260,10 +280,10 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 	private void setupCameraButton(View parentView) {
 		View cameraButton = parentView.findViewById(R.id.dialog_new_object_camera);
 
-		cameraButton.setOnClickListener(new OnClickListener() {
+		cameraButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onClick(View view) {
 				lookUri = UtilCamera.getDefaultLookFromCameraUri(getString(R.string.default_look_name));
 
 				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -273,7 +293,7 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 		});
 	}
 
-	protected boolean handleOkButton() {
+	private boolean handleOkButton() {
 		EditText editText = (EditText) dialogView.findViewById(R.id.dialog_new_object_name_edit_text);
 		String newSpriteName;
 		if (editText.length() == 0) {
@@ -281,15 +301,14 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 		} else {
 			newSpriteName = editText.getText().toString().trim();
 		}
+		if (newSpriteName.contains(".")) {
+			int fileExtensionPosition = newSpriteName.indexOf(".");
+			newSpriteName = newSpriteName.substring(0, fileExtensionPosition);
+		}
 
 		ProjectManager projectManager = ProjectManager.getInstance();
 
-		if (projectManager.spriteExists(newSpriteName)) {
-			Utils.showErrorDialog(getActivity(), R.string.spritename_already_exists);
-			return false;
-		}
-
-		if (newSpriteName == null || newSpriteName.equalsIgnoreCase("")) {
+		if (newSpriteName.equalsIgnoreCase("")) {
 			Utils.showErrorDialog(getActivity(), R.string.spritename_invalid);
 			return false;
 		}
@@ -326,7 +345,6 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 			Intent broadcastIntent;
 			broadcastIntent = new Intent(ScriptActivity.ACTION_BRICK_LIST_CHANGED);
 			getActivity().sendBroadcast(broadcastIntent);
-
 			spinnerAdapter.refreshSpinnerAfterNewSprite(getActivity(), newSpriteName);
 		} else {
 			Intent broadcastIntent;
@@ -339,12 +357,9 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 
 			Intent intent = new Intent(getActivity(), ProgramMenuActivity.class);
 			intent.putExtra(ProgramMenuActivity.FORWARD_TO_SCRIPT_ACTIVITY, ScriptActivity.FRAGMENT_SCRIPTS);
-
 			startActivity(intent);
 		}
-
 		dismiss();
-
 		return true;
 	}
 }

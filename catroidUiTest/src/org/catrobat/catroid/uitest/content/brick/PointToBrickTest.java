@@ -186,6 +186,7 @@ public class PointToBrickTest extends BaseActivityInstrumentationTestCase<Script
 		ProjectManager.getInstance().setProject(project);
 		ProjectManager.getInstance().setCurrentSprite(sprite1);
 		ProjectManager.getInstance().setCurrentScript(startScript1);
+		ProjectManager.getInstance().saveProject();
 	}
 
 	private void createNewObjectWithinBrick(String objectName, int stringToClickOnAtTheEnd) {
