@@ -82,6 +82,7 @@ import org.catrobat.catroid.ui.controller.SoundController;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.dialogs.DeleteSoundDialog;
 import org.catrobat.catroid.ui.dialogs.RenameSoundDialog;
+import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
@@ -221,7 +222,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 
 		setHandleAddbutton();
 
-		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
+		if (!UtilFile.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
 			return;
 		}
 

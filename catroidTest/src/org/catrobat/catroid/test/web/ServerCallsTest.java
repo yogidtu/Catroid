@@ -31,8 +31,8 @@ import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
+import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.UtilZip;
-import org.catrobat.catroid.utils.Utils;
 import org.catrobat.catroid.web.ServerCalls;
 import org.catrobat.catroid.web.WebconnectionException;
 
@@ -287,10 +287,10 @@ public class ServerCallsTest extends AndroidTestCase {
 			String[] paths = directoryPath.list();
 
 			for (int i = 0; i < paths.length; i++) {
-				paths[i] = Utils.buildPath(directoryPath.getAbsolutePath(), paths[i]);
+				paths[i] = UtilFile.buildPath(directoryPath.getAbsolutePath(), paths[i]);
 			}
 
-			String zipFileString = Utils.buildPath(Constants.TMP_PATH, "upload" + Constants.CATROBAT_EXTENSION);
+			String zipFileString = UtilFile.buildPath(Constants.TMP_PATH, "upload" + Constants.CATROBAT_EXTENSION);
 			zipFile = new File(zipFileString);
 			if (!zipFile.exists()) {
 				zipFile.getParentFile().mkdirs();

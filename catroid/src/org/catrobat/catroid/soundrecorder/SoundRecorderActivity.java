@@ -37,7 +37,7 @@ import android.widget.Toast;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.ui.BaseActivity;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.IOException;
 
@@ -57,7 +57,7 @@ public class SoundRecorderActivity extends BaseActivity implements OnClickListen
 		recordButton = (ImageButton) findViewById(R.id.soundrecorder_record_button);
 		timeRecorderChronometer = (Chronometer) findViewById(R.id.soundrecorder_chronometer_time_recorded);
 		recordButton.setOnClickListener(this);
-		Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this);
+		UtilFile.checkForExternalStorageAvailableAndDisplayErrorIfNot(this);
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class SoundRecorderActivity extends BaseActivity implements OnClickListen
 			return;
 		}
 		try {
-			String recordPath = Utils.buildPath(Constants.TMP_PATH, getString(R.string.soundrecorder_recorded_filename)
+			String recordPath = UtilFile.buildPath(Constants.TMP_PATH, getString(R.string.soundrecorder_recorded_filename)
 					+ Constants.RECORDING_EXTENSION);
 			soundRecorder = new SoundRecorder(recordPath);
 			soundRecorder.start();

@@ -35,8 +35,8 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.utils.UtilDeviceInfo;
+import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.UtilZip;
-import org.catrobat.catroid.utils.Utils;
 import org.catrobat.catroid.web.ServerCalls;
 import org.catrobat.catroid.web.WebconnectionException;
 
@@ -109,10 +109,10 @@ public class ProjectUploadService extends IntentService {
 			}
 
 			for (int i = 0; i < paths.length; i++) {
-				paths[i] = Utils.buildPath(directoryPath.getAbsolutePath(), paths[i]);
+				paths[i] = UtilFile.buildPath(directoryPath.getAbsolutePath(), paths[i]);
 			}
 
-			String zipFileString = Utils.buildPath(Constants.TMP_PATH, UPLOAD_FILE_NAME);
+			String zipFileString = UtilFile.buildPath(Constants.TMP_PATH, UPLOAD_FILE_NAME);
 			File zipFile = new File(zipFileString);
 			if (!zipFile.exists()) {
 				zipFile.getParentFile().mkdirs();

@@ -26,7 +26,7 @@ import android.test.AndroidTestCase;
 
 import org.catrobat.catroid.test.utils.TestUtils;
 import org.catrobat.catroid.utils.DownloadUtil;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 public class UpAndDownloadTest extends AndroidTestCase {
 
@@ -55,14 +55,14 @@ public class UpAndDownloadTest extends AndroidTestCase {
 			// Exception thrown because intent could not be started - we won't test the intent here
 		}
 		assertTrue("Program should be in download queue",
-				Utils.checkIfProjectExistsOrIsDownloadingIgnoreCase("projectSave"));
+				UtilFile.checkIfProjectExistsOrIsDownloadingIgnoreCase("projectSave"));
 		assertTrue("Program should be in download queue",
-				Utils.checkIfProjectExistsOrIsDownloadingIgnoreCase("PrOJEcTsAVE"));
+				UtilFile.checkIfProjectExistsOrIsDownloadingIgnoreCase("PrOJEcTsAVE"));
 		DownloadUtil.getInstance().downloadFinished("projectSave");
 		assertFalse("Program shouldn't be in download queue anymore",
-				Utils.checkIfProjectExistsOrIsDownloadingIgnoreCase("projectSave"));
+				UtilFile.checkIfProjectExistsOrIsDownloadingIgnoreCase("projectSave"));
 		assertFalse("Program shouldn't be in download queue anymore",
-				Utils.checkIfProjectExistsOrIsDownloadingIgnoreCase("PrOJEcTsAVE"));
+				UtilFile.checkIfProjectExistsOrIsDownloadingIgnoreCase("PrOJEcTsAVE"));
 	}
 
 	public void testUpAndDownloadWithService() throws Throwable {

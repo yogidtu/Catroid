@@ -38,7 +38,7 @@ import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -120,7 +120,7 @@ public class SoundRecorderTest extends BaseActivityInstrumentationTestCase<MainM
 	}
 
 	private void assertSoundRecording(int recordNumber) {
-		String recordPath = Utils.buildPath(Constants.TMP_PATH,
+		String recordPath = UtilFile.buildPath(Constants.TMP_PATH,
 				solo.getString(R.string.soundrecorder_recorded_filename) + Constants.RECORDING_EXTENSION);
 		File recordedFile = new File(recordPath);
 		assertTrue("recorded sound file not found in file system", recordedFile.exists());

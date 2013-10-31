@@ -50,7 +50,7 @@ import org.catrobat.catroid.ui.fragment.SoundFragment;
 import org.catrobat.catroid.uitest.mockups.MockSoundActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -384,7 +384,7 @@ public class SoundFragmentTest extends BaseActivityInstrumentationTestCase<MainM
 
 	public void testGetSoundFromExternalSource() {
 		int expectedNumberOfSounds = getCurrentNumberOfSounds() + 1;
-		String checksumExternalSoundFile = Utils.md5Checksum(externalSoundFile);
+		String checksumExternalSoundFile = UtilFile.md5Checksum(externalSoundFile);
 
 		// Use of MockSoundActivity
 		Bundle bundleForExternalSource = new Bundle();

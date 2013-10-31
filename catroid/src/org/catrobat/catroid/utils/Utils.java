@@ -42,7 +42,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
@@ -53,10 +52,6 @@ import android.widget.LinearLayout;
 
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.utils.GdxNativesLoader;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import org.catrobat.catroid.BuildConfig;
 import org.catrobat.catroid.ProjectManager;
@@ -71,13 +66,9 @@ import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class Utils {
 
@@ -88,30 +79,6 @@ public class Utils {
 	private static boolean isUnderTest;
 
 	private static Project standardProject;
-
-	public static boolean externalStorageAvailable() {
-		String externalStorageState = Environment.getExternalStorageState();
-		return externalStorageState.equals(Environment.MEDIA_MOUNTED)
-				&& !externalStorageState.equals(Environment.MEDIA_MOUNTED_READ_ONLY);
-	}
-
-	public static boolean checkForExternalStorageAvailableAndDisplayErrorIfNot(final Context context) {
-		if (!externalStorageAvailable()) {
-			Builder builder = new CustomAlertDialogBuilder(context);
-
-			builder.setTitle(R.string.error);
-			builder.setMessage(R.string.error_no_writiable_external_storage_available);
-			builder.setNeutralButton(R.string.close, new OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					((Activity) context).moveTaskToBack(true);
-				}
-			});
-			builder.show();
-			return false;
-		}
-		return true;
-	}
 
 	@SuppressWarnings("deprecation")
 	public static void updateScreenWidthAndHeight(Context context) {
@@ -127,34 +94,6 @@ public class Utils {
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 
 		return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-	}
-
-	/**
-	 * Constructs a path out of the pathElements.
-	 * 
-	 * @param pathElements
-	 *            the strings to connect. They can have "/" in them which will be de-duped in the result, if necessary.
-	 * @return
-	 *         the path that was constructed.
-	 */
-	public static String buildPath(String... pathElements) {
-		StringBuilder result = new StringBuilder("/");
-
-		for (String pathElement : pathElements) {
-			result.append(pathElement).append("/");
-		}
-
-		String returnValue = result.toString().replaceAll("/+", "/");
-
-		if (returnValue.endsWith("/")) {
-			returnValue = returnValue.substring(0, returnValue.length() - 1);
-		}
-
-		return returnValue;
-	}
-
-	public static String buildProjectPath(String projectName) {
-		return buildPath(Constants.DEFAULT_ROOT, deleteSpecialCharactersInString(projectName));
 	}
 
 	public static void showErrorDialog(Context context, int errorMessageId) {
@@ -180,70 +119,6 @@ public class Utils {
 			return selectAllView;
 		}
 		return null;
-	}
-
-	public static String md5Checksum(File file) {
-
-		if (!file.isFile()) {
-			return null;
-		}
-
-		MessageDigest messageDigest = getMD5MessageDigest();
-
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(file);
-			byte[] buffer = new byte[Constants.BUFFER_8K];
-
-			int length = 0;
-
-			while ((length = fis.read(buffer)) != -1) {
-				messageDigest.update(buffer, 0, length);
-			}
-		} catch (IOException e) {
-			Log.w(TAG, "IOException thrown in md5Checksum()");
-		} finally {
-			try {
-				if (fis != null) {
-					fis.close();
-				}
-			} catch (IOException e) {
-				Log.w(TAG, "IOException thrown in finally block of md5Checksum()");
-			}
-		}
-
-		return toHex(messageDigest.digest()).toLowerCase(Locale.US);
-	}
-
-	public static String md5Checksum(String string) {
-		MessageDigest messageDigest = getMD5MessageDigest();
-
-		messageDigest.update(string.getBytes());
-
-		return toHex(messageDigest.digest()).toLowerCase(Locale.US);
-	}
-
-	private static String toHex(byte[] messageDigest) {
-		StringBuilder md5StringBuilder = new StringBuilder(2 * messageDigest.length);
-
-		for (byte b : messageDigest) {
-			md5StringBuilder.append("0123456789ABCDEF".charAt((b & 0xF0) >> 4));
-			md5StringBuilder.append("0123456789ABCDEF".charAt((b & 0x0F)));
-		}
-
-		return md5StringBuilder.toString();
-	}
-
-	private static MessageDigest getMD5MessageDigest() {
-		MessageDigest messageDigest = null;
-
-		try {
-			messageDigest = MessageDigest.getInstance("MD5");
-		} catch (NoSuchAlgorithmException e) {
-			Log.w(TAG, "NoSuchAlgorithmException thrown in getMD5MessageDigest()");
-		}
-
-		return messageDigest;
 	}
 
 	public static int getVersionCode(Context context) {
@@ -311,10 +186,6 @@ public class Utils {
 		return ProjectManager.getInstance().getCurrentProject().getName();
 	}
 
-	public static String deleteSpecialCharactersInString(String stringToAdapt) {
-		return stringToAdapt.replaceAll("[\"*/:<>?\\\\|]", "");
-	}
-
 	public static String getUniqueLookName(String name) {
 		return searchForNonExistingLookName(name, 0);
 	}
@@ -377,19 +248,6 @@ public class Utils {
 		}
 	}
 
-	public static Pixmap getPixmapFromFile(File imageFile) {
-		Pixmap pixmap = null;
-		try {
-			GdxNativesLoader.load();
-			pixmap = new Pixmap(new FileHandle(imageFile));
-		} catch (GdxRuntimeException e) {
-			return null;
-		} catch (Exception e1) {
-			return null;
-		}
-		return pixmap;
-	}
-
 	public static void setBottomBarActivated(Activity activity, boolean isActive) {
 		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
 
@@ -443,14 +301,5 @@ public class Utils {
 				return TRANSLATION_PLURAL_OTHER_INTEGER;
 			}
 		}
-	}
-
-	public static boolean checkIfProjectExistsOrIsDownloadingIgnoreCase(String programName) {
-		if (DownloadUtil.getInstance().isProgramNameInDownloadQueueIgnoreCase(programName)) {
-			return true;
-		}
-
-		File projectDirectory = new File(Utils.buildProjectPath(programName));
-		return projectDirectory.exists();
 	}
 }

@@ -30,8 +30,6 @@ import static org.catrobat.catroid.common.Constants.IMAGE_DIRECTORY;
 import static org.catrobat.catroid.common.Constants.NO_MEDIA_FILE;
 import static org.catrobat.catroid.common.Constants.PROJECTCODE_NAME;
 import static org.catrobat.catroid.common.Constants.SOUND_DIRECTORY;
-import static org.catrobat.catroid.utils.Utils.buildPath;
-import static org.catrobat.catroid.utils.Utils.buildProjectPath;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -110,7 +108,6 @@ import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.utils.ImageEditing;
 import org.catrobat.catroid.utils.UtilFile;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -153,7 +150,7 @@ public class StorageHandler {
 		xstream.processAnnotations(UserVariablesContainer.class);
 		setXstreamAliases();
 
-		if (!Utils.externalStorageAvailable()) {
+		if (!UtilFile.externalStorageAvailable()) {
 			throw new IOException("Could not read external storage");
 		}
 		createCatroidRoot();
@@ -243,7 +240,7 @@ public class StorageHandler {
 	public Project loadProject(String projectName) {
 		loadSaveLock.lock();
 		try {
-			File projectCodeFile = new File(buildProjectPath(projectName), PROJECTCODE_NAME);
+			File projectCodeFile = new File(UtilFile.buildProjectPath(projectName), PROJECTCODE_NAME);
 			return (Project) xstream.fromXML(new FileInputStream(projectCodeFile));
 		} catch (Exception exception) {
 			Log.e(TAG, "Loading project " + projectName + " failed.", exception);
@@ -254,6 +251,7 @@ public class StorageHandler {
 	}
 
 	@Deprecated
+	//not deprecated for SaveProjectAsynchronousTask() and CopyProjectTask()
 	public void saveProject(Project project) throws IOException, IllegalArgumentException {
 		BufferedWriter writer = null;
 
@@ -263,7 +261,7 @@ public class StorageHandler {
 				throw new IllegalArgumentException("Project was null");
 			}
 
-			File projectDirectory = new File(buildProjectPath(project.getName()));
+			File projectDirectory = new File(UtilFile.buildProjectPath(project.getName()));
 			createProjectDataStructure(projectDirectory);
 
 			writer = new BufferedWriter(new FileWriter(new File(projectDirectory, PROJECTCODE_NAME)),
@@ -330,14 +328,14 @@ public class StorageHandler {
 
 	public boolean deleteProject(Project project) {
 		if (project != null) {
-			return UtilFile.deleteDirectory(new File(buildProjectPath(project.getName())));
+			return UtilFile.deleteDirectory(new File(UtilFile.buildProjectPath(project.getName())));
 		}
 		return false;
 	}
 
 	public boolean deleteProject(ProjectData projectData) {
 		if (projectData != null) {
-			return UtilFile.deleteDirectory(new File(buildProjectPath(projectData.projectName)));
+			return UtilFile.deleteDirectory(new File(UtilFile.buildProjectPath(projectData.projectName)));
 		}
 		return false;
 	}
@@ -354,21 +352,21 @@ public class StorageHandler {
 
 	public File copySoundFile(String path) throws IOException {
 		String currentProject = ProjectManager.getInstance().getCurrentProject().getName();
-		File soundDirectory = new File(buildPath(buildProjectPath(currentProject), SOUND_DIRECTORY));
+		File soundDirectory = new File(UtilFile.buildPath(UtilFile.buildProjectPath(currentProject), SOUND_DIRECTORY));
 
 		File inputFile = new File(path);
 		if (!inputFile.exists() || !inputFile.canRead()) {
 			return null;
 		}
-		String inputFileChecksum = Utils.md5Checksum(inputFile);
+		String inputFileChecksum = UtilFile.md5Checksum(inputFile);
 
 		FileChecksumContainer fileChecksumContainer = ProjectManager.getInstance().getFileChecksumContainer();
 		if (fileChecksumContainer.containsChecksum(inputFileChecksum)) {
 			fileChecksumContainer.addChecksum(inputFileChecksum, null);
 			return new File(fileChecksumContainer.getPath(inputFileChecksum));
 		}
-		File outputFile = new File(buildPath(soundDirectory.getAbsolutePath(),
-				inputFileChecksum + "_" + inputFile.getName()));
+		File outputFile = new File(UtilFile.buildPath(soundDirectory.getAbsolutePath(), inputFileChecksum + "_"
+				+ inputFile.getName()));
 
 		return copyFileAddCheckSum(outputFile, inputFile, soundDirectory);
 	}
@@ -377,25 +375,27 @@ public class StorageHandler {
 
 		String path = selectedSoundInfo.getAbsolutePath();
 
-		File backPackDirectory = new File(buildPath(DEFAULT_ROOT, BACKPACK_DIRECTORY, BACKPACK_SOUND_DIRECTORY));
+		File backPackDirectory = new File(
+				UtilFile.buildPath(DEFAULT_ROOT, BACKPACK_DIRECTORY, BACKPACK_SOUND_DIRECTORY));
 
 		File inputFile = new File(path);
 		if (!inputFile.exists() || !inputFile.canRead()) {
 			return null;
 		}
-		String inputFileChecksum = Utils.md5Checksum(inputFile);
+		String inputFileChecksum = UtilFile.md5Checksum(inputFile);
 
 		String currentProject = ProjectManager.getInstance().getCurrentProject().getName();
 
-		File outputFile = new File(buildPath(DEFAULT_ROOT, BACKPACK_DIRECTORY, BACKPACK_SOUND_DIRECTORY, currentProject
-				+ "_" + selectedSoundInfo.getTitle() + "_" + inputFileChecksum));
+		File outputFile = new File(UtilFile.buildPath(DEFAULT_ROOT, BACKPACK_DIRECTORY, BACKPACK_SOUND_DIRECTORY,
+				currentProject + "_" + selectedSoundInfo.getTitle() + "_" + inputFileChecksum));
 
 		return copyFileAddCheckSum(outputFile, inputFile, backPackDirectory);
 	}
 
 	public File copyImage(String currentProjectName, String inputFilePath, String newName) throws IOException {
 		String newFilePath;
-		File imageDirectory = new File(buildPath(buildProjectPath(currentProjectName), IMAGE_DIRECTORY));
+		File imageDirectory = new File(UtilFile.buildPath(UtilFile.buildProjectPath(currentProjectName),
+				IMAGE_DIRECTORY));
 
 		File inputFile = new File(inputFilePath);
 		if (!inputFile.exists() || !inputFile.canRead()) {
@@ -409,12 +409,13 @@ public class StorageHandler {
 		Project project = ProjectManager.getInstance().getCurrentProject();
 		if ((imageDimensions[0] <= project.getXmlHeader().virtualScreenWidth)
 				&& (imageDimensions[1] <= project.getXmlHeader().virtualScreenHeight)) {
-			String checksumSource = Utils.md5Checksum(inputFile);
+			String checksumSource = UtilFile.md5Checksum(inputFile);
 
 			if (newName != null) {
-				newFilePath = buildPath(imageDirectory.getAbsolutePath(), checksumSource + "_" + newName);
+				newFilePath = UtilFile.buildPath(imageDirectory.getAbsolutePath(), checksumSource + "_" + newName);
 			} else {
-				newFilePath = buildPath(imageDirectory.getAbsolutePath(), checksumSource + "_" + inputFile.getName());
+				newFilePath = UtilFile.buildPath(imageDirectory.getAbsolutePath(),
+						checksumSource + "_" + inputFile.getName());
 				if (checksumCont.containsChecksum(checksumSource)) {
 					checksumCont.addChecksum(checksumSource, newFilePath);
 					return new File(checksumCont.getPath(checksumSource));
@@ -423,7 +424,7 @@ public class StorageHandler {
 			File outputFile = new File(newFilePath);
 			return copyFileAddCheckSum(outputFile, inputFile, imageDirectory);
 		} else {
-			File outputFile = new File(buildPath(imageDirectory.getAbsolutePath(), inputFile.getName()));
+			File outputFile = new File(UtilFile.buildPath(imageDirectory.getAbsolutePath(), inputFile.getName()));
 			return copyAndResizeImage(outputFile, inputFile, imageDirectory);
 		}
 	}
@@ -435,11 +436,11 @@ public class StorageHandler {
 
 		saveBitmapToImageFile(outputFile, bitmap);
 
-		String checksumCompressedFile = Utils.md5Checksum(outputFile);
+		String checksumCompressedFile = UtilFile.md5Checksum(outputFile);
 
 		FileChecksumContainer fileChecksumContainer = ProjectManager.getInstance().getFileChecksumContainer();
-		String newFilePath = buildPath(imageDirectory.getAbsolutePath(),
-				checksumCompressedFile + "_" + inputFile.getName());
+		String newFilePath = UtilFile.buildPath(imageDirectory.getAbsolutePath(), checksumCompressedFile + "_"
+				+ inputFile.getName());
 
 		if (!fileChecksumContainer.addChecksum(checksumCompressedFile, newFilePath)) {
 			outputFile.delete();
@@ -515,7 +516,7 @@ public class StorageHandler {
 	}
 
 	private void addChecksum(File destinationFile, File sourceFile) {
-		String checksumSource = Utils.md5Checksum(sourceFile);
+		String checksumSource = UtilFile.md5Checksum(sourceFile);
 		FileChecksumContainer fileChecksumContainer = ProjectManager.getInstance().getFileChecksumContainer();
 		fileChecksumContainer.addChecksum(checksumSource, destinationFile.getAbsolutePath());
 	}

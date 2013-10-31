@@ -62,7 +62,6 @@ import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.UtilZip;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -120,9 +119,9 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 	public void tearDown() throws Exception {
 		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", true);
 
-		UtilFile.deleteDirectory(new File(Utils.buildProjectPath(WHITELISTED_CHARACTER_STRING)));
-		UtilFile.deleteDirectory(new File(Utils.buildProjectPath(BLACKLISTED_CHARACTER_STRING)));
-		UtilFile.deleteDirectory(new File(Utils.buildProjectPath(BLACKLISTED_ONLY_CHARACTER_STRING)));
+		UtilFile.deleteDirectory(new File(UtilFile.buildProjectPath(WHITELISTED_CHARACTER_STRING)));
+		UtilFile.deleteDirectory(new File(UtilFile.buildProjectPath(BLACKLISTED_CHARACTER_STRING)));
+		UtilFile.deleteDirectory(new File(UtilFile.buildProjectPath(BLACKLISTED_ONLY_CHARACTER_STRING)));
 
 		if (renameDirectory != null && renameDirectory.isDirectory()) {
 			UtilFile.deleteDirectory(renameDirectory);
@@ -130,7 +129,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		}
 		if (deleteCacheProjects) {
 			for (int i = 0; i < numberOfCacheProjects; i++) {
-				File directory = new File(Utils.buildProjectPath(cacheProjectName + i));
+				File directory = new File(UtilFile.buildProjectPath(cacheProjectName + i));
 				UtilFile.deleteDirectory(directory);
 			}
 			deleteCacheProjects = false;
@@ -155,10 +154,10 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		}
 
 		for (int i = 0; i < paths.length; i++) {
-			paths[i] = Utils.buildPath(rootDirectory.getAbsolutePath(), paths[i]);
+			paths[i] = UtilFile.buildPath(rootDirectory.getAbsolutePath(), paths[i]);
 		}
 		try {
-			String zipFileString = Utils.buildPath(Constants.DEFAULT_ROOT, ZIPFILE_NAME);
+			String zipFileString = UtilFile.buildPath(Constants.DEFAULT_ROOT, ZIPFILE_NAME);
 			File zipFile = new File(zipFileString);
 			if (zipFile.exists()) {
 				zipFile.delete();
@@ -181,7 +180,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 	}
 
 	public void unzipProjects() {
-		String zipFileString = Utils.buildPath(Constants.DEFAULT_ROOT, ZIPFILE_NAME);
+		String zipFileString = UtilFile.buildPath(Constants.DEFAULT_ROOT, ZIPFILE_NAME);
 		File zipFile = new File(zipFileString);
 		UtilZip.unZipFile(zipFileString, Constants.DEFAULT_ROOT);
 		zipFile.delete();
@@ -1177,7 +1176,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		solo.enterText(0, WHITELISTED_CHARACTER_STRING);
 		solo.clickOnText(solo.getString(R.string.ok));
 		solo.waitForDialogToClose(500);
-		renameDirectory = new File(Utils.buildProjectPath(WHITELISTED_CHARACTER_STRING));
+		renameDirectory = new File(UtilFile.buildProjectPath(WHITELISTED_CHARACTER_STRING));
 		assertTrue("Rename with whitelisted characters was not successfull", renameDirectory.isDirectory());
 	}
 
@@ -1196,7 +1195,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		solo.enterText(0, BLACKLISTED_CHARACTER_STRING);
 		solo.clickOnText(solo.getString(R.string.ok));
 		solo.waitForDialogToClose(500);
-		renameDirectory = new File(Utils.buildProjectPath(BLACKLISTED_CHARACTER_STRING));
+		renameDirectory = new File(UtilFile.buildProjectPath(BLACKLISTED_CHARACTER_STRING));
 		assertTrue("Rename with blacklisted characters was not successfull", renameDirectory.isDirectory());
 	}
 
@@ -1301,13 +1300,13 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		createStandardProgramIfNeeded();
 
 		createProjectsWithoutSprites();
-		String projectFilePath = Utils.buildPath(Utils.buildProjectPath(UiTestUtils.DEFAULT_TEST_PROJECT_NAME),
+		String projectFilePath = UtilFile.buildPath(UtilFile.buildProjectPath(UiTestUtils.DEFAULT_TEST_PROJECT_NAME),
 				Constants.PROJECTCODE_NAME);
 		File projectCodeFile = new File(projectFilePath);
 		boolean succeededInSettingModifiedDate = projectCodeFile.setLastModified(date.getTime());
 		assertTrue("Failed to set last modified on " + projectFilePath, succeededInSettingModifiedDate);
 
-		projectFilePath = Utils.buildPath(Utils.buildProjectPath(UiTestUtils.PROJECTNAME1), Constants.PROJECTCODE_NAME);
+		projectFilePath = UtilFile.buildPath(UtilFile.buildProjectPath(UiTestUtils.PROJECTNAME1), Constants.PROJECTCODE_NAME);
 		projectCodeFile = new File(projectFilePath);
 		Date now = new Date();
 		succeededInSettingModifiedDate = projectCodeFile.setLastModified(now.getTime() - DateUtils.DAY_IN_MILLIS);
@@ -1852,7 +1851,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 	}
 
 	private void corruptProjectXML(String projectName) {
-		String projectPath = Utils.buildPath(Constants.DEFAULT_ROOT, projectName, Constants.PROJECTCODE_NAME);
+		String projectPath = UtilFile.buildPath(Constants.DEFAULT_ROOT, projectName, Constants.PROJECTCODE_NAME);
 		try {
 			FileOutputStream fileOutputStream = new FileOutputStream(projectPath);
 			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);

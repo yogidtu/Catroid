@@ -43,7 +43,7 @@ import android.widget.Toast;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.utils.DownloadUtil;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 public class OverwriteRenameDialog extends DialogFragment implements OnClickListener {
 	protected RadioButton replaceButton, renameButton;
@@ -158,7 +158,7 @@ public class OverwriteRenameDialog extends DialogFragment implements OnClickList
 			DownloadUtil.getInstance().startDownload(context, url, programName);
 		} else if (renameButton.isChecked()) {
 			String newProgramName = projectText.getText().toString();
-			if (Utils.checkIfProjectExistsOrIsDownloadingIgnoreCase(newProgramName)) {
+			if (UtilFile.checkIfProjectExistsOrIsDownloadingIgnoreCase(newProgramName)) {
 				return false;
 			}
 

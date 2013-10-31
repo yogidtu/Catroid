@@ -28,7 +28,7 @@ import junit.framework.Assert;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.web.ConnectionWrapper;
 import org.catrobat.catroid.web.WebconnectionException;
 import org.json.JSONException;
@@ -47,7 +47,7 @@ public class XMLValidationUtil {
 	public static void sendProjectXMLToServerForValidating(Project projectToValidate) throws IOException,
 			JSONException, WebconnectionException {
 		String projectName = projectToValidate.getName();
-		String fullPathFilename = Utils.buildPath(Utils.buildProjectPath(projectName), Constants.PROJECTCODE_NAME);
+		String fullPathFilename = UtilFile.buildPath(UtilFile.buildProjectPath(projectName), Constants.PROJECTCODE_NAME);
 		sendProjectXMLToServerForValidating(fullPathFilename);
 	}
 

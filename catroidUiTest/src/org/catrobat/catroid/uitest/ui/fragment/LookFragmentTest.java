@@ -49,7 +49,7 @@ import org.catrobat.catroid.ui.fragment.LookFragment;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -309,7 +309,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 		assertTrue("Testfile not added from mockActivity", solo.searchText("testFile"));
 
-		String checksumPaintroidImageFile = Utils.md5Checksum(paintroidImageFile);
+		String checksumPaintroidImageFile = UtilFile.md5Checksum(paintroidImageFile);
 		assertTrue("Checksum not in checksumcontainer",
 				projectManager.getFileChecksumContainer().containsChecksum(checksumPaintroidImageFile));
 
@@ -346,7 +346,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 	}
 
 	public void testGetImageFromPaintroid() {
-		String md5ChecksumPaintroidImageFile = Utils.md5Checksum(paintroidImageFile);
+		String md5ChecksumPaintroidImageFile = UtilFile.md5Checksum(paintroidImageFile);
 
 		Bundle bundleForPaintroid = new Bundle();
 		bundleForPaintroid.putString(Constants.EXTRA_PICTURE_PATH_POCKET_PAINT, paintroidImageFile.getAbsolutePath());
@@ -374,7 +374,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 	}
 
 	public void testGetImageFromPaintroidNoPath() {
-		String md5ChecksumImageFileBeforeIntent = Utils.md5Checksum(imageFile);
+		String md5ChecksumImageFileBeforeIntent = UtilFile.md5Checksum(imageFile);
 
 		Bundle bundleForPaintroid = new Bundle();
 		bundleForPaintroid.putString("thirdExtra", "doesn't matter");
@@ -388,7 +388,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 
 		lookDataList = projectManager.getCurrentSprite().getLookDataList();
 		LookData lookData = lookDataList.get(0);
-		String md5ChecksumImageFileAfterIntent = Utils.md5Checksum(new File(lookData.getAbsolutePath()));
+		String md5ChecksumImageFileAfterIntent = UtilFile.md5Checksum(new File(lookData.getAbsolutePath()));
 
 		assertEquals("Wrong size of lookDataList", 2, lookDataList.size());
 		assertEquals("Picture changed", md5ChecksumImageFileBeforeIntent, md5ChecksumImageFileAfterIntent);
@@ -421,8 +421,8 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		LookData lookData = lookDataList.get(0);
 		getLookFragment().setSelectedLookData(lookData);
 
-		String md5ChecksumPaintroidImageFile = Utils.md5Checksum(paintroidImageFile);
-		String md5ChecksumImageFile = Utils.md5Checksum(imageFile);
+		String md5ChecksumPaintroidImageFile = UtilFile.md5Checksum(paintroidImageFile);
+		String md5ChecksumImageFile = UtilFile.md5Checksum(imageFile);
 
 		Bundle bundleForPaintroid = new Bundle();
 		bundleForPaintroid.putString(Constants.EXTRA_PICTURE_PATH_POCKET_PAINT, imageFile.getAbsolutePath());
@@ -439,7 +439,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		lookDataList = projectManager.getCurrentSprite().getLookDataList();
 		lookData = lookDataList.get(0);
 
-		assertNotSame("Picture did not change", Utils.md5Checksum(new File(lookData.getAbsolutePath())),
+		assertNotSame("Picture did not change", UtilFile.md5Checksum(new File(lookData.getAbsolutePath())),
 				md5ChecksumPaintroidImageFile);
 
 		boolean isInLookDataListPaintroidImage = false;
@@ -482,7 +482,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 
 		LookData lookData = lookDataList.get(0);
 		getLookFragment().setSelectedLookData(lookData);
-		String md5ChecksumImageFile = Utils.md5Checksum(imageFile);
+		String md5ChecksumImageFile = UtilFile.md5Checksum(imageFile);
 
 		Bundle bundleForPaintroid = new Bundle();
 		bundleForPaintroid.putString(Constants.EXTRA_PICTURE_PATH_POCKET_PAINT, imageFile.getAbsolutePath());
@@ -499,7 +499,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		lookData = lookDataList.get(0);
 
 		assertEquals("Picture did change, although it shouldn't change",
-				Utils.md5Checksum(new File(lookData.getAbsolutePath())), md5ChecksumImageFile);
+				UtilFile.md5Checksum(new File(lookData.getAbsolutePath())), md5ChecksumImageFile);
 
 		int newNumberOfLookDatas = lookDataList.size();
 		assertEquals("Size of lookDataList has changed", oldNumberOfLookDatas, newNumberOfLookDatas);
@@ -512,7 +512,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 
 		LookData lookData = lookDataList.get(0);
 		getLookFragment().setSelectedLookData(lookData);
-		String md5ChecksumImageFile = Utils.md5Checksum(imageFile);
+		String md5ChecksumImageFile = UtilFile.md5Checksum(imageFile);
 
 		Bundle bundleForPaintroid = new Bundle();
 		bundleForPaintroid.putString("thirdExtra", "doesn't matter");
@@ -529,7 +529,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		lookData = lookDataList.get(0);
 
 		assertEquals("Picture changed, although it shouldn't change",
-				Utils.md5Checksum(new File(lookData.getAbsolutePath())), md5ChecksumImageFile);
+				UtilFile.md5Checksum(new File(lookData.getAbsolutePath())), md5ChecksumImageFile);
 
 		int newNumberOfLookDatas = lookDataList.size();
 		assertEquals("LookData was added", oldNumberOfLookDatas, newNumberOfLookDatas);
@@ -543,8 +543,8 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		LookData lookData = lookDataList.get(0);
 		getLookFragment().setSelectedLookData(lookData);
 
-		String md5ChecksumImageFile = Utils.md5Checksum(imageFile);
-		String md5ChecksumPaintroidImageFile = Utils.md5Checksum(paintroidImageFile);
+		String md5ChecksumImageFile = UtilFile.md5Checksum(imageFile);
+		String md5ChecksumPaintroidImageFile = UtilFile.md5Checksum(paintroidImageFile);
 
 		Bundle bundleForPaintroid = new Bundle();
 		bundleForPaintroid.putString(Constants.EXTRA_PICTURE_PATH_POCKET_PAINT, imageFile.getAbsolutePath());
@@ -563,7 +563,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 
 		int newNumberOfLookDatas = lookDataList.size();
 
-		assertNotSame("Picture did not change", Utils.md5Checksum(new File(lookData.getAbsolutePath())),
+		assertNotSame("Picture did not change", UtilFile.md5Checksum(new File(lookData.getAbsolutePath())),
 				md5ChecksumImageFile);
 		assertEquals("LookData was added, although this shouldn't be possible", oldNumberOfLookDatas,
 				newNumberOfLookDatas);
@@ -589,7 +589,7 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 
 		LookData lookData = lookDataList.get(0);
 		getLookFragment().setSelectedLookData(lookData);
-		String md5ChecksumImageFile = Utils.md5Checksum(imageFile);
+		String md5ChecksumImageFile = UtilFile.md5Checksum(imageFile);
 
 		Bundle bundleForPaintroid = new Bundle();
 		bundleForPaintroid.putString(Constants.EXTRA_PICTURE_PATH_POCKET_PAINT, imageFile.getAbsolutePath());
@@ -645,13 +645,13 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		// Test that Image from Paintroid is correctly renamed
 		String fileName = defaultLookName;
 		try {
-			imageFile = UiTestUtils.createTestMediaFile(Utils.buildPath(Constants.DEFAULT_ROOT, fileName + ".png"),
+			imageFile = UiTestUtils.createTestMediaFile(UtilFile.buildPath(Constants.DEFAULT_ROOT, fileName + ".png"),
 					RESOURCE_IMAGE2, getActivity());
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Image was not created");
 		}
-		String md5ChecksumImageFile = Utils.md5Checksum(imageFile);
+		String md5ChecksumImageFile = UtilFile.md5Checksum(imageFile);
 
 		Bundle bundleForPaintroid = new Bundle();
 		bundleForPaintroid.putString(Constants.EXTRA_PICTURE_PATH_POCKET_PAINT, imageFile.getAbsolutePath());
@@ -672,13 +672,13 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		// Test that Image from gallery is correctly renamed
 		fileName = defaultLookName;
 		try {
-			imageFile = UiTestUtils.createTestMediaFile(Utils.buildPath(Constants.DEFAULT_ROOT, fileName + ".png"),
+			imageFile = UiTestUtils.createTestMediaFile(UtilFile.buildPath(Constants.DEFAULT_ROOT, fileName + ".png"),
 					RESOURCE_IMAGE, getActivity());
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Image was not created");
 		}
-		md5ChecksumImageFile = Utils.md5Checksum(imageFile);
+		md5ChecksumImageFile = UtilFile.md5Checksum(imageFile);
 
 		Bundle bundleForGallery = new Bundle();
 		bundleForGallery.putString("filePath", imageFile.getAbsolutePath());

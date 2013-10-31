@@ -34,8 +34,8 @@ import android.widget.Toast;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.utils.DownloadUtil;
+import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.UtilZip;
-import org.catrobat.catroid.utils.Utils;
 import org.catrobat.catroid.web.ConnectionWrapper;
 import org.catrobat.catroid.web.ServerCalls;
 import org.catrobat.catroid.web.WebconnectionException;
@@ -80,14 +80,14 @@ public class ProjectDownloadService extends IntentService {
 		boolean result = false;
 
 		this.projectName = intent.getStringExtra(DOWNLOAD_NAME_TAG);
-		this.zipFileString = Utils.buildPath(Constants.TMP_PATH, DOWNLOAD_FILE_NAME);
+		this.zipFileString = UtilFile.buildPath(Constants.TMP_PATH, DOWNLOAD_FILE_NAME);
 		this.url = intent.getStringExtra(URL_TAG);
 		this.notificationId = intent.getIntExtra(ID_TAG, -1);
 
 		receiver = (ResultReceiver) intent.getParcelableExtra(RECEIVER_TAG);
 		try {
 			ServerCalls.getInstance().downloadProject(url, zipFileString, receiver, notificationId);
-			result = UtilZip.unZipFile(zipFileString, Utils.buildProjectPath(projectName));
+			result = UtilZip.unZipFile(zipFileString, UtilFile.buildProjectPath(projectName));
 			Log.v(TAG, "url: " + url + ", zip-file: " + zipFileString + ", notificationId: " + notificationId);
 		} catch (WebconnectionException e) {
 			e.printStackTrace();

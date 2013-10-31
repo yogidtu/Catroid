@@ -42,7 +42,7 @@ import org.catrobat.catroid.ui.controller.LookController;
 import org.catrobat.catroid.ui.fragment.LookFragment;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -72,7 +72,7 @@ public class SwitchToLookCrashTest extends BaseActivityInstrumentationTestCase<M
 			// if we use the image from res-folder instead of assets, test would
 			// pass even if the needed code in copyImageIntoCatroid() was deleted
 			InputStream inputStream = getInstrumentation().getContext().getResources().getAssets().open(nyanCatPng);
-			nyanCatPath = Utils.buildPath(Utils.buildProjectPath(UiTestUtils.DEFAULT_TEST_PROJECT_NAME),
+			nyanCatPath = UtilFile.buildPath(UtilFile.buildProjectPath(UiTestUtils.DEFAULT_TEST_PROJECT_NAME),
 					Constants.IMAGE_DIRECTORY, nyanCatPng);
 			writeBufferToFile(inputStream, nyanCatPath);
 		} catch (IOException e) {
@@ -91,7 +91,7 @@ public class SwitchToLookCrashTest extends BaseActivityInstrumentationTestCase<M
 		solo.sleep(200);
 		assertTrue("Testfile not added from mockActivity", solo.searchText(nyanCat));
 
-		String checksumNyanCatImageFile = Utils.md5Checksum(nyanCatPngFile);
+		String checksumNyanCatImageFile = UtilFile.md5Checksum(nyanCatPngFile);
 		assertTrue("Checksum not in checksumcontainer", ProjectManager.getInstance().getFileChecksumContainer()
 				.containsChecksum(checksumNyanCatImageFile));
 
@@ -124,7 +124,7 @@ public class SwitchToLookCrashTest extends BaseActivityInstrumentationTestCase<M
 			// if we use the image from res-folder instead of assets, test would
 			// pass even if the needed code in copyImageIntoCatroid() was deleted
 			InputStream inputStream = getInstrumentation().getContext().getResources().getAssets().open(manImageJpg);
-			manImagePath = Utils.buildPath(Utils.buildProjectPath(UiTestUtils.DEFAULT_TEST_PROJECT_NAME),
+			manImagePath = UtilFile.buildPath(UtilFile.buildProjectPath(UiTestUtils.DEFAULT_TEST_PROJECT_NAME),
 					Constants.IMAGE_DIRECTORY, manImageJpg);
 			writeBufferToFile(inputStream, manImagePath);
 		} catch (IOException e) {
@@ -143,7 +143,7 @@ public class SwitchToLookCrashTest extends BaseActivityInstrumentationTestCase<M
 		solo.sleep(200);
 		assertTrue("Testfile not added from mockActivity", solo.searchText(manImage));
 
-		String checksumNyanCatImageFile = Utils.md5Checksum(nyanCatPngFile);
+		String checksumNyanCatImageFile = UtilFile.md5Checksum(nyanCatPngFile);
 		assertTrue("Checksum not in checksumcontainer", ProjectManager.getInstance().getFileChecksumContainer()
 				.containsChecksum(checksumNyanCatImageFile));
 

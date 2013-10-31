@@ -44,7 +44,6 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.ProjectData;
 import org.catrobat.catroid.io.ProjectScreenshotLoader;
 import org.catrobat.catroid.utils.UtilFile;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -152,7 +151,7 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 		holder.projectName.setText(projectName);
 
 		// set size of project:
-		holder.size.setText(UtilFile.getSizeAsString(new File(Utils.buildProjectPath(projectName))));
+		holder.size.setText(UtilFile.getSizeAsString(new File(UtilFile.buildProjectPath(projectName))));
 
 		//set last changed:
 		Date projectLastModificationDate = new Date(projectData.lastUsed);

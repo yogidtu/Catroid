@@ -66,6 +66,7 @@ import org.catrobat.catroid.ui.adapter.SpriteAdapter;
 import org.catrobat.catroid.ui.adapter.SpriteAdapter.OnSpriteEditListener;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.dialogs.RenameSpriteDialog;
+import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 
 import java.io.IOException;
@@ -142,7 +143,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 			actionMode.finish();
 			actionMode = null;
 		}
-		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
+		if (!UtilFile.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
 			return;
 		}
 

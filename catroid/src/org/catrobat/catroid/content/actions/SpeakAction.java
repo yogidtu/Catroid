@@ -30,7 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.io.SoundManager;
 import org.catrobat.catroid.stage.PreStageActivity;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 import java.util.HashMap;
@@ -63,7 +63,7 @@ public class SpeakAction extends TemporalAction {
 		}
 		this.text = text;
 
-		hashText = Utils.md5Checksum(text);
+		hashText = UtilFile.md5Checksum(text);
 		String fileName = hashText;
 		File pathToSpeechFile = new File(Constants.TEXT_TO_SPEECH_TMP_PATH);
 		pathToSpeechFile.mkdirs();

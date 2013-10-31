@@ -133,7 +133,6 @@ import org.catrobat.catroid.ui.fragment.AddBrickFragment;
 import org.catrobat.catroid.utils.NotificationData;
 import org.catrobat.catroid.utils.StatusBarNotificationManager;
 import org.catrobat.catroid.utils.UtilFile;
-import org.catrobat.catroid.utils.Utils;
 import org.catrobat.catroid.web.ServerCalls;
 import org.catrobat.catroid.web.WebconnectionException;
 
@@ -864,7 +863,7 @@ public class UiTestUtils {
 
 			String checksum;
 			if (withChecksum) {
-				checksum = Utils.md5Checksum(file) + "_";
+				checksum = UtilFile.md5Checksum(file) + "_";
 			} else {
 				checksum = "";
 			}

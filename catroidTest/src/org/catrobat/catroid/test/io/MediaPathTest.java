@@ -51,7 +51,7 @@ import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.content.bricks.WhenStartedBrick;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -140,8 +140,8 @@ public class MediaPathTest extends InstrumentationTestCase {
 
 		String project = TestUtils.getProjectfileAsString(projectName);
 
-		String checksumImage = Utils.md5Checksum(testImageCopy);
-		String checksumSound = Utils.md5Checksum(testSoundCopy);
+		String checksumImage = UtilFile.md5Checksum(testImageCopy);
+		String checksumSound = UtilFile.md5Checksum(testSoundCopy);
 
 		String unexpectedImagenameTags = ">" + imageName + "<";
 		String unexpectedSoundnameTags = ">" + soundName + "<";
@@ -160,12 +160,12 @@ public class MediaPathTest extends InstrumentationTestCase {
 		assertTrue("unexpected imagename", project.contains(expectedImagenameTags));
 		assertTrue("unexpected soundname", project.contains(expectedSoundnameTags));
 
-		assertEquals("the copy does not equal the original image", Utils.md5Checksum(testImage),
-				Utils.md5Checksum(testImageCopy));
-		assertEquals("the copy does not equal the original image", Utils.md5Checksum(testImage),
-				Utils.md5Checksum(testImageCopy2));
-		assertEquals("the copy does not equal the original image", Utils.md5Checksum(testSound),
-				Utils.md5Checksum(testSoundCopy));
+		assertEquals("the copy does not equal the original image", UtilFile.md5Checksum(testImage),
+				UtilFile.md5Checksum(testImageCopy));
+		assertEquals("the copy does not equal the original image", UtilFile.md5Checksum(testImage),
+				UtilFile.md5Checksum(testImageCopy2));
+		assertEquals("the copy does not equal the original image", UtilFile.md5Checksum(testSound),
+				UtilFile.md5Checksum(testSoundCopy));
 
 		//check if copy doesn't save more instances of the same file:
 		File directory = new File(Constants.DEFAULT_ROOT + "/" + projectName + "/" + Constants.IMAGE_DIRECTORY);
@@ -186,7 +186,7 @@ public class MediaPathTest extends InstrumentationTestCase {
 
 		//nomedia file is also in images folder
 		assertEquals("Wrong amount of files in folder", 3, filesImage.length);
-		assertNotSame("The image was not downsized", Utils.md5Checksum(bigBlue), Utils.md5Checksum(bigBlue2));
+		assertNotSame("The image was not downsized", UtilFile.md5Checksum(bigBlue), UtilFile.md5Checksum(bigBlue2));
 		assertEquals("The copies are not the same", bigBlue2.hashCode(), bigBlue3.hashCode());
 	}
 
@@ -204,7 +204,7 @@ public class MediaPathTest extends InstrumentationTestCase {
 
 		FileChecksumContainer container = ProjectManager.getInstance().getFileChecksumContainer();
 
-		assertEquals("Usage counter has not been incremented!", 2, container.getUsage(Utils.md5Checksum(testImage)));
+		assertEquals("Usage counter has not been incremented!", 2, container.getUsage(UtilFile.md5Checksum(testImage)));
 	}
 
 	public void testDecrementUsage() {
@@ -212,10 +212,10 @@ public class MediaPathTest extends InstrumentationTestCase {
 		storageHandler.deleteFile(testImageCopy.getAbsolutePath());
 		FileChecksumContainer container = ProjectManager.getInstance().getFileChecksumContainer();
 		assertTrue("checksum not in project although file should exist",
-				container.containsChecksum(Utils.md5Checksum(testImageCopy)));
+				container.containsChecksum(UtilFile.md5Checksum(testImageCopy)));
 		storageHandler.deleteFile(testImageCopy2.getAbsolutePath());
 		assertFalse("checksum in project although file should not exist",
-				container.containsChecksum(Utils.md5Checksum(testImageCopy2)));
+				container.containsChecksum(UtilFile.md5Checksum(testImageCopy2)));
 
 		File directory = new File(Constants.DEFAULT_ROOT + "/" + projectName + "/" + Constants.IMAGE_DIRECTORY);
 		File[] filesImage = directory.listFiles();
@@ -229,8 +229,8 @@ public class MediaPathTest extends InstrumentationTestCase {
 	public void testContainerOnLoadProject() throws IOException {
 		fillProjectWithAllBricksAndMediaFiles();
 		ProjectManager projectManager = ProjectManager.getInstance();
-		String checksumImage = Utils.md5Checksum(testImage);
-		String checksumSound = Utils.md5Checksum(testSound);
+		String checksumImage = UtilFile.md5Checksum(testImage);
+		String checksumSound = UtilFile.md5Checksum(testSound);
 
 		projectManager.setFileChecksumContainer(null); //hack to delete the filechecksumcontainer and see if a new one is created on load
 		projectManager.loadProject(projectName, getInstrumentation().getTargetContext(), false);

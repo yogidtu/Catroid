@@ -30,7 +30,6 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.test.utils.TestUtils;
 import org.catrobat.catroid.utils.UtilFile;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -111,7 +110,7 @@ public class UtilFileTest extends InstrumentationTestCase {
 
 		PrintWriter printWriter = null;
 
-		File testFile = new File(Utils.buildPath(testDirectory.getAbsolutePath(), "catroid.txt"));
+		File testFile = new File(UtilFile.buildPath(testDirectory.getAbsolutePath(), "catroid.txt"));
 
 		try {
 			testFile.createNewFile();

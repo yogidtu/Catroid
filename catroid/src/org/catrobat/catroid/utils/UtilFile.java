@@ -22,10 +22,23 @@
  */
 package org.catrobat.catroid.utils;
 
+import android.app.Activity;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.os.Environment;
+import android.util.Log;
+
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -35,11 +48,14 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class UtilFile {
+	private static final String TAG = UtilFile.class.getSimpleName();
 	public static final int TYPE_IMAGE_FILE = 0;
 	public static final int TYPE_SOUND_FILE = 1;
 
@@ -60,7 +76,7 @@ public class UtilFile {
 	}
 
 	public static Long getProgressFromBytes(String projectName, Long progress) {
-		Long fileByteSize = getSizeOfFileOrDirectoryInByte(new File(Utils.buildProjectPath(projectName)));
+		Long fileByteSize = getSizeOfFileOrDirectoryInByte(new File(UtilFile.buildProjectPath(projectName)));
 		if (fileByteSize == 0) {
 			return (long) 0;
 		}
@@ -112,17 +128,17 @@ public class UtilFile {
 
 		String filePath;
 		if (project == null || project.equalsIgnoreCase("")) {
-			filePath = Utils.buildProjectPath(name);
+			filePath = UtilFile.buildProjectPath(name);
 		} else {
 			switch (type) {
 				case TYPE_IMAGE_FILE:
-					filePath = Utils.buildPath(Utils.buildProjectPath(project), Constants.IMAGE_DIRECTORY, name);
+					filePath = UtilFile.buildPath(UtilFile.buildProjectPath(project), Constants.IMAGE_DIRECTORY, name);
 					break;
 				case TYPE_SOUND_FILE:
-					filePath = Utils.buildPath(Utils.buildProjectPath(project), Constants.SOUND_DIRECTORY, name);
+					filePath = UtilFile.buildPath(UtilFile.buildProjectPath(project), Constants.SOUND_DIRECTORY, name);
 					break;
 				default:
-					filePath = Utils.buildProjectPath(name);
+					filePath = UtilFile.buildProjectPath(name);
 					break;
 			}
 		}
@@ -207,6 +223,148 @@ public class UtilFile {
 				outputStream.close();
 			}
 		}
+	}
+
+	public static boolean externalStorageAvailable() {
+		String externalStorageState = Environment.getExternalStorageState();
+		return externalStorageState.equals(Environment.MEDIA_MOUNTED)
+				&& !externalStorageState.equals(Environment.MEDIA_MOUNTED_READ_ONLY);
+	}
+
+	public static boolean checkForExternalStorageAvailableAndDisplayErrorIfNot(final Context context) {
+		if (!externalStorageAvailable()) {
+			Builder builder = new CustomAlertDialogBuilder(context);
+
+			builder.setTitle(R.string.error);
+			builder.setMessage(R.string.error_no_writiable_external_storage_available);
+			builder.setNeutralButton(R.string.close, new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					((Activity) context).moveTaskToBack(true);
+				}
+			});
+			builder.show();
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Constructs a path out of the pathElements.
+	 * 
+	 * @param pathElements
+	 *            the strings to connect. They can have "/" in them which will be de-duped in the result, if necessary.
+	 * @return
+	 *         the path that was constructed.
+	 */
+	public static String buildPath(String... pathElements) {
+		StringBuilder result = new StringBuilder("/");
+
+		for (String pathElement : pathElements) {
+			result.append(pathElement).append("/");
+		}
+
+		String returnValue = result.toString().replaceAll("/+", "/");
+
+		if (returnValue.endsWith("/")) {
+			returnValue = returnValue.substring(0, returnValue.length() - 1);
+		}
+
+		return returnValue;
+	}
+
+	public static String buildProjectPath(String projectName) {
+		return buildPath(Constants.DEFAULT_ROOT, deleteSpecialCharactersInString(projectName));
+	}
+
+	public static String md5Checksum(File file) {
+
+		if (!file.isFile()) {
+			return null;
+		}
+
+		MessageDigest messageDigest = getMD5MessageDigest();
+
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			byte[] buffer = new byte[Constants.BUFFER_8K];
+
+			int length = 0;
+
+			while ((length = fis.read(buffer)) != -1) {
+				messageDigest.update(buffer, 0, length);
+			}
+		} catch (IOException e) {
+			Log.w(TAG, "IOException thrown in md5Checksum()");
+		} finally {
+			try {
+				if (fis != null) {
+					fis.close();
+				}
+			} catch (IOException e) {
+				Log.w(TAG, "IOException thrown in finally block of md5Checksum()");
+			}
+		}
+
+		return toHex(messageDigest.digest()).toLowerCase(Locale.US);
+	}
+
+	public static String md5Checksum(String string) {
+		MessageDigest messageDigest = getMD5MessageDigest();
+
+		messageDigest.update(string.getBytes());
+
+		return toHex(messageDigest.digest()).toLowerCase(Locale.US);
+	}
+
+	private static String toHex(byte[] messageDigest) {
+		StringBuilder md5StringBuilder = new StringBuilder(2 * messageDigest.length);
+
+		for (byte b : messageDigest) {
+			md5StringBuilder.append("0123456789ABCDEF".charAt((b & 0xF0) >> 4));
+			md5StringBuilder.append("0123456789ABCDEF".charAt((b & 0x0F)));
+		}
+
+		return md5StringBuilder.toString();
+	}
+
+	private static MessageDigest getMD5MessageDigest() {
+		MessageDigest messageDigest = null;
+
+		try {
+			messageDigest = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			Log.w(TAG, "NoSuchAlgorithmException thrown in getMD5MessageDigest()");
+		}
+
+		return messageDigest;
+	}
+
+	public static String deleteSpecialCharactersInString(String stringToAdapt) {
+		return stringToAdapt.replaceAll("[\"*/:<>?\\\\|]", "");
+	}
+
+	public static Pixmap getPixmapFromFile(File imageFile) {
+		Pixmap pixmap = null;
+		try {
+			GdxNativesLoader.load();
+			pixmap = new Pixmap(new FileHandle(imageFile));
+		} catch (GdxRuntimeException e) {
+			return null;
+		} catch (Exception e1) {
+			return null;
+		}
+		return pixmap;
+	}
+
+	public static boolean checkIfProjectExistsOrIsDownloadingIgnoreCase(String programName) {
+		if (DownloadUtil.getInstance().isProgramNameInDownloadQueueIgnoreCase(programName)) {
+			return true;
+		}
+
+		File projectDirectory = new File(UtilFile.buildProjectPath(programName));
+		return projectDirectory.exists();
 	}
 
 }

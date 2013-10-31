@@ -50,7 +50,7 @@ import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.stage.StageListener;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -296,7 +296,7 @@ public class StandardProjectHandler {
 
 	private static File copyFromResourceInProject(String projectName, String directoryName, String outputName,
 			int fileId, Context context, boolean prependMd5) throws IOException {
-		final String filePath = Utils.buildPath(Utils.buildProjectPath(projectName), directoryName, outputName);
+		final String filePath = UtilFile.buildPath(UtilFile.buildProjectPath(projectName), directoryName, outputName);
 		File copiedFile = new File(filePath);
 		if (!copiedFile.exists()) {
 			copiedFile.createNewFile();
@@ -317,8 +317,8 @@ public class StandardProjectHandler {
 			return copiedFile;
 		}
 
-		String directoryPath = Utils.buildPath(Utils.buildProjectPath(projectName), directoryName);
-		String finalImageFileString = Utils.buildPath(directoryPath, Utils.md5Checksum(copiedFile) + FILENAME_SEPARATOR
+		String directoryPath = UtilFile.buildPath(UtilFile.buildProjectPath(projectName), directoryName);
+		String finalImageFileString = UtilFile.buildPath(directoryPath, UtilFile.md5Checksum(copiedFile) + FILENAME_SEPARATOR
 				+ copiedFile.getName());
 		File copiedFileWithMd5 = new File(finalImageFileString);
 		copiedFile.renameTo(copiedFileWithMd5);

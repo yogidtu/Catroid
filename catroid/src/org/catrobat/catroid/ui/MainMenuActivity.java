@@ -80,7 +80,7 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
+		if (!UtilFile.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
 			return;
 		}
 		Utils.updateScreenWidthAndHeight(this);
@@ -110,7 +110,7 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 	protected void onResume() {
 		super.onResume();
 
-		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
+		if (!UtilFile.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
 			return;
 		}
 
@@ -128,7 +128,7 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 	@Override
 	public void onPause() {
 		super.onPause();
-		if (!Utils.externalStorageAvailable()) {
+		if (!UtilFile.externalStorageAvailable()) {
 			return;
 		}
 		Project currentProject = ProjectManager.getInstance().getCurrentProject();
@@ -329,7 +329,7 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 			int a = path.lastIndexOf('/') + 1;
 			int b = path.lastIndexOf('.');
 			String projectName = path.substring(a, b);
-			if (!UtilZip.unZipFile(path, Utils.buildProjectPath(projectName))) {
+			if (!UtilZip.unZipFile(path, UtilFile.buildProjectPath(projectName))) {
 				Utils.showErrorDialog(this, R.string.error_load_project);
 			}
 		}

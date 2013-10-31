@@ -251,11 +251,11 @@ public class LookController {
 			// if pixmap cannot be created, image would throw an Exception in stage
 			// so has to be loaded again with other Config
 			Pixmap pixmap = null;
-			pixmap = Utils.getPixmapFromFile(imageFile);
+			pixmap = UtilFile.getPixmapFromFile(imageFile);
 
 			if (pixmap == null) {
 				ImageEditing.overwriteImageFileWithNewBitmap(imageFile);
-				pixmap = Utils.getPixmapFromFile(imageFile);
+				pixmap = UtilFile.getPixmapFromFile(imageFile);
 
 				if (pixmap == null) {
 					Utils.showErrorDialog(activity, R.string.error_load_image);
@@ -301,7 +301,7 @@ public class LookController {
 			return;
 		}
 
-		String actualChecksum = Utils.md5Checksum(new File(pathOfPocketPaintImage));
+		String actualChecksum = UtilFile.md5Checksum(new File(pathOfPocketPaintImage));
 
 		// If look changed --> saving new image with new checksum and changing lookData
 		if (!selectedLookData.getChecksum().equalsIgnoreCase(actualChecksum)) {

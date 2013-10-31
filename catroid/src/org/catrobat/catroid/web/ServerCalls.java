@@ -29,7 +29,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -112,7 +112,7 @@ public class ServerCalls {
 		}
 
 		try {
-			String md5Checksum = Utils.md5Checksum(new File(zipFileString));
+			String md5Checksum = UtilFile.md5Checksum(new File(zipFileString));
 
 			HashMap<String, String> postValues = new HashMap<String, String>();
 			postValues.put(PROJECT_NAME_TAG, projectName);

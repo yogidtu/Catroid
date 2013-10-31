@@ -83,6 +83,7 @@ import org.catrobat.catroid.ui.dialogs.DeleteLookDialog;
 import org.catrobat.catroid.ui.dialogs.NewLookDialog;
 import org.catrobat.catroid.ui.dialogs.RenameLookDialog;
 import org.catrobat.catroid.utils.UtilCamera;
+import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 
 import java.io.IOException;
@@ -303,7 +304,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	public void onResume() {
 		super.onResume();
 
-		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
+		if (!UtilFile.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
 			return;
 		}
 

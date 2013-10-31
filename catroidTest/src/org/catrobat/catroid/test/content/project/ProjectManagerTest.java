@@ -44,7 +44,7 @@ import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -248,7 +248,7 @@ public class ProjectManagerTest extends InstrumentationTestCase {
 		project.addSprite(fourthSprite);
 
 		ProjectManager.getInstance().getFileChecksumContainer()
-				.addChecksum(Utils.md5Checksum(image), image.getAbsolutePath());
+				.addChecksum(UtilFile.md5Checksum(image), image.getAbsolutePath());
 
 		try {
 			project.save();

@@ -27,7 +27,7 @@ import android.util.Log;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -63,8 +63,8 @@ public class SoundInfo implements Serializable, Comparable<SoundInfo>, Cloneable
 			cloneSoundInfo.fileName = StorageHandler
 					.getInstance()
 					.copySoundFile(
-							Utils.buildPath(
-									Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
+							UtilFile.buildPath(
+									UtilFile.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
 									Constants.SOUND_DIRECTORY, fileName)).getName();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -75,7 +75,7 @@ public class SoundInfo implements Serializable, Comparable<SoundInfo>, Cloneable
 
 	public String getAbsolutePath() {
 		if (fileName != null) {
-			return Utils.buildPath(getPathToSoundDirectory(), fileName);
+			return UtilFile.buildPath(getPathToSoundDirectory(), fileName);
 		} else {
 			return null;
 		}
@@ -83,7 +83,7 @@ public class SoundInfo implements Serializable, Comparable<SoundInfo>, Cloneable
 
 	public String getAbsolutePathBackPack() {
 		if (fileName != null) {
-			return Utils.buildPath(getPathToBackPackDirectory(), fileName);
+			return UtilFile.buildPath(getPathToBackPackDirectory(), fileName);
 		} else {
 			return null;
 		}
@@ -91,7 +91,7 @@ public class SoundInfo implements Serializable, Comparable<SoundInfo>, Cloneable
 
 	public String getAbsolutePathBackPackSound() {
 		if (fileName != null) {
-			return Utils.buildPath(getPathToBackPackSoundDirectory(), fileName);
+			return UtilFile.buildPath(getPathToBackPackSoundDirectory(), fileName);
 		} else {
 			return null;
 		}
@@ -121,19 +121,19 @@ public class SoundInfo implements Serializable, Comparable<SoundInfo>, Cloneable
 	}
 
 	private String getPathToSoundDirectory() {
-		return Utils.buildPath(Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
+		return UtilFile.buildPath(UtilFile.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
 				Constants.SOUND_DIRECTORY);
 	}
 
 	private String getPathToBackPackDirectory() {
 		Log.d("TAG", "getPathToBackPackDirectory() called!");
-		return Utils.buildPath(Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
+		return UtilFile.buildPath(UtilFile.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
 				Constants.BACKPACK_DIRECTORY);
 	}
 
 	private String getPathToBackPackSoundDirectory() {
 		Log.d("TAG", "getPathToBackPackSoundDirectory() called!");
-		return Utils.buildPath(Utils.buildProjectPath(Constants.DEFAULT_ROOT + "/" + Constants.BACKPACK_DIRECTORY + "/"
+		return UtilFile.buildPath(UtilFile.buildProjectPath(Constants.DEFAULT_ROOT + "/" + Constants.BACKPACK_DIRECTORY + "/"
 				+ Constants.BACKPACK_SOUND_DIRECTORY));
 	}
 

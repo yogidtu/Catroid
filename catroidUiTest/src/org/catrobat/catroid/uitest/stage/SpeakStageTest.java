@@ -38,7 +38,7 @@ import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,27 +49,27 @@ public class SpeakStageTest extends BaseActivityInstrumentationTestCase<ProjectA
 
 	private final String testText = "Test test.";
 	private final long byteLengthOfTestText = 44076L;
-	private final File speechFileTestText = new File(Constants.TEXT_TO_SPEECH_TMP_PATH, Utils.md5Checksum(testText)
+	private final File speechFileTestText = new File(Constants.TEXT_TO_SPEECH_TMP_PATH, UtilFile.md5Checksum(testText)
 			+ Constants.TEXT_TO_SPEECH_EXTENSION);
 
 	private final String helloWorldText = "Hello World!";
 	private final long byteLengthOfHelloWorldText = 47532L;
 	private final File speechFileHelloWorlText = new File(Constants.TEXT_TO_SPEECH_TMP_PATH,
-			Utils.md5Checksum(helloWorldText) + Constants.TEXT_TO_SPEECH_EXTENSION);
+			UtilFile.md5Checksum(helloWorldText) + Constants.TEXT_TO_SPEECH_EXTENSION);
 
 	private final String nullText = "";
 	private final long byteLengthOfNullText = 44L;
-	private final File speechFileNullText = new File(Constants.TEXT_TO_SPEECH_TMP_PATH, Utils.md5Checksum(nullText)
+	private final File speechFileNullText = new File(Constants.TEXT_TO_SPEECH_TMP_PATH, UtilFile.md5Checksum(nullText)
 			+ Constants.TEXT_TO_SPEECH_EXTENSION);
 
 	private final String simultaneousText = "Speaking simultaneously";
 	private final long byteLengthOfSimultaneousText = 65196L;
 	private final File speechFileSimultaneousText = new File(Constants.TEXT_TO_SPEECH_TMP_PATH,
-			Utils.md5Checksum(simultaneousText) + Constants.TEXT_TO_SPEECH_EXTENSION);
+			UtilFile.md5Checksum(simultaneousText) + Constants.TEXT_TO_SPEECH_EXTENSION);
 
 	private final String longText = "This is very very long long test text.";
 	private final long byteLengthOfLongText = 99628L;
-	private final File speechFileLongText = new File(Constants.TEXT_TO_SPEECH_TMP_PATH, Utils.md5Checksum(longText)
+	private final File speechFileLongText = new File(Constants.TEXT_TO_SPEECH_TMP_PATH, UtilFile.md5Checksum(longText)
 			+ Constants.TEXT_TO_SPEECH_EXTENSION);
 
 	private SoundManagerMock soundManagerMock;

@@ -32,7 +32,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.utils.ImageEditing;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.FileNotFoundException;
 import java.io.Serializable;
@@ -108,7 +108,7 @@ public class LookData implements Serializable, Cloneable {
 
 	public String getAbsolutePath() {
 		if (fileName != null) {
-			return Utils.buildPath(getPathToImageDirectory(), fileName);
+			return UtilFile.buildPath(getPathToImageDirectory(), fileName);
 		} else {
 			return null;
 		}
@@ -138,7 +138,7 @@ public class LookData implements Serializable, Cloneable {
 	}
 
 	private String getPathToImageDirectory() {
-		return Utils.buildPath(Utils.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
+		return UtilFile.buildPath(UtilFile.buildProjectPath(ProjectManager.getInstance().getCurrentProject().getName()),
 				Constants.IMAGE_DIRECTORY);
 	}
 

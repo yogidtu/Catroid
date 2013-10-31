@@ -33,6 +33,7 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
@@ -167,16 +168,16 @@ public class ProjectManager {
 			return false;
 		}
 
-		String oldProjectPath = Utils.buildProjectPath(project.getName());
+		String oldProjectPath = UtilFile.buildProjectPath(project.getName());
 		File oldProjectDirectory = new File(oldProjectPath);
 
-		String newProjectPath = Utils.buildProjectPath(newProjectName);
+		String newProjectPath = UtilFile.buildProjectPath(newProjectName);
 		File newProjectDirectory = new File(newProjectPath);
 
 		boolean directoryRenamed = false;
 
 		if (oldProjectPath.equalsIgnoreCase(newProjectPath)) {
-			String tmpProjectPath = Utils.buildProjectPath(createTemporaryDirectoryName(newProjectName));
+			String tmpProjectPath = UtilFile.buildProjectPath(createTemporaryDirectoryName(newProjectName));
 			File tmpProjectDirectory = new File(tmpProjectPath);
 			directoryRenamed = oldProjectDirectory.renameTo(tmpProjectDirectory);
 			if (directoryRenamed) {
@@ -251,7 +252,7 @@ public class ProjectManager {
 		String temporaryDirectorySuffix = "_tmp";
 		String temporaryDirectoryName = projectDirectoryName + temporaryDirectorySuffix;
 		int suffixCounter = 0;
-		while (Utils.checkIfProjectExistsOrIsDownloadingIgnoreCase(temporaryDirectoryName)) {
+		while (UtilFile.checkIfProjectExistsOrIsDownloadingIgnoreCase(temporaryDirectoryName)) {
 			temporaryDirectoryName = projectDirectoryName + temporaryDirectorySuffix + suffixCounter;
 			suffixCounter++;
 		}

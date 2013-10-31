@@ -31,7 +31,7 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -121,7 +121,7 @@ public class FileChecksumContainerTest extends InstrumentationTestCase {
 
 		storageHandler.copyImage(currentProjectName, testImage.getAbsolutePath(), null);
 
-		String checksumImage = Utils.md5Checksum(testImage);
+		String checksumImage = UtilFile.md5Checksum(testImage);
 
 		FileChecksumContainer fileChecksumContainer = projectManager.getFileChecksumContainer();
 		assertTrue("Checksum isn't in container", fileChecksumContainer.containsChecksum(checksumImage));
@@ -138,7 +138,7 @@ public class FileChecksumContainerTest extends InstrumentationTestCase {
 		assertEquals("Wrong amount of files in folder", 2, filesImage.length);
 
 		File newTestSound = storageHandler.copySoundFile(testSound.getAbsolutePath());
-		String checksumSound = Utils.md5Checksum(testSound);
+		String checksumSound = UtilFile.md5Checksum(testSound);
 		assertTrue("Checksum isn't in container", fileChecksumContainer.containsChecksum(checksumSound));
 		File soundDirectory = new File(Constants.DEFAULT_ROOT + "/" + currentProjectName + "/"
 				+ Constants.SOUND_DIRECTORY);

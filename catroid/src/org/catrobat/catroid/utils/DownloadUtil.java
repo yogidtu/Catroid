@@ -71,7 +71,7 @@ public class DownloadUtil {
 			return;
 		}
 
-		boolean programNameExists = Utils.checkIfProjectExistsOrIsDownloadingIgnoreCase(programName);
+		boolean programNameExists = UtilFile.checkIfProjectExistsOrIsDownloadingIgnoreCase(programName);
 		if (programNameExists) {
 			Log.v(TAG, "Program name exists - show overwrite dialog");
 			OverwriteRenameDialog renameDialog = new OverwriteRenameDialog();

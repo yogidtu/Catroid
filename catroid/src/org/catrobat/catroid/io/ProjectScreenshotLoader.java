@@ -30,7 +30,7 @@ import android.widget.ImageView;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.utils.ImageEditing;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 import java.util.Collections;
@@ -105,13 +105,13 @@ public class ProjectScreenshotLoader {
 			}
 			Activity uiActivity = (Activity) projectScreenshotData.imageView.getContext();
 
-			String pathOfScreenshot = Utils.buildPath(Utils.buildProjectPath(projectScreenshotData.projectName),
+			String pathOfScreenshot = UtilFile.buildPath(UtilFile.buildProjectPath(projectScreenshotData.projectName),
 					StageListener.SCREENSHOT_MANUAL_FILE_NAME);
 			File projectImageFile = new File(pathOfScreenshot);
 
 			if (!(projectImageFile.exists() && projectImageFile.length() > 0)) {
 				projectImageFile.delete();
-				pathOfScreenshot = Utils.buildPath(Utils.buildProjectPath(projectScreenshotData.projectName),
+				pathOfScreenshot = UtilFile.buildPath(UtilFile.buildProjectPath(projectScreenshotData.projectName),
 						StageListener.SCREENSHOT_AUTOMATIC_FILE_NAME);
 				projectImageFile = new File(pathOfScreenshot);
 			}

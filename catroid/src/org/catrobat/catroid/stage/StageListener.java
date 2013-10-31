@@ -52,7 +52,7 @@ import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.SoundManager;
 import org.catrobat.catroid.ui.dialogs.StageDialog;
-import org.catrobat.catroid.utils.Utils;
+import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -142,7 +142,7 @@ public class StageListener implements ApplicationListener {
 		font.setScale(1.2f);
 
 		project = ProjectManager.getInstance().getCurrentProject();
-		pathForScreenshot = Utils.buildProjectPath(project.getName()) + "/";
+		pathForScreenshot = UtilFile.buildProjectPath(project.getName()) + "/";
 
 		virtualWidth = project.getXmlHeader().virtualScreenWidth;
 		virtualHeight = project.getXmlHeader().virtualScreenHeight;

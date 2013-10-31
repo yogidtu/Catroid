@@ -61,6 +61,7 @@ import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.dialogs.DeleteLookDialog;
 import org.catrobat.catroid.ui.dragndrop.DragAndDropListView;
 import org.catrobat.catroid.ui.fragment.BrickCategoryFragment.OnCategorySelectedListener;
+import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 
 import java.io.IOException;
@@ -146,7 +147,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 	public void onResume() {
 		super.onResume();
 
-		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
+		if (!UtilFile.checkForExternalStorageAvailableAndDisplayErrorIfNot(getActivity())) {
 			return;
 		}
 

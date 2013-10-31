@@ -103,7 +103,7 @@ public class UtilsTest extends AndroidTestCase {
 		File tempDir = new File(Constants.TMP_PATH);
 		tempDir.mkdirs();
 
-		File md5TestFile = new File(Utils.buildPath(Constants.TMP_PATH, "catroid.txt"));
+		File md5TestFile = new File(UtilFile.buildPath(Constants.TMP_PATH, "catroid.txt"));
 
 		if (md5TestFile.exists()) {
 			md5TestFile.delete();
@@ -112,7 +112,7 @@ public class UtilsTest extends AndroidTestCase {
 		try {
 			md5TestFile.createNewFile();
 			assertEquals("MD5 sums are not the same for empty file", MD5_EMPTY.toLowerCase(Locale.US),
-					Utils.md5Checksum(md5TestFile));
+					UtilFile.md5Checksum(md5TestFile));
 
 			printWriter = new PrintWriter(md5TestFile);
 			printWriter.print("catroid");
@@ -125,53 +125,53 @@ public class UtilsTest extends AndroidTestCase {
 		}
 
 		assertEquals("MD5 sums are not the same for catroid file", MD5_CATROID.toLowerCase(Locale.US),
-				Utils.md5Checksum(md5TestFile));
+				UtilFile.md5Checksum(md5TestFile));
 
 		UtilFile.deleteDirectory(tempDir);
 	}
 
 	public void testMD5CheckSumOfString() {
-		assertEquals("MD5 sums do not match!", MD5_CATROID.toLowerCase(Locale.US), Utils.md5Checksum("catroid"));
-		assertEquals("MD5 sums do not match!", MD5_EMPTY.toLowerCase(Locale.US), Utils.md5Checksum(""));
+		assertEquals("MD5 sums do not match!", MD5_CATROID.toLowerCase(Locale.US), UtilFile.md5Checksum("catroid"));
+		assertEquals("MD5 sums do not match!", MD5_EMPTY.toLowerCase(Locale.US), UtilFile.md5Checksum(""));
 		assertEquals("MD5 sums do not match!", MD5_HELLO_WORLD.toLowerCase(Locale.US),
-				Utils.md5Checksum("Hello World!"));
+				UtilFile.md5Checksum("Hello World!"));
 	}
 
 	public void testBuildPath() {
 		String first = "/abc/abc";
 		String second = "/def/def/";
 		String result = "/abc/abc/def/def";
-		assertEquals(Utils.buildPath(first, second), result);
+		assertEquals(UtilFile.buildPath(first, second), result);
 
 		first = "/abc/abc";
 		second = "def/def/";
 		result = "/abc/abc/def/def";
-		assertEquals(Utils.buildPath(first, second), result);
+		assertEquals(UtilFile.buildPath(first, second), result);
 
 		first = "/abc/abc/";
 		second = "/def/def/";
 		result = "/abc/abc/def/def";
-		assertEquals(Utils.buildPath(first, second), result);
+		assertEquals(UtilFile.buildPath(first, second), result);
 
 		first = "/abc/abc/";
 		second = "def/def/";
 		result = "/abc/abc/def/def";
-		assertEquals(Utils.buildPath(first, second), result);
+		assertEquals(UtilFile.buildPath(first, second), result);
 	}
 
 	public void testDeleteSpecialCharactersFromString() {
 		String testString = "This:IsA-\" */ :<Very>?|Very\\\\Long_Test_String";
-		String newString = Utils.deleteSpecialCharactersInString(testString);
+		String newString = UtilFile.deleteSpecialCharactersInString(testString);
 		assertEquals("Strings are not equal!", "ThisIsA-  VeryVeryLong_Test_String", newString);
 	}
 
 	public void testBuildProjectPath() {
-		if (!Utils.externalStorageAvailable()) {
+		if (!UtilFile.externalStorageAvailable()) {
 			fail("No SD card present");
 		}
 		String projectName = "test?Projekt\"1";
 		String expectedPath = Constants.DEFAULT_ROOT + "/testProjekt1";
-		assertEquals("Paths are different!", expectedPath, Utils.buildProjectPath(projectName));
+		assertEquals("Paths are different!", expectedPath, UtilFile.buildProjectPath(projectName));
 	}
 
 	public void testDebuggableFlagShouldBeSet() throws Exception {
