@@ -117,7 +117,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 	@Override
 	public void tearDown() throws Exception {
-		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", true);
+		//Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", true);
 
 		UtilFile.deleteDirectory(new File(UtilFile.buildProjectPath(WHITELISTED_CHARACTER_STRING)));
 		UtilFile.deleteDirectory(new File(UtilFile.buildProjectPath(BLACKLISTED_CHARACTER_STRING)));
@@ -1306,7 +1306,8 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 		boolean succeededInSettingModifiedDate = projectCodeFile.setLastModified(date.getTime());
 		assertTrue("Failed to set last modified on " + projectFilePath, succeededInSettingModifiedDate);
 
-		projectFilePath = UtilFile.buildPath(UtilFile.buildProjectPath(UiTestUtils.PROJECTNAME1), Constants.PROJECTCODE_NAME);
+		projectFilePath = UtilFile.buildPath(UtilFile.buildProjectPath(UiTestUtils.PROJECTNAME1),
+				Constants.PROJECTCODE_NAME);
 		projectCodeFile = new File(projectFilePath);
 		Date now = new Date();
 		succeededInSettingModifiedDate = projectCodeFile.setLastModified(now.getTime() - DateUtils.DAY_IN_MILLIS);
@@ -1435,7 +1436,7 @@ public class MyProjectsActivityTest extends BaseActivityInstrumentationTestCase<
 
 	public void testSetDescription() {
 		createProjects();
-		Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", false);
+		//Reflection.setPrivateField(ProjectManager.class, ProjectManager.getInstance(), "asynchronTask", false);
 
 		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
 		solo.sleep(300);

@@ -1375,7 +1375,9 @@ public class UiTestUtils {
 		solo.sleep(300);
 
 		String continueString = solo.getString(R.string.main_menu_continue);
-		solo.waitForText(continueString);
+		if (!solo.waitForText(continueString)) {
+			solo.waitForLogMessage("project saved");
+		}
 
 		solo.clickOnText(continueString);
 		solo.waitForActivity(ProjectActivity.class.getSimpleName());

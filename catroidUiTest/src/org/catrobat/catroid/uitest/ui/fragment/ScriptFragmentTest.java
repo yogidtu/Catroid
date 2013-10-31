@@ -663,11 +663,11 @@ public class ScriptFragmentTest extends BaseActivityInstrumentationTestCase<Main
 					UiTestUtils.DEFAULT_TEST_PROJECT_NAME, getInstrumentation().getTargetContext());
 		} catch (IOException e) {
 			e.printStackTrace();
-			fail("Could not create standard project");
+			fail("Could not create standard project. Exception was thrown.");
 		}
 
 		if (standardProject == null) {
-			fail("Could not create standard project");
+			fail("Could not create standard project. It was null.");
 		}
 		ProjectManager.getInstance().setProject(standardProject);
 

@@ -221,8 +221,10 @@ public class Project implements Serializable {
 		@Override
 		protected void onPostExecute(Boolean success) {
 			if (!success) {
-				Log.e("Project.java", "Saving project wasn't successful");
+				Log.e(getName(), "Saving project wasn't successful");
 				//TODO show error dialog to user
+			} else {
+				Log.i(getName(), "project saved");
 			}
 		}
 	}
