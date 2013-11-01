@@ -160,6 +160,7 @@ public class SelectProgramFragment extends ListFragment implements OnProjectClic
 		selectedProject = projectList.get(position).projectName;
 
 		AlertDialog.Builder builder = new CustomAlertDialogBuilder(getActivity());
+		builder.setTitle(selectedProject);
 		builder.setMessage(R.string.lwp_confirm_set_program_message);
 		builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 			@Override
