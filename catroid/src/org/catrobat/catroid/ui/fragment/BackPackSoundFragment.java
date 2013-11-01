@@ -39,19 +39,23 @@ import android.support.v4.content.Loader;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
@@ -66,6 +70,7 @@ import org.catrobat.catroid.ui.adapter.BackPackSoundAdapter;
 import org.catrobat.catroid.ui.adapter.SoundBaseAdapter;
 import org.catrobat.catroid.ui.controller.BackPackListManager;
 import org.catrobat.catroid.ui.controller.SoundController;
+import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 import org.catrobat.catroid.ui.dialogs.DeleteSoundDialog;
 
 public class BackPackSoundFragment extends BackPackActivityFragment implements SoundBaseAdapter.OnSoundEditListener,
@@ -124,8 +129,44 @@ public class BackPackSoundFragment extends BackPackActivityFragment implements S
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.findItem(R.id.copy).setVisible(false);
+		if (BackPackListManager.getInstance().getSoundInfoArrayList().size() > 0) {
+			menu.findItem(R.id.unpacking).setVisible(true);
+		}
 		BottomBar.hideBottomBar(getActivity());
 		super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, view, menuInfo);
+
+		if (SoundController.getInstance().isSoundPlaying(mediaPlayer)) {
+			SoundController.getInstance().stopSoundAndUpdateList(mediaPlayer,
+					BackPackListManager.getInstance().getSoundInfoArrayList(), adapter);
+		}
+		selectedSoundInfoBackPack = adapter.getItem(selectedSoundPosition);
+		menu.setHeaderTitle(selectedSoundInfoBackPack.getTitle());
+		adapter.addCheckedItem(((AdapterContextMenuInfo) menuInfo).position);
+
+		getSherlockActivity().getMenuInflater().inflate(R.menu.context_menu_unpacking, menu);
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+
+			case R.id.context_menu_unpacking:
+				SoundController.getInstance().copySound(selectedSoundInfoBackPack,
+						BackPackListManager.getCurrentSoundInfoArrayList(), BackPackListManager.getCurrentAdapter());
+				String textForUnPacking = getResources().getQuantityString(R.plurals.unpacking_items_plural, 1);
+				Toast.makeText(getActivity(), selectedSoundInfoBackPack.getTitle() + " " + textForUnPacking,
+						Toast.LENGTH_SHORT).show();
+				break;
+			case R.id.context_menu_delete:
+				showConfirmDeleteDialog();
+				break;
+		}
+		return super.onContextItemSelected(item);
 	}
 
 	@Override
@@ -215,17 +256,15 @@ public class BackPackSoundFragment extends BackPackActivityFragment implements S
 			convertView = View.inflate(getActivity(), R.layout.fragment_sound_soundlist_item, null);
 
 			holder = new SoundViewHolder();
-			holder.playButton = (ImageButton) convertView.findViewById(R.id.fragment_sound_item_play_image_button);
-			holder.pauseButton = (ImageButton) convertView.findViewById(R.id.fragment_sound_item_pause_image_button);
-
-			holder.playButton.setVisibility(Button.VISIBLE);
-			holder.pauseButton.setVisibility(Button.INVISIBLE);
+			holder.playAndStopButton = (ImageButton) convertView.findViewById(R.id.fragment_sound_item_image_button);
+			holder.playAndStopButton.setImageResource(R.drawable.ic_media_play);
+			holder.playAndStopButton.setContentDescription(getString(R.string.sound_play));
 
 			holder.soundFragmentButtonLayout = (LinearLayout) convertView
 					.findViewById(R.id.fragment_sound_item_main_linear_layout);
 			holder.checkbox = (CheckBox) convertView.findViewById(R.id.fragment_sound_item_checkbox);
 			holder.titleTextView = (TextView) convertView.findViewById(R.id.fragment_sound_item_title_text_view);
-			holder.timeSeperatorTextView = (TextView) convertView
+			holder.timeSeparatorTextView = (TextView) convertView
 					.findViewById(R.id.fragment_sound_item_time_seperator_text_view);
 			holder.timeDurationTextView = (TextView) convertView
 					.findViewById(R.id.fragment_sound_item_duration_text_view);
@@ -241,7 +280,7 @@ public class BackPackSoundFragment extends BackPackActivityFragment implements S
 			holder = (SoundViewHolder) convertView.getTag();
 		}
 		SoundController controller = SoundController.getInstance();
-		controller.updateSoundLogic(position, holder, adapter);
+		controller.updateSoundLogic(getActivity(), position, holder, adapter);
 
 		return convertView;
 	}
@@ -364,6 +403,50 @@ public class BackPackSoundFragment extends BackPackActivityFragment implements S
 	}
 
 	@Override
+	public void startUnPackingActionMode() {
+		if (actionMode == null) {
+			SoundController.getInstance().stopSoundAndUpdateList(mediaPlayer,
+					BackPackListManager.getInstance().getSoundInfoArrayList(), adapter);
+			actionMode = getSherlockActivity().startActionMode(unpackingModeCallBack);
+			unregisterForContextMenu(listView);
+			BottomBar.hideBottomBar(getActivity());
+		}
+	}
+
+	private ActionMode.Callback unpackingModeCallBack = new ActionMode.Callback() {
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			setSelectMode(ListView.CHOICE_MODE_MULTIPLE);
+			setActionModeActive(true);
+
+			mode.setTitle(R.string.unpacking);
+
+			actionModeTitle = getString(R.string.unpacking);
+			singleItemAppendixDeleteActionMode = getString(R.string.category_sound);
+			multipleItemAppendixDeleteActionMode = getString(R.string.sounds);
+
+			return true;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, com.actionbarsherlock.view.MenuItem item) {
+			return false;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			showUnpackingConfirmationMessage();
+			adapter.onDestroyActionModeUnpacking(mode);
+		}
+	};
+
+	@Override
 	public void startDeleteActionMode() {
 
 		if (actionMode == null) {
@@ -420,7 +503,7 @@ public class BackPackSoundFragment extends BackPackActivityFragment implements S
 			titleId = R.string.dialog_confirm_delete_multiple_sounds_title;
 		}
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		AlertDialog.Builder builder = new CustomAlertDialogBuilder(getActivity());
 		builder.setTitle(titleId);
 		builder.setMessage(R.string.dialog_confirm_delete_sound_message);
 		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -447,6 +530,12 @@ public class BackPackSoundFragment extends BackPackActivityFragment implements S
 	protected void showDeleteDialog() {
 		DeleteSoundDialog deleteSoundDialog = DeleteSoundDialog.newInstance(selectedSoundPosition);
 		deleteSoundDialog.show(getFragmentManager(), DeleteSoundDialog.DIALOG_FRAGMENT_TAG);
+	}
+
+	private void showUnpackingConfirmationMessage() {
+		String messageForUser = getResources().getQuantityString(R.plurals.unpacking_items_plural,
+				adapter.getAmountOfCheckedItems());
+		Toast.makeText(getActivity(), messageForUser, Toast.LENGTH_SHORT).show();
 	}
 
 	public BackPackSoundAdapter getAdapter() {

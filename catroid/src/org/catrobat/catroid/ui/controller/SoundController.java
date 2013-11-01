@@ -23,6 +23,7 @@
 package org.catrobat.catroid.ui.controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaPlayer;
@@ -37,7 +38,6 @@ import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -82,15 +82,15 @@ public class SoundController {
 		return instance;
 	}
 
-	public void updateSoundLogic(final int position, final SoundViewHolder holder, final SoundBaseAdapter soundAdapter) {
+	public void updateSoundLogic(Context context, final int position, final SoundViewHolder holder,
+			final SoundBaseAdapter soundAdapter) {
 		final SoundInfo soundInfo = soundAdapter.getSoundInfoItems().get(position);
 
 		if (soundInfo != null) {
-			holder.getPlayButton().setTag(position);
-			holder.getPauseButton().setTag(position);
-			holder.getTitleTextView().setText(soundInfo.getTitle());
+			holder.playAndStopButton.setTag(position);
+			holder.titleTextView.setText(soundInfo.getTitle());
 
-			holder.getCheckbox().setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			holder.checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					if (isChecked) {
@@ -110,21 +110,21 @@ public class SoundController {
 			});
 
 			if (soundAdapter.getSelectMode() != ListView.CHOICE_MODE_NONE) {
-				holder.getCheckbox().setVisibility(View.VISIBLE);
-				holder.getCheckbox().setVisibility(View.VISIBLE);
-				holder.getSoundFragmentButtonLayout().setBackgroundResource(R.drawable.button_background_shadowed);
+				holder.checkbox.setVisibility(View.VISIBLE);
+				holder.checkbox.setVisibility(View.VISIBLE);
+				holder.soundFragmentButtonLayout.setBackgroundResource(R.drawable.button_background_shadowed);
 			} else {
-				holder.getCheckbox().setVisibility(View.GONE);
-				holder.getCheckbox().setVisibility(View.GONE);
-				holder.getSoundFragmentButtonLayout().setBackgroundResource(R.drawable.button_background_selector);
-				holder.getCheckbox().setChecked(false);
+				holder.checkbox.setVisibility(View.GONE);
+				holder.checkbox.setVisibility(View.GONE);
+				holder.soundFragmentButtonLayout.setBackgroundResource(R.drawable.button_background_selector);
+				holder.checkbox.setChecked(false);
 				soundAdapter.clearCheckedItems();
 			}
 
 			if (soundAdapter.getCheckedSounds().contains(position)) {
-				holder.getCheckbox().setChecked(true);
+				holder.checkbox.setChecked(true);
 			} else {
-				holder.getCheckbox().setChecked(false);
+				holder.checkbox.setChecked(false);
 			}
 
 			try {
@@ -138,9 +138,9 @@ public class SoundController {
 				int hours = (int) ((milliseconds / 1000) / 3600);
 
 				if (hours == 0) {
-					holder.getTimeDurationTextView().setText(String.format("%02d:%02d", minutes, seconds));
+					holder.timeDurationTextView.setText(String.format("%02d:%02d", minutes, seconds));
 				} else {
-					holder.getTimeDurationTextView().setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+					holder.timeDurationTextView.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
 				}
 
 				if (soundAdapter.getCurrentPlayingPosition() == Constants.NO_POSITION) {
@@ -153,40 +153,40 @@ public class SoundController {
 				}
 
 				if (soundInfo.isPlaying) {
-					holder.getPlayButton().setVisibility(Button.GONE);
-					holder.getPauseButton().setVisibility(Button.VISIBLE);
+					holder.playAndStopButton.setImageResource(R.drawable.ic_media_stop);
+					holder.playAndStopButton.setContentDescription(context.getString(R.string.sound_stop));
 
-					holder.getTimeSeperatorTextView().setVisibility(TextView.VISIBLE);
-					holder.getTimePlayedChronometer().setVisibility(Chronometer.VISIBLE);
+					holder.timeDurationTextView.setVisibility(TextView.VISIBLE);
+					holder.timePlayedChronometer.setVisibility(Chronometer.VISIBLE);
 
 					if (soundAdapter.getCurrentPlayingPosition() == Constants.NO_POSITION) {
-						startPlayingSound(holder.getTimePlayedChronometer(), position, soundAdapter);
+						startPlayingSound(holder.timePlayedChronometer, position, soundAdapter);
 					} else if ((position == soundAdapter.getCurrentPlayingPosition())
 							&& (SoundBaseAdapter.getElapsedMilliSeconds() > (milliseconds - 1000))) {
-						stopPlayingSound(soundInfo, holder.getTimePlayedChronometer(), soundAdapter);
+						stopPlayingSound(soundInfo, holder.timePlayedChronometer, soundAdapter);
 					} else {
-						continuePlayingSound(holder.getTimePlayedChronometer(), SystemClock.elapsedRealtime());
+						continuePlayingSound(holder.timePlayedChronometer, SystemClock.elapsedRealtime());
 					}
 				} else {
-					holder.getPlayButton().setVisibility(Button.VISIBLE);
-					holder.getPauseButton().setVisibility(Button.GONE);
+					holder.playAndStopButton.setImageResource(R.drawable.ic_media_play);
+					holder.playAndStopButton.setContentDescription(context.getString(R.string.sound_play));
 
-					holder.getTimeSeperatorTextView().setVisibility(TextView.GONE);
-					holder.getTimePlayedChronometer().setVisibility(Chronometer.GONE);
+					holder.timePlayedChronometer.setVisibility(TextView.GONE);
+					holder.timePlayedChronometer.setVisibility(Chronometer.GONE);
 
 					if (position == soundAdapter.getCurrentPlayingPosition()) {
-						stopPlayingSound(soundInfo, holder.getTimePlayedChronometer(), soundAdapter);
+						stopPlayingSound(soundInfo, holder.timePlayedChronometer, soundAdapter);
 					}
 				}
 
 				if (soundAdapter.getShowDetails()) {
-					holder.getSoundFileSizeTextView().setText(
-							UtilFile.getSizeAsString(new File(soundInfo.getAbsolutePath())));
-					holder.getSoundFileSizeTextView().setVisibility(TextView.VISIBLE);
-					holder.getSoundFileSizePrefixTextView().setVisibility(TextView.VISIBLE);
+					holder.soundFileSizeTextView
+							.setText(UtilFile.getSizeAsString(new File(soundInfo.getAbsolutePath())));
+					holder.soundFileSizeTextView.setVisibility(TextView.VISIBLE);
+					holder.soundFileSizePrefixTextView.setVisibility(TextView.VISIBLE);
 				} else {
-					holder.getSoundFileSizeTextView().setVisibility(TextView.GONE);
-					holder.getSoundFileSizePrefixTextView().setVisibility(TextView.GONE);
+					holder.soundFileSizeTextView.setVisibility(TextView.GONE);
+					holder.soundFileSizePrefixTextView.setVisibility(TextView.GONE);
 				}
 
 				tempPlayer.reset();
@@ -200,34 +200,35 @@ public class SoundController {
 				@Override
 				public void onClick(View view) {
 					if (soundAdapter.getSelectMode() != ListView.CHOICE_MODE_NONE) {
-						holder.getCheckbox().setChecked(!holder.checkbox.isChecked());
+						holder.checkbox.setChecked(!holder.checkbox.isChecked());
 					}
 				}
 			});
 
 			if (soundAdapter.getSelectMode() != ListView.CHOICE_MODE_NONE) {
-				holder.getPlayButton().setOnClickListener(listItemOnClickListener);
-				holder.getPauseButton().setOnClickListener(listItemOnClickListener);
+				holder.playAndStopButton.setOnClickListener(listItemOnClickListener);
 			} else {
-				holder.getPlayButton().setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						if (soundAdapter.getOnSoundEditListener() != null) {
-							soundAdapter.getOnSoundEditListener().onSoundPlay(view);
+				if (soundInfo.isPlaying) {
+					holder.playAndStopButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							if (soundAdapter.getOnSoundEditListener() != null) {
+								soundAdapter.getOnSoundEditListener().onSoundPause(view);
+							}
 						}
-					}
-				});
-
-				holder.getPauseButton().setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						if (soundAdapter.getOnSoundEditListener() != null) {
-							soundAdapter.getOnSoundEditListener().onSoundPause(view);
+					});
+				} else {
+					holder.playAndStopButton.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							if (soundAdapter.getOnSoundEditListener() != null) {
+								soundAdapter.getOnSoundEditListener().onSoundPlay(view);
+							}
 						}
-					}
-				});
+					});
+				}
 			}
-			holder.getSoundFragmentButtonLayout().setOnClickListener(listItemOnClickListener);
+			holder.soundFragmentButtonLayout.setOnClickListener(listItemOnClickListener);
 		}
 	}
 

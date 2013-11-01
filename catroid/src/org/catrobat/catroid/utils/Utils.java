@@ -30,7 +30,6 @@
 package org.catrobat.catroid.utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.Context;
@@ -69,6 +68,7 @@ import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -78,13 +78,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Semaphore;
 
 public class Utils {
 
 	private static final String TAG = Utils.class.getSimpleName();
-	private static long uniqueLong = 0;
-	private static Semaphore uniqueNameLock = new Semaphore(1);
 	public static final int PICTURE_INTENT = 1;
 	public static final int FILE_INTENT = 2;
 	public static final int TRANSLATION_PLURAL_OTHER_INTEGER = 767676;
@@ -100,7 +97,7 @@ public class Utils {
 
 	public static boolean checkForExternalStorageAvailableAndDisplayErrorIfNot(final Context context) {
 		if (!externalStorageAvailable()) {
-			Builder builder = new AlertDialog.Builder(context);
+			Builder builder = new CustomAlertDialogBuilder(context);
 
 			builder.setTitle(R.string.error);
 			builder.setMessage(R.string.error_no_writiable_external_storage_available);
@@ -161,7 +158,7 @@ public class Utils {
 	}
 
 	public static void showErrorDialog(Context context, int errorMessageId) {
-		Builder builder = new AlertDialog.Builder(context);
+		Builder builder = new CustomAlertDialogBuilder(context);
 		builder.setTitle(R.string.error);
 		builder.setMessage(errorMessageId);
 		builder.setNeutralButton(R.string.close, new OnClickListener() {
@@ -224,13 +221,6 @@ public class Utils {
 		messageDigest.update(string.getBytes());
 
 		return toHex(messageDigest.digest()).toLowerCase(Locale.US);
-	}
-
-	public static String getUniqueName() {
-		uniqueNameLock.acquireUninterruptibly();
-		String uniqueName = String.valueOf(uniqueLong++);
-		uniqueNameLock.release();
-		return uniqueName;
 	}
 
 	private static String toHex(byte[] messageDigest) {
