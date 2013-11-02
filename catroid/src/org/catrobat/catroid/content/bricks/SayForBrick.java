@@ -36,6 +36,7 @@ import android.widget.TextView;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
@@ -50,6 +51,7 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 	private Formula text;
 	private Formula duration;
 	private transient View prototypeView;
+	private transient View speechBubbleView;
 
 	public SayForBrick() {
 	}
@@ -96,6 +98,7 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 		if (animationState) {
 			return view;
 		}
+		speechBubbleView = View.inflate(context, R.layout.bubble_speech_new, null);
 
 		view = View.inflate(context, R.layout.brick_say_for, null);
 		view = getViewWithAlpha(alphaValue);
@@ -186,15 +189,16 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
 		Context context = view.getContext();
-		View bubble = View.inflate(context, R.layout.bubble_speech, null);
-		//		((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(String.valueOf("easy"));
-		bubble.setDrawingCacheEnabled(true);
-		bubble.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-		bubble.layout(0, 0, bubble.getWidth(), bubble.getHeight());
-		bubble.buildDrawingCache();
-		Bitmap bitmap = bubble.getDrawingCache();
+		View bubble = View.inflate(context, R.layout.bubble_speech_new, null);
 
+		((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(String.valueOf("MyText"));
+
+		bubble.setDrawingCacheEnabled(true);
+		bubble.measure(MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_WIDTH, MeasureSpec.EXACTLY),
+				MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_HEIGHT, MeasureSpec.EXACTLY));
+		bubble.layout(0, 0, bubble.getMeasuredWidth(), bubble.getMeasuredHeight());
+
+		Bitmap bitmap = bubble.getDrawingCache();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
 		byte[] speechBubble = stream.toByteArray();
