@@ -48,10 +48,13 @@ import org.catrobat.catroid.utils.Utils;
 
 public class LiveWallpaper extends AndroidLiveWallpaperService {
 
-	private StageListener stageListener;
+	private StageListener lastCreatedStageListener;
 	private AndroidApplicationConfiguration cfg;
-	public static LiveWallpaperEngine liveWallpaperEngine;
+	private LiveWallpaperEngine lastCreatedWallpaperEngine;
 	private Context context;
+
+	private static LiveWallpaperEngine previewEngine;
+	private static LiveWallpaperEngine homeEngine;
 
 	@Override
 	public void onCreate() {
@@ -75,7 +78,18 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	@Override
 	public ApplicationListener createListener(boolean isPreview) {
-		return stageListener;
+		if (isPreview) {
+			previewEngine = lastCreatedWallpaperEngine;
+		} else {
+			previewEngine.onPause();
+			homeEngine = lastCreatedWallpaperEngine;
+		}
+		return lastCreatedStageListener;
+	}
+
+	public static void changeWallpaperProgram() {
+		previewEngine.changeWallpaperProgram();
+		homeEngine.changeWallpaperProgram();
 	}
 
 	@Override
@@ -90,9 +104,9 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 	@Override
 	public Engine onCreateEngine() {
 		Utils.loadProjectIfNeeded(getApplicationContext());
-		stageListener = new StageListener(true);
-		LiveWallpaper.liveWallpaperEngine = new LiveWallpaperEngine(this.stageListener);
-		return LiveWallpaper.liveWallpaperEngine;
+		lastCreatedStageListener = new StageListener(true);
+		lastCreatedWallpaperEngine = new LiveWallpaperEngine(this.lastCreatedStageListener);
+		return lastCreatedWallpaperEngine;
 	}
 
 	@Override
@@ -123,12 +137,12 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			this.localStageListener = stageListener;
 			activateTextToSpeechIfNeeded();
 			SensorHandler.startSensorListener(getApplicationContext());
+
 		}
 
 		@Override
 		public void onVisibilityChanged(boolean visible) {
 			mVisible = visible;
-			Log.d("LWP", "Is visible? " + String.valueOf(visible));
 			super.onVisibilityChanged(visible);
 		}
 
@@ -142,7 +156,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			if (localStageListener.isFinished()) {
 				return;
 			}
-			Log.d("LWP", "VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
+			Log.d("LWP", "Resuing preview: " + this.isPreview() + " SL-" + localStageListener.hashCode());
 			SensorHandler.startSensorListener(getApplicationContext());
 			localStageListener.menuResume();
 			mHandler.postDelayed(mUpdateDisplay, REFRESH_RATE);
@@ -158,7 +172,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 			SensorHandler.stopSensorListeners();
 			localStageListener.menuPause();
-			Log.d("LWP", "NOT VISIBLE EN-" + hashCode() + " SL-" + localStageListener.hashCode());
+			Log.d("LWP", "Pausing preview: " + this.isPreview() + " SL-" + localStageListener.hashCode());
 		}
 
 		@Override
