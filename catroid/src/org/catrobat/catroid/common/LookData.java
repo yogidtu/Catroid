@@ -85,7 +85,7 @@ public class LookData implements Serializable, Cloneable {
 			Pixmap newPixmap = getPixmap();
 			pixmap = null;
 			// TODO place bubble at correct position
-			newPixmap.drawPixmap(speechBubblePixmap, 50, 50);
+			newPixmap.drawPixmap(speechBubblePixmap, 0, 0);
 			this.region = new TextureRegion(new Texture(newPixmap));
 		} else {
 			this.region = new TextureRegion(new Texture(getPixmap()));

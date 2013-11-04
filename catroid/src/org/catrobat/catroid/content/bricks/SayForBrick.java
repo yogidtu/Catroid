@@ -191,14 +191,19 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 		Context context = view.getContext();
 		View bubble = View.inflate(context, R.layout.bubble_speech_new, null);
 
-		((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(String.valueOf("MyText"));
-
+		//		((TextView) bubble.findViewById(R.id.bubble_edit_text))
+		//				.setText(String
+		//						.valueOf("MyTextMyTextMyTextMyTextMyTextMuuuuuuuuuuuuuuuuuuuuuuuuuuu\nyTextMy\tTextMyTextMyTextM\ryTextMyTextMyTextM\nyTextMyTextMy\nTextMyTextMyTextMyTextMy\nTextMyTextMy\nTextMyTex\nt"));
+		((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(text.interpretString(sprite));
 		bubble.setDrawingCacheEnabled(true);
-		bubble.measure(MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_WIDTH, MeasureSpec.EXACTLY),
-				MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_HEIGHT, MeasureSpec.EXACTLY));
+		bubble.measure(MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_WIDTH - 30, MeasureSpec.AT_MOST),
+				MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_HEIGHT - 30, MeasureSpec.AT_MOST));
 		bubble.layout(0, 0, bubble.getMeasuredWidth(), bubble.getMeasuredHeight());
+		//		bubble.layout(0, 0, 300, 300);
 
 		Bitmap bitmap = bubble.getDrawingCache();
+		//		Canvas canvas = new Canvas(bitmap);
+		//		canvas.drawText("DAT", 100, 100, new Paint(Paint.UNDERLINE_TEXT_FLAG));
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
 		byte[] speechBubble = stream.toByteArray();

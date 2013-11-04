@@ -22,16 +22,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bubble_edit_text"
+    android:background="@drawable/speech_bubble" 
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/speech_bubble" >
-    
-    <TextView 
-        android:id="@+id/bubble_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""/>
-    
-
-</LinearLayout>
+    android:text="default xml layout text"/>
