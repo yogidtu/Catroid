@@ -25,6 +25,7 @@ package org.catrobat.catroid.stage;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -202,6 +203,7 @@ public class StageListener implements ApplicationListener {
 		if (!paused) {
 			SoundManager.getInstance().resume();
 			for (Sprite sprite : sprites) {
+				Log.d("LWP", "Resuming sprite " + sprite.getName());
 				sprite.resume();
 			}
 		}

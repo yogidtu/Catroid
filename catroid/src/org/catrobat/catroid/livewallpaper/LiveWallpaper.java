@@ -81,7 +81,9 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		if (isPreview) {
 			previewEngine = lastCreatedWallpaperEngine;
 		} else {
-			previewEngine.onPause();
+			if (previewEngine != null) {
+				previewEngine.onPause();
+			}
 			homeEngine = lastCreatedWallpaperEngine;
 		}
 		return lastCreatedStageListener;
