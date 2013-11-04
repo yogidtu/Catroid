@@ -89,7 +89,8 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	public static void changeWallpaperProgram() {
 		previewEngine.changeWallpaperProgram();
-		homeEngine.changeWallpaperProgram();
+		//TODO
+		//homeEngine.changeWallpaperProgram();
 	}
 
 	@Override
@@ -156,7 +157,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			if (localStageListener.isFinished()) {
 				return;
 			}
-			Log.d("LWP", "Resuing preview: " + this.isPreview() + " SL-" + localStageListener.hashCode());
+			Log.d("LWP", "Resuming preview: " + this.isPreview() + " SL-" + localStageListener.hashCode());
 			SensorHandler.startSensorListener(getApplicationContext());
 			localStageListener.menuResume();
 			mHandler.postDelayed(mUpdateDisplay, REFRESH_RATE);

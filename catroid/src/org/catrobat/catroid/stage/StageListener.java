@@ -25,7 +25,6 @@ package org.catrobat.catroid.stage;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -168,8 +167,6 @@ public class StageListener implements ApplicationListener {
 		for (Sprite sprite : sprites) {
 			sprite.resume();
 		}
-		Log.i("LWP", "MENU RESUMED " + hashCode());
-
 	}
 
 	public void menuPause() {
