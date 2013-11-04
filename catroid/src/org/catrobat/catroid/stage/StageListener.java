@@ -323,7 +323,12 @@ public class StageListener implements ApplicationListener {
 		}
 
 		if (!paused && !finished) {
-			stage.draw();
+			try {
+				stage.draw();
+			} catch (IllegalStateException e) {
+				Log.d("LWP", "IllegalStateException caught while rendering the stage listner " + hashCode());
+				return;
+			}
 
 		}
 
