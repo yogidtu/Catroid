@@ -60,17 +60,20 @@ import java.io.OutputStream;
 import java.util.List;
 
 public class StageListener implements ApplicationListener {
+
+	private static final int AXIS_WIDTH = 4;
 	private static final float DELTA_ACTIONS_DIVIDER_MAXIMUM = 50f;
 	private static final int ACTIONS_COMPUTATION_TIME_MAXIMUM = 8;
 	private static final boolean DEBUG = false;
-	public static final String SCREENSHOT_AUTOMATIC_FILE_NAME = "automatic_screenshot.png";
-	public static final String SCREENSHOT_MANUAL_FILE_NAME = "manual_screenshot.png";
 
 	// needed for UiTests - is disabled to fix crashes with EMMA coverage
 	// CHECKSTYLE DISABLE StaticVariableNameCheck FOR 1 LINES
 	private static boolean DYNAMIC_SAMPLING_RATE_FOR_ACTIONS = true;
 
 	private float deltaActionTimeDivisor = 10f;
+	public static final String SCREENSHOT_AUTOMATIC_FILE_NAME = "automatic_screenshot"
+			+ Constants.IMAGE_STANDARD_EXTENTION;
+	public static final String SCREENSHOT_MANUAL_FILE_NAME = "manual_screenshot" + Constants.IMAGE_STANDARD_EXTENTION;
 	private FPSLogger fpsLogger;
 
 	private Stage stage;
@@ -326,10 +329,10 @@ public class StageListener implements ApplicationListener {
 
 			/*
 			 * Necessary for UiTests, when EMMA - code coverage is enabled.
-			 *
+			 * 
 			 * Without setting DYNAMIC_SAMPLING_RATE_FOR_ACTIONS to false(via reflection), before
 			 * the UiTest enters the stage, random segmentation faults(triggered by EMMA) will occur.
-			 *
+			 * 
 			 * Can be removed, when EMMA is replaced by an other code coverage tool, or when a
 			 * future EMMA - update will fix the bugs.
 			 */
@@ -390,16 +393,16 @@ public class StageListener implements ApplicationListener {
 	private void drawAxes() {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(axes, -virtualWidthHalf, 0, virtualWidth, 1);
-		batch.draw(axes, 0, -virtualHeightHalf, 1, virtualHeight);
+		batch.draw(axes, -virtualWidthHalf, -AXIS_WIDTH / 2, virtualWidth, AXIS_WIDTH);
+		batch.draw(axes, -AXIS_WIDTH / 2, -virtualHeightHalf, AXIS_WIDTH, virtualHeight);
 
-		font.draw(batch, "-" + (int) virtualWidthHalf, -virtualWidthHalf, 0);
-		TextBounds bounds = font.getBounds(String.valueOf((int) virtualWidthHalf));
-		font.draw(batch, String.valueOf((int) virtualWidthHalf), virtualWidthHalf - bounds.width, 0);
+		TextBounds bounds = font.getBounds(String.valueOf((int) virtualHeightHalf));
+		font.draw(batch, "-" + (int) virtualWidthHalf, -virtualWidthHalf + 3, -bounds.height / 2);
+		font.draw(batch, String.valueOf((int) virtualWidthHalf), virtualWidthHalf - bounds.width, -bounds.height / 2);
 
-		font.draw(batch, "-" + (int) virtualHeightHalf, 0, -virtualHeightHalf + bounds.height);
-		font.draw(batch, String.valueOf((int) virtualHeightHalf), 0, virtualHeightHalf);
-		font.draw(batch, "0", 0, 0);
+		font.draw(batch, "-" + (int) virtualHeightHalf, bounds.height / 2, -virtualHeightHalf + bounds.height + 3);
+		font.draw(batch, String.valueOf((int) virtualHeightHalf), bounds.height / 2, virtualHeightHalf - 3);
+		font.draw(batch, "0", bounds.height / 2, -bounds.height / 2);
 		batch.end();
 	}
 

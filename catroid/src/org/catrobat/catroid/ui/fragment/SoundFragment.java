@@ -54,7 +54,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
@@ -862,11 +861,9 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			convertView = View.inflate(getActivity(), R.layout.fragment_sound_soundlist_item, null);
 
 			holder = new SoundViewHolder();
-			holder.playButton = (ImageButton) convertView.findViewById(R.id.fragment_sound_item_play_image_button);
-			holder.pauseButton = (ImageButton) convertView.findViewById(R.id.fragment_sound_item_pause_image_button);
-
-			holder.playButton.setVisibility(Button.VISIBLE);
-			holder.pauseButton.setVisibility(Button.GONE);
+			holder.playAndStopButton = (ImageButton) convertView.findViewById(R.id.fragment_sound_item_image_button);
+			holder.playAndStopButton.setImageResource(R.drawable.ic_media_play);
+			holder.playAndStopButton.setContentDescription(getString(R.string.sound_play));
 
 			holder.soundFragmentButtonLayout = (LinearLayout) convertView
 					.findViewById(R.id.fragment_sound_item_main_linear_layout);
@@ -874,8 +871,6 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			holder.titleTextView = (TextView) convertView.findViewById(R.id.fragment_sound_item_title_text_view);
 			holder.timeSeparatorTextView = (TextView) convertView
 					.findViewById(R.id.fragment_sound_item_time_seperator_text_view);
-			holder.timeDurationTextView = (TextView) convertView
-					.findViewById(R.id.fragment_sound_item_duration_text_view);
 			holder.soundFileSizePrefixTextView = (TextView) convertView
 					.findViewById(R.id.fragment_sound_item_size_prefix_text_view);
 			holder.soundFileSizeTextView = (TextView) convertView.findViewById(R.id.fragment_sound_item_size_text_view);
@@ -888,7 +883,7 @@ public class SoundFragment extends ScriptActivityFragment implements SoundBaseAd
 			holder = (SoundViewHolder) convertView.getTag();
 		}
 		SoundController controller = SoundController.getInstance();
-		controller.updateSoundLogic(position, holder, adapter);
+		controller.updateSoundLogic(getActivity(), position, holder, adapter);
 
 		return convertView;
 	}
