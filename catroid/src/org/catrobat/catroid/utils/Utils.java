@@ -44,9 +44,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -82,8 +83,6 @@ public class Utils {
 	public static final int TRANSLATION_PLURAL_OTHER_INTEGER = 767676;
 	private static boolean isUnderTest;
 
-	private static Project standardProject;
-
 	public static boolean externalStorageAvailable() {
 		String externalStorageState = Environment.getExternalStorageState();
 		return externalStorageState.equals(Environment.MEDIA_MOUNTED)
@@ -108,12 +107,12 @@ public class Utils {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	public static void updateScreenWidthAndHeight(Context context) {
 		WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-		Display display = windowManager.getDefaultDisplay();
-		ScreenValues.SCREEN_WIDTH = display.getWidth();
-		ScreenValues.SCREEN_HEIGHT = display.getHeight();
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
+		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
 	}
 
 	public static boolean isNetworkAvailable(Context context) {
@@ -373,21 +372,35 @@ public class Utils {
 		return pixmap;
 	}
 
+	public static void setBottomBarActivated(Activity activity, boolean isActive) {
+		LinearLayout bottomBarLayout = (LinearLayout) activity.findViewById(R.id.bottom_bar);
+
+		if (bottomBarLayout != null) {
+			bottomBarLayout.findViewById(R.id.button_add).setClickable(isActive);
+			bottomBarLayout.findViewById(R.id.button_play).setClickable(isActive);
+		}
+	}
+
+	public static String getUniqueProjectName() {
+		String projectName = "project_" + String.valueOf(System.currentTimeMillis());
+		while (StorageHandler.getInstance().projectExists(projectName)) {
+			projectName = "project_" + String.valueOf(System.currentTimeMillis());
+		}
+		return projectName;
+	}
+
 	public static boolean isStandardProject(Project projectToCheck, Context context) {
-
 		try {
-			if (standardProject == null) {
-				standardProject = StandardProjectHandler.createAndSaveStandardProject(
-						context.getString(R.string.default_project_name), context);
-			}
-
-			ProjectManager.getInstance().setProject(projectToCheck);
-			ProjectManager.getInstance().saveProject();
-
+			Project standardProject = StandardProjectHandler.createAndSaveStandardProject(getUniqueProjectName(),
+					context);
 			String standardProjectXMLString = StorageHandler.getInstance().getXMLStringOfAProject(standardProject);
 			int start = standardProjectXMLString.indexOf("<objectList>");
 			int end = standardProjectXMLString.indexOf("</objectList>");
 			String standardProjectSpriteList = standardProjectXMLString.substring(start, end);
+			ProjectManager.getInstance().deleteCurrentProject();
+
+			ProjectManager.getInstance().setProject(projectToCheck);
+			ProjectManager.getInstance().saveProject();
 
 			String projectToCheckXMLString = StorageHandler.getInstance().getXMLStringOfAProject(projectToCheck);
 			start = projectToCheckXMLString.indexOf("<objectList>");
@@ -395,11 +408,12 @@ public class Utils {
 			String projectToCheckStringList = projectToCheckXMLString.substring(start, end);
 
 			return standardProjectSpriteList.contentEquals(projectToCheckStringList);
-		} catch (IOException e) {
+		} catch (IllegalArgumentException illegalArgumentException) {
+			illegalArgumentException.printStackTrace();
+		} catch (IOException exception) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exception.printStackTrace();
 		}
-
 		return true;
 
 	}
