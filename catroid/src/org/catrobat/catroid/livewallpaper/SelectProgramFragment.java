@@ -142,8 +142,8 @@ public class SelectProgramFragment extends ListFragment implements OnProjectClic
 		@Override
 		protected void onPostExecute(Void result) {
 			LiveWallpaper.changeWallpaperProgram();
-			getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
-			getFragmentManager().popBackStack();
+			//			getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
+			//			getFragmentManager().popBackStack();
 			if (progress.isShowing()) {
 				progress.dismiss();
 			}

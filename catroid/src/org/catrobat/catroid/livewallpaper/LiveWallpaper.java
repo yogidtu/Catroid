@@ -58,7 +58,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	@Override
 	public void onCreate() {
-		//		android.os.Debug.waitForDebugger();
+		//android.os.Debug.waitForDebugger();
 		super.onCreate();
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);

@@ -267,17 +267,26 @@ public class Utils {
 	}
 
 	public static void loadProjectIfNeeded(Context context) {
-		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+		ProjectManager projectManager = ProjectManager.getInstance();
+		Project currentProject = projectManager.getCurrentProject();
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 		String projectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
-		if (currentProject == null || projectName != currentProject.getName()) {
-			if (projectName != null) {
-				ProjectManager.getInstance().loadProject(projectName, context, false);
-			} else if (ProjectManager.getInstance().canLoadProject(context.getString(R.string.default_project_name))) {
-				ProjectManager.getInstance().loadProject(context.getString(R.string.default_project_name), context,
-						false);
+
+		boolean canLoadCurrentProject;
+		if (currentProject == null) {
+			canLoadCurrentProject = false;
+		} else {
+			canLoadCurrentProject = projectManager.canLoadProject(currentProject.getName());
+		}
+
+		if (currentProject == null || projectName != currentProject.getName() || !canLoadCurrentProject) {
+			if (!canLoadCurrentProject
+					&& projectManager.canLoadProject(context.getString(R.string.default_project_name))) {
+				projectManager.loadProject(context.getString(R.string.default_project_name), context, false);
+			} else if (projectName != null) {
+				projectManager.loadProject(projectName, context, false);
 			} else {
-				ProjectManager.getInstance().initializeDefaultProject(context);
+				projectManager.initializeDefaultProject(context);
 			}
 		}
 	}
