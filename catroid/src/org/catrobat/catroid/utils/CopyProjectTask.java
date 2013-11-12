@@ -34,11 +34,6 @@ import java.io.IOException;
 public class CopyProjectTask extends AsyncTask<String, Long, Boolean> {
 
 	@Override
-	protected void onPreExecute() {
-		super.onPreExecute();
-	}
-
-	@Override
 	protected Boolean doInBackground(String... projectNameArray) {
 		String newProjectName = projectNameArray[0];
 		String oldProjectName = projectNameArray[1];

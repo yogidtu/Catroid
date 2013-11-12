@@ -28,4 +28,5 @@ package org.catrobat.catroid.content.bricks;
  * Examples are: Scripts, Condition-Ends (e.g. Else-Brick or End-If-Else-Brick)
  */
 public interface AllowedAfterDeadEndBrick {
+
 }

@@ -40,11 +40,6 @@ public class BrickBaseType implements Brick {
 	public transient boolean animationState = false;
 
 	@Override
-	public int getAlphaValue() {
-		return alphaValue;
-	}
-
-	@Override
 	public Sprite getSprite() {
 		return sprite;
 	}

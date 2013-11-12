@@ -20,33 +20,19 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.uitest.mockups;
+package org.catrobat.catroid.bluetooth;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
+import android.os.Handler;
 
-/**
- * A mock sound activity that simply returns a sound file from the sound resources.
- */
-public class MockSoundActivity extends Activity {
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		Bundle bundle = this.getIntent().getExtras();
+// TODO Not needed for LegoNXT anymore, functionality now in LegoNXTBtCommunicator! Maybe refactor similary for arduino or move to arduino package...
+public interface BtCommunicator {
 
-		if (bundle == null) {
-			return;
-		}
+	// this is the only OUI registered by LEGO, see http://standards.ieee.org/regauth/oui/index.shtml
+	String OUI_LEGO = "00:16:53";
 
-		if (bundle.containsKey("filePath")) {
-			String filePath = bundle.getString("filePath");
+	void setMACAddress(String mMACaddress);
 
-			Intent resultIntent = new Intent();
-			resultIntent.setData(Uri.parse(filePath));
-			setResult(RESULT_OK, resultIntent);
-		}
-		finish();
-	}
+	boolean isConnected();
+
+	Handler getHandler();
 }
