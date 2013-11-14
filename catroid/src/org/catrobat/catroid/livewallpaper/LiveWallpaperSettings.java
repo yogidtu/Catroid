@@ -114,11 +114,13 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 						SoundManager.getInstance().soundDisabledByLwp = false;
 						allowSounds.setChecked(true);
 						editor.putBoolean(Constants.PREF_SOUND_DISABLED, false);
-
+						//						SoundManager.getInstance().resume();
+						SoundManager.getInstance().resume();
 					} else {
 						SoundManager.getInstance().soundDisabledByLwp = true;
 						allowSounds.setChecked(false);
 						editor.putBoolean(Constants.PREF_SOUND_DISABLED, true);
+						SoundManager.getInstance().pause();
 
 					}
 					editor.commit();
