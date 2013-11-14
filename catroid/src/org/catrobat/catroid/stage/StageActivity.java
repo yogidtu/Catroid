@@ -22,7 +22,9 @@
  */
 package org.catrobat.catroid.stage;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.WindowManager;
 
@@ -66,16 +68,21 @@ public class StageActivity extends AndroidApplication {
 		stageListener.finish();
 
 		PreStageActivity.shutdownResources();
+
+		String url = "http://www.example.com";
+		Intent i = new Intent(Intent.ACTION_VIEW);
+		i.setData(Uri.parse(url));
+		startActivity(i);
 	}
-	
-	public void onPause()
-	{
+
+	@Override
+	public void onPause() {
 		SensorHandler.stopSensorListeners();
 		super.onPause();
 	}
-	
-	public void onResume()
-	{
+
+	@Override
+	public void onResume() {
 		SensorHandler.startSensorListener(this);
 		super.onResume();
 	}

@@ -46,9 +46,11 @@ import com.actionbarsherlock.view.MenuItem;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.io.LoadProjectTask;
 import org.catrobat.catroid.io.LoadProjectTask.OnLoadProjectCompleteListener;
 import org.catrobat.catroid.stage.PreStageActivity;
+import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.transfers.CheckTokenTask;
 import org.catrobat.catroid.transfers.CheckTokenTask.OnCheckTokenCompleteListener;
 import org.catrobat.catroid.ui.controller.BackPackListManager;
@@ -73,6 +75,9 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 	private static final String TYPE_FILE = "file";
 	private static final String TYPE_HTTP = "http";
 
+	private static final String START_PROJECT = "Tic-Tac-Toe Master";
+	private static final Boolean STANDALONE_MODE = true;
+
 	private Lock viewSwitchLock = new ViewSwitchLock();
 
 	@Override
@@ -81,27 +86,39 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
 			return;
 		}
+
 		Utils.updateScreenWidthAndHeight(this);
 
-		setContentView(R.layout.activity_main_menu);
+		if (STANDALONE_MODE) {
+			loadStageProject(START_PROJECT);
+		} else {
+			setContentView(R.layout.activity_main_menu);
 
-		final ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayUseLogoEnabled(true);
-		actionBar.setTitle(R.string.app_name);
+			final ActionBar actionBar = getSupportActionBar();
+			actionBar.setDisplayUseLogoEnabled(true);
+			actionBar.setTitle(R.string.app_name);
 
-		findViewById(R.id.main_menu_button_continue).setEnabled(false);
+			findViewById(R.id.main_menu_button_continue).setEnabled(false);
 
-		// Load external project from URL or local file system.
-		Uri loadExternalProjectUri = getIntent().getData();
-		getIntent().setData(null);
+			// Load external project from URL or local file system.
+			Uri loadExternalProjectUri = getIntent().getData();
+			getIntent().setData(null);
 
-		if (loadExternalProjectUri != null) {
-			loadProgramFromExternalSource(loadExternalProjectUri);
+			if (loadExternalProjectUri != null) {
+				loadProgramFromExternalSource(loadExternalProjectUri);
+			}
+
+			if (!BackPackListManager.isBackpackFlag()) {
+				BackPackListManager.getInstance().setSoundInfoArrayListEmpty();
+			}
 		}
 
-		if (!BackPackListManager.isBackpackFlag()) {
-			BackPackListManager.getInstance().setSoundInfoArrayListEmpty();
-		}
+	}
+
+	private void loadStageProject(String projectName) {
+		LoadProjectTask loadProjectTask = new LoadProjectTask(this, START_PROJECT, false, false);
+		loadProjectTask.setOnLoadProjectCompleteListener(this);
+		loadProjectTask.execute();
 	}
 
 	@Override
@@ -114,13 +131,33 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 
 		UtilFile.createStandardProjectIfRootDirectoryIsEmpty(this);
 		PreStageActivity.shutdownPersistentResources();
-		setMainMenuButtonContinueText();
-		findViewById(R.id.main_menu_button_continue).setEnabled(true);
-		String projectName = getIntent().getStringExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
-		if (projectName != null) {
-			loadProjectInBackground(projectName);
+		if (!STANDALONE_MODE) {
+			setMainMenuButtonContinueText();
+			findViewById(R.id.main_menu_button_continue).setEnabled(true);
+			String projectName = getIntent().getStringExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
+			if (projectName != null) {
+				loadProjectInBackground(projectName);
+			}
+			getIntent().removeExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
 		}
-		getIntent().removeExtra(StatusBarNotificationManager.EXTRA_PROJECT_NAME);
+	}
+
+	private void startStageProject() {
+		ProjectManager.getInstance().getCurrentProject().getUserVariables().resetAllUserVariables();
+		Intent intent = new Intent(this, PreStageActivity.class);
+		startActivityForResult(intent, PreStageActivity.REQUEST_RESOURCES_INIT);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == PreStageActivity.REQUEST_RESOURCES_INIT && resultCode == RESULT_OK) {
+			SensorHandler.startSensorListener(this);
+			Intent intent = new Intent(MainMenuActivity.this, StageActivity.class);
+			startActivityForResult(intent, StageActivity.STAGE_ACTIVITY_FINISH);
+		}
+		if (requestCode == StageActivity.STAGE_ACTIVITY_FINISH) {
+			SensorHandler.stopSensorListeners();
+		}
 	}
 
 	@Override
@@ -189,10 +226,13 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 
 	@Override
 	public void onLoadProjectSuccess(boolean startProjectActivity) {
-		if (ProjectManager.getInstance().getCurrentProject() != null && startProjectActivity) {
-			Intent intent = new Intent(MainMenuActivity.this, ProjectActivity.class);
-			startActivity(intent);
-		}
+		startStageProject();
+		/*
+		 * if (ProjectManager.getInstance().getCurrentProject() != null && startProjectActivity) {
+		 * Intent intent = new Intent(MainMenuActivity.this, ProjectActivity.class);
+		 * startActivity(intent);
+		 * }
+		 */
 	}
 
 	public void handleNewButton(View view) {
