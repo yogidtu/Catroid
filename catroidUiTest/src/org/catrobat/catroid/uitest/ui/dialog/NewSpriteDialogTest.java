@@ -22,17 +22,20 @@
  */
 package org.catrobat.catroid.uitest.ui.dialog;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.widget.EditText;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.controller.LookController;
 import org.catrobat.catroid.ui.dialogs.NewSpriteDialog.ActionAfterFinished;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,7 +73,8 @@ public class NewSpriteDialogTest extends BaseActivityInstrumentationTestCase<Mai
 		UiTestUtils.getIntoSpritesFromMainMenu(solo);
 
 		UiTestUtils.clickOnBottomBar(solo, R.id.button_add);
-		if (Utils.isPaintroidInstalled(getActivity())) {
+
+		if (LookController.getInstance().checkIfPocketPaintIsInstalled(getPocketPaintIntent(), getActivity())) {
 			assertTrue("No pocket paint selection available",
 					solo.waitForText(solo.getString(R.string.dialog_new_object_pocketpaint), 0, 500));
 		}
@@ -110,5 +114,12 @@ public class NewSpriteDialogTest extends BaseActivityInstrumentationTestCase<Mai
 		solo.clickOnButton(solo.getString(R.string.ok));
 		solo.waitForActivity(ScriptActivity.class.getSimpleName());
 		solo.assertCurrentActivity("Current Activity is not ScriptActivity", ScriptActivity.class);
+	}
+
+	private Intent getPocketPaintIntent() {
+		Intent intent = new Intent("android.intent.action.MAIN");
+		intent.setComponent(new ComponentName(Constants.POCKET_PAINT_PACKAGE_NAME,
+				Constants.POCKET_PAINT_INTENT_ACTIVITY_NAME));
+		return intent;
 	}
 }

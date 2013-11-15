@@ -32,17 +32,14 @@ package org.catrobat.catroid.utils;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -409,6 +406,25 @@ public class Utils {
 		}
 		return pixmap;
 	}
+
+	public static void rewriteImageFileForStage(Context context, File lookFile) throws IOException {
+		// if pixmap cannot be created, image would throw an Exception in stage
+		// so has to be loaded again with other Config
+		Pixmap pixmap = null;
+		pixmap = Utils.getPixmapFromFile(lookFile);
+
+		if (pixmap == null) {
+			ImageEditing.overwriteImageFileWithNewBitmap(lookFile);
+			pixmap = Utils.getPixmapFromFile(lookFile);
+
+			if (pixmap == null) {
+				Utils.showErrorDialog(context, R.string.error_load_image);
+				StorageHandler.getInstance().deleteFile(lookFile.getAbsolutePath());
+				throw new IOException("Pixmap could not be fixed");
+			}
+		}
+	}
+
 	public static String getUniqueProjectName() {
 		String projectName = "project_" + String.valueOf(System.currentTimeMillis());
 		while (StorageHandler.getInstance().projectExists(projectName)) {
@@ -481,4 +497,5 @@ public class Utils {
 			selectAllActionModeButton.setVisibility(View.GONE);
 		}
 	}
+
 }

@@ -51,6 +51,7 @@ import org.catrobat.catroid.content.bricks.PointToBrick.SpinnerAdapterWrapper;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.ProgramMenuActivity;
 import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.ui.controller.LookController;
 import org.catrobat.catroid.utils.UtilCamera;
 import org.catrobat.catroid.utils.Utils;
 
@@ -106,7 +107,7 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_new_object, null);
-		setupPaintroidButton(dialogView);
+		setupPocketPaintButton(dialogView);
 		setupGalleryButton(dialogView);
 		setupCameraButton(dialogView);
 
@@ -204,11 +205,18 @@ public class NewSpriteDialog extends SherlockDialogFragment {
 		return decodedUri;
 	}
 
-	private void setupPaintroidButton(View parentView) {
+	private Intent getPocketPaintIntent() {
+		Intent intent = new Intent("android.intent.action.MAIN");
+		intent.setComponent(new ComponentName(Constants.POCKET_PAINT_PACKAGE_NAME,
+				Constants.POCKET_PAINT_INTENT_ACTIVITY_NAME));
+		return intent;
+	}
+
+	private void setupPocketPaintButton(View parentView) {
 		View paintroidButton = parentView.findViewById(R.id.dialog_new_object_paintroid);
 		LinearLayout linearLayout = (LinearLayout) parentView.findViewById(R.id.dialog_new_object_chooser_layout);
 
-		if (Utils.isPaintroidInstalled(getActivity())) {
+		if (LookController.getInstance().checkIfPocketPaintIsInstalled(getPocketPaintIntent(), getActivity())) {
 			paintroidButton.setOnClickListener(new OnClickListener() {
 
 				@Override
