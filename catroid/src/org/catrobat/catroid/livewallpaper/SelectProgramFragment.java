@@ -126,8 +126,6 @@ public class SelectProgramFragment extends ListFragment implements OnProjectClic
 				ProjectManager projectManager = ProjectManager.getInstance();
 				if (projectManager.getCurrentProject() != null
 						&& projectManager.getCurrentProject().getName().equals(selectedProject)) {
-					getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
-					getFragmentManager().popBackStack();
 					return null;
 				}
 				projectManager.setProject(project);
@@ -136,14 +134,14 @@ public class SelectProgramFragment extends ListFragment implements OnProjectClic
 				editor.putString(Constants.PREF_PROJECTNAME_KEY, selectedProject);
 				editor.commit();
 			}
-			getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
-			getFragmentManager().popBackStack();
 			return null;
 		}
 
 		@Override
 		protected void onPostExecute(Void result) {
 			LiveWallpaper.changeWallpaperProgram();
+			getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
+			getFragmentManager().popBackStack();
 			if (progress.isShowing()) {
 				progress.dismiss();
 			}
