@@ -50,8 +50,6 @@ public class LookData implements Serializable, Cloneable {
 	private transient Pixmap pixmap = null;
 	private transient Pixmap originalPixmap = null;
 	private transient TextureRegion region = null;
-	private boolean showBubble = false;
-	private byte[] bubble = null;
 
 	@Override
 	public LookData clone() {
@@ -80,16 +78,7 @@ public class LookData implements Serializable, Cloneable {
 	}
 
 	public void setTextureRegion() {
-		if (this.showBubble == true) {
-			Pixmap speechBubblePixmap = new Pixmap(this.bubble, 0, bubble.length);
-			Pixmap newPixmap = getPixmap();
-			pixmap = null;
-			// TODO place bubble at correct position
-			newPixmap.drawPixmap(speechBubblePixmap, 0, 0);
-			this.region = new TextureRegion(new Texture(newPixmap));
-		} else {
-			this.region = new TextureRegion(new Texture(getPixmap()));
-		}
+		region = new TextureRegion(new Texture(getPixmap()));
 	}
 
 	public Pixmap getPixmap() {
@@ -177,9 +166,14 @@ public class LookData implements Serializable, Cloneable {
 		return name;
 	}
 
-	public void setShowBubble(byte[] bubble, boolean show) {
-		this.bubble = bubble;
-		this.showBubble = show;
+	public void drawBubbleLeftTopInsideLook(Pixmap newPixmap, Pixmap bubble) {
+		newPixmap.drawPixmap(bubble, 0, 0);
+		region = new TextureRegion(new Texture(newPixmap));
 	}
 
+	public void drawBubbleRightTopInsideLook(Pixmap newPixmap, Pixmap bubble) {
+		int rightTopX = newPixmap.getWidth() - bubble.getWidth();
+		newPixmap.drawPixmap(bubble, rightTopX, 0);
+		region = new TextureRegion(new Texture(newPixmap));
+	}
 }

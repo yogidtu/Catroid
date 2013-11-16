@@ -206,7 +206,7 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 		//		canvas.drawText("DAT", 100, 100, new Paint(Paint.UNDERLINE_TEXT_FLAG));
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
-		byte[] speechBubble = stream.toByteArray();
+		final byte[] speechBubble = stream.toByteArray();
 		bubble.setDrawingCacheEnabled(false);
 		// TODO at the text!
 		sequence.addAction(ExtendedActions.say(sprite, speechBubble, duration));

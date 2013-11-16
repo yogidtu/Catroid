@@ -328,10 +328,10 @@ public class StageListener implements ApplicationListener {
 
 			/*
 			 * Necessary for UiTests, when EMMA - code coverage is enabled.
-			 *
+			 * 
 			 * Without setting DYNAMIC_SAMPLING_RATE_FOR_ACTIONS to false(via reflection), before
 			 * the UiTest enters the stage, random segmentation faults(triggered by EMMA) will occur.
-			 *
+			 * 
 			 * Can be removed, when EMMA is replaced by an other code coverage tool, or when a
 			 * future EMMA - update will fix the bugs.
 			 */
@@ -485,6 +485,11 @@ public class StageListener implements ApplicationListener {
 				screenMode = ScreenModes.MAXIMIZE;
 				break;
 		}
+	}
+
+	public boolean tryToDrawSpeechBubbleOutsideFromCurrentLook(Pixmap bubble) {
+
+		return false;
 	}
 
 	private LookData createWhiteBackgroundLookData() {
