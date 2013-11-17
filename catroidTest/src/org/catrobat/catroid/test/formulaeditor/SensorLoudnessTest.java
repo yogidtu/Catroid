@@ -24,8 +24,8 @@ package org.catrobat.catroid.test.formulaeditor;
 
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.formulaeditor.SensorHandler;
-import org.catrobat.catroid.formulaeditor.SensorLoudness;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.SensorHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.SensorLoudness;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.SimulatedSoundRecorder;
 

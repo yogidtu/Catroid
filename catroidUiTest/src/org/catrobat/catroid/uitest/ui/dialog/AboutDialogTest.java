@@ -25,11 +25,11 @@ package org.catrobat.catroid.uitest.ui.dialog;
 import android.view.View;
 import android.widget.Button;
 
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
 
 import java.util.ArrayList;
 

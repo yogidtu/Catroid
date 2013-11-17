@@ -24,9 +24,9 @@ package org.catrobat.catroid.test.web;
 
 import android.test.AndroidTestCase;
 
+import org.catrobat.catroid.standalone.tictactoe_master.utils.DownloadUtil;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.DownloadUtil;
-import org.catrobat.catroid.utils.Utils;
 
 public class UpAndDownloadTest extends AndroidTestCase {
 

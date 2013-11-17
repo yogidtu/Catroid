@@ -25,18 +25,18 @@ package org.catrobat.catroid.uitest.content.interaction;
 import android.os.Build;
 import android.widget.ListView;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.SetXBrick;
-import org.catrobat.catroid.content.bricks.StopAllSoundsBrick;
-import org.catrobat.catroid.content.bricks.WaitBrick;
-import org.catrobat.catroid.ui.MainMenuActivity;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.common.ScreenValues;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.Brick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetXBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.StopAllSoundsBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.WaitBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;

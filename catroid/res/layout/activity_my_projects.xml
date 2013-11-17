@@ -34,6 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_bar"
-        class="org.catrobat.catroid.ui.fragment.ProjectsListFragment" />
+        class="org.catrobat.catroid.standalone.tictactoe_master.ui.fragment.ProjectsListFragment" />
 
 </RelativeLayout>

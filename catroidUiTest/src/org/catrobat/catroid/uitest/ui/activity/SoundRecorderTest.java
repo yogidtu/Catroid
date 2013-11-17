@@ -29,16 +29,16 @@ import android.content.res.Configuration;
 
 import com.jayway.android.robotium.solo.Solo;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.SoundInfo;
-import org.catrobat.catroid.soundrecorder.SoundRecorderActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
-import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.common.SoundInfo;
+import org.catrobat.catroid.standalone.tictactoe_master.soundrecorder.SoundRecorderActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.ScriptActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;

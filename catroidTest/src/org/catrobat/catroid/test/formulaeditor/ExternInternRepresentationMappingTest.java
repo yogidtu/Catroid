@@ -25,7 +25,7 @@ package org.catrobat.catroid.test.formulaeditor;
 
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.formulaeditor.ExternInternRepresentationMapping;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.ExternInternRepresentationMapping;
 
 public class ExternInternRepresentationMappingTest extends InstrumentationTestCase {
 

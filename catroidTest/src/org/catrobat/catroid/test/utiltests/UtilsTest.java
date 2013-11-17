@@ -24,23 +24,23 @@ package org.catrobat.catroid.test.utiltests;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.common.StandardProjectHandler;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.WhenScript;
-import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.HideBrick;
-import org.catrobat.catroid.content.bricks.SetLookBrick;
-import org.catrobat.catroid.content.bricks.WaitBrick;
-import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.common.LookData;
+import org.catrobat.catroid.standalone.tictactoe_master.common.ScreenValues;
+import org.catrobat.catroid.standalone.tictactoe_master.common.StandardProjectHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.WhenScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.Brick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.HideBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetLookBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.WaitBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Formula;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.UtilFile;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.UtilFile;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;

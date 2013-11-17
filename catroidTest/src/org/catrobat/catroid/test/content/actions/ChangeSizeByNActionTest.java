@@ -24,10 +24,10 @@ package org.catrobat.catroid.test.content.actions;
 
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ChangeSizeByNAction;
-import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.ChangeSizeByNAction;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.ExtendedActions;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Formula;
 
 public class ChangeSizeByNActionTest extends InstrumentationTestCase {
 

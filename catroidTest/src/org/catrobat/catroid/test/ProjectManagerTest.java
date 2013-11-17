@@ -24,13 +24,13 @@ package org.catrobat.catroid.test;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.Utils;
 
 public class ProjectManagerTest extends AndroidTestCase {
 	private static final String OLD_PROJECT = "OLD_PROJECT";

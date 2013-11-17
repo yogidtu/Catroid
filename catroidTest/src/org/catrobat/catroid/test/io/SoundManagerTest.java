@@ -25,8 +25,8 @@ package org.catrobat.catroid.test.io;
 import android.media.MediaPlayer;
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.io.SoundManager;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.io.SoundManager;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;

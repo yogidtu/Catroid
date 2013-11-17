@@ -26,8 +26,8 @@ package org.catrobat.catroid.test.utils;
 import android.test.AndroidTestCase;
 import android.util.SparseArray;
 
-import org.catrobat.catroid.utils.NotificationData;
-import org.catrobat.catroid.utils.StatusBarNotificationManager;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.NotificationData;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.StatusBarNotificationManager;
 
 public class StatusBarNotificationManagerTest extends AndroidTestCase {
 

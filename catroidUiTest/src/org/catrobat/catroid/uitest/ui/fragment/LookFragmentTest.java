@@ -33,23 +33,23 @@ import android.widget.TextView;
 
 import com.jayway.android.robotium.solo.Solo;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
-import org.catrobat.catroid.ui.ProgramMenuActivity;
-import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.adapter.LookAdapter;
-import org.catrobat.catroid.ui.controller.LookController;
-import org.catrobat.catroid.ui.fragment.LookFragment;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.common.LookData;
+import org.catrobat.catroid.standalone.tictactoe_master.common.ScreenValues;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.stage.StageActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.ProgramMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.ScriptActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.adapter.LookAdapter;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.controller.LookController;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.fragment.LookFragment;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;

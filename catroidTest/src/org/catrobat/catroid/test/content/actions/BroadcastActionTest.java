@@ -24,16 +24,16 @@ package org.catrobat.catroid.test.content.actions;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.content.BroadcastScript;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.bricks.BroadcastBrick;
-import org.catrobat.catroid.content.bricks.BroadcastWaitBrick;
-import org.catrobat.catroid.content.bricks.SetXBrick;
-import org.catrobat.catroid.content.bricks.WaitBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.content.BroadcastScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.BroadcastBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.BroadcastWaitBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetXBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.WaitBrick;
 
 public class BroadcastActionTest extends AndroidTestCase {
 

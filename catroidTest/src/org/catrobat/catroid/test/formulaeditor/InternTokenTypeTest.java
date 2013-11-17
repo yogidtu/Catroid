@@ -25,7 +25,7 @@ package org.catrobat.catroid.test.formulaeditor;
 
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.formulaeditor.InternTokenType;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.InternTokenType;
 
 public class InternTokenTypeTest extends InstrumentationTestCase {
 

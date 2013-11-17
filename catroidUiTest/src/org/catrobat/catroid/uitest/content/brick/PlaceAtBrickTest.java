@@ -24,20 +24,20 @@ package org.catrobat.catroid.uitest.content.brick;
 
 import android.widget.ListView;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.SoundInfo;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.HideBrick;
-import org.catrobat.catroid.content.bricks.PlaceAtBrick;
-import org.catrobat.catroid.content.bricks.PlaySoundBrick;
-import org.catrobat.catroid.content.bricks.SetSizeToBrick;
-import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.common.SoundInfo;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.Brick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.HideBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.PlaceAtBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.PlaySoundBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetSizeToBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.ScriptActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.adapter.BrickAdapter;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 

@@ -27,12 +27,12 @@ import android.test.InstrumentationTestCase;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.content.Look;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.common.LookData;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Look;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
 import org.catrobat.catroid.test.utils.Reflection;
 
 public class LookTest extends InstrumentationTestCase {

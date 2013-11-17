@@ -24,10 +24,10 @@ package org.catrobat.catroid.test.content.actions;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.WhenScript;
-import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.PlaceAtBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.WhenScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.Brick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.PlaceAtBrick;
 
 public class WhenActionTest extends AndroidTestCase {
 

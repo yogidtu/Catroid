@@ -24,17 +24,17 @@ package org.catrobat.catroid.test.content.actions;
 
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.content.actions.SetSizeToAction;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.ExtendedActions;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.SetSizeToAction;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Formula;
+import org.catrobat.catroid.standalone.tictactoe_master.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.UtilFile;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.UtilFile;
 
 import java.io.File;
 

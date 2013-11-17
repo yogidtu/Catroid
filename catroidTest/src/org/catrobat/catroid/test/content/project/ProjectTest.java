@@ -26,11 +26,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.XmlHeader;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.XmlHeader;
 import org.catrobat.catroid.test.utils.Reflection;
 
 public class ProjectTest extends AndroidTestCase {

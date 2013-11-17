@@ -24,11 +24,11 @@ package org.catrobat.catroid.test.content.actions;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.content.actions.SpeakAction;
-import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.SpeakBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.ExtendedActions;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.SpeakAction;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.Brick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SpeakBrick;
 import org.catrobat.catroid.test.utils.Reflection;
 
 public class SpeakActionTest extends AndroidTestCase {

@@ -24,11 +24,11 @@ package org.catrobat.catroid.test.content.actions;
 
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ChangeVolumeByNAction;
-import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.io.SoundManager;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.ChangeVolumeByNAction;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.ExtendedActions;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Formula;
+import org.catrobat.catroid.standalone.tictactoe_master.io.SoundManager;
 
 public class ChangeVolumeByNActionTest extends InstrumentationTestCase {
 	private final float louderValue = 10.6f;

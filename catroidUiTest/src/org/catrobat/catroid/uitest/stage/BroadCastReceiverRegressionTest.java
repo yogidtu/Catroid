@@ -22,16 +22,16 @@
  */
 package org.catrobat.catroid.uitest.stage;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.content.BroadcastScript;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.bricks.BroadcastBrick;
-import org.catrobat.catroid.content.bricks.ChangeXByNBrick;
-import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
-import org.catrobat.catroid.ui.ScriptActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.content.BroadcastScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.BroadcastBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.ChangeXByNBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.stage.StageActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.ScriptActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 

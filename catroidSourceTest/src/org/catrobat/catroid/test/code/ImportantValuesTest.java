@@ -24,7 +24,7 @@ package org.catrobat.catroid.test.code;
 
 import junit.framework.TestCase;
 
-import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
 
 public class ImportantValuesTest extends TestCase {
 

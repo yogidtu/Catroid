@@ -25,13 +25,13 @@ package org.catrobat.catroid.test.utiltests;
 import android.os.Environment;
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.UtilFile;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.UtilFile;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;

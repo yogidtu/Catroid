@@ -25,7 +25,7 @@ package org.catrobat.catroid.test.content;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.stage.OnUtteranceCompletedListenerContainer;
+import org.catrobat.catroid.standalone.tictactoe_master.stage.OnUtteranceCompletedListenerContainer;
 
 import java.io.File;
 import java.util.ArrayList;

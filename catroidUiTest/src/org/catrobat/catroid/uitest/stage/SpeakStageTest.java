@@ -22,23 +22,23 @@
  */
 package org.catrobat.catroid.uitest.stage;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.bricks.SpeakBrick;
-import org.catrobat.catroid.content.bricks.WaitBrick;
-import org.catrobat.catroid.io.SoundManager;
-import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
-import org.catrobat.catroid.ui.ProjectActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SpeakBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.WaitBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.io.SoundManager;
+import org.catrobat.catroid.standalone.tictactoe_master.stage.StageActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.ProjectActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
 import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;

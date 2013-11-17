@@ -24,9 +24,9 @@ package org.catrobat.catroid.test.content.actions;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ClearGraphicEffectAction;
-import org.catrobat.catroid.content.actions.ExtendedActions;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.ClearGraphicEffectAction;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.ExtendedActions;
 
 public class ClearGraphicEffectActionTest extends AndroidTestCase {
 

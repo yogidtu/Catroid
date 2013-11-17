@@ -28,12 +28,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.SetXBrick;
-import org.catrobat.catroid.content.bricks.SetYBrick;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.Brick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetXBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetYBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 

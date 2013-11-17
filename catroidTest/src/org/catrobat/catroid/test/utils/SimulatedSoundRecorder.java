@@ -23,7 +23,7 @@
 
 package org.catrobat.catroid.test.utils;
 
-import org.catrobat.catroid.soundrecorder.SoundRecorder;
+import org.catrobat.catroid.standalone.tictactoe_master.soundrecorder.SoundRecorder;
 
 public class SimulatedSoundRecorder extends SoundRecorder {
 	private boolean recording = false;

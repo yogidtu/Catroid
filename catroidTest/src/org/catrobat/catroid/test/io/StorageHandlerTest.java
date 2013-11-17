@@ -24,20 +24,20 @@ package org.catrobat.catroid.test.io;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.StandardProjectHandler;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.bricks.ComeToFrontBrick;
-import org.catrobat.catroid.content.bricks.HideBrick;
-import org.catrobat.catroid.content.bricks.PlaceAtBrick;
-import org.catrobat.catroid.content.bricks.SetSizeToBrick;
-import org.catrobat.catroid.content.bricks.ShowBrick;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.common.LookData;
+import org.catrobat.catroid.standalone.tictactoe_master.common.StandardProjectHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.ComeToFrontBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.HideBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.PlaceAtBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetSizeToBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.ShowBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Formula;
+import org.catrobat.catroid.standalone.tictactoe_master.io.StorageHandler;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
 

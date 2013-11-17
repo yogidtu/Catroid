@@ -22,20 +22,20 @@
  */
 package org.catrobat.catroid.uitest.stage;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.WhenScript;
-import org.catrobat.catroid.content.bricks.SetLookBrick;
-import org.catrobat.catroid.content.bricks.TurnLeftBrick;
-import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.common.LookData;
+import org.catrobat.catroid.standalone.tictactoe_master.common.ScreenValues;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.WhenScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetLookBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.TurnLeftBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.stage.StageActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 

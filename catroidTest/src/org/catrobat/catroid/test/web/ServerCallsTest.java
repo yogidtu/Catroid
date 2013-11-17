@@ -27,15 +27,15 @@ import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.util.Log;
 
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.UtilZip;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
+import org.catrobat.catroid.standalone.tictactoe_master.web.ServerCalls;
+import org.catrobat.catroid.standalone.tictactoe_master.web.WebconnectionException;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.UtilZip;
-import org.catrobat.catroid.utils.Utils;
-import org.catrobat.catroid.web.ServerCalls;
-import org.catrobat.catroid.web.WebconnectionException;
 
 import java.io.File;
 

@@ -24,14 +24,14 @@ package org.catrobat.catroid.test.common;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.common.StandardProjectHandler;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.WhenScript;
-import org.catrobat.catroid.stage.StageListener;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.common.LookData;
+import org.catrobat.catroid.standalone.tictactoe_master.common.ScreenValues;
+import org.catrobat.catroid.standalone.tictactoe_master.common.StandardProjectHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.WhenScript;
+import org.catrobat.catroid.standalone.tictactoe_master.stage.StageListener;
 import org.catrobat.catroid.test.utils.TestUtils;
 
 import java.io.File;

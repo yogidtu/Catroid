@@ -29,11 +29,11 @@ import android.graphics.BitmapFactory;
 
 import junit.framework.TestCase;
 
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.ImageEditing;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.Reflection.ParameterList;
-import org.catrobat.catroid.utils.ImageEditing;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

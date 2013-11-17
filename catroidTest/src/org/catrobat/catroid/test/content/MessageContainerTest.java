@@ -24,15 +24,15 @@ package org.catrobat.catroid.test.content;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.common.MessageContainer;
-import org.catrobat.catroid.content.BroadcastScript;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.bricks.BroadcastBrick;
-import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.common.MessageContainer;
+import org.catrobat.catroid.standalone.tictactoe_master.content.BroadcastScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.BroadcastBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.io.StorageHandler;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
 

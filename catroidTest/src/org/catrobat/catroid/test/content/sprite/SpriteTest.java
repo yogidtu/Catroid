@@ -24,19 +24,19 @@ package org.catrobat.catroid.test.content.sprite;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.ChangeBrightnessByNBrick;
-import org.catrobat.catroid.content.bricks.HideBrick;
-import org.catrobat.catroid.content.bricks.ShowBrick;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.formulaeditor.FormulaElement;
-import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
-import org.catrobat.catroid.formulaeditor.UserVariable;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.Brick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.ChangeBrightnessByNBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.HideBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.ShowBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Formula;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.FormulaElement;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.UserVariable;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.test.utils.TestUtils;
 
 import java.util.HashSet;

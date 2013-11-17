@@ -27,10 +27,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 
-import org.catrobat.catroid.formulaeditor.SensorCustomEvent;
-import org.catrobat.catroid.formulaeditor.SensorCustomEventListener;
-import org.catrobat.catroid.formulaeditor.SensorManagerInterface;
-import org.catrobat.catroid.formulaeditor.Sensors;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.SensorCustomEvent;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.SensorCustomEventListener;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.SensorManagerInterface;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Sensors;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

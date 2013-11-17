@@ -24,19 +24,19 @@ package org.catrobat.catroid.test.content.actions;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.bricks.ChangeVariableBrick;
-import org.catrobat.catroid.content.bricks.IfLogicBeginBrick;
-import org.catrobat.catroid.content.bricks.IfLogicElseBrick;
-import org.catrobat.catroid.content.bricks.IfLogicEndBrick;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.formulaeditor.FormulaElement;
-import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
-import org.catrobat.catroid.formulaeditor.Operators;
-import org.catrobat.catroid.formulaeditor.UserVariable;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.ChangeVariableBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.IfLogicBeginBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.IfLogicElseBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.IfLogicEndBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Formula;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.FormulaElement;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Operators;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.UserVariable;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.FormulaElement.ElementType;
 
 public class ChangeVariableActionTest extends AndroidTestCase {
 

@@ -30,13 +30,13 @@ import android.content.res.Configuration;
 
 import com.jayway.android.robotium.solo.Solo;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.stage.StageActivity;
-import org.catrobat.catroid.ui.MainMenuActivity;
-import org.catrobat.catroid.ui.ProgramMenuActivity;
-import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.SettingsActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.stage.StageActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.ProgramMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.ScriptActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.SettingsActivity;
 import org.catrobat.catroid.uitest.annotation.Device;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;

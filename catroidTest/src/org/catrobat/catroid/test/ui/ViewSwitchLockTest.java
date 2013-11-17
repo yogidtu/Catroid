@@ -24,8 +24,8 @@ package org.catrobat.catroid.test.ui;
 
 import android.test.AndroidTestCase;
 
+import org.catrobat.catroid.standalone.tictactoe_master.ui.ViewSwitchLock;
 import org.catrobat.catroid.test.utils.Reflection;
-import org.catrobat.catroid.ui.ViewSwitchLock;
 
 import java.util.concurrent.locks.Lock;
 

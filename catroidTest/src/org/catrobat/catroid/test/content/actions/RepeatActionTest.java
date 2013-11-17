@@ -26,18 +26,18 @@ import android.test.InstrumentationTestCase;
 
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.content.actions.RepeatAction;
-import org.catrobat.catroid.content.bricks.ChangeYByNBrick;
-import org.catrobat.catroid.content.bricks.LoopEndBrick;
-import org.catrobat.catroid.content.bricks.RepeatBrick;
-import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.formulaeditor.FormulaElement;
-import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
-import org.catrobat.catroid.formulaeditor.Sensors;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.ExtendedActions;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.RepeatAction;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.ChangeYByNBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.LoopEndBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.RepeatBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Formula;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.FormulaElement;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Sensors;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.test.utils.Reflection;
 
 public class RepeatActionTest extends InstrumentationTestCase {

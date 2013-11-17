@@ -30,9 +30,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.ui.BrickLayout.LayoutParams;
-import org.catrobat.catroid.ui.BrickLayout.LayoutParams.InputType;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.BrickLayout.LayoutParams;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.BrickLayout.LayoutParams.InputType;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

@@ -24,14 +24,14 @@ package org.catrobat.catroid.test.content;
 
 import android.test.InstrumentationTestCase;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.FileChecksumContainer;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.common.FileChecksumContainer;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.io.StorageHandler;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.Utils;
 import org.catrobat.catroid.test.R;
 import org.catrobat.catroid.test.utils.TestUtils;
-import org.catrobat.catroid.utils.Utils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

@@ -25,9 +25,9 @@ package org.catrobat.catroid.test.ui;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.R;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
 
 public class MainMenuActivityTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
 

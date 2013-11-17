@@ -28,7 +28,7 @@ import android.util.Log;
 
 import com.jayway.android.robotium.solo.Solo;
 
-import org.catrobat.catroid.stage.StageListener;
+import org.catrobat.catroid.standalone.tictactoe_master.stage.StageListener;
 
 public abstract class BaseActivityInstrumentationTestCase<T extends Activity> extends
 		ActivityInstrumentationTestCase2<T> {

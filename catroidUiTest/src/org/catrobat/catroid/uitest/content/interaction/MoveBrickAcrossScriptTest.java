@@ -22,22 +22,22 @@
  */
 package org.catrobat.catroid.uitest.content.interaction;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.WhenScript;
-import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.SetBrightnessBrick;
-import org.catrobat.catroid.content.bricks.SetSizeToBrick;
-import org.catrobat.catroid.content.bricks.SetXBrick;
-import org.catrobat.catroid.content.bricks.ShowBrick;
-import org.catrobat.catroid.content.bricks.WaitBrick;
-import org.catrobat.catroid.ui.MainMenuActivity;
-import org.catrobat.catroid.ui.ScriptActivity;
-import org.catrobat.catroid.ui.adapter.BrickAdapter;
-import org.catrobat.catroid.ui.fragment.ScriptFragment;
+import org.catrobat.catroid.standalone.tictactoe_master.ProjectManager;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Project;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.WhenScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.Brick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetBrightnessBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetSizeToBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.SetXBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.ShowBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.WaitBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.MainMenuActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.ScriptActivity;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.standalone.tictactoe_master.ui.fragment.ScriptFragment;
 import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 

@@ -24,11 +24,11 @@ package org.catrobat.catroid.test.formulaeditor;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.formulaeditor.FormulaElement;
-import org.catrobat.catroid.formulaeditor.InternFormulaParser;
-import org.catrobat.catroid.formulaeditor.InternToken;
-import org.catrobat.catroid.formulaeditor.InternTokenType;
-import org.catrobat.catroid.formulaeditor.Operators;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.FormulaElement;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.InternFormulaParser;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.InternToken;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.InternTokenType;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Operators;
 
 import java.util.LinkedList;
 import java.util.List;

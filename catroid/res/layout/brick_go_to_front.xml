@@ -22,7 +22,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid"
+    xmlns:app="http://schemas.android.com/apk/res/org.catrobat.catroid.standalone.tictactoe_master"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
@@ -35,7 +35,7 @@
         android:gravity="center_vertical"
         android:visibility="gone" />
 
-    <org.catrobat.catroid.ui.BrickLayout
+    <org.catrobat.catroid.standalone.tictactoe_master.ui.BrickLayout
         android:id="@+id/brick_go_to_front_layout"
         style="@style/BrickContainer.Motion.Small"
         android:layout_width="match_parent"
@@ -49,6 +49,6 @@
             style="@style/BrickText.SingleLine"
             android:text="@string/brick_come_to_front" >
         </TextView>
-    </org.catrobat.catroid.ui.BrickLayout>
+    </org.catrobat.catroid.standalone.tictactoe_master.ui.BrickLayout>
 
 </LinearLayout>

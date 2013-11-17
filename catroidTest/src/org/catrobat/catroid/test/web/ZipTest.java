@@ -24,9 +24,9 @@ package org.catrobat.catroid.test.web;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.utils.UtilFile;
-import org.catrobat.catroid.utils.UtilZip;
+import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.UtilFile;
+import org.catrobat.catroid.standalone.tictactoe_master.utils.UtilZip;
 
 import java.io.File;
 import java.io.IOException;

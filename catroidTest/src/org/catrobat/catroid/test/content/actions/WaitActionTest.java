@@ -26,10 +26,10 @@ import android.test.AndroidTestCase;
 
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.content.actions.WaitAction;
-import org.catrobat.catroid.formulaeditor.Formula;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.ExtendedActions;
+import org.catrobat.catroid.standalone.tictactoe_master.content.actions.WaitAction;
+import org.catrobat.catroid.standalone.tictactoe_master.formulaeditor.Formula;
 
 public class WaitActionTest extends AndroidTestCase {
 

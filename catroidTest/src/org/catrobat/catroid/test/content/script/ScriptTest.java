@@ -24,13 +24,13 @@ package org.catrobat.catroid.test.content.script;
 
 import android.test.AndroidTestCase;
 
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.content.bricks.Brick;
-import org.catrobat.catroid.content.bricks.HideBrick;
-import org.catrobat.catroid.content.bricks.PlaceAtBrick;
-import org.catrobat.catroid.content.bricks.ShowBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Script;
+import org.catrobat.catroid.standalone.tictactoe_master.content.Sprite;
+import org.catrobat.catroid.standalone.tictactoe_master.content.StartScript;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.Brick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.HideBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.PlaceAtBrick;
+import org.catrobat.catroid.standalone.tictactoe_master.content.bricks.ShowBrick;
 
 import java.util.ArrayList;
 
