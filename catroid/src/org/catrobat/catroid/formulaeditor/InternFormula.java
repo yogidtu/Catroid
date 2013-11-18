@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class InternFormula {
+	private static final String TAG = InternFormula.class.getSimpleName();
 
 	public static enum CursorTokenPosition {
 		LEFT, MIDDLE, RIGHT;
@@ -173,17 +174,17 @@ public class InternFormula {
 			case LEFT:
 				this.cursorPositionInternToken = internTokenFormulaList.get(cursorPositionTokenIndex);
 				this.cursorPositionInternTokenIndex = cursorPositionTokenIndex;
-				Log.i("info", "LEFT of " + cursorPositionInternToken.getTokenStringValue());
+				Log.i(TAG, "LEFT of " + cursorPositionInternToken.getTokenStringValue());
 				break;
 			case MIDDLE:
 				this.cursorPositionInternToken = internTokenFormulaList.get(cursorPositionTokenIndex);
 				this.cursorPositionInternTokenIndex = cursorPositionTokenIndex;
-				Log.i("info", "SELECTED " + cursorPositionInternToken.getTokenStringValue());
+				Log.i(TAG, "SELECTED " + cursorPositionInternToken.getTokenStringValue());
 				break;
 			case RIGHT:
 				this.cursorPositionInternToken = internTokenFormulaList.get(leftCursorPositionTokenIndex);
 				this.cursorPositionInternTokenIndex = leftCursorPositionTokenIndex;
-				Log.i("info", "RIGHT of " + cursorPositionInternToken.getTokenStringValue());
+				Log.i(TAG, "RIGHT of " + cursorPositionInternToken.getTokenStringValue());
 				break;
 
 		}
@@ -721,7 +722,7 @@ public class InternFormula {
 	private CursorTokenPropertiesAfterModification replaceCursorPositionInternTokenByTokenList(
 			List<InternToken> internTokensToReplaceWith) {
 
-		Log.i("info", "replaceCursorPositionInternTokenByTokenList:enter");
+		Log.i(TAG, "replaceCursorPositionInternTokenByTokenList:enter");
 
 		if (cursorPositionInternToken.isNumber() && InternFormulaUtils.isNumberToken(internTokensToReplaceWith)) {
 

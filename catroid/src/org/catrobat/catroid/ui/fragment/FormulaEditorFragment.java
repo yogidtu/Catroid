@@ -65,6 +65,7 @@ import org.catrobat.catroid.ui.dialogs.FormulaEditorComputeDialog;
 
 public class FormulaEditorFragment extends SherlockFragment implements OnKeyListener,
 		ViewTreeObserver.OnGlobalLayoutListener {
+	private static final String TAG = FormulaEditorFragment.class.getSimpleName();
 
 	private static final int PARSER_OK = -1;
 	private static final int PARSER_STACK_OVERFLOW = -2;
@@ -231,7 +232,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		View.OnTouchListener touchListener = new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
-				Log.i("info", "viewId: " + view.getId());
+				Log.i(TAG, "viewId: " + view.getId());
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					updateButtonViewOnKeyboard();
 					view.setPressed(false);
@@ -382,9 +383,8 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	}
 
 	private boolean checkReturnWithoutSaving(int errorType) {
-		Log.i("info",
-				"confirmSwitchEditTextCounter=" + confirmSwitchEditTextCounter + " "
-						+ (System.currentTimeMillis() <= confirmSwitchEditTextTimeStamp[0] + TIME_WINDOW));
+		Log.i(TAG, "confirmSwitchEditTextCounter=" + confirmSwitchEditTextCounter + " "
+				+ (System.currentTimeMillis() <= confirmSwitchEditTextTimeStamp[0] + TIME_WINDOW));
 
 		if ((System.currentTimeMillis() <= confirmSwitchEditTextTimeStamp[0] + TIME_WINDOW)
 				&& (confirmSwitchEditTextCounter > 1)) {
@@ -423,7 +423,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 
 	@Override
 	public boolean onKey(View view, int keyCode, KeyEvent event) {
-		Log.i("info", "onKey() in FE-Fragment! keyCode: " + keyCode);
+		Log.i(TAG, "onKey() in FE-Fragment! keyCode: " + keyCode);
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
 				if (formulaEditorEditText.hasChanges()) {

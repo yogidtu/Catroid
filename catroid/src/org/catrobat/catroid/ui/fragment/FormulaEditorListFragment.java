@@ -44,6 +44,7 @@ import com.actionbarsherlock.view.Menu;
 import org.catrobat.catroid.R;
 
 public class FormulaEditorListFragment extends SherlockListFragment implements Dialog.OnKeyListener {
+	private static final String TAG = FormulaEditorListFragment.class.getSimpleName();
 
 	public static final String OBJECT_TAG = "objectFragment";
 	public static final String MATH_TAG = "mathFragment";
@@ -167,11 +168,11 @@ public class FormulaEditorListFragment extends SherlockListFragment implements D
 
 	@Override
 	public boolean onKey(DialogInterface d, int keyCode, KeyEvent event) {
-		Log.i("info", "onKey() in FE-ListFragment! keyCode: " + keyCode);
+		Log.i(TAG, "onKey() in FE-ListFragment! keyCode: " + keyCode);
 		boolean returnValue = false;
 		switch (keyCode) {
 			case KeyEvent.KEYCODE_BACK:
-				Log.i("info", "KEYCODE_BACK pressed in FE-ListFragment!");
+				Log.i(TAG, "KEYCODE_BACK pressed in FE-ListFragment!");
 				FragmentTransaction fragTransaction = getSherlockActivity().getSupportFragmentManager()
 						.beginTransaction();
 				fragTransaction.hide(this);

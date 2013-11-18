@@ -39,6 +39,7 @@ import org.catrobat.catroid.formulaeditor.InternFormula.TokenSelectionType;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 public class FormulaEditorEditText extends EditText implements OnTouchListener {
+	private static final String TAG = FormulaEditorEditText.class.getSimpleName();
 
 	private static final BackgroundColorSpan COLOR_ERROR = new BackgroundColorSpan(0xFFF00000);
 	private static final BackgroundColorSpan COLOR_HIGHLIGHT = new BackgroundColorSpan(0xFFFFFF00);
@@ -129,7 +130,7 @@ public class FormulaEditorEditText extends EditText implements OnTouchListener {
 		int selectionEndIndex = internFormula.getExternSelectionEndIndex();
 		TokenSelectionType selectionType = internFormula.getExternSelectionType();
 
-		Log.i("info", "highlightSelection: start=" + selectionStartIndex + "  end=" + selectionEndIndex);
+		Log.i(TAG, "highlightSelection: start=" + selectionStartIndex + "  end=" + selectionEndIndex);
 
 		if (selectionStartIndex == -1 || selectionEndIndex == -1 || selectionEndIndex == selectionStartIndex
 				|| selectionEndIndex > highlightSpan.length()) {

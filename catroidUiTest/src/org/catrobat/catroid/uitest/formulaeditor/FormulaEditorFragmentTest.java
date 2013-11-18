@@ -45,6 +45,7 @@ import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
+	private static final String TAG = FormulaEditorFragmentTest.class.getSimpleName();
 	private Project project;
 	private PlaceAtBrick placeAtBrick;
 	private static final int INITIAL_X = 8;
@@ -348,7 +349,7 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		Formula formula = (Formula) Reflection.getPrivateField(placeAtBrick, "xPosition");
 		float value = formula.interpretFloat(sprite);
 
-		Log.i("info", "value: " + value);
+		Log.i(TAG, "value: " + value);
 
 		assertTrue("random() interpretation of float parameter is wrong: " + newXFormula + " value=" + value,
 				1 <= value && value <= 9.9f && (Math.abs(value) - (int) Math.abs(value)) > 0);
@@ -368,7 +369,7 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		Formula anotherFormula = (Formula) Reflection.getPrivateField(placeAtBrick, "yPosition");
 		float anotherValue = anotherFormula.interpretFloat(sprite);
 
-		Log.i("info", "value: " + value);
+		Log.i(TAG, "value: " + value);
 
 		assertTrue("random() interpretation of float parameter is wrong: " + newYFormula + " anotherValue="
 				+ anotherValue,
@@ -393,7 +394,7 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		Formula formula = (Formula) Reflection.getPrivateField(placeAtBrick, "xPosition");
 		float value = formula.interpretFloat(sprite);
 
-		Log.i("info", "value: " + value);
+		Log.i(TAG, "value: " + value);
 
 		assertTrue("random() interpretation of integer parameters is wrong: " + newXFormula + " anotherValue=" + value,
 				(value == 1 || value == 2 || value == 3));
@@ -413,7 +414,7 @@ public class FormulaEditorFragmentTest extends BaseActivityInstrumentationTestCa
 		Formula anotherFormula = (Formula) Reflection.getPrivateField(placeAtBrick, "yPosition");
 		float anotherValue = anotherFormula.interpretFloat(sprite);
 
-		Log.i("info", "anotherValue: " + anotherValue);
+		Log.i(TAG, "anotherValue: " + anotherValue);
 
 		assertTrue("random() interpretation of integer parameters is wrong: " + newYFormula + " anotherValue="
 				+ anotherValue, (anotherValue == 1 || anotherValue == 2 || anotherValue == 3 || anotherValue == 4));

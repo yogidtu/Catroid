@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FormulaElement implements Serializable {
+	private static final String TAG = FormulaElement.class.getSimpleName();
 
 	private static final long serialVersionUID = 1L;
 
@@ -214,7 +215,7 @@ public class FormulaElement implements Serializable {
 				if (isInteger(minimum) && isInteger(maximum)
 						&& !(rightChild.type == ElementType.NUMBER && rightChild.value.contains("."))
 						&& !(leftChild.type == ElementType.NUMBER && leftChild.value.contains("."))) {
-					Log.i("info", "randomDouble: " + randomDouble);
+					Log.i(TAG, "randomDouble: " + randomDouble);
 
 					if ((Math.abs(randomDouble) - (int) Math.abs(randomDouble)) >= 0.5) {
 						return Double.valueOf(randomDouble.intValue()) + 1;

@@ -32,6 +32,7 @@ import java.util.EmptyStackException;
 import java.util.List;
 
 public class InternFormulaParser {
+	private static final String TAG = InternFormulaParser.class.getSimpleName();
 
 	private class InternFormulaParserException extends Exception {
 
@@ -145,12 +146,12 @@ public class InternFormulaParser {
 		try {
 			List<InternToken> copyIternTokensToParse = new ArrayList<InternToken>(internTokensToParse);
 			if (InternFormulaUtils.applyBracketCorrection(copyIternTokensToParse)) {
-				Log.i("info", "applyBracketCorrection-> TRUE");
+				Log.i(TAG, "applyBracketCorrection-> TRUE");
 				internTokensToParse.clear();
 				internTokensToParse.addAll(copyIternTokensToParse);
 			}
 		} catch (EmptyStackException emptyStackException) {
-			Log.i("info", "emptyStackException-> TRUE");
+			Log.i(TAG, "emptyStackException-> TRUE");
 		}
 
 		addEndOfFileToken();
