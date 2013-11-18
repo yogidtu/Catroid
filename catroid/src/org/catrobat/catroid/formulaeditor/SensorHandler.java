@@ -149,7 +149,6 @@ public class SensorHandler implements SensorEventListener, SensorCustomEventList
 
 			case NFC_UID:
 				double NfcUid = Double.valueOf(NfcManager.getInstance().getUid());
-				Log.d(TAG, "nfc value=" + NfcUid);
 				NfcManager.getInstance().resetUid();
 				return NfcUid;
 
