@@ -22,22 +22,23 @@
  */
 package org.catrobat.catroid.test.code;
 
+import junit.framework.TestCase;
+
+import org.catrobat.catroid.test.utils.Utils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-import org.catrobat.catroid.test.utils.Utils;
-
-import junit.framework.TestCase;
-
 public class SystemOutTest extends TestCase {
 
 	private StringBuffer errorMessages;
 	private boolean errorFound;
 
-	private static final String[] DIRECTORIES = { "../catroidUiTest", "../catroidTest", "../catroid" };
+	private static final String[] DIRECTORIES = { "../catroidUiTest", "../catroidTest", "../catroid",
+			"../catroidCucumberTest", };
 
 	private void checkFileForSystemOut(File file) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));

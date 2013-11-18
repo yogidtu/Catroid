@@ -22,13 +22,6 @@
  */
 package org.catrobat.catroid.stage;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.ScreenValues;
-import org.catrobat.catroid.formulaeditor.SensorHandler;
-import org.catrobat.catroid.nfc.NfcManager;
-import org.catrobat.catroid.ui.dialogs.StageDialog;
-
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -37,6 +30,13 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
+
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.R;
+import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.formulaeditor.SensorHandler;
+import org.catrobat.catroid.nfc.NfcManager;
+import org.catrobat.catroid.ui.dialogs.StageDialog;
 
 public class StageActivity extends AndroidApplication {
 	public static final String TAG = StageActivity.class.getSimpleName();
@@ -88,7 +88,8 @@ public class StageActivity extends AndroidApplication {
 	}
 
 	@Override
-	protected void onPause() {
+	public void onPause() {
+		SensorHandler.stopSensorListeners();
 		if (mNfcAdapter != null) {
 			mNfcAdapter.disableForegroundDispatch(this);
 		}
@@ -96,7 +97,8 @@ public class StageActivity extends AndroidApplication {
 	}
 
 	@Override
-	protected void onResume() {
+	public void onResume() {
+		SensorHandler.startSensorListener(this);
 		if (mNfcAdapter != null) {
 			mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
 		}
@@ -104,12 +106,19 @@ public class StageActivity extends AndroidApplication {
 	}
 
 	public void pause() {
+		SensorHandler.stopSensorListeners();
+		if (mNfcAdapter != null) {
+			mNfcAdapter.disableForegroundDispatch(this);
+		}
 		stageListener.menuPause();
 	}
 
 	public void resume() {
 		stageListener.menuResume();
 		SensorHandler.startSensorListener(this);
+		if (mNfcAdapter != null) {
+			mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+		}
 	}
 
 	public boolean getResizePossible() {

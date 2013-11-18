@@ -22,18 +22,18 @@
  */
 package org.catrobat.catroid.test.code;
 
+import junit.framework.TestCase;
+
+import org.catrobat.catroid.test.utils.Utils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-import org.catrobat.catroid.test.utils.Utils;
-
-import junit.framework.TestCase;
-
 public class SleepTest extends TestCase {
-	private static final String[] DIRECTORIES = { "../catroidUiTest" };
+	private static final String[] DIRECTORIES = { "../catroidUiTest", "../catroidCucumberTest", };
 	private static final String REGEX_PATTERN = "^.*Thread\\.sleep\\(\\w+\\).*$";
 
 	private StringBuffer errorMessages;

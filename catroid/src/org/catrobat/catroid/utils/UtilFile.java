@@ -22,6 +22,11 @@
  */
 package org.catrobat.catroid.utils;
 
+import android.content.Context;
+
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.common.Constants;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -29,19 +34,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.catrobat.catroid.common.Constants;
-
-import android.content.Context;
+import java.util.Locale;
 
 public class UtilFile {
-	public static final int TYPE_IMAGE_FILE = 0;
-	public static final int TYPE_SOUND_FILE = 1;
+	public enum FileType {
+		TYPE_IMAGE_FILE, TYPE_SOUND_FILE
+	}
 
-	static private long getSizeOfFileOrDirectoryInByte(File fileOrDirectory) {
+	private static long getSizeOfFileOrDirectoryInByte(File fileOrDirectory) {
 		if (!fileOrDirectory.exists()) {
 			return 0;
 		}
@@ -57,7 +62,7 @@ public class UtilFile {
 		return size;
 	}
 
-	static public Long getProgressFromBytes(String projectName, Long progress) {
+	public static Long getProgressFromBytes(String projectName, Long progress) {
 		Long fileByteSize = getSizeOfFileOrDirectoryInByte(new File(Utils.buildProjectPath(projectName)));
 		if (fileByteSize == 0) {
 			return (long) 0;
@@ -66,11 +71,11 @@ public class UtilFile {
 		return progressValue;
 	}
 
-	static public String getSizeAsString(File fileOrDirectory) {
-		final int UNIT = 1024;
+	public static String getSizeAsString(File fileOrDirectory) {
+		final int unit = 1024;
 		long bytes = UtilFile.getSizeOfFileOrDirectoryInByte(fileOrDirectory);
 
-		if (bytes < UNIT) {
+		if (bytes < unit) {
 			return bytes + " Byte";
 		}
 
@@ -78,13 +83,13 @@ public class UtilFile {
 		 * Logarithm of "bytes" to base "unit"
 		 * log(a) / log(b) == logarithm of a to the base of b
 		 */
-		int exponent = (int) (Math.log(bytes) / Math.log(UNIT));
+		int exponent = (int) (Math.log(bytes) / Math.log(unit));
 		char prefix = ("KMGTPE").charAt(exponent - 1);
 
-		return String.format("%.1f %sB", bytes / Math.pow(UNIT, exponent), prefix);
+		return String.format(Locale.getDefault(), "%.1f %sB", bytes / Math.pow(unit, exponent), prefix);
 	}
 
-	static public boolean clearDirectory(File path) {
+	public static boolean clearDirectory(File path) {
 		if (path.exists()) {
 			File[] filesInDirectory = path.listFiles();
 			if (filesInDirectory == null) {
@@ -101,12 +106,12 @@ public class UtilFile {
 		return true;
 	}
 
-	static public boolean deleteDirectory(File path) {
+	public static boolean deleteDirectory(File path) {
 		clearDirectory(path);
 		return (path.delete());
 	}
 
-	public static File saveFileToProject(String project, String name, int fileID, Context context, int type) {
+	public static File saveFileToProject(String project, String name, int fileID, Context context, FileType type) {
 
 		String filePath;
 		if (project == null || project.equalsIgnoreCase("")) {
@@ -150,38 +155,30 @@ public class UtilFile {
 		}
 	}
 
+	public static void createStandardProjectIfRootDirectoryIsEmpty(Context context) {
+		File rootDirectory = new File(Constants.DEFAULT_ROOT);
+		if (rootDirectory == null || rootDirectory.listFiles() == null || rootDirectory.listFiles().length == 0) {
+			ProjectManager.getInstance().initializeDefaultProject(context);
+		}
+	}
+
 	/**
 	 * returns a list of strings of all projectnames in the catroid folder
 	 */
 	public static List<String> getProjectNames(File directory) {
 		List<String> projectList = new ArrayList<String>();
-		File[] sdFileList = directory.listFiles();
-		for (File file : sdFileList) {
+		File[] fileList = directory.listFiles();
+		if (fileList != null) {
 			FilenameFilter filenameFilter = new FilenameFilter() {
 				@Override
 				public boolean accept(File dir, String filename) {
 					return filename.contentEquals(Constants.PROJECTCODE_NAME);
 				}
 			};
-			if (file.isDirectory() && file.list(filenameFilter).length != 0) {
-				projectList.add(file.getName());
-			}
-		}
-		return projectList;
-	}
-
-	public static List<File> getProjectFiles(File directory) {
-		List<File> projectList = new ArrayList<File>();
-		File[] sdFileList = directory.listFiles();
-		FilenameFilter filenameFilter = new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String filename) {
-				return filename.contentEquals(Constants.PROJECTCODE_NAME);
-			}
-		};
-		for (File file : sdFileList) {
-			if (file.isDirectory() && file.list(filenameFilter).length != 0) {
-				projectList.add(file);
+			for (File file : fileList) {
+				if (file.isDirectory() && file.list(filenameFilter).length != 0) {
+					projectList.add(file.getName());
+				}
 			}
 		}
 		return projectList;
@@ -215,6 +212,74 @@ public class UtilFile {
 				outputStream.close();
 			}
 		}
+	}
+
+	public static File copyFromResourceIntoProject(String projectName, String directoryInProject,
+			String outputFilename, int resourceId, Context context, boolean prependMd5ToFilename) throws IOException {
+		String directoryPath = Utils.buildPath(Utils.buildProjectPath(projectName), directoryInProject);
+		File copiedFile = new File(directoryPath, outputFilename);
+		if (!copiedFile.exists()) {
+			copiedFile.createNewFile();
+		} else {
+			throw new IllegalArgumentException("file " + copiedFile.getAbsolutePath() + " already exists!");
+		}
+		InputStream in = context.getResources().openRawResource(resourceId);
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(copiedFile), Constants.BUFFER_8K);
+		byte[] buffer = new byte[Constants.BUFFER_8K];
+		int length = 0;
+		while ((length = in.read(buffer)) > 0) {
+			out.write(buffer, 0, length);
+		}
+
+		in.close();
+		out.flush();
+		out.close();
+
+		if (!prependMd5ToFilename) {
+			return copiedFile;
+		}
+
+		return prependMd5ToFilename(copiedFile);
+	}
+
+	public static File copySoundFromResourceIntoProject(String projectName, String outputFilename, int resourceId,
+			Context context, boolean prependMd5ToFilename) throws IOException {
+		if (!outputFilename.toLowerCase(Locale.US).endsWith(Constants.RECORDING_EXTENSION)) {
+			outputFilename = outputFilename + Constants.RECORDING_EXTENSION;
+		}
+		return copyFromResourceIntoProject(projectName, Constants.SOUND_DIRECTORY, outputFilename, resourceId, context,
+				prependMd5ToFilename);
+	}
+
+	public static File copyImageFromResourceIntoProject(String projectName, String outputFilename, int resourceId,
+			Context context, boolean prependMd5ToFilename, double scaleFactor) throws IOException {
+		if (scaleFactor <= 0) {
+			throw new IllegalArgumentException("scale factor is smaller or equal zero");
+		}
+		outputFilename = Utils.deleteSpecialCharactersInString(outputFilename);
+		if (!outputFilename.toLowerCase(Locale.US).endsWith(Constants.IMAGE_STANDARD_EXTENTION)) {
+			outputFilename = outputFilename + Constants.IMAGE_STANDARD_EXTENTION;
+		}
+		File copiedFile = copyFromResourceIntoProject(projectName, Constants.IMAGE_DIRECTORY, outputFilename,
+				resourceId, context, false);
+
+		ImageEditing.scaleImageFile(copiedFile, scaleFactor);
+
+		if (!prependMd5ToFilename) {
+			return copiedFile;
+		}
+
+		return prependMd5ToFilename(copiedFile);
+	}
+
+	private static File prependMd5ToFilename(File file) throws IOException {
+		File fileWithMd5 = new File(file.getParent(), Utils.md5Checksum(file) + Constants.FILENAME_SEPARATOR
+				+ file.getName());
+		if (!file.renameTo(fileWithMd5)) {
+			throw new IOException("renaming file " + file.getAbsoluteFile() + " to " + fileWithMd5.getAbsoluteFile()
+					+ " failed");
+		}
+		return fileWithMd5;
 	}
 
 }

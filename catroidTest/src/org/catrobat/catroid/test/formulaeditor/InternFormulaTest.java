@@ -23,10 +23,7 @@
 
 package org.catrobat.catroid.test.formulaeditor;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import android.test.InstrumentationTestCase;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.formulaeditor.ExternInternRepresentationMapping;
@@ -41,19 +38,12 @@ import org.catrobat.catroid.formulaeditor.Operators;
 import org.catrobat.catroid.formulaeditor.Sensors;
 import org.catrobat.catroid.test.utils.Reflection;
 
-import android.test.InstrumentationTestCase;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InternFormulaTest extends InstrumentationTestCase {
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
 
 	public void testInsertRightToCurrentToken() {
 
@@ -383,8 +373,8 @@ public class InternFormulaTest extends InstrumentationTestCase {
 		internFormula.setCursorAndSelection(0, false);
 		String externFormulaString = internFormula.getExternFormulaString();
 
-		internFormula
-				.handleKeyInput(R.id.formula_editor_keyboard_delete, getInstrumentation().getTargetContext(), null);
+		internFormula.handleKeyInput(R.id.formula_editor_edit_field_clear, getInstrumentation().getTargetContext(),
+				null);
 		internFormula.generateExternFormulaStringAndInternExternMapping(getInstrumentation().getTargetContext());
 		assertTrue("ExternFormulaString changed on buggy input!",
 				internFormula.getExternFormulaString().compareTo(externFormulaString) == 0);
@@ -400,8 +390,8 @@ public class InternFormulaTest extends InstrumentationTestCase {
 		internFormula.setCursorAndSelection(1, false);
 		String externFormulaString = internFormula.getExternFormulaString();
 		Reflection.setPrivateField(internFormula, "externCursorPosition", -1);
-		internFormula
-				.handleKeyInput(R.id.formula_editor_keyboard_delete, getInstrumentation().getTargetContext(), null);
+		internFormula.handleKeyInput(R.id.formula_editor_edit_field_clear, getInstrumentation().getTargetContext(),
+				null);
 		internFormula.generateExternFormulaStringAndInternExternMapping(getInstrumentation().getTargetContext());
 		assertTrue("ExternFormulaString changed on buggy input!",
 				internFormula.getExternFormulaString().compareTo(externFormulaString) == 0);
@@ -415,8 +405,8 @@ public class InternFormulaTest extends InstrumentationTestCase {
 		internFormula.generateExternFormulaStringAndInternExternMapping(getInstrumentation().getTargetContext());
 		internFormula.setCursorAndSelection(1, false);
 		externFormulaString = internFormula.getExternFormulaString();
-		internFormula
-				.handleKeyInput(R.id.formula_editor_keyboard_delete, getInstrumentation().getTargetContext(), null);
+		internFormula.handleKeyInput(R.id.formula_editor_edit_field_clear, getInstrumentation().getTargetContext(),
+				null);
 		internFormula.generateExternFormulaStringAndInternExternMapping(getInstrumentation().getTargetContext());
 		assertTrue("ExternFormulaString changed on buggy input!",
 				internFormula.getExternFormulaString().compareTo(externFormulaString) == 0);
@@ -432,8 +422,8 @@ public class InternFormulaTest extends InstrumentationTestCase {
 				getInstrumentation().getTargetContext().getResources().getString(R.string.formula_editor_function_sin)
 						.length() + 1, false);
 		externFormulaString = internFormula.getExternFormulaString();
-		internFormula
-				.handleKeyInput(R.id.formula_editor_keyboard_delete, getInstrumentation().getTargetContext(), null);
+		internFormula.handleKeyInput(R.id.formula_editor_edit_field_clear, getInstrumentation().getTargetContext(),
+				null);
 		internFormula.generateExternFormulaStringAndInternExternMapping(getInstrumentation().getTargetContext());
 		assertTrue("ExternFormulaString changed on buggy input!",
 				internFormula.getExternFormulaString().compareTo(externFormulaString) == 0);
@@ -449,8 +439,8 @@ public class InternFormulaTest extends InstrumentationTestCase {
 				getInstrumentation().getTargetContext().getResources().getString(R.string.formula_editor_function_sin)
 						.length() + 2, false);
 		externFormulaString = internFormula.getExternFormulaString();
-		internFormula
-				.handleKeyInput(R.id.formula_editor_keyboard_delete, getInstrumentation().getTargetContext(), null);
+		internFormula.handleKeyInput(R.id.formula_editor_edit_field_clear, getInstrumentation().getTargetContext(),
+				null);
 		internFormula.generateExternFormulaStringAndInternExternMapping(getInstrumentation().getTargetContext());
 		assertTrue("ExternFormulaString changed on buggy input!",
 				internFormula.getExternFormulaString().compareTo(externFormulaString) == 0);
@@ -466,8 +456,8 @@ public class InternFormulaTest extends InstrumentationTestCase {
 				getInstrumentation().getTargetContext().getResources().getString(R.string.formula_editor_function_sin)
 						.length() + 2, false);
 		externFormulaString = internFormula.getExternFormulaString();
-		internFormula
-				.handleKeyInput(R.id.formula_editor_keyboard_delete, getInstrumentation().getTargetContext(), null);
+		internFormula.handleKeyInput(R.id.formula_editor_edit_field_clear, getInstrumentation().getTargetContext(),
+				null);
 		internFormula.generateExternFormulaStringAndInternExternMapping(getInstrumentation().getTargetContext());
 		assertTrue("ExternFormulaString changed on buggy input!",
 				internFormula.getExternFormulaString().compareTo(externFormulaString) == 0);

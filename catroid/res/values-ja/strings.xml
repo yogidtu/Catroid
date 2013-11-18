@@ -24,7 +24,6 @@
 <resources>
 
     <!-- General terms -->
-    <string name="app_name">キャット\nロイド</string>
     <string name="project">"プロジェクト"</string>
     <string name="sprite">"スプライト"</string>
     <string name="script">"スクリプト"</string>
@@ -96,7 +95,6 @@
     <string name="rename_sound_dialog">"音の名前を変更します"</string>
     <string name="soundname_invalid">"この音の名前は無効です"</string>
     <string name="sound_play">"再生"</string>
-    <string name="sound_pause">"休止"</string>
     <string name="sound_select_source">"音を選択してください"</string>
     <!-- My Projects activity -->
     <string name="last_used">"最新の使用："</string>
@@ -112,8 +110,6 @@
     <string name="soundrecorder_recorded_filename">"録音"</string>
     <!-- PreStage activity -->
     <string name="text_to_speech_engine_not_installed">"テキストツースピーチエンジンがインストールされていません。\nテキストツースピーチを今すぐインストールしますか？"</string>
-    <!-- Script context menu -->
-    <string name="script_context_menu_title">"スクリプト"</string>
     <!-- New project dialog -->
     <string name="new_project_dialog_title">"新規プロジェクトの名前"</string>
     <string name="new_project_dialog_hint">"私のプロジェクト"</string>

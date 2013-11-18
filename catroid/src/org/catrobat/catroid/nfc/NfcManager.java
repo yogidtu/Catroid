@@ -22,13 +22,14 @@
  */
 package org.catrobat.catroid.nfc;
 
-import java.math.BigInteger;
-
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 
+import java.math.BigInteger;
+
 public class NfcManager {
+	private static final String TAG = NfcManager.class.getSimpleName();
 	private static NfcManager INSTANCE = new NfcManager();
 	private long uid;
 
@@ -52,6 +53,7 @@ public class NfcManager {
 		if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())
 				|| NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
 				|| NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
+
 			Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
 			byte[] byteId = tag.getId();

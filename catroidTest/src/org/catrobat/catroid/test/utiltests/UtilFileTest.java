@@ -22,11 +22,8 @@
  */
 package org.catrobat.catroid.test.utiltests;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.DecimalFormat;
-import java.util.List;
+import android.os.Environment;
+import android.test.InstrumentationTestCase;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Project;
@@ -36,24 +33,31 @@ import org.catrobat.catroid.test.utils.TestUtils;
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 
-import android.test.InstrumentationTestCase;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.util.List;
 
 public class UtilFileTest extends InstrumentationTestCase {
+	private static final String CATROID_DIRECTORY = Environment.getExternalStorageDirectory().getAbsolutePath()
+			+ "/Pocket Code";
+
 	private File testDirectory;
 	private File subDirectory;
 	private File file1;
 	private File file2;
 
 	private String projectName = "project1";
-	private String catroidDirectory = "/sdcard/Pocket Code";
 
 	@Override
 	protected void setUp() throws Exception {
+		super.setUp();
 
-		UtilFile.deleteDirectory(new File(catroidDirectory + "/testDirectory"));
-		TestUtils.clearProject(projectName);
+		UtilFile.deleteDirectory(new File(CATROID_DIRECTORY + "/testDirectory"));
+		TestUtils.deleteTestProjects(projectName);
 
-		testDirectory = new File(catroidDirectory + "/testDirectory");
+		testDirectory = new File(CATROID_DIRECTORY + "/testDirectory");
 		testDirectory.mkdir();
 		file1 = new File(testDirectory.getAbsolutePath() + "/file1");
 		file1.createNewFile();
@@ -61,13 +65,12 @@ public class UtilFileTest extends InstrumentationTestCase {
 		subDirectory.mkdir();
 		file2 = new File(subDirectory.getAbsolutePath() + "/file2");
 		file2.createNewFile();
-		super.setUp();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
 		UtilFile.deleteDirectory(testDirectory);
-		TestUtils.clearProject(projectName);
+		TestUtils.deleteTestProjects(projectName);
 		super.tearDown();
 	}
 
@@ -91,7 +94,7 @@ public class UtilFileTest extends InstrumentationTestCase {
 		for (int i = 0; i < 2; i++) {
 			UtilFile.saveFileToProject("testDirectory", i + "testsound.mp3",
 					org.catrobat.catroid.test.R.raw.longtestsound, getInstrumentation().getContext(),
-					UtilFile.TYPE_SOUND_FILE);
+					UtilFile.FileType.TYPE_SOUND_FILE);
 		}
 
 		double expectedSizeInKilobytes = 84.2;
@@ -101,7 +104,7 @@ public class UtilFileTest extends InstrumentationTestCase {
 		for (int i = 2; i < 48; i++) {
 			UtilFile.saveFileToProject("testDirectory", i + "testsound.mp3",
 					org.catrobat.catroid.test.R.raw.longtestsound, getInstrumentation().getContext(),
-					UtilFile.TYPE_SOUND_FILE);
+					UtilFile.FileType.TYPE_SOUND_FILE);
 		}
 		DecimalFormat decimalFormat = new DecimalFormat("#.0");
 		String expected = decimalFormat.format(2.0) + " MB";
@@ -129,21 +132,21 @@ public class UtilFileTest extends InstrumentationTestCase {
 		UtilFile.deleteDirectory(testDirectory);
 	}
 
-	public void testGetProjectFiles() {
+	public void testGetProjectNames() {
 		Project project = new Project(null, projectName);
 		ProjectManager.getInstance().setProject(project);
 		Sprite sprite = new Sprite("new sprite");
 		project.addSprite(sprite);
 		StorageHandler.getInstance().saveProject(project);
 
-		File catroidDirectoryFile = new File(catroidDirectory);
+		File catroidDirectoryFile = new File(CATROID_DIRECTORY);
 		File project1Directory = new File(catroidDirectoryFile + "/" + projectName);
 
-		List<File> projectList = UtilFile.getProjectFiles(catroidDirectoryFile);
+		List<String> projectList = UtilFile.getProjectNames(catroidDirectoryFile);
 
 		assertTrue("project1 should be in Projectlist - is a valid Catroid project",
-				projectList.contains(project1Directory));
+				projectList.contains(project1Directory.getName()));
 		assertFalse("testDirectory should not be in Projectlist - not a Catroid project",
-				projectList.contains(testDirectory));
+				projectList.contains(testDirectory.getName()));
 	}
 }

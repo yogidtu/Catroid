@@ -22,29 +22,19 @@
  */
 package org.catrobat.catroid.test.web;
 
-import java.io.File;
-import java.io.IOException;
+import android.test.AndroidTestCase;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.UtilZip;
 
-import android.test.AndroidTestCase;
+import java.io.File;
+import java.io.IOException;
 
 public class ZipTest extends AndroidTestCase {
 
 	public ZipTest() {
 		super();
-	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
 	}
 
 	public void testZipUnzip() throws IOException {
@@ -57,7 +47,7 @@ public class ZipTest extends AndroidTestCase {
 
 		String[] paths = { pathToTest };
 
-		String zipFileName = Constants.TMP_PATH + "/testzip" + Constants.CATROBAT_EXTENTION;
+		String zipFileName = Constants.TMP_PATH + "/testzip" + Constants.CATROBAT_EXTENSION;
 		File zipFile = new File(zipFileName);
 		if (zipFile.exists()) {
 			zipFile.delete();

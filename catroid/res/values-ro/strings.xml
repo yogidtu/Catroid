@@ -24,7 +24,6 @@
 <resources>
 
     <!-- General terms -->
-    <string name="app_name">Catroid</string>
     <string name="project">proiect</string>
     <string name="sprite">obiect</string>
     <string name="script">script</string>
@@ -117,13 +116,10 @@
     <string name="rename_sound_dialog">Redenumirea sunetului</string>
     <string name="soundname_invalid">Această denumire de sunet este nevalabilă</string>
     <string name="sound_play">redare</string>
-    <string name="sound_pause">pauză </string>
     <string name="sound_rename">redenumire</string>
     <!-- Sprite dialog -->
     <!-- <string name="sprite_button_text">Creare</string> -->
     <!-- <string name="newsprite">Obiect nou</string> -->
-    <!-- Script context menu -->
-    <string name="script_context_menu_title">Meniul Scriptului</string>
     <!-- New project dialog -->
     <string name="new_project_dialog_title">Denumirea proiectului nou</string>
     <!-- Edit Sprite Dialog -->
