@@ -65,9 +65,7 @@ public final class Constants {
 
 	public static final String CATROBAT_HELP_URL = "http://www.pocketcode.org/tutorial";
 
-	//Link does not work in Chrome, redirects to http://www.example.com
-	//public static final String APP_LINK = "http://catrob.at/catroidstandalonetictactoemaster";
-	public static final String APP_LINK = "https://pocketcode.org/details/817";
+	public static final String APP_LINK = "http://catrob.at/csatttm";
 
 	public static final String TOKEN = "token";
 	public static final String NO_TOKEN = "no_token";

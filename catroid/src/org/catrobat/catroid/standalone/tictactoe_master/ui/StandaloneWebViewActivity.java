@@ -23,11 +23,11 @@
 package org.catrobat.catroid.standalone.tictactoe_master.ui;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-
-import com.actionbarsherlock.app.ActionBar;
+import android.webkit.WebViewClient;
 
 import org.catrobat.catroid.standalone.tictactoe_master.R;
 import org.catrobat.catroid.standalone.tictactoe_master.common.Constants;
@@ -42,19 +42,29 @@ public class StandaloneWebViewActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_webview);
 
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.hide();
+		getSupportActionBar().hide();
 
 		webView = (WebView) findViewById(R.id.webView);
 		webView.setWebChromeClient(new WebChromeClient());
+		webView.setWebViewClient(new MyWebViewClient());
 		webView.getSettings().setJavaScriptEnabled(true);
 
 		webView.loadUrl(Constants.APP_LINK);
 	}
 
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-		finish();
+	private class MyWebViewClient extends WebViewClient {
+		@Override
+		public void onPageStarted(WebView view, String url, Bitmap favicon) {
+			super.onPageStarted(view, url, favicon);
+
+		}
+
+		@Override
+		public void onPageFinished(WebView view, String url) {
+			super.onPageFinished(view, url);
+			if (url.equals(Constants.APP_LINK) && !webView.canGoBack()) {
+				finish();
+			}
+		}
 	}
 }
