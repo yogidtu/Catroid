@@ -73,11 +73,11 @@ public class LookData implements Serializable, Cloneable {
 	}
 
 	public TextureRegion getTextureRegion() {
-		setTextureRegion();
+		refreshTextureRegion();
 		return region;
 	}
 
-	public void setTextureRegion() {
+	public void refreshTextureRegion() {
 		region = new TextureRegion(new Texture(getPixmap()));
 	}
 
@@ -164,16 +164,5 @@ public class LookData implements Serializable, Cloneable {
 	@Override
 	public String toString() {
 		return name;
-	}
-
-	public void drawBubbleLeftTopInsideLook(Pixmap newPixmap, Pixmap bubble) {
-		newPixmap.drawPixmap(bubble, 0, 0);
-		region = new TextureRegion(new Texture(newPixmap));
-	}
-
-	public void drawBubbleRightTopInsideLook(Pixmap newPixmap, Pixmap bubble) {
-		int rightTopX = newPixmap.getWidth() - bubble.getWidth();
-		newPixmap.drawPixmap(bubble, rightTopX, 0);
-		region = new TextureRegion(new Texture(newPixmap));
 	}
 }

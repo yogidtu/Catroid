@@ -51,7 +51,8 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 	private Formula text;
 	private Formula duration;
 	private transient View prototypeView;
-	private transient View speechBubbleView;
+	private transient View bubble = null;
+	private transient Context context = null;
 
 	public SayForBrick() {
 	}
@@ -73,14 +74,6 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 		return text;
 	}
 
-	//	public void setXPosition(Formula xPosition) {
-	//		this.text = xPosition;
-	//	}
-	//
-	//	public void setYPosition(Formula yPosition) {
-	//		this.seconds = yPosition;
-	//	}
-
 	@Override
 	public int getRequiredResources() {
 		return NO_RESOURCES;
@@ -98,7 +91,8 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 		if (animationState) {
 			return view;
 		}
-		speechBubbleView = View.inflate(context, R.layout.bubble_speech_new, null);
+		// TODO
+		this.context = context.getApplicationContext();
 
 		view = View.inflate(context, R.layout.brick_say_for, null);
 		view = getViewWithAlpha(alphaValue);
@@ -188,27 +182,20 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		Context context = view.getContext();
-		View bubble = View.inflate(context, R.layout.bubble_speech_new, null);
-
-		//		((TextView) bubble.findViewById(R.id.bubble_edit_text))
-		//				.setText(String
-		//						.valueOf("MyTextMyTextMyTextMyTextMyTextMuuuuuuuuuuuuuuuuuuuuuuuuuuu\nyTextMy\tTextMyTextMyTextM\ryTextMyTextMyTextM\nyTextMyTextMy\nTextMyTextMyTextMyTextMy\nTextMyTextMy\nTextMyTex\nt"));
+		bubble = View.inflate(this.context, R.layout.bubble_speech_new, null);
 		((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(text.interpretString(sprite));
 		bubble.setDrawingCacheEnabled(true);
 		bubble.measure(MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_WIDTH - 30, MeasureSpec.AT_MOST),
 				MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_HEIGHT - 30, MeasureSpec.AT_MOST));
 		bubble.layout(0, 0, bubble.getMeasuredWidth(), bubble.getMeasuredHeight());
-		//		bubble.layout(0, 0, 300, 300);
 
 		Bitmap bitmap = bubble.getDrawingCache();
-		//		Canvas canvas = new Canvas(bitmap);
-		//		canvas.drawText("DAT", 100, 100, new Paint(Paint.UNDERLINE_TEXT_FLAG));
+
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
-		final byte[] speechBubble = stream.toByteArray();
+		byte[] speechBubble = stream.toByteArray();
 		bubble.setDrawingCacheEnabled(false);
-		// TODO at the text!
+
 		sequence.addAction(ExtendedActions.say(sprite, speechBubble, duration));
 		return null;
 	}

@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Color;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -41,6 +42,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -48,6 +50,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.ScreenValues;
+import org.catrobat.catroid.content.Look;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.io.SoundManager;
@@ -57,7 +60,10 @@ import org.catrobat.catroid.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class StageListener implements ApplicationListener {
 
@@ -129,8 +135,11 @@ public class StageListener implements ApplicationListener {
 	public int maximizeViewPortWidth = 0;
 
 	public boolean axesOn = false;
+	public static Map<Look, Pixmap> bubble = new HashMap<Look, Pixmap>();
 
 	private byte[] thumbnail;
+
+	private float oldRotation = 0;;
 
 	StageListener() {
 	}
@@ -379,6 +388,10 @@ public class StageListener implements ApplicationListener {
 			drawAxes();
 		}
 
+		if (bubble.size() > 0 && !finished) {
+			drawBubbleOnStage();
+		}
+
 		if (DEBUG) {
 			fpsLogger.log();
 		}
@@ -487,9 +500,97 @@ public class StageListener implements ApplicationListener {
 		}
 	}
 
-	public boolean tryToDrawSpeechBubbleOutsideFromCurrentLook(Pixmap bubble) {
+	public void drawBubbleOnStage() {
 
-		return false;
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+
+		Iterator<Look> iterator = bubble.keySet().iterator();
+
+		while (iterator.hasNext()) {
+			final Look currentLook = iterator.next();
+			final Texture bubbleTexture = new Texture(bubble.get(currentLook));
+
+			final float lookScaleX = currentLook.getScaleX();
+			final float lookScaleY = currentLook.getScaleY();
+			float scaleOffsetX = 1;
+			float scaleOffsetY = 1;
+
+			if (lookScaleX != 1) {
+				scaleOffsetX = lookScaleX > 1 ? (lookScaleX - 1) * 2 + 1 : (1 - lookScaleX) / 2;
+			}
+			if (lookScaleY != 1) {
+				scaleOffsetY = lookScaleY > 1 ? (lookScaleY - 1) * 2 + 1 : (1 - lookScaleY) / 2;
+			}
+
+			final float rightTopX = currentLook.getX() + currentLook.getWidth() * (scaleOffsetX + lookScaleX);
+			final float rightTopY = currentLook.getY() + currentLook.getHeight() * (scaleOffsetY + lookScaleY);
+			final float rightBottomX = currentLook.getX() + currentLook.getWidth() * (scaleOffsetX + lookScaleX);
+			final float rightBottomY = currentLook.getY() + currentLook.getHeight() * (scaleOffsetY);
+			final float leftBottomX = currentLook.getX() + currentLook.getWidth() * (scaleOffsetX);
+			final float leftBottomY = currentLook.getY() + currentLook.getHeight() * (scaleOffsetY);
+			final float leftTopX = currentLook.getX() + currentLook.getWidth() * (scaleOffsetX);
+			final float leftTopY = currentLook.getY() + currentLook.getHeight() * (scaleOffsetY + lookScaleY);
+
+			float rotatedRightTopX = rightTopX;
+			float rotatedRightTopY = rightTopY;
+			float rotatedRightBottomX = rightBottomX;
+			float rotatedRightBottomY = rightBottomY;
+			float rotatedLeftBottomX = leftBottomX;
+			float rotatedLeftBottomY = leftBottomY;
+			float rotatedLeftTopX = leftTopX;
+			float rotatedLeftTopY = leftTopY;
+
+			float bubbleX = rightTopX;
+			float bubbleY = rightTopY;
+
+			final float lookRotation = currentLook.getRotation();
+
+			if (!(lookRotation == this.oldRotation)) {
+				Log.i("info", "lookScaleY: " + lookScaleY);
+				Log.i("info", "lookScaleX: " + lookScaleX);
+				Log.i("info", "lookRotation: " + lookRotation);
+				Log.i("info", "rightTopX:" + rightTopX + " rightTopY:" + rightTopY + " rightBottomX:" + rightBottomX
+						+ " rightBottomY:" + rightBottomY + " leftBottomX:" + leftBottomX + " leftBottomY:"
+						+ leftBottomY + " leftTopX:" + leftTopX + " leftTopY:" + leftTopY);
+
+				this.oldRotation = lookRotation;
+			}
+
+			if (lookRotation != 0) {
+				final float cos = MathUtils.cosDeg(lookRotation);
+				final float sin = MathUtils.sinDeg(lookRotation);
+
+				rotatedRightTopX = cos * rightTopX - sin * rightTopY;
+				rotatedRightTopY = sin * rightTopX + cos * rightTopY;
+				rotatedRightBottomX = cos * rightBottomX - sin * rightBottomY;
+				rotatedRightBottomY = sin * rightBottomX + cos * rightBottomY;
+				rotatedLeftBottomX = cos * leftBottomX - sin * leftBottomY;
+				rotatedLeftBottomY = sin * leftBottomX + cos * leftBottomY;
+				rotatedLeftTopX = cos * leftTopX - sin * leftTopY;
+				rotatedLeftTopY = sin * leftTopX + cos * leftTopY;
+
+				if (lookRotation > 0 && lookRotation <= 90) {
+					bubbleX = rotatedRightTopX;
+					bubbleY = rotatedRightTopY;
+				}
+				if (lookRotation > 90 && lookRotation <= 180) {
+					bubbleX = rotatedRightBottomX;
+					bubbleY = rotatedRightBottomY;
+				}
+				if (lookRotation > 180 && lookRotation <= 270) {
+					bubbleX = rotatedLeftBottomX;
+					bubbleY = rotatedLeftBottomY;
+				}
+				if (lookRotation > 270 && lookRotation <= 360) {
+					bubbleX = rotatedLeftTopX;
+					bubbleY = rotatedLeftTopY;
+				}
+			}
+
+			batch.draw(bubbleTexture, bubbleX, bubbleY);
+		}
+		batch.end();
 	}
 
 	private LookData createWhiteBackgroundLookData() {
@@ -498,7 +599,7 @@ public class StageListener implements ApplicationListener {
 		whiteBackgroundPixmap.setColor(Color.WHITE);
 		whiteBackgroundPixmap.fill();
 		whiteBackground.setPixmap(whiteBackgroundPixmap);
-		whiteBackground.setTextureRegion();
+		whiteBackground.refreshTextureRegion();
 		return whiteBackground;
 	}
 

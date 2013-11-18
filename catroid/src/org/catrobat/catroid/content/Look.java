@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.Array;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.content.actions.BroadcastNotifyAction;
 import org.catrobat.catroid.content.actions.ExtendedActions;
-import org.catrobat.catroid.stage.StageActivity;
+import org.catrobat.catroid.stage.StageListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,9 +64,6 @@ public class Look extends Image {
 	private ArrayList<Action> actionsToRestart = new ArrayList<Action>();
 	private boolean allActionAreFinished = false;
 	private BrightnessContrastShader shader;
-
-	private boolean showBubble = false;
-	private byte[] bubble = null;
 
 	public Look(Sprite sprite) {
 		this.sprite = sprite;
@@ -445,25 +442,11 @@ public class Look extends Image {
 	}
 
 	public void showSpeechBubble(byte[] speechBubble) {
-		this.bubble = speechBubble;
-		this.showBubble = true;
-
+		StageListener.bubble.put(this, new Pixmap(speechBubble, 0, speechBubble.length));
 	}
 
 	public void hideSpeechBubble() {
-		this.bubble = null;
-		this.showBubble = false;
 		this.imageChanged = true;
-	}
-
-	public void anon() {
-		Pixmap speechBubblePixmap = new Pixmap(this.bubble, 0, bubble.length);
-		Pixmap newPixmap = lookData.getPixmap();
-		lookData.setPixmap(null);
-
-		// TODO place bubble at correct position
-		if (!StageActivity.stageListener.tryToDrawSpeechBubbleOutsideFromCurrentLook(speechBubblePixmap)) {
-			lookData.drawBubbleRightTopInsideLook(newPixmap, speechBubblePixmap);
-		}
+		StageListener.bubble.remove(this);
 	}
 }
