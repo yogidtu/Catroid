@@ -80,13 +80,17 @@ public class ProjectActivity extends BaseActivity {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		handleShowDetails(spritesListFragment.getShowDetails(), menu.findItem(R.id.show_details));
+		if (spritesListFragment != null && spritesListFragment.isLoading == false) {
+			handleShowDetails(spritesListFragment.getShowDetails(), menu.findItem(R.id.show_details));
+		}
 		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.menu_current_project, menu);
+		if (spritesListFragment != null && spritesListFragment.isLoading == false) {
+			getSupportMenuInflater().inflate(R.menu.menu_current_project, menu);
+		}
 		return super.onCreateOptionsMenu(menu);
 	}
 

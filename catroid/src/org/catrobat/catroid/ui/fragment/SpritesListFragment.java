@@ -100,6 +100,7 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 	private String programName;
 
 	private LoadProjectTask loadProjectTask;
+	public boolean isLoading = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -150,6 +151,9 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 			getActivity().findViewById(R.id.progress_circle).bringToFront();
 			getActivity().findViewById(R.id.fragment_sprites_list).setVisibility(View.GONE);
 			getActivity().findViewById(R.id.bottom_bar).setVisibility(View.GONE);
+
+			isLoading = true;
+			this.getSherlockActivity().supportInvalidateOptionsMenu();
 
 			loadProjectTask = new LoadProjectTask(getActivity(), programName, true, true);
 			loadProjectTask.setOnLoadProjectCompleteListener(this);
@@ -667,6 +671,8 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 	public void onLoadProjectSuccess(boolean startProjectActivity) {
 		initListeners();
 		spriteAdapter.notifyDataSetChanged();
+		isLoading = false;
+		this.getSherlockActivity().supportInvalidateOptionsMenu();
 		getActivity().findViewById(R.id.progress_circle).setVisibility(View.GONE);
 		getActivity().findViewById(R.id.fragment_sprites_list).setVisibility(View.VISIBLE);
 		getActivity().findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
