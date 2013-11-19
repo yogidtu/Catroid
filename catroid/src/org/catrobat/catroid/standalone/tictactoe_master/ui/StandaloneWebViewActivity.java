@@ -23,7 +23,9 @@
 package org.catrobat.catroid.standalone.tictactoe_master.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -64,6 +66,16 @@ public class StandaloneWebViewActivity extends BaseActivity {
 			super.onPageFinished(view, url);
 			if (url.equals(Constants.APP_LINK) && !webView.canGoBack()) {
 				finish();
+			}
+		}
+
+		@Override
+		public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			if (url != null && url.startsWith("market://")) {
+				view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+				return true;
+			} else {
+				return false;
 			}
 		}
 	}
