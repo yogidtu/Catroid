@@ -63,15 +63,20 @@ public class SelectProjectActivity extends BaseActivity {
 	}
 
 	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		//	handleShowDetails(selectProgramFragment.getShowDetails(), menu.findItem(R.id.show_details));
-		return super.onPrepareOptionsMenu(menu);
-	}
-
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+			case android.R.id.home: {
+				Intent intent = new Intent(this, LiveWallpaperSettings.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+				break;
+			}
+			case R.id.hide: {
+				selectProgramFragment.startHideActionMode();
+				break;
+			}
 
+			//TODO: show
 		}
 		return super.onOptionsItemSelected(item);
 	}

@@ -96,6 +96,13 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 		adapter.setOnProjectEditListener(this);
 	}
 
+	public void startHideActionMode() {
+		//		if (actionMode == null) {
+		//			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
+		//			
+		//		}
+	}
+
 	private class SortIgnoreCase implements Comparator<ProjectData> {
 		@Override
 		public int compare(ProjectData o1, ProjectData o2) {
