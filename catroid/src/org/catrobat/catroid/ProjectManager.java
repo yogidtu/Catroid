@@ -33,6 +33,7 @@ import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.io.LoadProjectTask.OnLoadProjectCompleteListener;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.utils.Utils;
@@ -40,7 +41,7 @@ import org.catrobat.catroid.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 
-public class ProjectManager {
+public class ProjectManager implements OnLoadProjectCompleteListener {
 	private static final ProjectManager INSTANCE = new ProjectManager();
 	private static final String TAG = ProjectManager.class.getSimpleName();
 
@@ -290,5 +291,10 @@ public class ProjectManager {
 			StorageHandler.getInstance().saveProject(project);
 			return null;
 		}
+	}
+
+	@Override
+	public void onLoadProjectSuccess(boolean startProjectActivity) {
+
 	}
 }
