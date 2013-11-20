@@ -407,5 +407,8 @@
  	<string name="download_programs">Explore</string>
  	
  	<string name="pocket_code_not_installed">Pocket Code is not installed. Do you want to install it?</string>
+ 	
+ 	<string name="hide">Hide programs</string>
+ 	<string name="show">Show hidden</string>
 
 </resources>

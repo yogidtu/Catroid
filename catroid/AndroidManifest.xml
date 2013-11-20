@@ -66,7 +66,11 @@
         </service>
         
 		<activity
-     		 android:name="org.catrobat.catroid.livewallpaper.LiveWallpaperSettings" android:exported="true" > 
+     		 android:name="org.catrobat.catroid.livewallpaper.ui.LiveWallpaperSettings" android:exported="true" > 
+		</activity>
+		
+		<activity
+     		 android:name="org.catrobat.catroid.livewallpaper.ui.SelectProjectActivity" android:exported="true" > 
 		</activity>
          
 

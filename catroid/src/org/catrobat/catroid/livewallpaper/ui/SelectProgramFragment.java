@@ -20,10 +20,9 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.livewallpaper;
+package org.catrobat.catroid.livewallpaper.ui;
 
 import android.app.AlertDialog;
-import android.app.ListFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -35,11 +34,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.actionbarsherlock.app.SherlockListFragment;
+
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.ProjectData;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
+import org.catrobat.catroid.livewallpaper.LiveWallpaper;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.ui.adapter.ProjectAdapter;
 import org.catrobat.catroid.ui.adapter.ProjectAdapter.OnProjectClickedListener;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
@@ -53,7 +56,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class SelectProgramFragment extends ListFragment implements OnProjectClickedListener {
+public class SelectProgramFragment extends SherlockListFragment implements OnProjectClickedListener {
 	private String selectedProject;
 	private SelectProgramFragment selectProgramFragment;
 
@@ -63,7 +66,6 @@ public class SelectProgramFragment extends ListFragment implements OnProjectClic
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		selectProgramFragment = this;
-		getActivity().getActionBar().setTitle(R.string.lwp_select_program);
 		return inflater.inflate(R.layout.fragment_lwp_select_program, container, false);
 	}
 
@@ -142,8 +144,6 @@ public class SelectProgramFragment extends ListFragment implements OnProjectClic
 		@Override
 		protected void onPostExecute(Void result) {
 			LiveWallpaper.changeWallpaperProgram();
-			//			getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
-			//			getFragmentManager().popBackStack();
 			if (progress.isShowing()) {
 				progress.dismiss();
 			}

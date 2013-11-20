@@ -20,7 +20,7 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.livewallpaper;
+package org.catrobat.catroid.livewallpaper.ui;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -31,6 +31,9 @@ import android.view.Window;
 import android.widget.TextView;
 
 import org.catrobat.catroid.livewallpaper.R;
+import org.catrobat.catroid.livewallpaper.R.id;
+import org.catrobat.catroid.livewallpaper.R.layout;
+import org.catrobat.catroid.livewallpaper.R.string;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.utils.Utils;
 
