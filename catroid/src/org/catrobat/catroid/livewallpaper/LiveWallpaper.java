@@ -22,9 +22,11 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
@@ -46,12 +48,15 @@ import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageListener;
 import org.catrobat.catroid.utils.Utils;
 
+import java.io.IOException;
+
 public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	private StageListener lastCreatedStageListener;
 	private AndroidApplicationConfiguration cfg;
 	private LiveWallpaperEngine lastCreatedWallpaperEngine;
 	private Context context;
+	private Bitmap blackWallpaper;
 
 	private static LiveWallpaperEngine previewEngine;
 	private static LiveWallpaperEngine homeEngine;
@@ -68,6 +73,8 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		SoundManager.getInstance().soundDisabledByLwp = sharedPreferences.getBoolean(Constants.PREF_SOUND_DISABLED,
 				false);
 		context = this;
+		Bitmap.Config config = Bitmap.Config.ARGB_8888;
+		blackWallpaper = Bitmap.createBitmap(50, 50, config);
 	}
 
 	@Override
@@ -212,6 +219,13 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		}
 
 		public void changeWallpaperProgram() {
+			try {
+				WallpaperManager.getInstance(context).setBitmap(blackWallpaper);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			this.localStageListener.reloadProject(getApplicationContext());
 			activateTextToSpeechIfNeeded();
 		}
