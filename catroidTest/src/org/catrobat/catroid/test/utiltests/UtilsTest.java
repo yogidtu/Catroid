@@ -37,8 +37,11 @@ import org.catrobat.catroid.content.bricks.HideBrick;
 import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.formulaeditor.Formula;
+<<<<<<< HEAD
 import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.test.utils.Reflection;
+=======
+>>>>>>> master
 import org.catrobat.catroid.test.utils.TestUtils;
 import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
@@ -172,12 +175,6 @@ public class UtilsTest extends AndroidTestCase {
 		String projectName = "test?Projekt\"1";
 		String expectedPath = Constants.DEFAULT_ROOT + "/testProjekt1";
 		assertEquals("Paths are different!", expectedPath, Utils.buildProjectPath(projectName));
-	}
-
-	public void testDebuggableFlagShouldBeSet() throws Exception {
-		// Ensure Utils  returns true in isApplicationDebuggable
-		Reflection.setPrivateField(Utils.class, "isUnderTest", false);
-		assertTrue("Debug flag not set!", Utils.isApplicationDebuggable(getContext()));
 	}
 
 	public void testProjectSameAsStandardProject() {

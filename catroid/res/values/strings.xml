@@ -388,6 +388,7 @@
     <string name="error_load_sound">An error occurred while loading the sound.</string>
     <string name="error_internet_connection">An unknown error occurred. Check your Internet connection.</string>
     <string name="error_project_compatability">The program is not compatible with this version of Pocket Code.</string>
+    <string name="error_outdated_pocketcode_version">The Pocket Code version is too old. Update now?</string>
     <string name="error_copy_project">An error occurred while copying the program.</string>
       <!--  -->
 
