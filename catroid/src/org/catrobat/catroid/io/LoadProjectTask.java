@@ -92,6 +92,7 @@ public class LoadProjectTask extends AsyncTask<Void, Void, Boolean> {
 	private void checkNestingBrickReferences() {
 		if (autocorrectMode) {
 			Project currentProject = ProjectManager.getInstance().getCurrentProject();
+			boolean projectCorrect = true;
 			if (currentProject != null) {
 				for (Sprite currentSprite : currentProject.getSpriteList()) {
 					int numberOfScripts = currentSprite.getNumberOfScripts();
@@ -110,6 +111,7 @@ public class LoadProjectTask extends AsyncTask<Void, Void, Boolean> {
 										|| !endBrick.getIfBeginBrick().equals(currentBrick)
 										|| !endBrick.getIfElseBrick().equals(elseBrick)) {
 									scriptCorrect = false;
+									projectCorrect = false;
 									Log.d("REFERENCE ERROR!!", "Brick has wrong reference:" + currentSprite + " "
 											+ currentBrick);
 								}
@@ -118,6 +120,7 @@ public class LoadProjectTask extends AsyncTask<Void, Void, Boolean> {
 								if (endBrick == null || endBrick.getLoopBeginBrick() == null
 										|| !endBrick.getLoopBeginBrick().equals(currentBrick)) {
 									scriptCorrect = false;
+									projectCorrect = false;
 									Log.d("REFERENCE ERROR!!", "Brick has wrong reference:" + currentSprite + " "
 											+ currentBrick);
 								}
@@ -132,11 +135,31 @@ public class LoadProjectTask extends AsyncTask<Void, Void, Boolean> {
 									ifBeginList.add((IfLogicBeginBrick) currentBrick);
 								} else if (currentBrick instanceof LoopBeginBrick) {
 									loopBeginList.add((LoopBeginBrick) currentBrick);
+								} else if (currentBrick instanceof LoopEndBrick) {
+									LoopBeginBrick loopBeginBrick = loopBeginList.get(loopBeginList.size() - 1);
+									loopBeginBrick.setLoopEndBrick((LoopEndBrick) currentBrick);
+									((LoopEndBrick) currentBrick).setLoopBeginBrick(loopBeginBrick);
+									loopBeginList.remove(loopBeginBrick);
+								} else if (currentBrick instanceof IfLogicElseBrick) {
+									IfLogicBeginBrick ifBeginBrick = ifBeginList.get(ifBeginList.size() - 1);
+									ifBeginBrick.setIfElseBrick((IfLogicElseBrick) currentBrick);
+									((IfLogicElseBrick) currentBrick).setIfBeginBrick(ifBeginBrick);
+								} else if (currentBrick instanceof IfLogicEndBrick) {
+									IfLogicBeginBrick ifBeginBrick = ifBeginList.get(ifBeginList.size() - 1);
+									IfLogicElseBrick elseBrick = ifBeginBrick.getIfElseBrick();
+									ifBeginBrick.setIfEndBrick((IfLogicEndBrick) currentBrick);
+									elseBrick.setIfEndBrick((IfLogicEndBrick) currentBrick);
+									((IfLogicEndBrick) currentBrick).setIfBeginBrick(ifBeginBrick);
+									((IfLogicEndBrick) currentBrick).setIfElseBrick(elseBrick);
+									ifBeginList.remove(ifBeginBrick);
 								}
 							}
 						}
 					}
 				}
+			}
+			if (!projectCorrect) {
+				ProjectManager.getInstance().saveProject();
 			}
 		}
 	}
