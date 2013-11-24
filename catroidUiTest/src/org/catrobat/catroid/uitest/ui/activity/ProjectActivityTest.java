@@ -1440,4 +1440,9 @@ public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<Mai
 
 		return scriptCopied.getBrickList().size();
 	}
+	
+	public void testNestingBrickReferences(){
+		//TODO: load suspective projects and iterate
+		
+	}
 }

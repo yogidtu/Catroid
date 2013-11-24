@@ -25,11 +25,22 @@ package org.catrobat.catroid.io;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.content.Project;
+import org.catrobat.catroid.content.Script;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.IfLogicBeginBrick;
+import org.catrobat.catroid.content.bricks.IfLogicElseBrick;
+import org.catrobat.catroid.content.bricks.IfLogicEndBrick;
+import org.catrobat.catroid.content.bricks.LoopBeginBrick;
+import org.catrobat.catroid.content.bricks.LoopEndBrick;
 import org.catrobat.catroid.utils.Utils;
+
+import java.util.ArrayList;
 
 public class LoadProjectTask extends AsyncTask<Void, Void, Boolean> {
 	private Activity activity;
@@ -39,6 +50,7 @@ public class LoadProjectTask extends AsyncTask<Void, Void, Boolean> {
 	private boolean startProjectActivity;
 
 	private OnLoadProjectCompleteListener onLoadProjectCompleteListener;
+	private boolean autocorrectMode = true;
 
 	public LoadProjectTask(Activity activity, String projectName, boolean showErrorMessage, boolean startProjectActivity) {
 		this.activity = activity;
@@ -66,11 +78,67 @@ public class LoadProjectTask extends AsyncTask<Void, Void, Boolean> {
 	protected Boolean doInBackground(Void... arg0) {
 		Project currentProject = ProjectManager.getInstance().getCurrentProject();
 		if (currentProject == null) {
-			return ProjectManager.getInstance().loadProject(projectName, activity, false);
+			boolean success = ProjectManager.getInstance().loadProject(projectName, activity, false);
+			checkNestingBrickReferences();
+			return success;
 		} else if (!currentProject.getName().equals(projectName)) {
-			return ProjectManager.getInstance().loadProject(projectName, activity, false);
+			boolean success = ProjectManager.getInstance().loadProject(projectName, activity, false);
+			checkNestingBrickReferences();
+			return success;
 		}
 		return true;
+	}
+
+	private void checkNestingBrickReferences() {
+		if (autocorrectMode) {
+			Project currentProject = ProjectManager.getInstance().getCurrentProject();
+			if (currentProject != null) {
+				for (Sprite currentSprite : currentProject.getSpriteList()) {
+					int numberOfScripts = currentSprite.getNumberOfScripts();
+					for (int pos = 0; pos < numberOfScripts; pos++) {
+						Script script = currentSprite.getScript(pos);
+						boolean scriptCorrect = true;
+						for (Brick currentBrick : script.getBrickList()) {
+							if (currentBrick instanceof IfLogicBeginBrick) {
+								IfLogicElseBrick elseBrick = ((IfLogicBeginBrick) currentBrick).getIfElseBrick();
+								IfLogicEndBrick endBrick = ((IfLogicBeginBrick) currentBrick).getIfEndBrick();
+								if (elseBrick == null || endBrick == null || elseBrick.getIfBeginBrick() == null
+										|| elseBrick.getIfEndBrick() == null || endBrick.getIfBeginBrick() == null
+										|| endBrick.getIfElseBrick() == null
+										|| !elseBrick.getIfBeginBrick().equals(currentBrick)
+										|| !elseBrick.getIfEndBrick().equals(endBrick)
+										|| !endBrick.getIfBeginBrick().equals(currentBrick)
+										|| !endBrick.getIfElseBrick().equals(elseBrick)) {
+									scriptCorrect = false;
+									Log.d("REFERENCE ERROR!!", "Brick has wrong reference:" + currentSprite + " "
+											+ currentBrick);
+								}
+							} else if (currentBrick instanceof LoopBeginBrick) {
+								LoopEndBrick endBrick = ((LoopBeginBrick) currentBrick).getLoopEndBrick();
+								if (endBrick == null || endBrick.getLoopBeginBrick() == null
+										|| !endBrick.getLoopBeginBrick().equals(currentBrick)) {
+									scriptCorrect = false;
+									Log.d("REFERENCE ERROR!!", "Brick has wrong reference:" + currentSprite + " "
+											+ currentBrick);
+								}
+							}
+						}
+						if (!scriptCorrect) {
+							//correct references
+							ArrayList<IfLogicBeginBrick> ifBeginList = new ArrayList<IfLogicBeginBrick>();
+							ArrayList<LoopBeginBrick> loopBeginList = new ArrayList<LoopBeginBrick>();
+							for (Brick currentBrick : script.getBrickList()) {
+								if (currentBrick instanceof IfLogicBeginBrick) {
+									ifBeginList.add((IfLogicBeginBrick) currentBrick);
+								} else if (currentBrick instanceof LoopBeginBrick) {
+									loopBeginList.add((LoopBeginBrick) currentBrick);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override
