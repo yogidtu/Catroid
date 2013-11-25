@@ -22,6 +22,7 @@
  */
 package org.catrobat.catroid.livewallpaper;
 
+import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
@@ -50,6 +51,7 @@ import org.catrobat.catroid.utils.Utils;
 
 import java.io.IOException;
 
+@SuppressLint("NewApi")
 public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	private StageListener lastCreatedStageListener;
@@ -65,10 +67,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 	public void onCreate() {
 		//android.os.Debug.waitForDebugger();
 		super.onCreate();
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
-		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
-		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		SoundManager.getInstance().soundDisabledByLwp = sharedPreferences.getBoolean(Constants.PREF_SOUND_DISABLED,
 				false);
@@ -85,6 +83,8 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	@Override
 	public ApplicationListener createListener(boolean isPreview) {
+		setScreenSize(isPreview);
+
 		if (isPreview) {
 			previewEngine = lastCreatedWallpaperEngine;
 		} else {
@@ -117,6 +117,18 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		lastCreatedStageListener = new StageListener(true);
 		lastCreatedWallpaperEngine = new LiveWallpaperEngine(this.lastCreatedStageListener);
 		return lastCreatedWallpaperEngine;
+	}
+
+	private void setScreenSize(boolean isPreview) {
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+		if (!isPreview && currentApiVersion >= 19) {
+			((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getRealMetrics(displayMetrics);
+		} else {
+			((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displayMetrics);
+		}
+		ScreenValues.SCREEN_WIDTH = displayMetrics.widthPixels;
+		ScreenValues.SCREEN_HEIGHT = displayMetrics.heightPixels;
 	}
 
 	@Override
