@@ -163,7 +163,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 		@Override
 		public void onResume() {
-
+			setScreenSize(isPreview());
 			if (!mVisible) {
 				return;
 			}
