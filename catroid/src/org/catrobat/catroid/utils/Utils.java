@@ -281,7 +281,11 @@ public class Utils {
 			} else if (ProjectManager.getInstance().loadProject(context.getString(R.string.default_project_name),
 					context, false)) {
 			} else {
-				ProjectManager.getInstance().initializeDefaultProject(context);
+				try {
+					ProjectManager.getInstance().initializeDefaultProject(context);
+				} catch (IllegalArgumentException e) {
+					Log.d("LWP", "Initializing default project failed because the program was already initialized");
+				}
 			}
 		}
 	}

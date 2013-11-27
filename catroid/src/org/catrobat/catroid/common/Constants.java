@@ -41,7 +41,7 @@ public final class Constants {
 	public static final String TEXT_TO_SPEECH_EXTENSION = ".wav";
 
 	public static final String DEFAULT_ROOT = Environment.getExternalStorageDirectory().getAbsolutePath()
-			+ "/Pocket Code";
+			+ "/Pocket Code Live Wallpaper";
 	public static final String TMP_PATH = DEFAULT_ROOT + "/tmp";
 	public static final String TEXT_TO_SPEECH_TMP_PATH = TMP_PATH + "/textToSpeech";
 	public static final String IMAGE_DIRECTORY = "images";
