@@ -106,6 +106,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	private LookRenamedReceiver lookRenamedReceiver;
 	private LooksListInitReceiver looksListInitReceiver;
 	private ActionMode actionMode;
+	private View selectAllActionModeButton;
 	private boolean isRenameActionMode;
 	private boolean isResultHandled = false;
 	private OnLookDataListChangedAfterNewListener lookDataListChangedAfterNewListener;
@@ -140,8 +141,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		@Override
 		public void onDestroyActionMode(ActionMode mode) {
 			for (int position : adapter.getCheckedItems()) {
-				LookController.getInstance().copyLook(position, lookDataList, getActivity(),
-						((LookAdapter) adapter).getLookFragment());
+				LookController.getInstance().copyLook(position, lookDataList, getActivity(), LookFragment.this);
 			}
 			clearCheckedLooksAndEnableButtons();
 		}
@@ -339,7 +339,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 			ScriptActivity scriptActivity = (ScriptActivity) getActivity();
 			if (scriptActivity.getIsLookFragmentFromSetLookBrickNew()
 					&& scriptActivity.getIsLookFragmentHandleAddButtonHandled()) {
-				LookController.getInstance().switchToScriptFragment(((LookAdapter) adapter).getLookFragment());
+				LookController.getInstance().switchToScriptFragment(LookFragment.this);
 			}
 		}
 	}
@@ -422,8 +422,8 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		adapter.addCheckedItem(((AdapterContextMenuInfo) menuInfo).position);
 
 		getSherlockActivity().getMenuInflater().inflate(R.menu.context_menu_default, menu);
-        menu.findItem(R.id.context_menu_backpack).setVisible(false);
-        menu.findItem(R.id.context_menu_unpacking).setVisible(false);
+		menu.findItem(R.id.context_menu_backpack).setVisible(false);
+		menu.findItem(R.id.context_menu_unpacking).setVisible(false);
 	}
 
 	@Override
@@ -432,7 +432,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 		switch (item.getItemId()) {
 			case R.id.context_menu_copy: {
 				LookController.getInstance().copyLook(selectedLookPosition, lookDataList, getActivity(),
-						((LookAdapter) adapter).getLookFragment());
+						LookFragment.this);
 				break;
 			}
 
@@ -608,6 +608,12 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 			return;
 		}
 
+		updateActionModeTitle();
+		Utils.setSelectAllActionModeButtonVisibility(selectAllActionModeButton,
+				adapter.getCount() > 0 && adapter.getAmountOfCheckedItems() != adapter.getCount());
+	}
+
+	private void updateActionModeTitle() {
 		int numberOfSelectedItems = adapter.getAmountOfCheckedItems();
 
 		if (numberOfSelectedItems == 0) {
@@ -672,20 +678,19 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 	}
 
 	private void addSelectAllActionModeButton(ActionMode mode, Menu menu) {
-		Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu).setOnClickListener(
-				new OnClickListener() {
+		selectAllActionModeButton = Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu);
+		selectAllActionModeButton.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View view) {
-						for (int position = 0; position < lookDataList.size(); position++) {
-							adapter.addCheckedItem(position);
-						}
-						adapter.notifyDataSetChanged();
-						view.setVisibility(View.GONE);
-						onLookChecked();
-					}
+			@Override
+			public void onClick(View view) {
+				for (int position = 0; position < lookDataList.size(); position++) {
+					adapter.addCheckedItem(position);
+				}
+				adapter.notifyDataSetChanged();
+				onLookChecked();
+			}
 
-				});
+		});
 	}
 
 	private void showConfirmDeleteDialog() {
@@ -823,7 +828,7 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 
 	public interface OnLookDataListChangedAfterNewListener {
 
-		public void onLookDataListChangedAfterNew(LookData soundInfo);
+		void onLookDataListChangedAfterNew(LookData soundInfo);
 
 	}
 
@@ -859,5 +864,4 @@ public class LookFragment extends ScriptActivityFragment implements OnLookEditLi
 			}
 		}
 	}
-
 }

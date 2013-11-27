@@ -25,7 +25,6 @@ package org.catrobat.catroid.uitest.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -38,6 +37,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
@@ -99,7 +99,6 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		super(MainMenuActivity.class);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
@@ -137,9 +136,9 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		lookData3.setLookFilename(imageFileJpg.getName());
 		lookData3.setLookName(THIRD_TEST_LOOK_NAME);
 
-		Display display = getActivity().getWindowManager().getDefaultDisplay();
-		projectManager.getCurrentProject().getXmlHeader().virtualScreenWidth = display.getWidth();
-		projectManager.getCurrentProject().getXmlHeader().virtualScreenHeight = display.getHeight();
+		Utils.updateScreenWidthAndHeight(solo.getCurrentActivity());
+		projectManager.getCurrentProject().getXmlHeader().virtualScreenWidth = ScreenValues.SCREEN_WIDTH;
+		projectManager.getCurrentProject().getXmlHeader().virtualScreenHeight = ScreenValues.SCREEN_HEIGHT;
 
 		UiTestUtils.getIntoLooksFromMainMenu(solo, true);
 
@@ -1223,6 +1222,44 @@ public class LookFragmentTest extends BaseActivityInstrumentationTestCase<MainMe
 		assertTrue("Play button is not visible", solo.getView(R.id.button_play).getVisibility() == View.VISIBLE);
 		assertTrue("Bottombar separator is not visible",
 				solo.getView(R.id.bottom_bar_separator).getVisibility() == View.VISIBLE);
+	}
+
+	public void testSelectAllActionModeButton() {
+		String selectAll = solo.getString(R.string.select_all).toUpperCase(Locale.getDefault());
+
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.copy), R.id.copy, getActivity());
+		assertTrue("Select All is not shown", solo.getView(R.id.select_all).isShown());
+
+		solo.clickOnText(selectAll);
+		assertFalse("Select All is still shown", solo.getView(R.id.select_all).isShown());
+
+		solo.clickOnCheckBox(0);
+		assertTrue("Select All is not shown", solo.getView(R.id.select_all).isShown());
+
+		solo.clickOnCheckBox(1);
+		assertTrue("Select All is not shown", solo.getView(R.id.select_all).isShown());
+
+		solo.clickOnCheckBox(0);
+		solo.clickOnCheckBox(1);
+		assertFalse("Select All is still shown", solo.getView(R.id.select_all).isShown());
+
+		solo.goBack();
+
+		UiTestUtils.openActionMode(solo, solo.getString(R.string.delete), R.id.delete, getActivity());
+		assertTrue("Select All is not shown", solo.getView(R.id.select_all).isShown());
+
+		solo.clickOnText(selectAll);
+		assertFalse("Select All is still shown", solo.getView(R.id.select_all).isShown());
+
+		solo.clickOnCheckBox(0);
+		assertTrue("Select All is not shown", solo.getView(R.id.select_all).isShown());
+
+		solo.clickOnCheckBox(1);
+		assertTrue("Select All is not shown", solo.getView(R.id.select_all).isShown());
+
+		solo.clickOnCheckBox(0);
+		solo.clickOnCheckBox(1);
+		assertFalse("Select All is still shown", solo.getView(R.id.select_all).isShown());
 	}
 
 	private int[] getDisplayedMeasure(LookData look) {
