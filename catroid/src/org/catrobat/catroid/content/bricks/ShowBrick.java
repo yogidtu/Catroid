@@ -54,6 +54,11 @@ public class ShowBrick extends BrickBaseType {
 	}
 
 	@Override
+	public Brick clone() {
+		return new ShowBrick(getSprite());
+	}
+
+	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
 		sequence.addAction(ExtendedActions.show(sprite));
 		return null;
