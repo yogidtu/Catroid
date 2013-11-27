@@ -90,6 +90,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		if (isPreview) {
 			previewStageListener = new StageListener(true);
 			previewEngine = lastCreatedWallpaperEngine;
+			previewEngine.name = "Preview";
 			return previewStageListener;
 		} else {
 			if (previewEngine != null) {
@@ -97,6 +98,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			}
 			homeScreenStageListener = new StageListener(true);
 			homeEngine = lastCreatedWallpaperEngine;
+			homeEngine.name = "Home";
 			return homeScreenStageListener;
 		}
 	}
@@ -146,6 +148,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 	class LiveWallpaperEngine extends AndroidWallpaperEngine {
 
+		public String name = "";
 		private static final int REFRESH_RATE = 300;
 		private boolean mVisible = false;
 		private final Handler mHandler = new Handler();
@@ -174,7 +177,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 		@Override
 		public void onVisibilityChanged(boolean visible) {
-			Log.d("LWP", "the engine is visible: " + visible);
+			Log.d("LWP", "Engine: " + name + " the engine is visible: " + visible);
 			mVisible = visible;
 			super.onVisibilityChanged(visible);
 		}
@@ -188,7 +191,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 			if (getLocalStageListener().isFinished()) {
 				return;
 			}
-			Log.d("LWP", "Resuming preview: " + this.isPreview() + " SL-" + getLocalStageListener().hashCode());
+			Log.d("LWP", "Resuming  " + name + ": " + " SL-" + getLocalStageListener().hashCode());
 			SensorHandler.startSensorListener(getApplicationContext());
 			getLocalStageListener().menuResume();
 			mHandler.postDelayed(mUpdateDisplay, REFRESH_RATE);
@@ -205,7 +208,7 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 
 			SensorHandler.stopSensorListeners();
 			getLocalStageListener().menuPause();
-			Log.d("LWP", "Pausing preview: " + this.isPreview() + " SL-" + getLocalStageListener().hashCode());
+			Log.d("LWP", "Pausing " + name + ": " + " SL-" + getLocalStageListener().hashCode());
 		}
 
 		@Override
