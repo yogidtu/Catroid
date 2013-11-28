@@ -196,8 +196,6 @@ public class UtilFile {
 			outputChannel = outputStream.getChannel();
 			inputChannel.transferTo(0, inputChannel.size(), outputChannel);
 			return destinationFile;
-		} catch (IOException exception) {
-			throw exception;
 		} finally {
 			if (inputChannel != null) {
 				inputChannel.close();

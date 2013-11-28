@@ -114,9 +114,9 @@ public class BackPackActivity extends BaseActivity {
 			BackPackListManager.getActionBarSoundInfoArrayList().clear();
 			backpackItem = false;
 		}
-	};
+	}
 
-	@Override
+    @Override
 	protected void onDestroy() {
 		super.onDestroy();
 		setVolumeControlStream(AudioManager.STREAM_RING);

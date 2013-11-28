@@ -37,19 +37,15 @@ public enum Sensors {
 	}
 
 	public static boolean isSensor(String value) {
-		if (getSensorByValue(value) == null) {
-			return false;
-		}
-		return true;
-	}
+        return getSensorByValue(value) != null;
+    }
 
 	public static Sensors getSensorByValue(String value) {
 		try {
 			return valueOf(value);
 		} catch (IllegalArgumentException exception) {
-
+            return null;
 		}
-		return null;
 	}
 
 }

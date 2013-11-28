@@ -89,6 +89,8 @@ public class ReflectionTest extends AndroidTestCase {
 			Reflection.getPrivateField(nullObject, "nullObjectsDontHaveFields");
 			fail("Getting private field of null object didn't cause an IllegalArgumentException");
 		} catch (IllegalArgumentException illegalArgumentException) {
+            assertEquals("Wrong exception has been thrown", illegalArgumentException.getCause().getClass(),
+                    IllegalArgumentException.class);
 		}
 
 		try {
@@ -102,6 +104,8 @@ public class ReflectionTest extends AndroidTestCase {
 			Reflection.setPrivateField(nullObject, "nullObjectsDontHaveFields", null);
 			fail("Setting private field of null object didn't cause an IllegalArgumentException");
 		} catch (IllegalArgumentException illegalArgumentException) {
+            assertEquals("Wrong exception has been thrown", illegalArgumentException.getCause().getClass(),
+                    IllegalArgumentException.class);
 		}
 
 		try {
@@ -271,7 +275,7 @@ public class ReflectionTest extends AndroidTestCase {
 	}
 
 	public void testConvertObjectsIntoPrimitives() {
-		ParameterList parameterList = new ParameterList(Boolean.valueOf(true), Byte.valueOf((byte) 1),
+		ParameterList parameterList = new ParameterList(Boolean.TRUE, Byte.valueOf((byte) 1),
 				Character.valueOf('c'), Double.valueOf(1.0), Float.valueOf(1.0f), Integer.valueOf(1), Long.valueOf(1l),
 				Short.valueOf((short) 1));
 
@@ -288,12 +292,16 @@ public class ReflectionTest extends AndroidTestCase {
 			Reflection.invokeMethod(nullObject, "nullObjectsDontHaveMethods");
 			fail("Invoking method of a null object didn't cause an IllegalArgumentException");
 		} catch (IllegalArgumentException illegalArgumentException) {
+            assertEquals("Wrong exception has been thrown", illegalArgumentException.getCause().getClass(),
+                    IllegalArgumentException.class);
 		}
 
 		try {
 			Reflection.invokeMethod(nullObject, "nullObjectsDontHaveMethods", new ParameterList("text"));
 			fail("Invoking method of a null object didn't cause an IllegalArgumentException");
 		} catch (IllegalArgumentException illegalArgumentException) {
+            assertEquals("Wrong exception has been thrown", illegalArgumentException.getCause().getClass(),
+                    IllegalArgumentException.class);
 		}
 
 		try {
@@ -323,6 +331,8 @@ public class ReflectionTest extends AndroidTestCase {
 					parameter2));
 			fail("Found not existing method signature");
 		} catch (RuntimeException runtimeException) {
+            assertEquals("Wrong exception has been thrown", runtimeException.getCause().getClass(),
+                    RuntimeException.class);
 		}
 	}
 }

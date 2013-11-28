@@ -28,6 +28,7 @@ import org.catrobat.catroid.content.bricks.LoopEndBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.WhenBrick;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 
 public class WhenScript extends Script {
@@ -91,7 +92,7 @@ public class WhenScript extends Script {
 	@Override
 	public Script copyScriptForSprite(Sprite copySprite) {
 		WhenScript cloneScript = new WhenScript(copySprite);
-		ArrayList<Brick> cloneBrickList = cloneScript.getBrickList();
+		AbstractList<Brick> cloneBrickList = cloneScript.getBrickList();
 
 		cloneScript.action = getAction();
 

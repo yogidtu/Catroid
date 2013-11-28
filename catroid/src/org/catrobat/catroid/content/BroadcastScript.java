@@ -29,6 +29,7 @@ import org.catrobat.catroid.content.bricks.IfLogicEndBrick;
 import org.catrobat.catroid.content.bricks.LoopEndBrick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 
 public class BroadcastScript extends Script implements BroadcastMessage {
@@ -72,7 +73,7 @@ public class BroadcastScript extends Script implements BroadcastMessage {
 	@Override
 	public Script copyScriptForSprite(Sprite copySprite) {
 		BroadcastScript cloneScript = new BroadcastScript(copySprite, receivedMessage);
-		ArrayList<Brick> cloneBrickList = cloneScript.getBrickList();
+		AbstractList<Brick> cloneBrickList = cloneScript.getBrickList();
 
 		for (Brick brick : getBrickList()) {
 			Brick copiedBrick = brick.copyBrickForSprite(copySprite, cloneScript);

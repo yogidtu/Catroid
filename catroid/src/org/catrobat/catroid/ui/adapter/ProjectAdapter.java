@@ -223,11 +223,8 @@ public class ProjectAdapter extends ArrayAdapter<ProjectData> {
 
 			@Override
 			public boolean onLongClick(View view) {
-				if (selectMode != ListView.CHOICE_MODE_NONE) {
-					return true;
-				}
-				return false;
-			}
+                return selectMode != ListView.CHOICE_MODE_NONE;
+            }
 		});
 
 		holder.background.setOnClickListener(new OnClickListener() {

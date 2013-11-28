@@ -412,7 +412,7 @@ public class StorageHandler {
 		FileChecksumContainer checksumCont = ProjectManager.getInstance().getFileChecksumContainer();
 
 		File outputFileDirectory = new File(imageDirectory.getAbsolutePath());
-		if (outputFileDirectory.exists() == false) {
+		if (!outputFileDirectory.exists()) {
 			outputFileDirectory.mkdirs();
 		}
 
@@ -476,7 +476,7 @@ public class StorageHandler {
 			outputStream.flush();
 			outputStream.close();
 		} catch (IOException e) {
-
+            //TODO don't catch it here and add throws to method
 		}
 	}
 
@@ -488,8 +488,7 @@ public class StorageHandler {
 				toDelete.delete();
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			//deleteFile(filepath);
+            //TODO don't catch it here and add throws to method
 		}
 	}
 

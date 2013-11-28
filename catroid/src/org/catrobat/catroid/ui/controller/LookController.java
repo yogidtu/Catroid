@@ -61,6 +61,7 @@ import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -214,7 +215,7 @@ public class LookController {
 		copyImageToCatroid(originalImagePath, activity, lookDataList, fragment);
 	}
 
-	private void updateLookAdapter(String name, String fileName, ArrayList<LookData> lookDataList, LookFragment fragment) {
+	private void updateLookAdapter(String name, String fileName, AbstractList<LookData> lookDataList, LookFragment fragment) {
 		name = Utils.getUniqueLookName(name);
 
 		LookData lookData = new LookData();

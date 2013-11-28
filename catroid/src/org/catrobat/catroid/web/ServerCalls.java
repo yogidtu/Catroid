@@ -143,11 +143,11 @@ public class ServerCalls {
 				jsonObject = new JSONObject(answer);
 				uploadStatusCode = jsonObject.getInt(JSON_STATUS_CODE);
 				String serverAnswer = jsonObject.optString(JSON_ANSWER);
-				String tokenReceived = "";
+				String tokenReceived;
 
 				if (uploadStatusCode == SERVER_RESPONSE_TOKEN_OK) {
 					tokenReceived = jsonObject.getString(JSON_TOKEN);
-					if (tokenReceived.length() != TOKEN_LENGTH || tokenReceived == ""
+					if (tokenReceived.length() != TOKEN_LENGTH || tokenReceived.equals("")
 							|| tokenReceived.equals(TOKEN_CODE_INVALID)) {
 						throw new WebconnectionException(uploadStatusCode, serverAnswer);
 					}
@@ -227,7 +227,7 @@ public class ServerCalls {
 			postValues.put(REGISTRATION_USERNAME_KEY, username);
 			postValues.put(REGISTRATION_PASSWORD_KEY, password);
 			postValues.put(REGISTRATION_EMAIL_KEY, userEmail);
-			if (token != Constants.NO_TOKEN) {
+			if (!token.equals(Constants.NO_TOKEN)) {
 				postValues.put(Constants.TOKEN, token);
 			}
 
@@ -254,7 +254,7 @@ public class ServerCalls {
 
 			if (statusCode == SERVER_RESPONSE_TOKEN_OK || statusCode == SERVER_RESPONSE_REGISTER_OK) {
 				tokenReceived = jsonObject.getString(JSON_TOKEN);
-				if (tokenReceived.length() != TOKEN_LENGTH || tokenReceived == ""
+				if (tokenReceived.length() != TOKEN_LENGTH || tokenReceived.equals("")
 						|| tokenReceived.equals(TOKEN_CODE_INVALID)) {
 					throw new WebconnectionException(statusCode, serverAnswer);
 				}

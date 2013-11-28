@@ -27,20 +27,16 @@ public enum Functions {
 	SIN, COS, TAN, LN, LOG, SQRT, RAND, ROUND, ABS, PI, MOD, ARCSIN, ARCCOS, ARCTAN, EXP, MAX, MIN, TRUE, FALSE;
 
 	public static boolean isFunction(String value) {
-		if (getFunctionByValue(value) == null) {
-			return false;
-		}
-		return true;
+        return getFunctionByValue(value) != null;
 
-	}
+    }
 
 	public static Functions getFunctionByValue(String value) {
 		try {
 			return valueOf(value);
 		} catch (IllegalArgumentException exception) {
-
+            return null;
 		}
-		return null;
 	}
 
 }

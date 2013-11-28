@@ -228,11 +228,8 @@ public class SpriteAdapter extends ArrayAdapter<Sprite> {
 
 			@Override
 			public boolean onLongClick(View view) {
-				if (selectMode != ListView.CHOICE_MODE_NONE || position == 0) {
-					return true;
-				}
-				return false;
-			}
+                return selectMode != ListView.CHOICE_MODE_NONE || position == 0;
+            }
 		});
 
 		holder.background.setOnClickListener(new OnClickListener() {

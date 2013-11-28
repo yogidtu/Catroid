@@ -344,7 +344,7 @@ public class Utils {
 
 	private static String searchForNonExistingLookName(String name, int nextNumber) {
 		String newName;
-		ArrayList<LookData> lookDataList = ProjectManager.getInstance().getCurrentSprite().getLookDataList();
+		Iterable<LookData> lookDataList = ProjectManager.getInstance().getCurrentSprite().getLookDataList();
 		if (nextNumber == 0) {
 			newName = name;
 		} else {
@@ -378,7 +378,7 @@ public class Utils {
 	private static String searchForNonExistingSoundTitle(String title, int nextNumber) {
 		// search for sounds with the same title
 		String newTitle;
-		ArrayList<SoundInfo> soundInfoList = ProjectManager.getInstance().getCurrentSprite().getSoundList();
+		Iterable<SoundInfo> soundInfoList = ProjectManager.getInstance().getCurrentSprite().getSoundList();
 		if (nextNumber == 0) {
 			newTitle = title;
 		} else {

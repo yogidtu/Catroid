@@ -35,6 +35,7 @@ import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.ScriptActivity;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 
 public class DeleteSoundDialog extends DialogFragment {
@@ -75,7 +76,7 @@ public class DeleteSoundDialog extends DialogFragment {
 	}
 
 	private void handleDeleteSound(int position) {
-		ArrayList<SoundInfo> soundInfoList = ProjectManager.getInstance().getCurrentSprite().getSoundList();
+		AbstractList<SoundInfo> soundInfoList = ProjectManager.getInstance().getCurrentSprite().getSoundList();
 		StorageHandler.getInstance().deleteFile(soundInfoList.get(position).getAbsolutePath());
 		soundInfoList.remove(position);
 

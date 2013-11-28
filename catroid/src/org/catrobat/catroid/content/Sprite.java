@@ -165,11 +165,9 @@ public class Sprite implements Serializable, Cloneable {
 	public void createWhenScriptActionSequence(String action) {
 		ParallelAction whenParallelAction = ExtendedActions.parallel();
 		for (Script s : scriptList) {
-			if (s instanceof WhenScript) {
-				if (((WhenScript) s).getAction().equalsIgnoreCase(action)) {
-					SequenceAction sequence = createActionSequence(s);
-					whenParallelAction.addAction(sequence);
-				}
+			if (s instanceof WhenScript && ((WhenScript) s).getAction().equalsIgnoreCase(action)) {
+				SequenceAction sequence = createActionSequence(s);
+				whenParallelAction.addAction(sequence);
 			}
 		}
 		look.setWhenParallelAction(whenParallelAction);

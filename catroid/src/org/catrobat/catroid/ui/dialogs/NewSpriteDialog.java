@@ -68,9 +68,9 @@ public class NewSpriteDialog extends DialogFragment {
 	public enum ActionAfterFinished {
 		ACTION_FORWARD_TO_NEW_OBJECT, ACTION_UPDATE_SPINNER;
 		static final String KEY = "action";
-	};
+	}
 
-	public enum DialogWizardStep {
+    public enum DialogWizardStep {
 		STEP_1, STEP_2;
 		static final String KEY = "step";
 	}

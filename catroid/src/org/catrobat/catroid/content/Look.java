@@ -125,15 +125,14 @@ public class Look extends Image {
 		// We use Y-down, libgdx Y-up. This is the fix for accurate y-axis detection
 		y = (getHeight() - 1) - y;
 
-		if (x >= 0 && x < getWidth() && y >= 0 && y < getHeight()) {
-			if (pixmap != null && ((pixmap.getPixel((int) x, (int) y) & 0x000000FF) > 10)) {
-				if (whenParallelAction == null) {
-					sprite.createWhenScriptActionSequence("Tapped");
-				} else {
-					whenParallelAction.restart();
-				}
-				return true;
+		if (x >= 0 && x < getWidth() && y >= 0 && y < getHeight() && pixmap != null &&
+					((pixmap.getPixel((int) x, (int) y) & 0x000000FF) > 10)) {
+			if (whenParallelAction == null) {
+				sprite.createWhenScriptActionSequence("Tapped");
+			} else {
+				whenParallelAction.restart();
 			}
+			return true;
 		}
 		return false;
 	}
@@ -173,7 +172,7 @@ public class Look extends Image {
 				}
 				broadcastWaitSequenceMap.put(broadcastMessage, actionList);
 			} else {
-				ArrayList<SequenceAction> actionList = broadcastWaitSequenceMap.get(broadcastMessage);
+				Iterable<SequenceAction> actionList = broadcastWaitSequenceMap.get(broadcastMessage);
 				for (SequenceAction action : actionList) {
 					event.raiseNumberOfReceivers();
 					Array<Action> actions = action.getActions();

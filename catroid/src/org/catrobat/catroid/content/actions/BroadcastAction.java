@@ -45,11 +45,8 @@ public class BroadcastAction extends Action {
 			}
 			executeOnce = false;
 		}
-		if (event.getRun() || event.getNumberOfReceivers() == 0) {
-			return true;
-		}
-		return false;
-	}
+        return event.getRun() || event.getNumberOfReceivers() == 0;
+    }
 
 	@Override
 	public void restart() {

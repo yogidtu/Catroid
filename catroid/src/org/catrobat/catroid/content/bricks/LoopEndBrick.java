@@ -144,20 +144,12 @@ public class LoopEndBrick extends NestingBrick implements AllowedAfterDeadEndBri
 
 	@Override
 	public boolean isDraggableOver(Brick brick) {
-		if (brick == loopBeginBrick) {
-			return false;
-		} else {
-			return true;
-		}
+        return brick != loopBeginBrick;
 	}
 
 	@Override
 	public boolean isInitialized() {
-		if (loopBeginBrick == null) {
-			return false;
-		} else {
-			return true;
-		}
+        return loopBeginBrick != null;
 	}
 
 	@Override

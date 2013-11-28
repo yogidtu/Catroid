@@ -174,13 +174,12 @@ public class DeviceListActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
-
 		if (btAdapter != null) {
 			btAdapter.cancelDiscovery();
 		}
 
 		this.unregisterReceiver(receiver);
+        super.onDestroy();
 	}
 
 	private void doDiscovery() {

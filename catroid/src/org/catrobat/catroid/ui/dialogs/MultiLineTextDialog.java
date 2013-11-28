@@ -135,12 +135,9 @@ public abstract class MultiLineTextDialog extends DialogFragment {
 	}
 
 	protected boolean getPositiveButtonEnabled() {
-		if (input.length() == 0) {
-			return false;
-		}
+        return input.length() != 0;
 
-		return true;
-	}
+    }
 
 	private void initTextChangedListener() {
 		final Button buttonPositive = ((AlertDialog) getDialog()).getButton(DialogInterface.BUTTON_POSITIVE);

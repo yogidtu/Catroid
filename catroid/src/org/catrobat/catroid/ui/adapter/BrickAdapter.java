@@ -181,11 +181,7 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 			brickList.add(to, draggedBrick);
 			to = getNewPositionForScriptBrick(to, draggedBrick);
 			dragTargetPosition = to;
-			if (currentPosition != to) {
-				retryScriptDragging = true;
-			} else {
-				retryScriptDragging = false;
-			}
+            retryScriptDragging = currentPosition != to;
 		}
 
 		to = getNewPositionIfEndingBrickIsThere(to, draggedBrick);
@@ -282,12 +278,9 @@ public class BrickAdapter extends BaseAdapter implements DragAndDropListener, On
 		if (brick instanceof ScriptBrick) {
 			return true;
 		}
-		if (brick instanceof NestingBrick && !nestingBrickList.contains(brick)) {
-			return true;
-		}
+        return brick instanceof NestingBrick && !nestingBrickList.contains(brick);
 
-		return false;
-	}
+    }
 
 	@Override
 	public void drop() {

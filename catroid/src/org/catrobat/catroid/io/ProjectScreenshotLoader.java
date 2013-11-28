@@ -149,9 +149,6 @@ public class ProjectScreenshotLoader {
 
 	boolean imageViewReused(ScreenshotData projectScreenshotData) {
 		String tag = imageViews.get(projectScreenshotData.imageView);
-		if (tag == null || !tag.equals(projectScreenshotData.projectName)) {
-			return true;
-		}
-		return false;
-	}
+        return tag == null || !tag.equals(projectScreenshotData.projectName);
+    }
 }

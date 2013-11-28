@@ -63,9 +63,9 @@ public class SensorLoudness {
 	private SensorLoudness() {
 		handler = new Handler();
 		recorder = new SoundRecorder("/dev/null");
-	};
+	}
 
-	public static SensorLoudness getSensorLoudness() {
+    public static SensorLoudness getSensorLoudness() {
 		if (instance == null) {
 			instance = new SensorLoudness();
 		}

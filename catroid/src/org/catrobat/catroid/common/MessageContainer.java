@@ -80,10 +80,8 @@ public class MessageContainer {
 	}
 
 	private static void addMessageToAdapter(String message) {
-		if (messageAdapter != null) {
-			if (messageAdapter.getPosition(message) < 0) {
-				messageAdapter.add(message);
-			}
+		if (messageAdapter != null && messageAdapter.getPosition(message) < 0) {
+			messageAdapter.add(message);
 		}
 	}
 

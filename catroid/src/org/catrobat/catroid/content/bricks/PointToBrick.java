@@ -137,7 +137,7 @@ public class PointToBrick extends BrickBaseType {
 				if (itemSelected.equals(context.getString(R.string.new_broadcast_message))) {
 					pointedObject = null;
 				} else {
-					final ArrayList<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance()
+					final Iterable<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance()
 							.getCurrentProject().getSpriteList();
 
 					for (Sprite sprite : spriteList) {
@@ -238,7 +238,7 @@ public class PointToBrick extends BrickBaseType {
 		arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		arrayAdapter.add(context.getString(R.string.new_broadcast_message));
 
-		final ArrayList<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance().getCurrentProject()
+		final Iterable<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance().getCurrentProject()
 				.getSpriteList();
 
 		for (Sprite sprite : spriteList) {
@@ -292,7 +292,7 @@ public class PointToBrick extends BrickBaseType {
 
 		@Override
 		public long getItemId(int paramInt) {
-			String currentSpriteName = spinnerAdapter.getItem(paramInt).toString();
+			String currentSpriteName = spinnerAdapter.getItem(paramInt);
 			if (!currentSpriteName.equals(context.getString(R.string.new_broadcast_message))) {
 				oldSelectedObject = currentSpriteName;
 			}

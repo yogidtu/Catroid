@@ -112,13 +112,13 @@ public class FormulaEditorListFragment extends SherlockListFragment implements D
 
 		itemsIds = new int[] {};
 
-		if (tag == OBJECT_TAG) {
+		if (tag.equals(OBJECT_TAG)) {
 			itemsIds = OBJECT_ITEMS;
-		} else if (tag == MATH_TAG) {
+		} else if (tag.equals(MATH_TAG)) {
 			itemsIds = MATH_ITEMS;
-		} else if (tag == LOGIC_TAG) {
+		} else if (tag.equals(LOGIC_TAG)) {
 			itemsIds = LOGIC_ITEMS;
-		} else if (tag == SENSOR_TAG) {
+		} else if (tag.equals(SENSOR_TAG)) {
 			itemsIds = SENSOR_ITEMS;
 		}
 

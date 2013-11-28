@@ -93,7 +93,7 @@ public class Formula implements Serializable {
 	public boolean interpretBoolean(Sprite sprite) {
 		int result = interpretInteger(sprite);
 
-		return result != 0 ? true : false;
+		return result != 0;
 
 	}
 
@@ -169,12 +169,9 @@ public class Formula implements Serializable {
 	}
 
 	public boolean containsElement(FormulaElement.ElementType elementType) {
-		if (formulaTree.containsElement(elementType)) {
-			return true;
-		}
+        return formulaTree.containsElement(elementType);
 
-		return false;
-	}
+    }
 
 	public boolean isLogicalFormula() {
 		return formulaTree.isLogicalOperator();

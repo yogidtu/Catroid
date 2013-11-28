@@ -142,15 +142,13 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					if (((Spinner) view).getSelectedItemPosition() == 0
-							&& ((Spinner) view).getAdapter().getCount() == 1) {
-						NewVariableDialog dialog = new NewVariableDialog((Spinner) view);
-						dialog.addVariableDialogListener(SetVariableBrick.this);
-						dialog.show(((SherlockFragmentActivity) view.getContext()).getSupportFragmentManager(),
-								NewVariableDialog.DIALOG_FRAGMENT_TAG);
-						return true;
-					}
+				if (event.getAction() == MotionEvent.ACTION_UP && ((Spinner) view).getSelectedItemPosition() == 0
+                        && ((Spinner) view).getAdapter().getCount() == 1) {
+                    NewVariableDialog dialog = new NewVariableDialog((Spinner) view);
+                    dialog.addVariableDialogListener(SetVariableBrick.this);
+                    dialog.show(((SherlockFragmentActivity) view.getContext()).getSupportFragmentManager(),
+                            NewVariableDialog.DIALOG_FRAGMENT_TAG);
+                    return true;
 				}
 				return false;
 			}
@@ -255,10 +253,8 @@ public class SetVariableBrick extends BrickBaseType implements OnClickListener, 
 	}
 
 	private void updateUserVariableIfDeleted(UserVariableAdapterWrapper userVariableAdapterWrapper) {
-		if (userVariable != null) {
-			if (userVariableAdapterWrapper.getPositionOfItem(userVariable) == 0) {
-				userVariable = null;
-			}
+		if (userVariable != null && userVariableAdapterWrapper.getPositionOfItem(userVariable) == 0) {
+            userVariable = null;
 		}
 	}
 

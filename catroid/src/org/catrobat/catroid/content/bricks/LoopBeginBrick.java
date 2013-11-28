@@ -61,20 +61,12 @@ public abstract class LoopBeginBrick extends NestingBrick {
 
 	@Override
 	public boolean isDraggableOver(Brick brick) {
-		if (brick == loopEndBrick) {
-			return false;
-		} else {
-			return true;
-		}
+        return brick != loopEndBrick;
 	}
 
 	@Override
 	public boolean isInitialized() {
-		if (loopEndBrick == null) {
-			return false;
-		} else {
-			return true;
-		}
+        return loopEndBrick != null;
 	}
 
 	@Override

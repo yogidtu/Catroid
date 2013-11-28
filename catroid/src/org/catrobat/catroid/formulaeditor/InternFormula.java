@@ -33,16 +33,16 @@ import java.util.List;
 public class InternFormula {
 
 	public static enum CursorTokenPosition {
-		LEFT, MIDDLE, RIGHT;
-	};
+		LEFT, MIDDLE, RIGHT
+    }
 
-	public static enum CursorTokenPropertiesAfterModification {
-		LEFT, RIGHT, SELECT, DO_NOT_MODIFY;
-	}
+    public static enum CursorTokenPropertiesAfterModification {
+		LEFT, RIGHT, SELECT, DO_NOT_MODIFY
+    }
 
 	public static enum TokenSelectionType {
-		USER_SELECTION, PARSER_ERROR_SELECTION;
-	}
+		USER_SELECTION, PARSER_ERROR_SELECTION
+    }
 
 	private ExternInternRepresentationMapping externInternRepresentationMapping;
 

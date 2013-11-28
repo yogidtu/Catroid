@@ -169,7 +169,7 @@ public class FormulaEditorEditText extends EditText implements OnTouchListener {
 	}
 
 	public boolean hasChanges() {
-		return history == null ? false : history.hasUnsavedChanges();
+		return history != null && history.hasUnsavedChanges();
 	}
 
 	public void formulaSaved() {
@@ -216,12 +216,6 @@ public class FormulaEditorEditText extends EditText implements OnTouchListener {
 		}
 		formulaEditorFragment.refreshFormulaPreviewString();
 		return true;
-	}
-
-	@Override
-	public void setSelection(int index) {
-		//This is only used to get the scrollbar to the right position easily
-		super.setSelection(index);
 	}
 
 	private String updateTextAndCursorFromInternFormula() {

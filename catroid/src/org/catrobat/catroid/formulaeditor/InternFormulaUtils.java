@@ -384,12 +384,9 @@ public class InternFormulaUtils {
 	public static boolean isFunction(List<InternToken> internTokenList) {
 
 		List<InternToken> functionList = getFunctionByName(internTokenList, 0);
-		if (functionList == null || functionList.size() != internTokenList.size()) {
-			return false;
-		}
+        return !(functionList == null || functionList.size() != internTokenList.size());
 
-		return true;
-	}
+    }
 
 	private static InternTokenType getFirstInternTokenType(List<InternToken> internTokens) {
 		if (internTokens == null || internTokens.size() == 0) {
@@ -408,35 +405,24 @@ public class InternFormulaUtils {
 
 		InternTokenType firstInternTokenType = internTokens.get(0).getInternTokenType();
 
-		if (firstInternTokenType == InternTokenType.PERIOD) {
-			return true;
+        return firstInternTokenType == InternTokenType.PERIOD;
 
-		}
-
-		return false;
-	}
+    }
 
 	public static boolean isFunctionToken(List<InternToken> internTokens) {
 		InternTokenType firstInternTokenType = getFirstInternTokenType(internTokens);
 
-		if (firstInternTokenType != null && firstInternTokenType == InternTokenType.FUNCTION_NAME) {
-			return true;
+        return firstInternTokenType != null && firstInternTokenType == InternTokenType.FUNCTION_NAME;
 
-		}
-
-		return false;
-	}
+    }
 
 	public static boolean isNumberToken(List<InternToken> internTokens) {
 
 		InternTokenType firstInternTokenType = getFirstInternTokenType(internTokens);
 
-		if (firstInternTokenType != null && internTokens.size() <= 1 && firstInternTokenType == InternTokenType.NUMBER) {
-			return true;
-		}
+        return firstInternTokenType != null && internTokens.size() <= 1 && firstInternTokenType == InternTokenType.NUMBER;
 
-		return false;
-	}
+    }
 
 	public static List<InternToken> replaceFunctionByTokens(List<InternToken> functionToReplace,
 			List<InternToken> internTokensToReplaceWith) {

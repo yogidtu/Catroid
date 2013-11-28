@@ -140,20 +140,12 @@ public class IfLogicElseBrick extends NestingBrick implements AllowedAfterDeadEn
 
 	@Override
 	public boolean isDraggableOver(Brick brick) {
-		if (brick == ifBeginBrick || brick == ifEndBrick) {
-			return false;
-		} else {
-			return true;
-		}
+        return !(brick == ifBeginBrick || brick == ifEndBrick);
 	}
 
 	@Override
 	public boolean isInitialized() {
-		if (ifBeginBrick == null || ifEndBrick == null) {
-			return false;
-		} else {
-			return true;
-		}
+        return !(ifBeginBrick == null || ifEndBrick == null);
 	}
 
 	@Override

@@ -35,6 +35,7 @@ import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.ScriptActivity;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 
 public class DeleteLookDialog extends DialogFragment {
@@ -75,7 +76,7 @@ public class DeleteLookDialog extends DialogFragment {
 	}
 
 	private void handleDeleteLook(int position) {
-		ArrayList<LookData> lookDataList = ProjectManager.getInstance().getCurrentSprite().getLookDataList();
+		AbstractList<LookData> lookDataList = ProjectManager.getInstance().getCurrentSprite().getLookDataList();
 
 		StorageHandler.getInstance().deleteFile(lookDataList.get(position).getAbsolutePath());
 		lookDataList.remove(position);

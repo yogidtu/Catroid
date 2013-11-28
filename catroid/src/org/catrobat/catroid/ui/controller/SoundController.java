@@ -61,6 +61,7 @@ import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.SortedSet;
@@ -304,7 +305,7 @@ public class SoundController {
 		}
 	}
 
-	public SoundInfo updateBackPackActivity(String title, String fileName, ArrayList<SoundInfo> soundInfoList,
+	public SoundInfo updateBackPackActivity(String title, String fileName, AbstractList<SoundInfo> soundInfoList,
 			SoundBaseAdapter adapter) {
 		title = Utils.getUniqueSoundName(title);
 
@@ -317,7 +318,7 @@ public class SoundController {
 		return newSoundInfo;
 	}
 
-	public SoundInfo updateSoundAdapter(String title, String fileName, ArrayList<SoundInfo> soundInfoList,
+	public SoundInfo updateSoundAdapter(String title, String fileName, AbstractList<SoundInfo> soundInfoList,
 			SoundBaseAdapter adapter) {
 
 		title = Utils.getUniqueSoundName(title);

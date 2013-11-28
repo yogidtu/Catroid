@@ -426,11 +426,8 @@ public class ScriptActivity extends BaseActivity {
 	}
 
 	public boolean isHoveringActive() {
-		if (currentFragmentPosition == FRAGMENT_SCRIPTS && scriptFragment.getListView().isCurrentlyDragging()) {
-			return true;
-		}
-		return false;
-	}
+        return currentFragmentPosition == FRAGMENT_SCRIPTS && scriptFragment.getListView().isCurrentlyDragging();
+    }
 
 	public void handleShowDetails(boolean showDetails, MenuItem item) {
 		currentFragment.setShowDetails(showDetails);

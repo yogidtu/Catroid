@@ -40,6 +40,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 //web status codes are on: https://github.com/Catrobat/Catroweb/blob/master/statusCodes.php
 
@@ -90,7 +91,7 @@ public class ConnectionWrapper {
 		return answer;
 	}
 
-	public void doHttpPostFileDownload(String urlString, HashMap<String, String> postValues, String filePath,
+	public void doHttpPostFileDownload(String urlString, Map<String, String> postValues, String filePath,
 			ResultReceiver receiver, Integer notificationId) throws IOException {
 		HttpRequest request = HttpRequest.post(urlString);
 		File file = new File(filePath);
@@ -104,7 +105,7 @@ public class ConnectionWrapper {
 		stream.close();
 	}
 
-	public String doHttpPost(String urlString, HashMap<String, String> postValues) throws WebconnectionException {
+	public String doHttpPost(String urlString, Map<String, String> postValues) throws WebconnectionException {
 		try {
 			return HttpRequest.post(urlString).form(postValues).body();
 		} catch (HttpRequestException e) {

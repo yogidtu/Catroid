@@ -63,12 +63,12 @@ public class LegoNXT implements BTConnectable {
 
 	private boolean pairing;
 	private static Handler btcHandler;
-	private Handler recieverHandler;
+	private Handler receiverHandler;
 	private Activity activity;
 
-	public LegoNXT(Activity activity, Handler recieverHandler) {
+	public LegoNXT(Activity activity, Handler receiverHandler) {
 		this.activity = activity;
-		this.recieverHandler = recieverHandler;
+		this.receiverHandler = receiverHandler;
 	}
 
 	public void startBTCommunicator(String macAddress) {
@@ -80,7 +80,7 @@ public class LegoNXT implements BTConnectable {
 			}
 		}
 
-		myNXTCommunicator = new LegoNXTBtCommunicator(this, recieverHandler, BluetoothAdapter.getDefaultAdapter(),
+		myNXTCommunicator = new LegoNXTBtCommunicator(this, receiverHandler, BluetoothAdapter.getDefaultAdapter(),
 				activity.getResources());
 		btcHandler = myNXTCommunicator.getHandler();
 
@@ -98,8 +98,7 @@ public class LegoNXT implements BTConnectable {
 			//sendBTCMotorMessage(LegoNXTBtCommunicator.NO_DELAY, LegoNXTBtCommunicator.DISCONNECT, 0, 0);
 			try {
 				myNXTCommunicator.destroyNXTconnection();
-			} catch (IOException e) { // TODO Auto-generated method stub
-
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

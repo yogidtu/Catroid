@@ -420,12 +420,9 @@ public class FormulaElement implements Serializable {
 
 	private boolean isInteger(double value) {
 
-		if ((Math.abs(value) - (int) Math.abs(value) < Double.MIN_VALUE)) {
-			return true;
-		}
+        return (Math.abs(value) - (int) Math.abs(value) < Double.MIN_VALUE);
 
-		return false;
-	}
+    }
 
 	public boolean isLogicalOperator() {
 		if (type == ElementType.OPERATOR) {
@@ -435,13 +432,10 @@ public class FormulaElement implements Serializable {
 	}
 
 	public boolean containsElement(ElementType elementType) {
-		if (type.equals(elementType)
-				|| (leftChild != null && (leftChild.containsElement(elementType) || rightChild
-						.containsElement(elementType)))) {
-			return true;
-		}
-		return false;
-	}
+        return type.equals(elementType)
+                || (leftChild != null && (leftChild.containsElement(elementType) || rightChild
+                .containsElement(elementType)));
+    }
 
 	public boolean isSingleNumberFormula() {
 		if (type == ElementType.OPERATOR) {

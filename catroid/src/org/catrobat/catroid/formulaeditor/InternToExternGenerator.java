@@ -130,7 +130,7 @@ public class InternToExternGenerator {
 
 		int internTokenListIndex = 0;
 
-		while (internTokenList.isEmpty() == false) {
+		while (!internTokenList.isEmpty()) {
 			if (appendWhiteSpace(currentToken, nextToken)) {
 				generatedExternFormulaString += " ";
 			}
@@ -168,17 +168,17 @@ public class InternToExternGenerator {
 					return number;
 				}
 
-				String left = number.substring(0, number.indexOf("."));
-				String right = number.substring(number.indexOf(".") + 1);
+				String left = number.substring(0, number.indexOf('.'));
+				String right = number.substring(number.indexOf('.') + 1);
 
 				return left + getExternStringForInternTokenValue(".", context) + right;
 
 			case OPERATOR:
 
-				String returnvalue = internToken.getTokenStringValue();
+				String returnValue = internToken.getTokenStringValue();
 				String mappingValue = getExternStringForInternTokenValue(internToken.getTokenStringValue(), context);
 
-				return mappingValue == null ? returnvalue : mappingValue;
+				return mappingValue == null ? returnValue : mappingValue;
 
 			case BRACKET_OPEN:
 			case FUNCTION_PARAMETERS_BRACKET_OPEN:

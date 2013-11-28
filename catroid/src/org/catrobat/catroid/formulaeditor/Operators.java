@@ -57,16 +57,14 @@ public enum Operators {
 		try {
 			return valueOf(value);
 		} catch (IllegalArgumentException exception) {
-
+			return null;
 		}
-		return null;
 	}
 
 	public static boolean isOperator(String value) {
 		if (getOperatorByValue(value) == null) {
 			return false;
 		}
-
 		return true;
 	}
 
