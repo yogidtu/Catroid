@@ -22,33 +22,35 @@
  */
 package org.catrobat.catroid.test.nfc;
 
-import java.lang.reflect.Method;
-
-import junit.framework.TestCase;
-
-import org.catrobat.catroid.nfc.NfcManager;
-
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
 
-public class NfcManagerTest extends TestCase {
+import junit.framework.TestCase;
+
+import org.catrobat.catroid.nfc.NfcHandler;
+
+import java.lang.reflect.Method;
+
+public class NfcHandlerTest extends TestCase {
 
 	public void testDefaultValueZero() throws Exception {
-		assertEquals("Default nfc_uid sensor value is not 0.", 0, NfcManager.getInstance().getUid());
+		assertEquals("Default nfc_uid sensor value is not 0.", 0.0, NfcHandler.getInstance().getAndResetUid());
 	}
 
 	public void testNfcIntent() throws Exception {
 		byte[] byteId = new byte[] { 0, 0, 0, 0, 0, 0, 0, 1 };
 		simulateNfcTag(byteId);
 
-		assertEquals("nfc_uid sensor value is not 1.", 1, NfcManager.getInstance().getUid());
+		assertEquals("nfc_uid sensor value is not 1.", 1.0, NfcHandler.getInstance().getAndResetUid());
+		assertEquals("nfc_uid sensor not resetted to 0.", 0.0, NfcHandler.getInstance().getAndResetUid());
 
 		byteId = new byte[] { 0, 0, 0, 0, 0, 0, 0, 42 };
 		simulateNfcTag(byteId);
 
-		assertEquals("nfc_uid sensor value is not 42.", 42, NfcManager.getInstance().getUid());
+		assertEquals("nfc_uid sensor value is not 42.", 42.0, NfcHandler.getInstance().getAndResetUid());
+		assertEquals("nfc_uid sensor not resetted to 0.", 0.0, NfcHandler.getInstance().getAndResetUid());
 	}
 
 	private void simulateNfcTag(byte[] byteId) throws Exception {
@@ -57,13 +59,14 @@ public class NfcManagerTest extends TestCase {
 		@SuppressWarnings("rawtypes")
 		Class nfcClass = Class.forName("android.nfc.Tag");
 		@SuppressWarnings("unchecked")
-		Method nfcMethod = nfcClass.getMethod("createMockTag", new Class[] { byte[].class, int[].class, Bundle[].class });
+		Method nfcMethod = nfcClass.getMethod("createMockTag",
+				new Class[] { byte[].class, int[].class, Bundle[].class });
 
 		int[] techList = new int[] { 1 };
 		Bundle[] techListExtra = new Bundle[] { new Bundle(1) };
 		Tag tag = (Tag) nfcMethod.invoke(nfcClass, new Object[] { byteId, techList, techListExtra });
 
 		intent.putExtra(NfcAdapter.EXTRA_TAG, tag);
-		NfcManager.getInstance().processIntent(intent);
+		NfcHandler.getInstance().processIntent(intent);
 	}
 }

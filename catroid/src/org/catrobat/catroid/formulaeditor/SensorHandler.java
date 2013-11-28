@@ -28,7 +28,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.util.Log;
 
-import org.catrobat.catroid.nfc.NfcManager;
+import org.catrobat.catroid.nfc.NfcHandler;
 
 public class SensorHandler implements SensorEventListener, SensorCustomEventListener {
 	private static final String TAG = SensorHandler.class.getSimpleName();
@@ -148,9 +148,7 @@ public class SensorHandler implements SensorEventListener, SensorCustomEventList
 				}
 
 			case NFC_UID:
-				double NfcUid = Double.valueOf(NfcManager.getInstance().getUid());
-				NfcManager.getInstance().resetUid();
-				return NfcUid;
+				return NfcHandler.getInstance().getAndResetUid();
 
 			case LOUDNESS:
 				return Double.valueOf(instance.loudness);

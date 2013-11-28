@@ -25,45 +25,59 @@ package org.catrobat.catroid.nfc;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
+import android.util.Log;
 
 import java.math.BigInteger;
 
-public class NfcManager {
-	private static final String TAG = NfcManager.class.getSimpleName();
-	private static NfcManager INSTANCE = new NfcManager();
-	private long uid;
+public class NfcHandler {
+	private static final String TAG = NfcHandler.class.getSimpleName();
+	private static NfcHandler INSTANCE = new NfcHandler();
+	private Double uid;
 
-	private NfcManager() {
+	private NfcHandler() {
 		resetUid();
 	}
 
-	public static NfcManager getInstance() {
+	public static NfcHandler getInstance() {
 		return INSTANCE;
 	}
 
-	public long getUid() {
-		return uid;
-	}
-
 	public void resetUid() {
-		uid = 0;
+		uid = 0.0;
 	}
 
 	public void processIntent(Intent intent) {
 		if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())
 				|| NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
 				|| NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
-
 			Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 
 			byte[] byteId = tag.getId();
 
-			uid = byteArrayToInt(byteId);
+			uid = convertByteArrayToDouble(byteId);
+
+			Log.d(TAG, "read successfull. uid = hex:" + byteArrayToHex(byteId) + " double:" + uid);
+
 		}
+		Log.d(TAG, intent.getAction());
 	}
 
-	private long byteArrayToInt(byte[] byteId) {
+	public static double convertByteArrayToDouble(byte[] byteId) {
 		BigInteger n = new BigInteger(byteId);
-		return n.longValue();
+		return n.doubleValue();
+	}
+
+	public static String byteArrayToHex(byte[] a) {
+		StringBuilder sb = new StringBuilder();
+		for (byte b : a) {
+			sb.append(String.format("%02x", b & 0xff));
+		}
+		return sb.toString();
+	}
+
+	public Double getAndResetUid() {
+		Double tmp = uid;
+		resetUid();
+		return tmp;
 	}
 }
