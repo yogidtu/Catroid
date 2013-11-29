@@ -403,6 +403,11 @@ public class StorageHandler {
 		imageDimensions = ImageEditing.getImageDimensions(inputFilePath);
 		FileChecksumContainer checksumCont = ProjectManager.getInstance().getFileChecksumContainer();
 
+		File outputFileDirectory = new File(imageDirectory.getAbsolutePath());
+		if (outputFileDirectory.exists() == false) {
+			outputFileDirectory.mkdirs();
+		}
+
 		Project project = ProjectManager.getInstance().getCurrentProject();
 		if ((imageDimensions[0] <= project.getXmlHeader().virtualScreenWidth)
 				&& (imageDimensions[1] <= project.getXmlHeader().virtualScreenHeight)) {
@@ -416,11 +421,6 @@ public class StorageHandler {
 					checksumCont.addChecksum(checksumSource, newFilePath);
 					return new File(checksumCont.getPath(checksumSource));
 				}
-			}
-
-			File outputFileDirectory = new File(imageDirectory.getAbsolutePath());
-			if (outputFileDirectory.exists() == false) {
-				outputFileDirectory.mkdirs();
 			}
 
 			File outputFile = new File(newFilePath);
