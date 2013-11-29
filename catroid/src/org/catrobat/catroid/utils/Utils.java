@@ -61,7 +61,6 @@ import org.catrobat.catroid.common.SoundInfo;
 import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.livewallpaper.BuildConfig;
 import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.ui.dialogs.CustomAlertDialogBuilder;
 
@@ -82,7 +81,6 @@ public class Utils {
 	public static final int TRANSLATION_PLURAL_OTHER_INTEGER = 767676;
 	private static final int DEFAULT_SCREEN_WIDTH = 1280;
 	private static final int DEFAULT_SCREEN_HEIGHT = 768;
-	private static boolean isUnderTest;
 
 	public static boolean externalStorageAvailable() {
 		String externalStorageState = Environment.getExternalStorageState();
@@ -274,26 +272,20 @@ public class Utils {
 	}
 
 	public static void loadProjectIfNeeded(Context context) {
-		ProjectManager projectManager = ProjectManager.getInstance();
-		Project currentProject = projectManager.getCurrentProject();
-		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-		String projectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
+		if (ProjectManager.getInstance().getCurrentProject() == null) {
+			SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+			String projectName = sharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null);
 
-		boolean canLoadCurrentProject;
-		if (currentProject == null) {
-			canLoadCurrentProject = false;
-		} else {
-			canLoadCurrentProject = projectManager.canLoadProject(currentProject.getName());
-		}
-
-		if (currentProject == null || projectName != currentProject.getName() || !canLoadCurrentProject) {
-			if (!canLoadCurrentProject
-					&& projectManager.canLoadProject(context.getString(R.string.default_project_name))) {
-				projectManager.loadProject(context.getString(R.string.default_project_name), context, false);
-			} else if (projectName != null) {
-				projectManager.loadProject(projectName, context, false);
+			if (projectName != null) {
+				ProjectManager.getInstance().loadProject(projectName, context, false);
+			} else if (ProjectManager.getInstance().loadProject(context.getString(R.string.default_project_name),
+					context, false)) {
 			} else {
-				projectManager.initializeDefaultProject(context);
+				try {
+					ProjectManager.getInstance().initializeDefaultProject(context);
+				} catch (IllegalArgumentException e) {
+					Log.d("LWP", "Initializing default project failed because the program was already initialized");
+				}
 			}
 		}
 	}
@@ -363,8 +355,8 @@ public class Utils {
 
 		List<String> projectNameList = UtilFile.getProjectNames(new File(Constants.DEFAULT_ROOT));
 		for (String projectName : projectNameList) {
-			if (ProjectManager.getInstance().canLoadProject(projectName)) {
-				loadableProject = StorageHandler.getInstance().loadProject(projectName);
+			loadableProject = StorageHandler.getInstance().loadProject(projectName);
+			if (loadableProject != null) {
 				break;
 			}
 		}
@@ -386,14 +378,6 @@ public class Utils {
 			}
 		}
 		return newTitle;
-	}
-
-	public static boolean isApplicationDebuggable(Context context) {
-		if (isUnderTest) {
-			return false;
-		} else {
-			return BuildConfig.DEBUG;
-		}
 	}
 
 	public static Pixmap getPixmapFromFile(File imageFile) {

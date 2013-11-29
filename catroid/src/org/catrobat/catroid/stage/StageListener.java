@@ -85,6 +85,9 @@ public class StageListener implements ApplicationListener {
 	private float virtualWidth;
 	private float virtualHeight;
 
+	private int screenWidth;
+	private int screenHeight;
+
 	private enum ScreenModes {
 		STRETCH, MAXIMIZE
 	};
@@ -113,6 +116,8 @@ public class StageListener implements ApplicationListener {
 
 	public StageListener(boolean isLiveWallpaper) {
 		this.isLiveWallpaper = isLiveWallpaper;
+		screenWidth = ScreenValues.SCREEN_WIDTH;
+		screenHeight = ScreenValues.SCREEN_HEIGHT;
 	}
 
 	@Override
@@ -271,7 +276,7 @@ public class StageListener implements ApplicationListener {
 				break;
 			case STRETCH:
 			default:
-				Gdx.gl.glViewport(0, 0, ScreenValues.SCREEN_WIDTH, ScreenValues.SCREEN_HEIGHT);
+				Gdx.gl.glViewport(0, 0, screenWidth, screenHeight);
 				break;
 		}
 

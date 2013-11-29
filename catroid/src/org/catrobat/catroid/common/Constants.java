@@ -28,7 +28,7 @@ public final class Constants {
 
 	// Reflection in testcases needed
 	// http://stackoverflow.com/questions/1615163/modifying-final-fields-in-java?answertab=votes#tab-top
-	public static final float SUPPORTED_CATROBAT_LANGUAGE_VERSION = Float.valueOf(0.91f);
+	public static final float CURRENT_CATROBAT_LANGUAGE_VERSION = Float.valueOf(0.91f);
 
 	public static final String PLATFORM_NAME = "Android";
 	public static final int APPLICATION_BUILD_NUMBER = 0; // updated from jenkins nightly/release build
@@ -41,7 +41,7 @@ public final class Constants {
 	public static final String TEXT_TO_SPEECH_EXTENSION = ".wav";
 
 	public static final String DEFAULT_ROOT = Environment.getExternalStorageDirectory().getAbsolutePath()
-			+ "/Pocket Code";
+			+ "/Pocket Code Live Wallpaper";
 	public static final String TMP_PATH = DEFAULT_ROOT + "/tmp";
 	public static final String TEXT_TO_SPEECH_TMP_PATH = TMP_PATH + "/textToSpeech";
 	public static final String IMAGE_DIRECTORY = "images";
