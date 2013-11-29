@@ -446,7 +446,6 @@ public class Look extends Image {
 	}
 
 	public void hideSpeechBubble() {
-		this.imageChanged = true;
 		StageListener.bubble.remove(this);
 	}
 }

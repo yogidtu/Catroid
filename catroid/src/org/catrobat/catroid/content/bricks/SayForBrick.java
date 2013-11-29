@@ -44,6 +44,7 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class SayForBrick extends BrickBaseType implements OnClickListener, FormulaBrick {
@@ -53,6 +54,7 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 	private transient View prototypeView;
 	private transient View bubble = null;
 	private transient Context context = null;
+	private transient byte[] speechBubbles;
 
 	public SayForBrick() {
 	}
@@ -182,21 +184,29 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		bubble = View.inflate(this.context, R.layout.bubble_speech_new, null);
-		((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(text.interpretString(sprite));
-		bubble.setDrawingCacheEnabled(true);
-		bubble.measure(MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_WIDTH - 30, MeasureSpec.AT_MOST),
-				MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_HEIGHT - 30, MeasureSpec.AT_MOST));
-		bubble.layout(0, 0, bubble.getMeasuredWidth(), bubble.getMeasuredHeight());
+		if (this.context != null) {
+			bubble = View.inflate(this.context, R.layout.bubble_speech_new, null);
 
-		Bitmap bitmap = bubble.getDrawingCache();
+			((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(text.interpretString(sprite));
+			bubble.setDrawingCacheEnabled(true);
+			bubble.measure(MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_WIDTH - 30, MeasureSpec.AT_MOST),
+					MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_HEIGHT - 30, MeasureSpec.AT_MOST));
+			bubble.layout(0, 0, bubble.getMeasuredWidth(), bubble.getMeasuredHeight());
 
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
-		byte[] speechBubble = stream.toByteArray();
-		bubble.setDrawingCacheEnabled(false);
+			Bitmap bitmap = bubble.getDrawingCache();
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
+			speechBubbles = stream.toByteArray();
 
-		sequence.addAction(ExtendedActions.say(sprite, speechBubble, duration));
+			try {
+				stream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			bubble.setDrawingCacheEnabled(false);
+		}
+		sequence.addAction(ExtendedActions.say(sprite, speechBubbles, duration));
 		return null;
 	}
 }
