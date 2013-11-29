@@ -150,13 +150,9 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 
 		@Override
 		protected void onPostExecute(Void result) {
-<<<<<<< HEAD:catroid/src/org/catrobat/catroid/livewallpaper/ui/SelectProgramFragment.java
-			LiveWallpaper.changeWallpaperProgram();
-=======
 			LiveWallpaper.getInstance().changeWallpaperProgram();
 			//			getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
 			//			getFragmentManager().popBackStack();
->>>>>>> LiveWallpaper_Master:catroid/src/org/catrobat/catroid/livewallpaper/SelectProgramFragment.java
 			if (progress.isShowing()) {
 				progress.dismiss();
 			}
