@@ -359,4 +359,9 @@ public final class ProjectManager implements OnLoadProjectCompleteListener, OnCh
 	public void onLoadProjectSuccess(boolean startProjectActivity) {
 
 	}
+
+	@Override
+	public void onLoadProjectFailure() {
+
+	}
 }

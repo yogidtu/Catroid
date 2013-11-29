@@ -65,7 +65,7 @@ public class ProjectActivity extends BaseActivity {
 		String programName;
 		Bundle bundle = getIntent().getExtras();
 		if (bundle != null) {
-			programName = bundle.getString(Constants.PREF_PROJECTNAME_KEY);
+			programName = bundle.getString(Constants.PROJECTNAME_TO_LOAD);
 		} else {
 			programName = ProjectManager.getInstance().getCurrentProject().getName();
 		}

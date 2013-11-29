@@ -678,4 +678,9 @@ public class SpritesListFragment extends SherlockListFragment implements OnSprit
 		getActivity().findViewById(R.id.bottom_bar).setVisibility(View.VISIBLE);
 	}
 
+	@Override
+	public void onLoadProjectFailure() {
+		getActivity().onBackPressed();
+	}
+
 }

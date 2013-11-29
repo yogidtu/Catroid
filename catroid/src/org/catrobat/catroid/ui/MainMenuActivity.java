@@ -311,4 +311,9 @@ public class MainMenuActivity extends BaseActivity implements OnLoadProjectCompl
 
 		mainMenuButtonContinue.setText(spannableStringBuilder);
 	}
+
+	@Override
+	public void onLoadProjectFailure() {
+
+	}
 }
