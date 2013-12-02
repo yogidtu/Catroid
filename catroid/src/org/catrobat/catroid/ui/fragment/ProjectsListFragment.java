@@ -420,10 +420,6 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 				Editor edit = sharedPreferences.edit();
 				edit.remove(Constants.PREF_PROJECTNAME_KEY);
 				edit.commit();
-			} else {
-
-				projectManager.loadProject((projectList.get(0)).projectName, getActivity(), false);
-				projectManager.saveProject();
 			}
 		} catch (ClassCastException exception) {
 			Log.e("CATROID", getActivity().toString() + " does not implement ErrorListenerInterface", exception);
@@ -440,11 +436,7 @@ public class ProjectsListFragment extends SherlockListFragment implements OnProj
 			deleteProject();
 			numDeleted++;
 		}
-
-		if (projectList.isEmpty()) {
-			//ProjectManager projectManager = ProjectManager.getInstance();
-			//projectManager.initializeDefaultProject(getActivity());
-		} else if (ProjectManager.getInstance().getCurrentProject() == null) {
+		if (ProjectManager.getInstance().getCurrentProject() == null) {
 			Utils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_PROJECTNAME_KEY,
 					projectList.get(0).projectName);
 		}

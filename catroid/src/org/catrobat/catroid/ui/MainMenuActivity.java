@@ -107,13 +107,13 @@ public class MainMenuActivity extends BaseActivity implements OnCheckTokenComple
 		// modified
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-		if (sharedPreferences.getBoolean("firsttime", true)) {
+		if (sharedPreferences.getBoolean(Constants.FIRST_TIME_INSTALL, true)) {
 			Log.d("MainMenuActivity", "firsttime");
 			UtilFile.createStandardProjectIfRootDirectoryIsEmpty(this);
 		}
 
 		Editor edit = sharedPreferences.edit();
-		edit.putBoolean("firsttime", false);
+		edit.putBoolean(Constants.FIRST_TIME_INSTALL, false);
 		edit.commit();
 
 		if (!BackPackListManager.isBackpackFlag()) {

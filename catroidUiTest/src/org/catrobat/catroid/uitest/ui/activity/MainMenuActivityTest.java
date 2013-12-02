@@ -22,10 +22,13 @@
  */
 package org.catrobat.catroid.uitest.ui.activity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.preference.PreferenceManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -35,6 +38,7 @@ import com.jayway.android.robotium.solo.Solo;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.common.StandardProjectHandler;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
@@ -42,6 +46,7 @@ import org.catrobat.catroid.content.StartScript;
 import org.catrobat.catroid.content.bricks.ComeToFrontBrick;
 import org.catrobat.catroid.content.bricks.HideBrick;
 import org.catrobat.catroid.content.bricks.PlaceAtBrick;
+import org.catrobat.catroid.content.bricks.SetLookBrick;
 import org.catrobat.catroid.content.bricks.SetSizeToBrick;
 import org.catrobat.catroid.content.bricks.ShowBrick;
 import org.catrobat.catroid.io.StorageHandler;
@@ -55,6 +60,7 @@ import org.catrobat.catroid.utils.UtilFile;
 import org.catrobat.catroid.utils.Utils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 
@@ -348,60 +354,60 @@ public class MainMenuActivityTest extends BaseActivityInstrumentationTestCase<Ma
 		storageHandler.saveProject(project);
 	}
 
-	//	public void testOverrideMyFirstProject() {
-	//		String standardProjectName = solo.getString(R.string.default_project_name);
-	//		Project standardProject = null;
-	//
-	//		try {
-	//			standardProject = StandardProjectHandler.createAndSaveStandardProject(standardProjectName,
-	//					getInstrumentation().getTargetContext());
-	//		} catch (IOException e) {
-	//			fail("Could not create standard project");
-	//			e.printStackTrace();
-	//		}
-	//
-	//		if (standardProject == null) {
-	//			fail("Could not create standard project");
-	//		}
-	//		ProjectManager.getInstance().setProject(standardProject);
-	//		StorageHandler.getInstance().saveProject(standardProject);
-	//
-	//		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
-	//		solo.sleep(300);
-	//		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
-	//		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
-	//
-	//		Sprite backgroundSprite = standardProject.getSpriteList().get(0);
-	//		Script startingScript = backgroundSprite.getScript(0);
-	//		assertEquals("Number of bricks in background sprite was wrong", 3, backgroundSprite.getNumberOfBricks());
-	//		startingScript.addBrick(new SetLookBrick(backgroundSprite));
-	//		startingScript.addBrick(new SetLookBrick(backgroundSprite));
-	//		startingScript.addBrick(new SetLookBrick(backgroundSprite));
-	//		assertEquals("Number of bricks in background sprite was wrong", 6, backgroundSprite.getNumberOfBricks());
-	//		ProjectManager.getInstance().setCurrentSprite(backgroundSprite);
-	//		ProjectManager.getInstance().setCurrentScript(startingScript);
-	//		StorageHandler.getInstance().saveProject(standardProject);
-	//
-	//		UiTestUtils.goBackToHome(getInstrumentation());
-	//		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
-	//		solo.sleep(300);
-	//		SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getInstrumentation()
-	//				.getTargetContext());
-	//		assertEquals("Standard project was not set in shared preferences", standardProjectName,
-	//				defaultSharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null));
-	//
-	//		Utils.saveToPreferences(getInstrumentation().getTargetContext(), Constants.PREF_PROJECTNAME_KEY, null);
-	//		assertEquals("Standard project was not reset to null in shared preferences", null,
-	//				defaultSharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null));
-	//
-	//		Intent intent = new Intent(solo.getCurrentActivity(), ProjectActivity.class);
-	//		ProjectManager.getInstance().setProject(null);
-	//		solo.getCurrentActivity().startActivity(intent);
-	//		solo.waitForActivity(ProjectActivity.class.getSimpleName());
-	//		UiTestUtils.waitForText(solo, solo.getString(R.string.default_project_backgroundname));
-	//		assertEquals("Number of bricks in background sprite was wrong - standard project was overwritten", 6,
-	//				ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).getNumberOfBricks());
-	//	}
+	public void testOverrideMyFirstProject() {
+		String standardProjectName = solo.getString(R.string.default_project_name);
+		Project standardProject = null;
+
+		try {
+			standardProject = StandardProjectHandler.createAndSaveStandardProject(standardProjectName,
+					getInstrumentation().getTargetContext());
+		} catch (IOException e) {
+			fail("Could not create standard project");
+			e.printStackTrace();
+		}
+
+		if (standardProject == null) {
+			fail("Could not create standard project");
+		}
+		ProjectManager.getInstance().setProject(standardProject);
+		StorageHandler.getInstance().saveProject(standardProject);
+
+		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		solo.sleep(300);
+		solo.clickOnButton(solo.getString(R.string.main_menu_programs));
+		solo.waitForActivity(MyProjectsActivity.class.getSimpleName());
+
+		Sprite backgroundSprite = standardProject.getSpriteList().get(0);
+		Script startingScript = backgroundSprite.getScript(0);
+		assertEquals("Number of bricks in background sprite was wrong", 3, backgroundSprite.getNumberOfBricks());
+		startingScript.addBrick(new SetLookBrick(backgroundSprite));
+		startingScript.addBrick(new SetLookBrick(backgroundSprite));
+		startingScript.addBrick(new SetLookBrick(backgroundSprite));
+		assertEquals("Number of bricks in background sprite was wrong", 6, backgroundSprite.getNumberOfBricks());
+		ProjectManager.getInstance().setCurrentSprite(backgroundSprite);
+		ProjectManager.getInstance().setCurrentScript(startingScript);
+		StorageHandler.getInstance().saveProject(standardProject);
+
+		UiTestUtils.goBackToHome(getInstrumentation());
+		solo.waitForActivity(MainMenuActivity.class.getSimpleName());
+		solo.sleep(300);
+		SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getInstrumentation()
+				.getTargetContext());
+		assertEquals("Standard project was not set in shared preferences", standardProjectName,
+				defaultSharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null));
+
+		Utils.saveToPreferences(getInstrumentation().getTargetContext(), Constants.PREF_PROJECTNAME_KEY, null);
+		assertEquals("Standard project was not reset to null in shared preferences", null,
+				defaultSharedPreferences.getString(Constants.PREF_PROJECTNAME_KEY, null));
+
+		Intent intent = new Intent(solo.getCurrentActivity(), ProjectActivity.class);
+		ProjectManager.getInstance().setProject(null);
+		solo.getCurrentActivity().startActivity(intent);
+		solo.waitForActivity(ProjectActivity.class.getSimpleName());
+		UiTestUtils.waitForText(solo, solo.getString(R.string.default_project_backgroundname));
+		assertEquals("Number of bricks in background sprite was wrong - standard project was overwritten", 6,
+				ProjectManager.getInstance().getCurrentProject().getSpriteList().get(0).getNumberOfBricks());
+	}
 
 	public void testProjectNameVisible() {
 		createTestProject(testProject);
