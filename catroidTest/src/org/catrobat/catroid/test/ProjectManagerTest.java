@@ -27,7 +27,6 @@ import android.test.AndroidTestCase;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.test.utils.TestUtils;
 import org.catrobat.catroid.utils.Utils;
 
@@ -45,8 +44,6 @@ public class ProjectManagerTest extends AndroidTestCase {
 		super.setUp();
 		Utils.updateScreenWidthAndHeight(getContext());
 		projectManager = ProjectManager.getInstance();
-		// Prevent Utils from returning true in isApplicationDebuggable
-		Reflection.setPrivateField(Utils.class, "isUnderTest", true);
 	}
 
 	@Override
@@ -65,7 +62,7 @@ public class ProjectManagerTest extends AndroidTestCase {
 		TestUtils.deleteTestProjects();
 
 		TestUtils
-				.createTestProjectOnLocalStorageWithCatrobatLanguageVersion(Constants.SUPPORTED_CATROBAT_LANGUAGE_VERSION);
+				.createTestProjectOnLocalStorageWithCatrobatLanguageVersion(Constants.CURRENT_CATROBAT_LANGUAGE_VERSION);
 
 		result = projectManager.loadProject(TestUtils.DEFAULT_TEST_PROJECT_NAME, getContext(), false);
 		assertTrue("Load project didn't return true", result);
@@ -73,7 +70,7 @@ public class ProjectManagerTest extends AndroidTestCase {
 
 	public void testShouldKeepExistingProjectIfCannotLoadNewProject() {
 		TestUtils.createTestProjectOnLocalStorageWithCatrobatLanguageVersionAndName(
-				Constants.SUPPORTED_CATROBAT_LANGUAGE_VERSION, OLD_PROJECT);
+				Constants.CURRENT_CATROBAT_LANGUAGE_VERSION, OLD_PROJECT);
 
 		boolean result = projectManager.loadProject(OLD_PROJECT, getContext(), false);
 		assertTrue("Could not load project.", result);
