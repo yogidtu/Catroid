@@ -47,6 +47,10 @@ public class NfcHandler {
 	}
 
 	public void processIntent(Intent intent) {
+		if (intent == null) {
+			return;
+		}
+
 		if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())
 				|| NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())
 				|| NfcAdapter.ACTION_TECH_DISCOVERED.equals(intent.getAction())) {
@@ -58,8 +62,24 @@ public class NfcHandler {
 
 			Log.d(TAG, "read successfull. uid = hex:" + byteArrayToHex(byteId) + " double:" + uid);
 
+			// uncomment for debugging ndef information			
+			//			Ndef ndefTag;
+			//			if (null != (ndefTag = Ndef.get(tag))) {
+			//				try {
+			//					ndefTag.connect();
+			//					NdefMessage ndefMessage = ndefTag.getNdefMessage();
+			//					for (NdefRecord record : ndefMessage.getRecords()) {
+			//						Log.d(TAG, "record, tnf: " + record.getTnf() + " " + new String(record.getPayload()));
+			//					}
+			//					ndefTag.close();
+			//				} catch (IOException e) {
+			//					e.printStackTrace();
+			//				} catch (FormatException e) {
+			//					e.printStackTrace();
+			//				}
+			//
+			//			}
 		}
-		Log.d(TAG, intent.getAction());
 	}
 
 	public static double convertByteArrayToDouble(byte[] byteId) {

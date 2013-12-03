@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -47,7 +48,7 @@ public class StageActivity extends AndroidApplication {
 
 	private PendingIntent pendingIntent;
 
-	private NfcAdapter mNfcAdapter;
+	private NfcAdapter nfcAdapter;
 
 	public static final int STAGE_ACTIVITY_FINISH = 7777;
 
@@ -65,12 +66,18 @@ public class StageActivity extends AndroidApplication {
 		pendingIntent = PendingIntent.getActivity(this, 0,
 				new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
-		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+		nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+		Log.d(TAG, "onCreate()");
+
+		if (nfcAdapter == null) {
+			Log.d(TAG, "could not get nfc adapter :(");
+		}
 	}
 
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
+		Log.d(TAG, "processIntent");
 		NfcHandler.getInstance().processIntent(intent);
 	}
 
@@ -90,34 +97,38 @@ public class StageActivity extends AndroidApplication {
 	@Override
 	public void onPause() {
 		SensorHandler.stopSensorListeners();
-		if (mNfcAdapter != null) {
-			mNfcAdapter.disableForegroundDispatch(this);
-		}
 		super.onPause();
+		if (nfcAdapter != null) {
+			Log.d(TAG, "onPause()disableForegroundDispatch()");
+			nfcAdapter.disableForegroundDispatch(this);
+		}
 	}
 
 	@Override
 	public void onResume() {
 		SensorHandler.startSensorListener(this);
-		if (mNfcAdapter != null) {
-			mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
-		}
 		super.onResume();
+		if (nfcAdapter != null) {
+			Log.d(TAG, "onResume()enableForegroundDispatch()");
+			nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+		}
 	}
 
 	public void pause() {
 		SensorHandler.stopSensorListeners();
-		if (mNfcAdapter != null) {
-			mNfcAdapter.disableForegroundDispatch(this);
-		}
 		stageListener.menuPause();
+		if (nfcAdapter != null) {
+			Log.d(TAG, "pause()disableForegroundDispatch()");
+			nfcAdapter.disableForegroundDispatch(this);
+		}
 	}
 
 	public void resume() {
 		stageListener.menuResume();
 		SensorHandler.startSensorListener(this);
-		if (mNfcAdapter != null) {
-			mNfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+		if (nfcAdapter != null) {
+			Log.d(TAG, "resume()enableForegroundDispatch()");
+			nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
 		}
 	}
 
