@@ -24,7 +24,6 @@ package org.catrobat.catroid.uitest.stage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
@@ -41,18 +40,15 @@ import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.ui.MainMenuActivity;
 import org.catrobat.catroid.ui.MyProjectsActivity;
 import org.catrobat.catroid.ui.ProjectActivity;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.Reflection;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
-import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
 
-import com.jayway.android.robotium.solo.Solo;
-
-public class SpeakStageTest extends ActivityInstrumentationTestCase2<MainMenuActivity> {
-	private Solo solo;
+public class SpeakStageTest extends BaseActivityInstrumentationTestCase<MainMenuActivity> {
 	private TextToSpeechMock textToSpeechMock;
 	private Sprite spriteNormal, spriteNull, spriteInterrupt;
 	private String textMessageTest = "This is a test text.";
@@ -67,20 +63,16 @@ public class SpeakStageTest extends ActivityInstrumentationTestCase2<MainMenuAct
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-		UiTestUtils.prepareStageForTest();
 		createProjectToInitializeTextToSpeech();
-		solo = new Solo(getInstrumentation(), getActivity());
+		UiTestUtils.prepareStageForTest();
 		textToSpeechMock = new TextToSpeechMock(getActivity().getApplicationContext());
-		Reflection.setPrivateField(SpeakAction.class, "utteranceIdPool", new AtomicInteger());
+		Reflection.setPrivateField(SpeakAction.class, "utteranceIdPool", 0);
 	}
 
 	@Override
 	public void tearDown() throws Exception {
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
-		super.tearDown();
-		solo = null;
 		textToSpeechMock = null;
+		super.tearDown();
 	}
 
 	public void testNullText() throws InterruptedException {
@@ -174,8 +166,7 @@ public class SpeakStageTest extends ActivityInstrumentationTestCase2<MainMenuAct
 		Script startScriptNormal = new StartScript(spriteNormal);
 		WaitBrick waitBrickNormal = new WaitBrick(spriteNormal, 1000);
 		SpeakBrick speakBrickNormal = new SpeakBrick(spriteNormal, textMessageTest);
-		BroadcastBrick broadcastBrickNormal = new BroadcastBrick(spriteNormal);
-		broadcastBrickNormal.setSelectedMessage("normal");
+		BroadcastBrick broadcastBrickNormal = new BroadcastBrick(spriteNormal, "normal");
 		startScriptNormal.addBrick(waitBrickNormal);
 		startScriptNormal.addBrick(speakBrickNormal);
 		startScriptNormal.addBrick(broadcastBrickNormal);
@@ -209,17 +200,15 @@ public class SpeakStageTest extends ActivityInstrumentationTestCase2<MainMenuAct
 
 		Script startScriptInterrupt = new StartScript(spriteInterrupt);
 		WaitBrick waitBrickInterrupt = new WaitBrick(spriteNull, 1000);
-		BroadcastBrick broadcastBrick = new BroadcastBrick(spriteInterrupt);
+		BroadcastBrick broadcastBrick = new BroadcastBrick(spriteInterrupt, "double");
 		SpeakBrick speakBrickInterrupt = new SpeakBrick(spriteInterrupt, textMessageLong);
-		broadcastBrick.setSelectedMessage("double");
 		startScriptInterrupt.addBrick(waitBrickInterrupt);
 		startScriptInterrupt.addBrick(broadcastBrick);
 		startScriptInterrupt.addBrick(speakBrickInterrupt);
 
 		spriteInterrupt.addScript(startScriptInterrupt);
 
-		BroadcastScript broadcastScriptInterrupt = new BroadcastScript(spriteInterrupt);
-		broadcastScriptInterrupt.setBroadcastMessage("double");
+		BroadcastScript broadcastScriptInterrupt = new BroadcastScript(spriteInterrupt, "double");
 		WaitBrick waitBrickInterrupt2 = new WaitBrick(spriteInterrupt, 2000);
 		broadcastScriptInterrupt.addBrick(waitBrickInterrupt2);
 		SpeakBrick speakBrickInterrupt2 = new SpeakBrick(spriteInterrupt, textMessageInterrupt);

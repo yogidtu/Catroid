@@ -31,7 +31,6 @@ import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.Layout;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -54,26 +53,37 @@ public class Formula implements Serializable {
 		return this;
 	}
 
-	public Formula(FormulaElement formEle) {
-		formulaTree = formEle;
+	public Formula(FormulaElement formulaElement) {
+		formulaTree = formulaElement;
 		internFormula = new InternFormula(formulaTree.getInternTokenList());
 	}
 
 	public Formula(Integer value) {
-		Log.e("info", "public Formula(Integer value) { value = " + value);
-		formulaTree = new FormulaElement(ElementType.NUMBER, value.toString(), null);
-		internFormula = new InternFormula(formulaTree.getInternTokenList());
-
-	}
-
-	public Formula(Double value) {
-		formulaTree = new FormulaElement(ElementType.NUMBER, value.toString(), null);
-		internFormula = new InternFormula(formulaTree.getInternTokenList());
+		if (value < 0) {
+			formulaTree = new FormulaElement(ElementType.OPERATOR, Operators.MINUS.toString(), null);
+			formulaTree.setRightChild(new FormulaElement(ElementType.NUMBER, Long.toString(Math.abs((long) value)),
+					formulaTree));
+			internFormula = new InternFormula(formulaTree.getInternTokenList());
+		} else {
+			formulaTree = new FormulaElement(ElementType.NUMBER, value.toString(), null);
+			internFormula = new InternFormula(formulaTree.getInternTokenList());
+		}
 	}
 
 	public Formula(Float value) {
-		formulaTree = new FormulaElement(ElementType.NUMBER, value.toString(), null);
-		internFormula = new InternFormula(formulaTree.getInternTokenList());
+		this(Double.valueOf(value));
+	}
+
+	public Formula(Double value) {
+		if (value < 0) {
+			formulaTree = new FormulaElement(ElementType.OPERATOR, Operators.MINUS.toString(), null);
+			formulaTree.setRightChild(new FormulaElement(ElementType.NUMBER, Double.toString(Math.abs(value)),
+					formulaTree));
+			internFormula = new InternFormula(formulaTree.getInternTokenList());
+		} else {
+			formulaTree = new FormulaElement(ElementType.NUMBER, value.toString(), null);
+			internFormula = new InternFormula(formulaTree.getInternTokenList());
+		}
 	}
 
 	public boolean interpretBoolean(Sprite sprite) {
@@ -88,39 +98,12 @@ public class Formula implements Serializable {
 		return interpretedValue.intValue();
 	}
 
-	public int interpretInteger(int minValue, int maxValue, Sprite sprite) {
-
-		int interpretedIntValue = interpretInteger(sprite);
-
-		if (minValue <= maxValue) {
-
-			interpretedIntValue = Math.min(maxValue, interpretedIntValue);
-			interpretedIntValue = Math.max(minValue, interpretedIntValue);
-		}
-
-		return interpretedIntValue;
-
-	}
-
 	public double interpretDouble(Sprite sprite) {
 		return formulaTree.interpretRecursive(sprite);
 	}
 
 	public float interpretFloat(Sprite sprite) {
 		return (float) interpretDouble(sprite);
-	}
-
-	public double interpretDouble(double minValue, double maxValue, Sprite sprite) {
-
-		double interpretedDoubleValue = interpretDouble(sprite);
-
-		if (minValue <= maxValue) {
-
-			interpretedDoubleValue = Math.min(maxValue, interpretedDoubleValue);
-			interpretedDoubleValue = Math.max(minValue, interpretedDoubleValue);
-		}
-
-		return interpretedDoubleValue;
 	}
 
 	public void setRoot(FormulaElement formula) {

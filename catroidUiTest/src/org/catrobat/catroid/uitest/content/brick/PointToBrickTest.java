@@ -35,19 +35,16 @@ import org.catrobat.catroid.content.bricks.PlaceAtBrick;
 import org.catrobat.catroid.content.bricks.PointToBrick;
 import org.catrobat.catroid.ui.ScriptActivity;
 import org.catrobat.catroid.ui.adapter.BrickAdapter;
+import org.catrobat.catroid.uitest.util.BaseActivityInstrumentationTestCase;
 import org.catrobat.catroid.uitest.util.UiTestUtils;
 
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.jayway.android.robotium.solo.Solo;
+public class PointToBrickTest extends BaseActivityInstrumentationTestCase<ScriptActivity> {
 
-public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptActivity> {
-
-	private Solo solo;
 	private Project project;
 
 	private final String spriteName1 = "cat1";
@@ -60,16 +57,11 @@ public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptAct
 
 	@Override
 	public void setUp() throws Exception {
+		// normally super.setUp should be called first
+		// but kept the test failing due to view is null
+		// when starting in ScriptActivity
 		createProject();
-		solo = new Solo(getInstrumentation(), getActivity());
-	}
-
-	@Override
-	public void tearDown() throws Exception {
-		solo.finishOpenedActivities();
-		UiTestUtils.clearAllUtilTestProjects();
-		super.tearDown();
-		solo = null;
+		super.setUp();
 	}
 
 	@Smoke
@@ -126,7 +118,10 @@ public class PointToBrickTest extends ActivityInstrumentationTestCase2<ScriptAct
 		solo.clickLongOnText(spriteName1);
 		solo.waitForText(solo.getString(R.string.delete));
 		solo.clickOnText(solo.getString(R.string.delete));
-		solo.clickOnButton(solo.getString(R.string.yes));
+
+		assertTrue("Confirmation-dialog not shown",
+				solo.waitForText(solo.getString(R.string.dialog_confirm_delete_object_message), 0, 1000));
+		solo.clickOnText(solo.getString(R.string.yes));
 
 		solo.clickLongOnText(newSpriteName);
 		solo.waitForText(solo.getString(R.string.delete));

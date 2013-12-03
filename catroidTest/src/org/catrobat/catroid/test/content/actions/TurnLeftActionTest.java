@@ -27,7 +27,7 @@ import java.io.File;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.common.Values;
+import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
@@ -70,8 +70,8 @@ public class TurnLeftActionTest extends InstrumentationTestCase {
 		lookData.setLookFilename(testImage.getName());
 		lookData.setLookName("LookName");
 
-		Values.SCREEN_HEIGHT = 800;
-		Values.SCREEN_WIDTH = 480;
+		ScreenValues.SCREEN_HEIGHT = 800;
+		ScreenValues.SCREEN_WIDTH = 480;
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public class TurnLeftActionTest extends InstrumentationTestCase {
 		TurnLeftAction action = ExtendedActions.turnLeft(sprite, new Formula(370.0f));
 		action.act(1.0f);
 
-		assertEquals("Wrong direction!", 370f, sprite.look.getRotation(), 1e-3);
+		assertEquals("Wrong direction!", 80f, sprite.look.getDirectionInUserInterfaceDimensionUnit(), 1e-3);
 		assertEquals("Wrong X-Position!", 0f, sprite.look.getXInUserInterfaceDimensionUnit());
 		assertEquals("Wrong Y-Position!", 0f, sprite.look.getYInUserInterfaceDimensionUnit());
 	}

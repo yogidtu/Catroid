@@ -113,17 +113,26 @@ import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 
 public class StorageHandler {
-
+	private static final String TAG = StorageHandler.class.getSimpleName();
 	private static final int JPG_COMPRESSION_SETTING = 95;
 
-	private static final String TAG = StorageHandler.class.getSimpleName();
-	private static StorageHandler instance;
+	private static final StorageHandler INSTANCE;
+
 	private XStream xstream;
 	private static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n";
 	private ReentrantLock saveLoadLock = new ReentrantLock();
 
-	private StorageHandler() throws IOException {
+	// TODO: Since the StorageHandler constructor throws an exception, the member INSTANCE couldn't be assigned
+	// directly and therefore we need this static block. Should be refactored and removed in the future.
+	static {
+		try {
+			INSTANCE = new StorageHandler();
+		} catch (IOException ioException) {
+			throw new RuntimeException("Initialize StorageHandler failed");
+		}
+	}
 
+	private StorageHandler() throws IOException {
 		xstream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new CatroidFieldKeySorter())));
 		xstream.processAnnotations(Project.class);
 		xstream.processAnnotations(XmlHeader.class);
@@ -209,16 +218,8 @@ public class StorageHandler {
 		}
 	}
 
-	public synchronized static StorageHandler getInstance() {
-		if (instance == null) {
-			try {
-				instance = new StorageHandler();
-			} catch (IOException e) {
-				e.printStackTrace();
-				Log.e(TAG, "Exception in Storagehandler, please refer to the StackTrace");
-			}
-		}
-		return instance;
+	public static StorageHandler getInstance() {
+		return INSTANCE;
 	}
 
 	public Project loadProject(String projectName) {
@@ -383,12 +384,6 @@ public class StorageHandler {
 		}
 	}
 
-	public File duplicateImage(String currentProjectName, String imageName) throws IOException {
-		File imageDirectory = new File(Utils.buildPath(Utils.buildProjectPath(currentProjectName),
-				Constants.IMAGE_DIRECTORY));
-		return copyImage(currentProjectName, Utils.buildPath(imageDirectory.getAbsolutePath(), imageName), null);
-	}
-
 	private File copyAndResizeImage(File outputFile, File inputFile, File imageDirectory) throws IOException {
 		Project project = ProjectManager.getInstance().getCurrentProject();
 		Bitmap bitmap = ImageEditing.getScaledBitmapFromPath(inputFile.getAbsolutePath(),
@@ -449,7 +444,7 @@ public class StorageHandler {
 		//}
 		FileChecksumContainer container = ProjectManager.getInstance().getFileChecksumContainer();
 
-		Project newProject = ProjectManager.INSTANCE.getCurrentProject();
+		Project newProject = ProjectManager.getInstance().getCurrentProject();
 		List<Sprite> currentSpriteList = newProject.getSpriteList();
 
 		for (Sprite currentSprite : currentSpriteList) {
