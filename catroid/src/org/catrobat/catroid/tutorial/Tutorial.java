@@ -19,14 +19,18 @@
 package org.catrobat.catroid.tutorial;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.io.StorageHandler;
 import org.catrobat.catroid.ui.fragment.LookFragment;
+import org.catrobat.catroid.utils.ImageEditing;
 import org.catrobat.catroid.utils.UtilCamera;
+import org.catrobat.catroid.utils.Utils;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -64,9 +68,10 @@ public class Tutorial {
 	private void selectImageFromCamera() {
 		Object lookFromCameraUri = UtilCamera
 				.getDefaultLookFromCameraUri(context.getString(R.string.default_look_name));
-
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		//intent.putExtra(MediaStore.EXTRA_OUTPUT, lookFromCameraUri);
+		//intent.putExtra(MediaStore.EXTRA_OUTPUT,);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, 1);
+
 		Intent chooser = Intent.createChooser(intent, context.getString(R.string.select_look_from_camera));
 		((Activity) context).startActivityForResult(chooser, LookFragment.REQUEST_TAKE_PICTURE);
 	}
@@ -75,42 +80,41 @@ public class Tutorial {
 		Bundle bundle = intent.getExtras();
 		String pathOfPaintroidImage = bundle.getString(Constants.EXTRA_PICTURE_PATH_POCKET_PAINT);
 
-		//int[] imageDimensions = ImageEditing.getImageDimensions(pathOfPaintroidImage);
-		//if (imageDimensions[0] < 0 || imageDimensions[1] < 0) {
-		//Utils.showErrorDialog(getActivity(), this.getString(R.string.error_load_image));
-		//return;
-		//}
+		int[] imageDimensions = ImageEditing.getImageDimensions(pathOfPaintroidImage);
+		if (imageDimensions[0] < 0 || imageDimensions[1] < 0) {
+			Utils.showErrorDialog(context, context.getString(R.string.error_load_image));
+			return;
+		}
 
 		//String actualChecksum = Utils.md5Checksum(new File(pathOfPaintroidImage));
 
 		// If look changed --> saving new image with new checksum and changing lookData
 		//if (!selectedLookData.getChecksum().equalsIgnoreCase(actualChecksum)) {
 		//			String oldFileName = selectedLookData.getLookFileName();
-		String newFileName = "newpaintroidpic";
+		String newFileName = bundle.getString(Constants.EXTRA_PICTURE_NAME_POCKET_PAINT);
 
 		//HACK for https://github.com/Catrobat/Catroid/issues/81
 		if (!newFileName.endsWith(".png")) {
 			newFileName = newFileName + ".png";
 		}
 
-		//String projectName = ProjectManager.getInstance().getCurrentProject().getName();
+		String projectName = ProjectManager.getInstance().getCurrentProject().getName();
 
-		//			try {
-		//				File newLookFile = StorageHandler.getInstance().copyImage(projectName, pathOfPaintroidImage,
-		//						newFileName);
-		File PicFileInPaintroid = new File(pathOfPaintroidImage);
-		//				tempPicFileInPaintroid.delete(); //delete temp file in paintroid
+		try {
+			File newLookFile = StorageHandler.getInstance().copyImage(projectName, pathOfPaintroidImage, newFileName);
+			File PicFileInPaintroid = new File(pathOfPaintroidImage);
+			//				tempPicFileInPaintroid.delete(); //delete temp file in paintroid
 
-		//				StorageHandler.getInstance().deleteFile(selectedLookData.getAbsolutePath()); //reduce usage in container or delete it
+			//				StorageHandler.getInstance().deleteFile(selectedLookData.getAbsolutePath()); //reduce usage in container or delete it
 
-		//				selectedLookData.setLookFilename(newLookFile.getName());
-		//				selectedLookData.resetThumbnailBitmap();
-		//			} catch (IOException e) {
-		//				e.printStackTrace();
+			selectedLookData.setLookFilename(newLookFile.getName());
+			//				selectedLookData.resetThumbnailBitmap();
+			//			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
-
-	//		}
-	//	}
 
 	public void sendPaintroidIntent(int selected_position) {
 		Intent intent = new Intent("android.intent.action.MAIN");
