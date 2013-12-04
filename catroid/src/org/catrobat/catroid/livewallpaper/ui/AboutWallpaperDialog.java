@@ -22,17 +22,14 @@
  */
 package org.catrobat.catroid.livewallpaper.ui;
 
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.livewallpaper.R;
-import org.catrobat.catroid.livewallpaper.R.id;
-import org.catrobat.catroid.livewallpaper.R.layout;
-import org.catrobat.catroid.livewallpaper.R.string;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.TextView;
+
+import org.catrobat.catroid.ProjectManager;
+import org.catrobat.catroid.livewallpaper.R;
 
 public class AboutWallpaperDialog extends Dialog {
 

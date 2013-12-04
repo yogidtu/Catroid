@@ -71,12 +71,10 @@ public class SelectProjectActivity extends BaseActivity {
 				startActivity(intent);
 				break;
 			}
-			case R.id.hide: {
-				selectProgramFragment.startHideActionMode();
+			case R.id.delete: {
+				selectProgramFragment.startDeleteActionMode();
 				break;
 			}
-
-			//TODO: show
 		}
 		return super.onOptionsItemSelected(item);
 	}

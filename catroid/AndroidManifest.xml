@@ -73,6 +73,10 @@
      		 android:name="org.catrobat.catroid.livewallpaper.ui.SelectProjectActivity" android:exported="true"
      		 android:parentActivityName="org.catrobat.catroid.livewallpaper.ui.LiveWallpaperSettings" > 
 		</activity>
+		
+		<activity
+     		 android:name="org.catrobat.catroid.livewallpaper.ui.SelectPrgramFragment" android:exported="true">
+		</activity>
          
 
     </application>

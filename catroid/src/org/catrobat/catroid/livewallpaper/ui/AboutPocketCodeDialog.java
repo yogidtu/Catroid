@@ -30,11 +30,8 @@ import android.text.method.LinkMovementMethod;
 import android.view.Window;
 import android.widget.TextView;
 
-import org.catrobat.catroid.livewallpaper.R;
-import org.catrobat.catroid.livewallpaper.R.id;
-import org.catrobat.catroid.livewallpaper.R.layout;
-import org.catrobat.catroid.livewallpaper.R.string;
 import org.catrobat.catroid.common.Constants;
+import org.catrobat.catroid.livewallpaper.R;
 import org.catrobat.catroid.utils.Utils;
 
 public class AboutPocketCodeDialog extends Dialog {

@@ -32,9 +32,13 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.Constants;
@@ -62,6 +66,13 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 
 	private List<ProjectData> projectList;
 	private ProjectAdapter adapter;
+
+	private ActionMode actionMode;
+	private static String deleteActionModeTitle;
+
+	private ProjectData projectToEdit;
+
+	private View selectAllActionModeButton;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,11 +107,11 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 		adapter.setOnProjectEditListener(this);
 	}
 
-	public void startHideActionMode() {
-		//		if (actionMode == null) {
-		//			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
-		//			
-		//		}
+	public void startDeleteActionMode() {
+		if (actionMode == null) {
+			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
+
+		}
 	}
 
 	private class SortIgnoreCase implements Comparator<ProjectData> {
@@ -186,5 +197,154 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 		});
 		AlertDialog alertDialog = builder.create();
 		alertDialog.show();
+	}
+
+	private ActionMode.Callback deleteModeCallBack = new ActionMode.Callback() {
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			setSelectMode(ListView.CHOICE_MODE_MULTIPLE);
+
+			deleteActionModeTitle = getString(R.string.delete);
+
+			mode.setTitle(deleteActionModeTitle);
+			addSelectAllActionModeButton(mode, menu);
+
+			return true;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, com.actionbarsherlock.view.MenuItem item) {
+			return false;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			if (adapter.getAmountOfCheckedProjects() == 0) {
+				clearCheckedProjectsAndEnableButtons();
+			} else {
+				showConfirmDeleteDialog();
+			}
+		}
+
+		public void setSelectMode(int selectMode) {
+			adapter.setSelectMode(selectMode);
+			adapter.notifyDataSetChanged();
+		}
+
+	};
+
+	private void addSelectAllActionModeButton(ActionMode mode, Menu menu) {
+		selectAllActionModeButton = Utils.addSelectAllActionModeButton(getLayoutInflater(null), mode, menu);
+		selectAllActionModeButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				for (int position = 0; position < projectList.size(); position++) {
+					adapter.addCheckedProject(position);
+				}
+				adapter.notifyDataSetChanged();
+				onProjectChecked();
+			}
+
+		});
+	}
+
+	private void clearCheckedProjectsAndEnableButtons() {
+		setSelectMode(ListView.CHOICE_MODE_NONE);
+		adapter.clearCheckedProjects();
+
+		actionMode = null;
+	}
+
+	private void showConfirmDeleteDialog() {
+		int titleId;
+		if (adapter.getAmountOfCheckedProjects() == 1) {
+			titleId = R.string.dialog_confirm_delete_program_title;
+		} else {
+			titleId = R.string.dialog_confirm_delete_multiple_programs_title;
+		}
+
+		AlertDialog.Builder builder = new CustomAlertDialogBuilder(getActivity());
+		builder.setTitle(titleId);
+		builder.setMessage(R.string.dialog_confirm_delete_program_message);
+		builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				deleteCheckedProjects();
+				clearCheckedProjectsAndEnableButtons();
+			}
+		});
+		builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int id) {
+				clearCheckedProjectsAndEnableButtons();
+				dialog.cancel();
+			}
+		});
+
+		AlertDialog alertDialog = builder.create();
+		alertDialog.show();
+	}
+
+	private void deleteCheckedProjects() {
+		int numDeleted = 0;
+		for (int position : adapter.getCheckedProjects()) {
+			projectToEdit = (ProjectData) getListView().getItemAtPosition(position - numDeleted);
+			deleteProject();
+			numDeleted++;
+		}
+
+		if (projectList.isEmpty()) {
+			ProjectManager projectManager = ProjectManager.getInstance();
+			projectManager.initializeDefaultProject(getActivity());
+		} else if (ProjectManager.getInstance().getCurrentProject() == null) {
+			Utils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_PROJECTNAME_KEY,
+					projectList.get(0).projectName);
+		}
+
+		initAdapter();
+	}
+
+	private void deleteProject() {
+		ProjectManager projectManager = ProjectManager.getInstance();
+		Project currentProject = projectManager.getCurrentProject();
+
+		if (currentProject != null && currentProject.getName().equalsIgnoreCase(projectToEdit.projectName)) {
+			projectManager.deleteCurrentProject();
+		} else {
+			StorageHandler.getInstance().deleteProject(projectToEdit);
+		}
+		projectList.remove(projectToEdit);
+	}
+
+	private void initAdapter() {
+		File rootDirectory = new File(Constants.DEFAULT_ROOT);
+		File projectCodeFile;
+		projectList = new ArrayList<ProjectData>();
+		for (String projectName : UtilFile.getProjectNames(rootDirectory)) {
+			projectCodeFile = new File(Utils.buildPath(Utils.buildProjectPath(projectName), Constants.PROJECTCODE_NAME));
+			projectList.add(new ProjectData(projectName, projectCodeFile.lastModified()));
+		}
+		Collections.sort(projectList, new Comparator<ProjectData>() {
+			@Override
+			public int compare(ProjectData project1, ProjectData project2) {
+				return Long.valueOf(project2.lastUsed).compareTo(project1.lastUsed);
+			}
+		});
+
+		adapter = new ProjectAdapter(getActivity(), R.layout.activity_my_projects_list_item,
+				R.id.my_projects_activity_project_title, projectList);
+		setListAdapter(adapter);
+		initClickListener();
+	}
+
+	public void setSelectMode(int selectMode) {
+		adapter.setSelectMode(selectMode);
+		adapter.notifyDataSetChanged();
 	}
 }

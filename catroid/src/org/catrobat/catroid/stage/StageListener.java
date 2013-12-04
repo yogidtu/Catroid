@@ -362,8 +362,9 @@ public class StageListener implements ApplicationListener {
 		if (stage != null) {
 			stage.dispose();
 		}
-
-		font.dispose();
+		if (font != null) {
+			font.dispose();
+		}
 		axes.dispose();
 		disposeTextures();
 	}
