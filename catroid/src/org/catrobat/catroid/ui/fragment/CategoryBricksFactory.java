@@ -96,7 +96,7 @@ public class CategoryBricksFactory {
 		} else if (category.equals(context.getString(R.string.category_sound))) {
 			return setupSoundCategoryList(sprite, context);
 		} else if (category.equals(context.getString(R.string.category_looks))) {
-			return setupLooksCategoryList(sprite);
+			return setupLooksCategoryList(sprite, context);
 		} else if (category.equals(context.getString(R.string.category_variables))) {
 			return setupVariablesCategoryList(sprite);
 		} else if (category.equals(context.getString(R.string.category_lego_nxt))) {
@@ -171,7 +171,7 @@ public class CategoryBricksFactory {
 		return soundBrickList;
 	}
 
-	private List<Brick> setupLooksCategoryList(Sprite sprite) {
+	private List<Brick> setupLooksCategoryList(Sprite sprite, Context context) {
 		List<Brick> looksBrickList = new ArrayList<Brick>();
 		looksBrickList.add(new SetLookBrick(sprite));
 		looksBrickList.add(new NextLookBrick(sprite));
@@ -184,8 +184,7 @@ public class CategoryBricksFactory {
 		looksBrickList.add(new SetBrightnessBrick(sprite, BrickValues.SET_BRIGHTNESS_TO));
 		looksBrickList.add(new ChangeBrightnessByNBrick(sprite, BrickValues.CHANGE_BRITHNESS_BY));
 		looksBrickList.add(new ClearGraphicEffectBrick(sprite));
-		looksBrickList.add(new SayForBrick(sprite, BrickValues.SAY, BrickValues.FOR));
-
+		looksBrickList.add(new SayForBrick(sprite, BrickValues.SAY, BrickValues.FOR, context));
 		return looksBrickList;
 	}
 

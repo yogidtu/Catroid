@@ -40,6 +40,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.formulaeditor.SensorHandler;
 import org.catrobat.catroid.stage.PreStageActivity;
 import org.catrobat.catroid.stage.StageActivity;
@@ -119,9 +120,10 @@ public class ScriptActivity extends BaseActivity {
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayShowTitleEnabled(true);
-		String currentSprite = ProjectManager.getInstance().getCurrentSprite().getName();
-		actionBar.setTitle(currentSprite);
+		Sprite currentSprite = ProjectManager.getInstance().getCurrentSprite();
+		actionBar.setTitle(currentSprite.getName());
 
+		setContextInCertainBricks();
 		buttonAdd = (ImageButton) findViewById(R.id.button_add);
 		updateHandleAddButtonClickListener();
 	}

@@ -30,8 +30,15 @@ import android.widget.AdapterView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Script;
+import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.content.bricks.Brick;
+import org.catrobat.catroid.content.bricks.SayForBrick;
 import org.catrobat.catroid.ui.controller.BackPackListManager;
+
+import java.util.ArrayList;
 
 public class BaseActivity extends SherlockFragmentActivity {
 
@@ -74,6 +81,21 @@ public class BaseActivity extends SherlockFragmentActivity {
 				unbindDrawables(((ViewGroup) view).getChildAt(i));
 			}
 			((ViewGroup) view).removeAllViews();
+		}
+	}
+
+	protected void setContextInCertainBricks() {
+		ArrayList<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance().getCurrentProject()
+				.getSpriteList();
+		for (Sprite sprite : spriteList) {
+			for (int index = 0; index < sprite.getNumberOfScripts(); index++) {
+				Script script = sprite.getScript(index);
+				for (Brick brick : script.getBrickList()) {
+					if (brick instanceof SayForBrick) {
+						((SayForBrick) brick).setContext(getApplicationContext());
+					}
+				}
+			}
 		}
 	}
 

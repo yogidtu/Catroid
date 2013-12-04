@@ -24,7 +24,6 @@ package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
@@ -49,6 +48,9 @@ import java.util.List;
 
 public class SayForBrick extends BrickBaseType implements OnClickListener, FormulaBrick {
 	private static final long serialVersionUID = 1L;
+	private static final int STRING_OFFSET = 20;
+	private static final int BOUNDARY_PIXEL = 30;
+
 	private Formula text;
 	private Formula duration;
 	private transient View prototypeView;
@@ -59,16 +61,18 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 	public SayForBrick() {
 	}
 
-	public SayForBrick(Sprite sprite, String say, int seconds) {
+	public SayForBrick(Sprite sprite, String say, int seconds, Context context) {
 		this.sprite = sprite;
 		this.text = new Formula(say);
 		this.duration = new Formula(seconds);
+		this.context = context;
 	}
 
-	public SayForBrick(Sprite sprite, Formula say, Formula seconds) {
+	public SayForBrick(Sprite sprite, Formula say, Formula seconds, Context context) {
 		this.sprite = sprite;
 		this.text = say;
 		this.duration = seconds;
+		this.context = context;
 	}
 
 	@Override
@@ -93,9 +97,6 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 		if (animationState) {
 			return view;
 		}
-		// TODO
-		this.context = context.getApplicationContext();
-
 		view = View.inflate(context, R.layout.brick_say_for, null);
 		view = getViewWithAlpha(alphaValue);
 		setCheckboxView(R.id.brick_say_for_checkbox);
@@ -140,15 +141,14 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 
 	@Override
 	public Brick clone() {
-		return new SayForBrick(getSprite(), text.clone(), duration.clone());
+		return new SayForBrick(getSprite(), text.clone(), duration.clone(), context);
 	}
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
 		if (view != null) {
 			View layout = view.findViewById(R.id.brick_say_for_layout);
-			Drawable background = layout.getBackground();
-			background.setAlpha(alphaValue);
+			layout.getBackground().setAlpha(alphaValue);
 
 			TextView sayTextView = (TextView) view.findViewById(R.id.brick_say_textview);
 			sayTextView.setTextColor(sayTextView.getTextColors().withAlpha(alphaValue));
@@ -184,29 +184,48 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 
 	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-		if (this.context != null) {
-			bubble = View.inflate(this.context, R.layout.bubble_speech_new, null);
 
-			((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(text.interpretString(sprite));
-			bubble.setDrawingCacheEnabled(true);
-			bubble.measure(MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_WIDTH - 30, MeasureSpec.AT_MOST),
-					MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_HEIGHT - 30, MeasureSpec.AT_MOST));
-			bubble.layout(0, 0, bubble.getMeasuredWidth(), bubble.getMeasuredHeight());
+		bubble = View.inflate(this.context, R.layout.bubble_speech_new, null);
 
-			Bitmap bitmap = bubble.getDrawingCache();
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream);
-			speechBubbles = stream.toByteArray();
+		((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(getNormalizedText());
+		bubble.setDrawingCacheEnabled(true);
+		bubble.measure(MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_WIDTH - BOUNDARY_PIXEL, MeasureSpec.AT_MOST),
+				MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_HEIGHT - BOUNDARY_PIXEL, MeasureSpec.AT_MOST));
+		bubble.layout(0, 0, bubble.getMeasuredWidth(), bubble.getMeasuredHeight());
 
-			try {
-				stream.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		Bitmap bitmap = bubble.getDrawingCache();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+		speechBubbles = stream.toByteArray();
 
-			bubble.setDrawingCacheEnabled(false);
+		try {
+			stream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
+		bubble.setDrawingCacheEnabled(false);
 		sequence.addAction(ExtendedActions.say(sprite, speechBubbles, duration));
 		return null;
+	}
+
+	private String getNormalizedText() {
+
+		String text = this.text.interpretString(sprite);
+		String normalizedText = new String();
+
+		for (int index = 0; index < text.length(); index++) {
+			if (index % STRING_OFFSET == 0) {
+				normalizedText += "\n";
+			}
+			//TODO: max size of text.
+			normalizedText += text.charAt(index);
+		}
+
+		return normalizedText;
+	}
+
+	public void setContext(Context applicationContext) {
+		this.context = applicationContext;
 	}
 }
