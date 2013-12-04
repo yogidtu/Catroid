@@ -30,6 +30,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -72,6 +73,8 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 
 	private ProjectData projectToEdit;
 
+	private ProjectManager projectManager = ProjectManager.getInstance();
+
 	private View selectAllActionModeButton;
 
 	@Override
@@ -110,7 +113,6 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 	public void startDeleteActionMode() {
 		if (actionMode == null) {
 			actionMode = getSherlockActivity().startActionMode(deleteModeCallBack);
-
 		}
 	}
 
@@ -143,7 +145,6 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 		protected Void doInBackground(Void... params) {
 			Project project = StorageHandler.getInstance().loadProject(selectedProject);
 			if (project != null) {
-				ProjectManager projectManager = ProjectManager.getInstance();
 				if (projectManager.getCurrentProject() != null
 						&& projectManager.getCurrentProject().getName().equals(selectedProject)) {
 					getFragmentManager().beginTransaction().remove(selectProgramFragment).commit();
@@ -227,7 +228,7 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 			if (adapter.getAmountOfCheckedProjects() == 0) {
 				clearCheckedProjectsAndEnableButtons();
 			} else {
-				showConfirmDeleteDialog();
+				checkIfCurrentProgramSelectedForDeletion();
 			}
 		}
 
@@ -259,6 +260,56 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 		adapter.clearCheckedProjects();
 
 		actionMode = null;
+	}
+
+	private void checkIfCurrentProgramSelectedForDeletion() {
+
+		boolean currentProgramSelected = false;
+		Project currentProject = projectManager.getCurrentProject();
+		for (int position : adapter.getCheckedProjects()) {
+			ProjectData tempProjectData = (ProjectData) getListView().getItemAtPosition(position);
+			if (currentProject.getName().equalsIgnoreCase(tempProjectData.projectName)) {
+				currentProgramSelected = true;
+				break;
+			}
+		}
+
+		if (!currentProgramSelected) {
+			showConfirmDeleteDialog();
+			return;
+		}
+
+		AlertDialog.Builder builder = new CustomAlertDialogBuilder(getActivity());
+		builder.setTitle(R.string.error);
+
+		if (adapter.getAmountOfCheckedProjects() == 1) {
+			builder.setMessage(R.string.lwp_error_delete_current_program);
+			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int id) {
+					clearCheckedProjectsAndEnableButtons();
+				}
+			});
+
+		} else {
+			builder.setMessage(R.string.lwp_error_delete_multiple_program);
+			builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int id) {
+					showConfirmDeleteDialog();
+				}
+			});
+			builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int id) {
+					clearCheckedProjectsAndEnableButtons();
+				}
+			});
+		}
+
+		AlertDialog alertDialog = builder.create();
+		alertDialog.show();
+
 	}
 
 	private void showConfirmDeleteDialog() {
@@ -295,14 +346,16 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 		int numDeleted = 0;
 		for (int position : adapter.getCheckedProjects()) {
 			projectToEdit = (ProjectData) getListView().getItemAtPosition(position - numDeleted);
+			if (projectToEdit.projectName.equalsIgnoreCase(projectManager.getCurrentProject().getName())) {
+				continue;
+			}
 			deleteProject();
 			numDeleted++;
 		}
 
 		if (projectList.isEmpty()) {
-			ProjectManager projectManager = ProjectManager.getInstance();
 			projectManager.initializeDefaultProject(getActivity());
-		} else if (ProjectManager.getInstance().getCurrentProject() == null) {
+		} else if (projectManager.getCurrentProject() == null) {
 			Utils.saveToPreferences(getActivity().getApplicationContext(), Constants.PREF_PROJECTNAME_KEY,
 					projectList.get(0).projectName);
 		}
@@ -311,14 +364,8 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 	}
 
 	private void deleteProject() {
-		ProjectManager projectManager = ProjectManager.getInstance();
-		Project currentProject = projectManager.getCurrentProject();
-
-		if (currentProject != null && currentProject.getName().equalsIgnoreCase(projectToEdit.projectName)) {
-			projectManager.deleteCurrentProject();
-		} else {
-			StorageHandler.getInstance().deleteProject(projectToEdit);
-		}
+		StorageHandler.getInstance().deleteProject(projectToEdit);
+		Log.d("LWP", "Deleting " + projectToEdit.projectName);
 		projectList.remove(projectToEdit);
 	}
 
@@ -330,12 +377,7 @@ public class SelectProgramFragment extends SherlockListFragment implements OnPro
 			projectCodeFile = new File(Utils.buildPath(Utils.buildProjectPath(projectName), Constants.PROJECTCODE_NAME));
 			projectList.add(new ProjectData(projectName, projectCodeFile.lastModified()));
 		}
-		Collections.sort(projectList, new Comparator<ProjectData>() {
-			@Override
-			public int compare(ProjectData project1, ProjectData project2) {
-				return Long.valueOf(project2.lastUsed).compareTo(project1.lastUsed);
-			}
-		});
+		Collections.sort(projectList, new SortIgnoreCase());
 
 		adapter = new ProjectAdapter(getActivity(), R.layout.activity_my_projects_list_item,
 				R.id.my_projects_activity_project_title, projectList);

@@ -89,7 +89,7 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					Intent intent = new Intent(getActivity().getApplicationContext(), SelectProjectActivity.class);
+					Intent intent = new Intent(getActivity().getApplicationContext(), SelectProgramActivity.class);
 					startActivity(intent);
 					//					FragmentTransaction ft = getFragmentManager().beginTransaction();
 					//					ft.replace(android.R.id.content, new SelectProgramFragment());

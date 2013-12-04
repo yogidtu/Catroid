@@ -32,7 +32,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import org.catrobat.catroid.livewallpaper.R;
 
-public class SelectProjectActivity extends BaseActivity {
+public class SelectProgramActivity extends BaseActivity {
 
 	public static final String ACTION_PROJECT_LIST_INIT = "org.catrobat.catroid.PROJECT_LIST_INIT";
 

@@ -408,6 +408,8 @@
  	<string name="lwp_confirm_set_program_message">Set this program?</string>
  	<string name="create_programs">Create new wallpaper</string>
  	<string name="download_programs">Explore</string>
+ 	<string name="lwp_error_delete_current_program">You cannot delete this program because it is currently in preview.</string>
+ 	<string name="lwp_error_delete_multiple_program">"One of the selected programs is in preview and cannot be deleted. Do you wish to delete the other selected programs?"</string>
  	
  	<string name="pocket_code_not_installed">Pocket Code is not installed. Do you want to install it?</string>
  	
