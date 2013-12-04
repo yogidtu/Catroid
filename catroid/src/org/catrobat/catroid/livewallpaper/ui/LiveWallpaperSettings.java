@@ -20,11 +20,11 @@
  *  You should have received a copy of the GNU Affero General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.catrobat.catroid.livewallpaper;
+package org.catrobat.catroid.livewallpaper.ui;
 
 import android.annotation.SuppressLint;
-import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -41,6 +41,7 @@ import android.view.ViewGroup;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.io.SoundManager;
+import org.catrobat.catroid.livewallpaper.R;
 
 @SuppressLint("NewApi")
 public class LiveWallpaperSettings extends PreferenceActivity {
@@ -79,10 +80,12 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
-					FragmentTransaction ft = getFragmentManager().beginTransaction();
-					ft.replace(android.R.id.content, new SelectProgramFragment());
-					ft.addToBackStack(null);
-					ft.commit();
+					Intent intent = new Intent(getActivity().getApplicationContext(), SelectProgramActivity.class);
+					startActivity(intent);
+					//					FragmentTransaction ft = getFragmentManager().beginTransaction();
+					//					ft.replace(android.R.id.content, new SelectProgramFragment());
+					//					ft.addToBackStack(null);
+					//					ft.commit();
 					return false;
 				}
 			});

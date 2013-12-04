@@ -46,8 +46,12 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
 
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -73,7 +77,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class Utils {
+public final class Utils {
 
 	private static final String TAG = Utils.class.getSimpleName();
 	public static final int PICTURE_INTENT = 1;
@@ -81,6 +85,11 @@ public class Utils {
 	public static final int TRANSLATION_PLURAL_OTHER_INTEGER = 767676;
 	private static final int DEFAULT_SCREEN_WIDTH = 1280;
 	private static final int DEFAULT_SCREEN_HEIGHT = 768;
+
+	// Suppress default constructor for noninstantiability
+	private Utils() {
+		throw new AssertionError();
+	}
 
 	public static boolean externalStorageAvailable() {
 		String externalStorageState = Environment.getExternalStorageState();
@@ -470,6 +479,18 @@ public class Utils {
 
 		File projectDirectory = new File(Utils.buildProjectPath(programName));
 		return projectDirectory.exists();
+	}
+
+	public static View addSelectAllActionModeButton(LayoutInflater inflator, ActionMode mode, Menu menu) {
+		mode.getMenuInflater().inflate(R.menu.menu_actionmode, menu);
+		com.actionbarsherlock.view.MenuItem item = menu.findItem(R.id.select_all);
+		View view = item.getActionView();
+		if (view.getId() == R.id.select_all) {
+			View selectAllView = inflator.inflate(R.layout.action_mode_select_all, null);
+			item.setActionView(selectAllView);
+			return selectAllView;
+		}
+		return null;
 	}
 
 }

@@ -191,7 +191,9 @@
     <string name="copy_project_finished"> copied.</string>
     <string name="program">Program</string>
     <string name="programs">Programs</string>
-    <string name="dialog_confirm_delete_program_title">Delete this program?</string>    
+    <string name="dialog_confirm_delete_program_title">Delete this program?</string>
+    <string name="dialog_confirm_delete_multiple_programs_title">Delete these programs?</string>
+    <string name="dialog_confirm_delete_program_message">This can not be undone!</string>   
     <string name="details_date_today">Today</string>
     <string name="details_date_yesterday">Yesterday</string>
     <!--  -->
@@ -406,7 +408,11 @@
  	<string name="lwp_confirm_set_program_message">Set this program?</string>
  	<string name="create_programs">Create new wallpaper</string>
  	<string name="download_programs">Explore</string>
+ 	<string name="lwp_error_delete_current_program">You cannot delete this program because it is currently in preview.</string>
+ 	<string name="lwp_error_delete_multiple_program">"One of the selected programs is in preview and cannot be deleted. Do you wish to delete the other selected programs?"</string>
  	
  	<string name="pocket_code_not_installed">Pocket Code is not installed. Do you want to install it?</string>
+ 	
+ 	<string name="delete">Delete</string>
 
 </resources>
