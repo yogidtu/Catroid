@@ -26,11 +26,11 @@ import org.catrobat.catroid.common.SoundInfo;
 
 import java.util.ArrayList;
 
-public class BackPackListManager {
-
+public final class BackPackListManager {
 	private static final BackPackListManager INSTANCE = new BackPackListManager();
 	private static final ArrayList<SoundInfo> SOUND_INFO_ARRAY_LIST = new ArrayList<SoundInfo>();
 	private static final ArrayList<SoundInfo> ACTION_BAR_SOUND_INFO_ARRAY_LIST = new ArrayList<SoundInfo>();
+
 	private static SoundInfo currentSoundInfo;
 	private static ArrayList<SoundInfo> currentSoundInfoArrayList;
 	//private static SoundBaseAdapter currentAdapter;
