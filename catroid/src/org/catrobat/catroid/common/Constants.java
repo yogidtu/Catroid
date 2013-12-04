@@ -87,4 +87,9 @@ public final class Constants {
 
 	//Livewallpaper
 	public static final String PREF_SOUND_DISABLED = "Sound disabled";
+
+	// Suppress default constructor for noninstantiability
+	private Constants() {
+		throw new AssertionError();
+	}
 }
