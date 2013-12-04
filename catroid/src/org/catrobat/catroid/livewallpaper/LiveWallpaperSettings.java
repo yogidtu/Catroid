@@ -23,18 +23,10 @@
 package org.catrobat.catroid.livewallpaper;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.FragmentTransaction;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -49,8 +41,6 @@ import android.view.ViewGroup;
 
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.io.SoundManager;
-
-import java.util.List;
 
 @SuppressLint("NewApi")
 public class LiveWallpaperSettings extends PreferenceActivity {
@@ -71,7 +61,6 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 			addPreferencesFromResource(R.xml.livewallpapersettings);
 			handleAboutPocketCodePreference();
 			handleAboutThisWallpaperPreference();
-			handleCreateWallpapers();
 			handleSelectProgramDialog();
 			handleAllowSoundsCheckBox();
 		}
@@ -156,61 +145,6 @@ public class LiveWallpaperSettings extends PreferenceActivity {
 					return false;
 				}
 			});
-
-		}
-
-		private void handleCreateWallpapers() {
-
-			Preference licence = findPreference(getResources().getString(R.string.create_programs));
-
-			licence.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-
-				@Override
-				public boolean onPreferenceClick(Preference preference) {
-					Intent pocketCodeIntent = new Intent("android.intent.action.MAIN");
-					pocketCodeIntent.setComponent(new ComponentName(Constants.POCKET_CODE_PACKAGE_NAME,
-							Constants.POCKET_CODE_INTENT_ACTIVITY_NAME));
-					boolean isInstalled = checkIfPocketCodeInstalled(pocketCodeIntent);
-					if (isInstalled) {
-
-						pocketCodeIntent.addCategory("android.intent.category.LAUNCHER");
-						startActivity(pocketCodeIntent);
-					}
-
-					return false;
-				}
-			});
-
-		}
-
-		private boolean checkIfPocketCodeInstalled(Intent pocketCodeIntent) {
-			final Activity activity = getActivity();
-			List<ResolveInfo> packageList = activity.getPackageManager().queryIntentActivities(pocketCodeIntent,
-					PackageManager.MATCH_DEFAULT_ONLY);
-
-			if (packageList.size() <= 0) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-				builder.setMessage(R.string.pocket_code_not_installed).setCancelable(false)
-						.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int id) {
-
-								Intent downloadPocketPaintIntent = new Intent(Intent.ACTION_VIEW, Uri
-										.parse(Constants.POCKET_CODE_DOWNLOAD_LINK));
-								activity.startActivity(downloadPocketPaintIntent);
-							}
-						}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int id) {
-								dialog.cancel();
-							}
-						});
-				AlertDialog alert = builder.create();
-				alert.show();
-				return false;
-			} else {
-				return true;
-			}
 
 		}
 
