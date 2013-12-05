@@ -39,31 +39,32 @@ import org.catrobat.catroid.formulaeditor.Formula;
 
 import java.util.List;
 
-public class SayForBrick extends BubbleBrickBaseType {
+public class SayBrick extends BubbleBrickBaseType {
 	private static final long serialVersionUID = 1L;
+	private static final int SECONDS = 2;
 
-	public SayForBrick() {
+	public SayBrick() {
 		super();
 	}
 
-	public SayForBrick(Sprite sprite, String say, int seconds, Context context) {
-		super(sprite, say, seconds, context);
+	public SayBrick(Sprite sprite, String say, Context context) {
+		super(sprite, say, SECONDS, context);
 	}
 
-	public SayForBrick(Sprite sprite, Formula say, Formula seconds, Context context) {
-		super(sprite, say, seconds, context);
+	public SayBrick(Sprite sprite, Formula say, Context context) {
+		super(sprite, say, new Formula(SECONDS), context);
 	}
 
 	@Override
 	public Brick copyBrickForSprite(Sprite sprite, Script script) {
-		SayForBrick copyBrick = (SayForBrick) clone();
+		SayBrick copyBrick = (SayBrick) clone();
 		copyBrick.sprite = sprite;
 		return copyBrick;
 	}
 
 	@Override
 	public Brick clone() {
-		return new SayForBrick(getSprite(), text.clone(), duration.clone(), context);
+		return new SayBrick(getSprite(), text.clone(), context);
 	}
 
 	@Override
@@ -71,9 +72,9 @@ public class SayForBrick extends BubbleBrickBaseType {
 		if (animationState) {
 			return view;
 		}
-		view = View.inflate(context, R.layout.brick_say_for, null);
+		view = View.inflate(context, R.layout.brick_say, null);
 		view = getViewWithAlpha(alphaValue);
-		setCheckboxView(R.id.brick_say_for_checkbox);
+		setCheckboxView(R.id.brick_say_checkbox);
 
 		final Brick brickInstance = this;
 		checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -91,42 +92,28 @@ public class SayForBrick extends BubbleBrickBaseType {
 		text.setTextFieldId(R.id.brick_say_edit_text);
 		text.refreshTextField(view);
 
-		view.findViewById(R.id.brick_for_prototype_text_view).setVisibility(View.GONE);
-		TextView durationEditText = (TextView) view.findViewById(R.id.brick_for_edit_text);
-		durationEditText.setVisibility(View.VISIBLE);
-		durationEditText.setOnClickListener(this);
-		duration.setTextFieldId(R.id.brick_for_edit_text);
-		duration.refreshTextField(view);
-
 		return view;
 	}
 
 	@Override
 	public View getPrototypeView(Context context) {
-		prototypeView = View.inflate(context, R.layout.brick_say_for, null);
+		prototypeView = View.inflate(context, R.layout.brick_say, null);
 		TextView sayPrototypeTextView = (TextView) prototypeView.findViewById(R.id.brick_say_prototype_text_view);
 		sayPrototypeTextView.setText(text.interpretString(sprite));
-		TextView durationPrototypeTextview = (TextView) prototypeView.findViewById(R.id.brick_for_prototype_text_view);
-		durationPrototypeTextview.setText(String.valueOf(duration.interpretInteger(sprite)));
 		return prototypeView;
 	}
 
 	@Override
 	public View getViewWithAlpha(int alphaValue) {
 		if (view != null) {
-			View layout = view.findViewById(R.id.brick_say_for_layout);
+			View layout = view.findViewById(R.id.brick_say_layout);
 			layout.getBackground().setAlpha(alphaValue);
 
 			TextView sayTextView = (TextView) view.findViewById(R.id.brick_say_textview);
 			sayTextView.setTextColor(sayTextView.getTextColors().withAlpha(alphaValue));
-			TextView durationTextView = (TextView) view.findViewById(R.id.brick_for_textview);
-			durationTextView.setTextColor(durationTextView.getTextColors().withAlpha(alphaValue));
 			TextView sayEditText = (TextView) view.findViewById(R.id.brick_say_edit_text);
 			sayEditText.setTextColor(sayEditText.getTextColors().withAlpha(alphaValue));
 			sayEditText.getBackground().setAlpha(alphaValue);
-			TextView durationEditText = (TextView) view.findViewById(R.id.brick_for_edit_text);
-			durationEditText.setTextColor(durationEditText.getTextColors().withAlpha(alphaValue));
-			durationEditText.getBackground().setAlpha(alphaValue);
 
 			this.alphaValue = (alphaValue);
 		}

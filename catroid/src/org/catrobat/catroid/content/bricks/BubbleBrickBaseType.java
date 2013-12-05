@@ -15,7 +15,7 @@ import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public abstract class BubbleBrick extends BrickBaseType implements OnClickListener, FormulaBrick {
+public abstract class BubbleBrickBaseType extends BrickBaseType implements OnClickListener, FormulaBrick {
 
 	private static final long serialVersionUID = 1L;
 	protected static final int STRING_OFFSET = 20;
@@ -28,17 +28,17 @@ public abstract class BubbleBrick extends BrickBaseType implements OnClickListen
 	protected transient Context context;
 	protected byte[] bubbleByteArray;
 
-	public BubbleBrick() {
+	public BubbleBrickBaseType() {
 	}
 
-	public BubbleBrick(Sprite sprite, String say, int seconds, Context context) {
+	public BubbleBrickBaseType(Sprite sprite, String say, int seconds, Context context) {
 		this.sprite = sprite;
 		this.text = new Formula(say);
 		this.duration = new Formula(seconds);
 		this.context = context;
 	}
 
-	public BubbleBrick(Sprite sprite, Formula say, Formula seconds, Context context) {
+	public BubbleBrickBaseType(Sprite sprite, Formula say, Formula seconds, Context context) {
 		this.sprite = sprite;
 		this.text = say;
 		this.duration = seconds;
