@@ -65,6 +65,10 @@ public abstract class BubbleBrickBaseType extends BrickBaseType implements OnCli
 				FormulaEditorFragment.showFragment(view, this, text);
 				break;
 
+			case R.id.brick_think_edit_text:
+				FormulaEditorFragment.showFragment(view, this, text);
+				break;
+
 			case R.id.brick_for_edit_text:
 				FormulaEditorFragment.showFragment(view, this, duration);
 				break;
