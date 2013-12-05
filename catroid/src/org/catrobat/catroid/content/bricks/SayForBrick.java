@@ -23,10 +23,7 @@
 package org.catrobat.catroid.content.bricks;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.View;
-import android.view.View.MeasureSpec;
-import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -35,54 +32,26 @@ import android.widget.TextView;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.actions.ExtendedActions;
 import org.catrobat.catroid.formulaeditor.Formula;
-import org.catrobat.catroid.ui.fragment.FormulaEditorFragment;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 
-public class SayForBrick extends BrickBaseType implements OnClickListener, FormulaBrick {
+public class SayForBrick extends BubbleBrick {
 	private static final long serialVersionUID = 1L;
-	private static final int STRING_OFFSET = 20;
-	private static final int BOUNDARY_PIXEL = 30;
-
-	private Formula text;
-	private Formula duration;
-	private transient View prototypeView;
-	private transient View bubble = null;
-	private transient Context context = null;
-	private transient byte[] speechBubbles;
 
 	public SayForBrick() {
+		super();
 	}
 
 	public SayForBrick(Sprite sprite, String say, int seconds, Context context) {
-		this.sprite = sprite;
-		this.text = new Formula(say);
-		this.duration = new Formula(seconds);
-		this.context = context;
+		super(sprite, say, seconds, context);
 	}
 
 	public SayForBrick(Sprite sprite, Formula say, Formula seconds, Context context) {
-		this.sprite = sprite;
-		this.text = say;
-		this.duration = seconds;
-		this.context = context;
-	}
-
-	@Override
-	public Formula getFormula() {
-		return text;
-	}
-
-	@Override
-	public int getRequiredResources() {
-		return NO_RESOURCES;
+		super(sprite, say, seconds, context);
 	}
 
 	@Override
@@ -90,6 +59,11 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 		SayForBrick copyBrick = (SayForBrick) clone();
 		copyBrick.sprite = sprite;
 		return copyBrick;
+	}
+
+	@Override
+	public Brick clone() {
+		return new SayForBrick(getSprite(), text.clone(), duration.clone(), context);
 	}
 
 	@Override
@@ -110,16 +84,14 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 			}
 		});
 
-		TextView sayPrototypeTextView = (TextView) view.findViewById(R.id.brick_say_prototype_text_view);
-		sayPrototypeTextView.setVisibility(View.GONE);
+		view.findViewById(R.id.brick_say_prototype_text_view).setVisibility(View.GONE);
 		TextView sayEditText = (TextView) view.findViewById(R.id.brick_say_edit_text);
 		sayEditText.setVisibility(View.VISIBLE);
 		sayEditText.setOnClickListener(this);
 		text.setTextFieldId(R.id.brick_say_edit_text);
 		text.refreshTextField(view);
 
-		TextView durationPrototypeTextView = (TextView) view.findViewById(R.id.brick_for_prototype_text_view);
-		durationPrototypeTextView.setVisibility(View.GONE);
+		view.findViewById(R.id.brick_for_prototype_text_view).setVisibility(View.GONE);
 		TextView durationEditText = (TextView) view.findViewById(R.id.brick_for_edit_text);
 		durationEditText.setVisibility(View.VISIBLE);
 		durationEditText.setOnClickListener(this);
@@ -137,11 +109,6 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 		TextView durationPrototypeTextview = (TextView) prototypeView.findViewById(R.id.brick_for_prototype_text_view);
 		durationPrototypeTextview.setText(String.valueOf(duration.interpretInteger(sprite)));
 		return prototypeView;
-	}
-
-	@Override
-	public Brick clone() {
-		return new SayForBrick(getSprite(), text.clone(), duration.clone(), context);
 	}
 
 	@Override
@@ -167,65 +134,11 @@ public class SayForBrick extends BrickBaseType implements OnClickListener, Formu
 	}
 
 	@Override
-	public void onClick(View view) {
-		if (checkbox.getVisibility() == View.VISIBLE) {
-			return;
-		}
-		switch (view.getId()) {
-			case R.id.brick_say_edit_text:
-				FormulaEditorFragment.showFragment(view, this, text);
-				break;
-
-			case R.id.brick_for_edit_text:
-				FormulaEditorFragment.showFragment(view, this, duration);
-				break;
-		}
-	}
-
-	@Override
 	public List<SequenceAction> addActionToSequence(SequenceAction sequence) {
-
 		bubble = View.inflate(this.context, R.layout.bubble_speech_new, null);
-
 		((TextView) bubble.findViewById(R.id.bubble_edit_text)).setText(getNormalizedText());
-		bubble.setDrawingCacheEnabled(true);
-		bubble.measure(MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_WIDTH - BOUNDARY_PIXEL, MeasureSpec.AT_MOST),
-				MeasureSpec.makeMeasureSpec(ScreenValues.SCREEN_HEIGHT - BOUNDARY_PIXEL, MeasureSpec.AT_MOST));
-		bubble.layout(0, 0, bubble.getMeasuredWidth(), bubble.getMeasuredHeight());
-
-		Bitmap bitmap = bubble.getDrawingCache();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
-		speechBubbles = stream.toByteArray();
-
-		try {
-			stream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		bubble.setDrawingCacheEnabled(false);
-		sequence.addAction(ExtendedActions.say(sprite, speechBubbles, duration));
+		updateBubbleByteArrayFromDrawingCache();
+		sequence.addAction(ExtendedActions.say(sprite, bubbleByteArray, duration));
 		return null;
-	}
-
-	private String getNormalizedText() {
-
-		String text = this.text.interpretString(sprite);
-		String normalizedText = new String();
-
-		for (int index = 0; index < text.length(); index++) {
-			if (index % STRING_OFFSET == 0) {
-				normalizedText += "\n";
-			}
-			//TODO: max size of text.
-			normalizedText += text.charAt(index);
-		}
-
-		return normalizedText;
-	}
-
-	public void setContext(Context applicationContext) {
-		this.context = applicationContext;
 	}
 }

@@ -32,6 +32,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
+import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.bricks.Brick;
@@ -85,14 +86,18 @@ public class BaseActivity extends SherlockFragmentActivity {
 	}
 
 	protected void setContextInCertainBricks() {
-		ArrayList<Sprite> spriteList = (ArrayList<Sprite>) ProjectManager.getInstance().getCurrentProject()
-				.getSpriteList();
-		for (Sprite sprite : spriteList) {
-			for (int index = 0; index < sprite.getNumberOfScripts(); index++) {
-				Script script = sprite.getScript(index);
-				for (Brick brick : script.getBrickList()) {
-					if (brick instanceof SayForBrick) {
-						((SayForBrick) brick).setContext(getApplicationContext());
+		Project currentProject = ProjectManager.getInstance().getCurrentProject();
+
+		if (currentProject != null) {
+			ArrayList<Sprite> spriteList = (ArrayList<Sprite>) currentProject.getSpriteList();
+
+			for (Sprite sprite : spriteList) {
+				for (int index = 0; index < sprite.getNumberOfScripts(); index++) {
+					Script script = sprite.getScript(index);
+					for (Brick brick : script.getBrickList()) {
+						if (brick instanceof SayForBrick) {
+							((SayForBrick) brick).setContext(getApplicationContext());
+						}
 					}
 				}
 			}
